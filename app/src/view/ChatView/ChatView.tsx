@@ -1,8 +1,9 @@
 import { Component, For, createMemo } from "solid-js";
-import { Flex, Text } from "~/component";
+import { Button, Flex, Text } from "~/component";
 import { chatListStyle, chatRootStyle } from "./styles.css";
 import { ChatItem } from "./ChatItem";
-import { appRooms, appSettings } from "~/common";
+import { appRooms, appSettings, rollerRoomsKey, saveToStorage } from "~/common";
+import { FaSolidTrash } from "solid-icons/fa";
 
 export const ChatView: Component = () => {
   const items = createMemo(() => {
@@ -12,8 +13,21 @@ export const ChatView: Component = () => {
     return data[settings.currentRoom].rolls;
   });
 
+  const clearRolls = () => {
+    const data = { ...appRooms() };
+    if (appSettings().currentRoom == "") return;
+    data[appSettings().currentRoom].rolls = [];
+    saveToStorage(rollerRoomsKey, data);
+  };
+
   return (
     <div class={chatRootStyle}>
+      <Flex gap="large">
+        <Text>Rolls</Text>
+        <Button onClick={clearRolls}>
+          <FaSolidTrash />
+        </Button>
+      </Flex>
       <div class={chatListStyle}>
         <For each={items()}>
           {(it) => (

@@ -14,5 +14,6 @@ export const topbarStyle = style([
     flexDirection: "row",
     justifyContent: "space-between",
     padding: "small",
+    alignItems: "center",
   }),
 ]);

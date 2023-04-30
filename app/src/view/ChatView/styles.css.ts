@@ -6,9 +6,14 @@ export const chatRootStyle = style([
     backgroundColor: "backgroundSecondary",
     padding: "medium",
     color: "primary",
+    display: "flex",
+    flexDirection: "column",
+    gap: "small",
   }),
   {
     minWidth: "25vw",
+    height: "calc(100vh - 8em)",
+    overflowY: "auto",
   },
 ]);
 
@@ -22,9 +27,7 @@ export const chatListStyle = style([
     color: "primary",
     gap: "small",
   }),
-  {
-    overflowY: "auto",
-  },
+  {},
 ]);
 
 export const chatItemContentStyle = style([

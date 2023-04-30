@@ -15,10 +15,15 @@ type Props = {
 export const Button: ParentComponent<Props & ComponentProps<"button">> = ({
   children,
   variant,
+  disabled,
   ...rest
 }) => {
   return (
-    <Btn.Root class={buttonStyle({ variant: variant })} {...rest}>
+    <Btn.Root
+      class={buttonStyle({ variant: variant })}
+      disabled={disabled}
+      {...rest}
+    >
       {children}
     </Btn.Root>
   );

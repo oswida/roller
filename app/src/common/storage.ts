@@ -62,11 +62,20 @@ export const appRooms = () => {
     rooms = {
       [appSettings().currentRoom]: {
         id: appSettings().currentRoom,
-        name: "",
+        name: "Default room",
         rolls: [],
       },
     };
     setAppStore(rollerRoomsKey, rooms);
   }
   return rooms;
+};
+
+export const currentRoomName = () => {
+  const settings = appSettings();
+  if (!settings) return "";
+  if (settings.currentRoom == "") return "";
+  const rooms = appRooms();
+  if (!rooms[settings.currentRoom]) return "";
+  return rooms[settings.currentRoom].name;
 };

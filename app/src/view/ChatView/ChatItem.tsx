@@ -11,6 +11,10 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
   const rolls = createMemo(() => {
     const results = item.rollDice.map((d) => {
       const p = d.split("d");
+      if (p.length != 2) {
+        console.log("problem parsing result", d);
+        return;
+      }
       return `[ ${item.rollResults[`d${p[1]}`]
         .sort((a, b) => a - b)
         .join(", ")} ]`;

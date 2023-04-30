@@ -2,27 +2,36 @@ import { Popover as Pop } from "@kobalte/core";
 import { FaSolidXmark } from "solid-icons/fa";
 import { ParentComponent } from "solid-js";
 import { buttonStyle } from "../Button/styles.css";
-import { popoverContentStyle, popoverRootStyle } from "./styles.css";
+import { popoverContentStyle, popoverHeaderStyle } from "./styles.css";
+import { Text } from "~/component";
 
-export const Popover: ParentComponent = ({ children }) => {
+type Props = {
+  title?: string;
+  trigger: any;
+};
+
+export const Popover: ParentComponent<Props> = ({
+  children,
+  title,
+  trigger,
+}) => {
   return (
-    <Pop.Root class={popoverRootStyle}>
+    <Pop.Root>
       <Pop.Trigger class={buttonStyle({ variant: "icon" })}>
-        {children}
+        {trigger}
       </Pop.Trigger>
-      <Pop.Portal class={popoverRootStyle}>
+      <Pop.Portal>
         <Pop.Content class={popoverContentStyle}>
           <Pop.Arrow />
-          <div class="popover__header">
-            <Pop.Title class="popover__title">About Kobalte</Pop.Title>
+          <div class={popoverHeaderStyle}>
+            <Text>
+              <b>{title}</b>
+            </Text>
             <Pop.CloseButton class={buttonStyle({ variant: "icon" })}>
               <FaSolidXmark />
             </Pop.CloseButton>
           </div>
-          <Pop.Description class="popover__description">
-            A UI toolkit for building accessible web apps and design systems
-            with SolidJS.
-          </Pop.Description>
+          <Pop.Description>{children}</Pop.Description>
         </Pop.Content>
       </Pop.Portal>
     </Pop.Root>

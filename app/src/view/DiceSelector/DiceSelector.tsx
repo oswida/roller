@@ -1,5 +1,12 @@
-import { Component } from "solid-js";
-import { diceBox, dicePool, setDicePool, setRollComment } from "~/common";
+import { Component, Show } from "solid-js";
+import {
+  diceBox,
+  dicePool,
+  rolling,
+  setDicePool,
+  setRollComment,
+  setRolling,
+} from "~/common";
 import { Flex, Input, Text } from "~/component";
 import { Button } from "~/component/Button";
 import { DiceEntry } from "./DiceEntry";
@@ -13,11 +20,13 @@ export const DiceSelector: Component = () => {
   };
 
   const roll = async () => {
+    if (rolling()) return;
     const db = diceBox();
     if (!db) return;
     const pool = dicePool();
     if (!pool) return;
     const dice = Object.entries(pool).map(([k, v]) => `${v}d${k}`);
+    setRolling(true);
     await db.roll(dice.join("+"));
   };
 
@@ -42,15 +51,18 @@ export const DiceSelector: Component = () => {
         </Button>
       </Flex>
       <Flex center>
-        <Button variant="ghost" onClick={roll}>
-          <Text>ROLL</Text>
-        </Button>
-        <Input
-          tooltip="Comment"
-          placeholder="Comment"
-          ref={(e) => (inputRef = e)}
-          onInput={(e) => updateComment(e)}
-        />
+        <Show when={!rolling()}>
+          <Button variant="ghost" onClick={roll}>
+            <Text>ROLL</Text>
+          </Button>
+
+          <Input
+            tooltip="Comment"
+            placeholder="Comment"
+            ref={(e) => (inputRef = e)}
+            onInput={(e) => updateComment(e)}
+          />
+        </Show>
       </Flex>
     </div>
   );

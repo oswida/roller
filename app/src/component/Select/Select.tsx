@@ -1,36 +1,42 @@
 import { Select as Sel } from "@kobalte/core";
-import { Component, ParentComponent } from "solid-js";
+import { Accessor, Component, ParentComponent, createEffect } from "solid-js";
 import { SelectOption } from "~/common";
 import { FaSolidCheck } from "solid-icons/fa";
+import { buttonStyle } from "../Button/styles.css";
+import {
+  selectItemStyle,
+  selectListStyle,
+  selectListboxStyle,
+} from "./styles.css";
+import { Dynamic } from "solid-js/web";
 
 type Props = {
-  options: SelectOption[];
-  selected: string;
+  options: string[];
+  selected: Accessor<string>;
+  onChange: (value: string) => void;
 };
 
-export const Select: ParentComponent<Props> = ({
-  options,
-  children,
-  selected,
-}) => {
+export const Select: Component<Props> = ({ options, selected, onChange }) => {
   return (
     <Sel.Root
-      options={options.map((it) => it.value)}
+      onChange={onChange}
+      defaultValue={selected()}
+      options={options}
       itemComponent={(props: any) => (
-        <Sel.Item item={props.item} class="select__item">
+        <Sel.Item item={props.item} class={selectItemStyle}>
           <Sel.ItemLabel>{props.item.rawValue}</Sel.ItemLabel>
-          <Sel.ItemIndicator class="select__item-indicator">
+          <Sel.ItemIndicator>
             <FaSolidCheck />
           </Sel.ItemIndicator>
         </Sel.Item>
       )}
     >
-      <Sel.Trigger>
-        <Sel.Value>{selected}</Sel.Value>
+      <Sel.Trigger class={buttonStyle({ variant: "ghost" })}>
+        <Sel.Value>{(state) => state.selectedOption() as string}</Sel.Value>
       </Sel.Trigger>
       <Sel.Portal>
-        <Sel.Content class="select__content">
-          <Sel.Listbox class="select__listbox" />
+        <Sel.Content class={selectListStyle}>
+          <Sel.Listbox class={selectListboxStyle} />
         </Sel.Content>
       </Sel.Portal>
     </Sel.Root>

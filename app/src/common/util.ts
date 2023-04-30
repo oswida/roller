@@ -1,12 +1,12 @@
-import { RollInfo } from "./types";
 import {
   compress,
   compressToBase64,
   decompress,
   decompressFromBase64,
 } from "@eonasdan/lz-string";
-import { spaceSize, sprinkles } from "./theme.css";
 import { appSettings } from "./storage";
+import { spaceSize, sprinkles } from "./theme.css";
+import { RollInfo } from "./types";
 
 export const createSpaceVariants = (name: string) => {
   const result: Record<string, any> = {};
@@ -99,3 +99,50 @@ export const createRollInfo = (result: any, comment?: string) => {
     comment: comment,
   } as RollInfo;
 };
+
+export const diceColorSet: string[] = [
+  "acid",
+  "air",
+  "astralsea",
+  "black",
+  "bloodmoon",
+  "breebaby",
+  "bronze",
+  "dragons",
+  "earth",
+  "fire",
+  "force",
+  "glitterparty",
+  "ice",
+  "inspired",
+  "lightning",
+  "necrotic",
+  "starynight",
+  "swrpg_abi",
+  "swrpg_dif",
+  "swrpg_pro",
+  "thunder",
+  "water",
+  "white",
+];
+
+export const diceMaterialSet = [
+  "cloudy",
+  "cloudy_2",
+  "fire",
+  "marble",
+  "water",
+  "ice",
+  "paper",
+  "speckles",
+  "glitter",
+  "stainedglass",
+  "wood",
+  "metal",
+  "dragon",
+  "bronze01",
+  "bronze02",
+  "bronze03",
+  "bronze04",
+  "none",
+];

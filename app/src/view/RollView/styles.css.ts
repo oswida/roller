@@ -9,7 +9,7 @@ export const rollViewStyle = style([
   }),
   {
     flex: 1,
-    height: "calc(100vh - 7em)",
+    height: "calc(100vh - 8em)",
     width: "calc(75vw)",
   },
 ]);

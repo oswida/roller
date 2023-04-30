@@ -44,6 +44,17 @@ const fontSize = {
   huge: "26px",
 };
 
+const borderSizeType = {
+  none: "none",
+  thin: "1px",
+  medium: "2px",
+};
+
+const borderStyleType = {
+  none: "none",
+  solid: "solid",
+};
+
 export const themeProperties = defineProperties({
   properties: {
     display: ["none", "flex", "inline", "block"],
@@ -65,6 +76,8 @@ export const themeProperties = defineProperties({
     borderBottomLeftRadius: spaceSize,
     borderTopRightRadius: spaceSize,
     borderBottomRightRadius: spaceSize,
+    borderWidth: borderSizeType,
+    borderStyle: borderStyleType,
   },
   shorthands: {
     padding: ["paddingTop", "paddingBottom", "paddingLeft", "paddingRight"],

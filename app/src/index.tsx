@@ -2,8 +2,10 @@
 import { render } from "solid-js/web";
 
 import App from "./App";
+import { updateStoreSize } from "./common";
 
 const root = document.getElementById("root");
+updateStoreSize();
 
 if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   throw new Error(

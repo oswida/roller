@@ -1,4 +1,5 @@
 import { v4 as uuid } from "uuid";
+import { colorType } from "./theme.css";
 
 export type SelectOption = {
   label: string;
@@ -15,14 +16,18 @@ export type AppSettings = {
     credentials: string;
   };
   currentRoom: string;
+  diceColor: string;
+  diceMaterial: string;
 };
 
 export const emptyAppSettings: AppSettings = {
   userIdent: uuid(),
   userName: "Anonymous",
-  userColor: "",
+  userColor: colorType.primary,
   network: { type: "mqtt", credentials: "", serverUri: "" },
   currentRoom: uuid(),
+  diceColor: "white",
+  diceMaterial: "none",
 };
 
 export type RollInfo = {

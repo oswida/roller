@@ -5,8 +5,10 @@ export const inputRootStyle = style([
   sprinkles({
     backgroundColor: "background",
     padding: "small",
-
+    display: "flex",
+    gap: "small",
     color: "primary",
+    alignItems: "center",
   }),
 ]);
 

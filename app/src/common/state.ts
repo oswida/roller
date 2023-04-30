@@ -9,3 +9,5 @@ export const [diceBox, setDiceBox] = createSignal<any>(undefined);
 
 // export const [chatData, setChatData] = createSignal<RollInfo[]>([]);
 export const [rollComment, setRollComment] = createSignal("");
+
+export const [rolling, setRolling] = createSignal(false);

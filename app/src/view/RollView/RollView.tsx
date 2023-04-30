@@ -4,47 +4,28 @@ import {
   appRooms,
   appSettings,
   createRollInfo,
+  diceBox,
   rollComment,
   rollerRoomsKey,
   saveToStorage,
   setDiceBox,
   setRollComment,
+  setRolling,
 } from "~/common";
 import { rollViewStyle } from "./styles.css";
-
-type colorSets =
-  | "radiant"
-  | "fire"
-  | "ice"
-  | "poison"
-  | "acid"
-  | "thunder"
-  | "lightning"
-  | "air"
-  | "water"
-  | "earth"
-  | "force"
-  | "psychic"
-  | "necrotic"
-  | "pinkdreams"
-  | "bronze"
-  | "dragons"
-  | "tigerking"
-  | "black"
-  | "white";
 
 const diceConfig = {
   framerate: 1 / 60,
   sounds: false,
   volume: 100,
-  color_spotlight: 0xefdfd5,
+  color_spotlight: 0xffffff, // 0xefdfd5,
   shadows: true,
   theme_surface: "green-felt",
   sound_dieMaterial: "plastic",
   theme_customColorset: null,
   theme_colorset: "white", // see available colorsets in https://github.com/3d-dice/dice-box-threejs/blob/main/src/const/colorsets.js
-  theme_texture: "", // see available textures in https://github.com/3d-dice/dice-box-threejs/blob/main/src/const/texturelist.js
-  theme_material: "plastic", // "none" | "metal" | "wood" | "glass" | "plastic"
+  theme_texture: "none", // see available textures in https://github.com/3d-dice/dice-box-threejs/blob/main/src/const/texturelist.js
+  theme_material: "none", // "none" | "metal" | "wood" | "glass" | "plastic"
   gravity_multiplier: 400,
   light_intensity: 0.7,
   baseScale: 100,
@@ -56,21 +37,40 @@ export const RollView: Component = () => {
   let tableRef: HTMLDivElement;
 
   createEffect(() => {
-    if (!tableRef) return;
+    if (!tableRef || diceBox() !== undefined) return;
     const Box = new DiceBox("#table", diceConfig);
     setDiceBox(Box);
     Box.initialize().then(() => {
-      console.log("dice box initialized");
+      const s = appSettings();
+      Box.loadTheme({
+        colorset: s.diceColor,
+        texture: s.diceMaterial,
+        material: "none",
+      });
     });
     Box.onRollComplete = (results: any) => {
       const info = createRollInfo(results, rollComment());
       const data = { ...appRooms() };
       const settings = appSettings();
       if (settings.currentRoom === "") return;
-      data[settings.currentRoom].rolls.push(info);
+      data[settings.currentRoom].rolls = [
+        info,
+        ...data[settings.currentRoom].rolls,
+      ];
       setRollComment("");
       saveToStorage(rollerRoomsKey, data);
+      setRolling(false);
     };
+  });
+
+  createEffect(() => {
+    const box = diceBox();
+    if (!box) return;
+    const s = appSettings();
+    box.updateConfig({
+      theme_colorset: s.diceColor,
+      theme_texture: s.diceMaterial,
+    });
   });
 
   return (
