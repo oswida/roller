@@ -17,7 +17,6 @@ export const ConnectView: Component = () => {
   let data = params.data;
   if (data.trim() !== "") {
     const dt = decompressData64(data);
-    console.log("data", dt);
     const newState = {
       ...appSettings(),
     };
@@ -29,7 +28,6 @@ export const ConnectView: Component = () => {
     const nr = { ...appRooms() };
     nr[room.id] = room;
     saveToStorage(rollerRoomsKey, nr);
-    console.log("Saving rooms", nr);
     netConnect();
   }
   return <Navigate href={"/"}></Navigate>;

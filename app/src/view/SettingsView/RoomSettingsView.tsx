@@ -35,7 +35,6 @@ export const RoomSettingsView: Component = () => {
         text={netSessionLink()}
         options={{ debug: true }}
         onCopy={() => {
-          console.log("copied");
           toast("Session link copied to clipboard");
         }}
         eventTrigger="onClick"

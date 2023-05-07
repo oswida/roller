@@ -22,7 +22,7 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
   return (
     <Flex gap="none" direction="column">
       <div class={chatItemHeaderStyle}>
-        <div>{item.user}</div> <div>{item.tstamp.replaceAll("_", " ")}</div>
+        <div>{item.user}</div> <div>{item.tstamp}</div>
       </div>
       <div class={chatItemContentStyle}>
         <Flex gap="medium">

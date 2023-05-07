@@ -45,7 +45,6 @@ export const appSettings = () => {
   if (!settings) {
     settings = emptyAppSettings();
     setAppStore(rollerSettingsKey, settings);
-    console.log("saving settings", settings);
   }
   return settings;
 };

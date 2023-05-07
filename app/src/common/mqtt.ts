@@ -61,7 +61,6 @@ export const mqttProcess = (topic: string, payload: string) => {
   const ident = appSettings().userIdent;
 
   if (m.sender == ident) {
-    console.log("discarding own message", m);
     return; // own message
   }
   switch (topic) {
@@ -100,7 +99,6 @@ export const mqttConnect = () => {
   const cl = mqttClient();
   if (cl) {
     cl.end();
-    console.log("Disconnecting existing client");
   }
 
   try {
@@ -119,7 +117,6 @@ export const mqttConnect = () => {
     });
 
     client.on("connect", (e: any) => {
-      console.log("Connected to MQTT server", e);
       const topic = mqttTopic("+");
       if (topic == "") {
         console.error("empty room?", currentRoom(), topic);
@@ -134,7 +131,6 @@ export const mqttConnect = () => {
     });
 
     client.on("disconnect", (e: any) => {
-      console.log("MQTT client disconnected", e);
       setMqttClient(undefined);
     });
 

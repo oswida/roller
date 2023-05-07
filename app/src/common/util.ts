@@ -194,7 +194,6 @@ export const animateRemoteRoll = async (info: RollInfo) => {
   const db = diceBox();
   if (!db) return;
   const s = appSettings();
-  console.log("animating", info);
   await db.updateConfig({
     theme_colorset: info.diceColor,
     theme_texture: info.diceMaterial,
