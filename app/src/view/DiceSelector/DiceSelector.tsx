@@ -14,6 +14,7 @@ import { DiceEntry } from "./DiceEntry";
 import { diceSelectorStyle } from "./styles.css";
 import { IoReload } from "solid-icons/io";
 import { FaSolidDice } from "solid-icons/fa";
+import { AiOutlineClear } from "solid-icons/ai";
 
 export const DiceSelector: Component = () => {
   let inputRef: HTMLInputElement;
@@ -43,6 +44,12 @@ export const DiceSelector: Component = () => {
     setRollComment(inputRef.value);
   };
 
+  const clearTable = () => {
+    const db = diceBox();
+    if (!db) return;
+    db.clearDice();
+  };
+
   return (
     <div class={diceSelectorStyle}>
       <Flex gap="medium" center>
@@ -57,6 +64,10 @@ export const DiceSelector: Component = () => {
         <Button variant="ghost" onClick={resetPool} title="Reset">
           <IoReload />
           <Text>Reset</Text>
+        </Button>
+        <Button variant="ghost" onClick={clearTable} title="Clear table">
+          <AiOutlineClear />
+          <Text>Clear</Text>
         </Button>
       </Flex>
       <Flex center>

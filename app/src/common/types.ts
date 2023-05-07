@@ -54,6 +54,7 @@ export type RoomInfo = {
   id: string;
   name: string;
   owner: string;
+  bkguri?: string;
   rolls: RollInfo[];
 };
 

@@ -1,22 +1,20 @@
 import DiceBox from "@3d-dice/dice-box-threejs";
-import { Component, createEffect } from "solid-js";
+import { Component, JSX, createEffect, createMemo } from "solid-js";
 import {
   animating,
-  appRooms,
   appSettings,
   createRollInfo,
+  currentRoom,
   diceBox,
   netPublish,
   rollComment,
-  rollerRoomsKey,
-  saveToStorage,
   setDiceBox,
-  setRollComment,
   setRolling,
   topicRollInfo,
   updateRolls,
 } from "~/common";
 import { rollViewStyle } from "./styles.css";
+import { CSSProperties } from "@vanilla-extract/css";
 
 const diceConfig = {
   framerate: 1 / 60,
@@ -71,7 +69,23 @@ export const RollView: Component = () => {
     });
   });
 
+  const bkg = createMemo(() => {
+    const room = currentRoom();
+    if (!room || !room.bkguri || room.bkguri == "") return undefined;
+    return {
+      "background-image": `url('${room.bkguri}')`,
+      "background-repeat": "no-repeat",
+      "background-position": "center",
+      "background-size": "cover",
+    } as JSX.CSSProperties;
+  });
+
   return (
-    <div class={rollViewStyle} id="table" ref={(e) => (tableRef = e)}></div>
+    <div
+      class={rollViewStyle}
+      id="table"
+      ref={(e) => (tableRef = e)}
+      style={bkg()}
+    ></div>
   );
 };

@@ -31,7 +31,7 @@ export const Select: Component<Props> = ({ options, selected, onChange }) => {
         </Sel.Item>
       )}
     >
-      <Sel.Trigger class={buttonStyle({ variant: "ghost" })}>
+      <Sel.Trigger class={buttonStyle({ variant: "underline" })}>
         <Sel.Value>{(state) => state.selectedOption() as string}</Sel.Value>
       </Sel.Trigger>
       <Sel.Portal>

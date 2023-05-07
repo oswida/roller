@@ -12,7 +12,7 @@ export const buttonStyle = recipe({
       gap: "small",
       alignItems: "center",
       justifyContent: "center",
-      borderRadius: "medium",
+      borderRadius: "small",
     }),
     {
       boxShadow: "none",
@@ -33,6 +33,10 @@ export const buttonStyle = recipe({
       },
       ghost: {
         border: "solid 1px",
+      },
+      underline: {
+        border: "none",
+        borderBottom: "solid 1px",
       },
       icon: {
         width: "2.3em",

@@ -24,7 +24,11 @@ export const DiceEntry: Component<Props> = ({ face }) => {
   });
 
   return (
-    <div class={diceEntryStyle} onClick={inc}>
+    <div
+      class={diceEntryStyle}
+      onClick={inc}
+      title="Click to increase dice pool"
+    >
       <div>{face}</div>
       <Show when={diceNum() > 0}>
         <div class={diceNumberStyle}>{diceNum()}</div>

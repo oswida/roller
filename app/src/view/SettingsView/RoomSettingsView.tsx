@@ -15,22 +15,28 @@ import { Flex, Input, Text } from "~/component";
 import { buttonStyle } from "~/component/Button/styles.css";
 
 export const RoomSettingsView: Component = () => {
-  const updateRoom = (value: string) => {
+  const updateRoom = (field: "name" | "bkguri", value: string) => {
     const data = { ...appRooms() };
     if (!data[appSettings().currentRoom]) return;
-    data[appSettings().currentRoom].name = value;
+    data[appSettings().currentRoom][field] = value;
     saveToStorage(rollerRoomsKey, data);
     netPublish(topicRoomInfo, data[appSettings().currentRoom]);
   };
 
   return (
-    <Flex direction="column" gap="medium">
+    <Flex direction="column" gap="large">
       <Input
         label="Room name"
         value={currentRoom()?.name}
-        onChange={(e) => updateRoom(e.target.value)}
+        onChange={(e) => updateRoom("name", e.target.value)}
+        style={{ width: "20em" }}
       />
-      <Text>ID: {currentRoom()?.id}</Text>
+      <Input
+        label="Room background URI"
+        value={currentRoom()?.bkguri}
+        onChange={(e) => updateRoom("bkguri", e.target.value)}
+        style={{ width: "20em" }}
+      />
       <CopyToClipboard
         text={netSessionLink()}
         options={{ debug: true }}
