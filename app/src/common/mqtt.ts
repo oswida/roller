@@ -150,9 +150,7 @@ export const mqttClientLink = () => {
   const room = currentRoom();
   if (!room) return "";
   const obj = {
-    server: decompressData64(mqttS),
-    credentials: decompressData64(mqttC),
-    roomInfo: room,
+    roomInfo: { ...room, rolls: [] },
   };
   return `${window.location}connect?data=${encodeURIComponent(
     compressData64(obj)

@@ -20,8 +20,6 @@ export const ConnectView: Component = () => {
     const newState = {
       ...appSettings(),
     };
-    newState.network.credentials = dt.credentials;
-    newState.network.serverUri = dt.server;
     const room = dt.roomInfo as RoomInfo;
     newState.currentRoom = room.id;
     saveToStorage(rollerSettingsKey, newState);
