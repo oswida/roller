@@ -1,5 +1,5 @@
 import { recipe } from "@vanilla-extract/recipes";
-import { colorType, sprinkles } from "~/common";
+import { colorType, sprinkles, spaceType, spaceSize } from "~/common";
 
 export const buttonStyle = recipe({
   base: [
@@ -9,9 +9,10 @@ export const buttonStyle = recipe({
       paddingX: "medium",
       paddingY: "small",
       display: "flex",
+      gap: "small",
       alignItems: "center",
       justifyContent: "center",
-      borderRadius: "small",
+      borderRadius: "medium",
     }),
     {
       boxShadow: "none",
@@ -34,9 +35,10 @@ export const buttonStyle = recipe({
         border: "solid 1px",
       },
       icon: {
-        width: "2em",
-        height: "2em",
+        width: "2.3em",
+        height: "2.3em",
         border: "none",
+        borderRadius: spaceSize.small,
       },
       bigicon: {
         width: "3em",

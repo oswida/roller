@@ -27,7 +27,7 @@ const diceConfig = {
   theme_texture: "none", // see available textures in https://github.com/3d-dice/dice-box-threejs/blob/main/src/const/texturelist.js
   theme_material: "none", // "none" | "metal" | "wood" | "glass" | "plastic"
   gravity_multiplier: 400,
-  light_intensity: 0.7,
+  light_intensity: 0.8,
   baseScale: 100,
   strength: 1, // toss strength of dice
   onRollComplete: () => {},
@@ -63,11 +63,11 @@ export const RollView: Component = () => {
     };
   });
 
-  createEffect(() => {
+  createEffect(async () => {
     const box = diceBox();
     if (!box) return;
     const s = appSettings();
-    box.updateConfig({
+    await box.updateConfig({
       theme_colorset: s.diceColor,
       theme_texture: s.diceMaterial,
     });

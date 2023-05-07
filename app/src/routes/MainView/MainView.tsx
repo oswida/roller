@@ -1,11 +1,11 @@
 // import DiceBox from "@3d-dice/dice-box-threejs";
 import { createEffect } from "solid-js";
 import { Flex } from "../../component/Flex";
+import { ChatView } from "../../view/ChatView";
+import { DiceSelector } from "../../view/DiceSelector";
+import { RollView } from "../../view/RollView";
 import { TopBar } from "./TopBar";
 import { mainStyle } from "./styles.css";
-import { RollView } from "../RollView";
-import { DiceSelector } from "../DiceSelector";
-import { ChatView } from "../ChatView";
 
 export const MainView = () => {
   let mainRef: HTMLDivElement;

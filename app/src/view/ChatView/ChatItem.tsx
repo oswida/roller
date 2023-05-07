@@ -1,23 +1,20 @@
+import { Show, createMemo } from "solid-js";
 import { RollInfo } from "~/common";
+import { Flex, Text } from "~/component";
 import {
   chatItemCommentStyle,
   chatItemContentStyle,
   chatItemHeaderStyle,
 } from "./styles.css";
-import { Flex, Text } from "~/component";
-import { For, Show, createMemo } from "solid-js";
 
 export const ChatItem = ({ item }: { item: RollInfo }) => {
   const rolls = createMemo(() => {
     const results = item.rollDice.map((d) => {
       const p = d.split("d");
-      if (p.length != 2) {
-        console.log("problem parsing result", d);
-        return;
-      }
-      return `[ ${item.rollResults[`d${p[1]}`]
-        .sort((a, b) => a - b)
-        .join(", ")} ]`;
+      if (p.length != 2) return 0;
+      const val = item.rollResults[`d${p[1]}`];
+      if (!val) return 0;
+      return `[ ${val.sort((a, b) => a - b).join(", ")} ]`;
     });
     return results.join(" ");
   });
@@ -25,7 +22,7 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
   return (
     <Flex gap="none" direction="column">
       <div class={chatItemHeaderStyle}>
-        <div>{item.user}</div> <div>{item.tstamp}</div>
+        <div>{item.user}</div> <div>{item.tstamp.replaceAll("_", " ")}</div>
       </div>
       <div class={chatItemContentStyle}>
         <Flex gap="medium">

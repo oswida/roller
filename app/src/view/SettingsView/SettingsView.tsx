@@ -19,14 +19,6 @@ export const SettingsView: Component = () => {
     // TODO publish
   };
 
-  const updateRoom = (value: string) => {
-    const data = { ...appRooms() };
-    if (!data[appSettings().currentRoom]) return;
-    data[appSettings().currentRoom].name = value;
-    saveToStorage(rollerRoomsKey, data);
-    // TODO publish
-  };
-
   return (
     <Flex direction="column">
       <Input
@@ -34,11 +26,6 @@ export const SettingsView: Component = () => {
         title="User name"
         value={appSettings().userName}
         onChange={(e) => updateName(e.target.value)}
-      />
-      <Input
-        label="Room name"
-        value={currentRoomName()}
-        onChange={(e) => updateRoom(e.target.value)}
       />
     </Flex>
   );

@@ -1,5 +1,6 @@
 import { Component, Show } from "solid-js";
 import {
+  appSettings,
   diceBox,
   dicePool,
   rolling,
@@ -11,6 +12,8 @@ import { Flex, Input, Text } from "~/component";
 import { Button } from "~/component/Button";
 import { DiceEntry } from "./DiceEntry";
 import { diceSelectorStyle } from "./styles.css";
+import { IoReload } from "solid-icons/io";
+import { FaSolidDice } from "solid-icons/fa";
 
 export const DiceSelector: Component = () => {
   let inputRef: HTMLInputElement;
@@ -24,9 +27,16 @@ export const DiceSelector: Component = () => {
     const db = diceBox();
     if (!db) return;
     const pool = dicePool();
-    if (!pool) return;
+    if (!pool || Object.values(pool).length == 0) return;
     const dice = Object.entries(pool).map(([k, v]) => `${v}d${k}`);
     setRolling(true);
+    const box = diceBox();
+    if (!box) return;
+    const s = appSettings();
+    await box.updateConfig({
+      theme_colorset: s.diceColor,
+      theme_texture: s.diceMaterial,
+    });
     await db.roll(dice.join("+"));
   };
 
@@ -46,14 +56,16 @@ export const DiceSelector: Component = () => {
         <DiceEntry face="20" />
         <DiceEntry face="100" />
         <DiceEntry face="f" />
-        <Button variant="ghost" onClick={resetPool}>
-          <Text>RESET</Text>
+        <Button variant="ghost" onClick={resetPool} title="Reset">
+          <IoReload />
+          <Text>Reset</Text>
         </Button>
       </Flex>
       <Flex center>
         <Show when={!rolling()}>
           <Button variant="ghost" onClick={roll}>
-            <Text>ROLL</Text>
+            <FaSolidDice />
+            <Text>Roll</Text>
           </Button>
 
           <Input

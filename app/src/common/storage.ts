@@ -1,14 +1,7 @@
-import { createMemo } from "solid-js";
-import { setStorageSize } from "./state";
-import {
-  AppSettings,
-  RollInfo,
-  RoomInfo,
-  StorageItem,
-  emptyAppSettings,
-} from "./types";
-import { compressData, decompressData } from "./util";
 import { createLocalStorage } from "@solid-primitives/storage";
+import { setStorageSize } from "./state";
+import { AppSettings, RoomInfo, StorageItem, emptyAppSettings } from "./types";
+import { compressData, decompressData } from "./util";
 
 export const rollerSettingsKey = "settings";
 export const rollerRoomsKey = "rooms";
@@ -50,8 +43,9 @@ export const updateStoreSize = () => {
 export const appSettings = () => {
   let settings = appStore.settings as AppSettings;
   if (!settings) {
-    settings = emptyAppSettings;
+    settings = emptyAppSettings();
     setAppStore(rollerSettingsKey, settings);
+    console.log("saving settings", settings);
   }
   return settings;
 };
@@ -63,6 +57,7 @@ export const appRooms = () => {
       [appSettings().currentRoom]: {
         id: appSettings().currentRoom,
         name: "Default room",
+        owner: appSettings().userIdent,
         rolls: [],
       },
     };
@@ -71,11 +66,11 @@ export const appRooms = () => {
   return rooms;
 };
 
-export const currentRoomName = () => {
+export const currentRoom = () => {
   const settings = appSettings();
-  if (!settings) return "";
-  if (settings.currentRoom == "") return "";
+  if (!settings) return undefined;
+  if (settings.currentRoom == "") return undefined;
   const rooms = appRooms();
-  if (!rooms[settings.currentRoom]) return "";
-  return rooms[settings.currentRoom].name;
+  if (!rooms[settings.currentRoom]) return undefined;
+  return rooms[settings.currentRoom];
 };

@@ -9,7 +9,8 @@ export const ChatView: Component = () => {
   const items = createMemo(() => {
     const data = appRooms();
     const settings = appSettings();
-    if (!data || settings.currentRoom === "") return [];
+    if (!data || settings.currentRoom === "" || !data[settings.currentRoom])
+      return [];
     return data[settings.currentRoom].rolls;
   });
 

@@ -1,4 +1,4 @@
-import { Component, ParentComponent } from "solid-js";
+import { Component, ComponentProps, ParentComponent } from "solid-js";
 import { flexStyle } from "./styles.css";
 import { spaceType } from "~/common";
 
@@ -8,14 +8,18 @@ type Props = {
   center?: boolean;
 };
 
-export const Flex: ParentComponent<Props> = ({
+export const Flex: ParentComponent<Props & ComponentProps<"div">> = ({
   children,
   direction,
   gap,
   center,
+  ...rest
 }) => {
   return (
-    <div class={flexStyle({ direction: direction, gap: gap, center: center })}>
+    <div
+      class={flexStyle({ direction: direction, gap: gap, center: center })}
+      {...rest}
+    >
       {children}
     </div>
   );
