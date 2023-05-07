@@ -30,10 +30,8 @@ export const DiceSelector: Component = () => {
     if (!pool || Object.values(pool).length == 0) return;
     const dice = Object.entries(pool).map(([k, v]) => `${v}d${k}`);
     setRolling(true);
-    const box = diceBox();
-    if (!box) return;
     const s = appSettings();
-    await box.updateConfig({
+    await db.updateConfig({
       theme_colorset: s.diceColor,
       theme_texture: s.diceMaterial,
     });

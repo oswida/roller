@@ -1,16 +1,20 @@
 import DiceBox from "@3d-dice/dice-box-threejs";
 import { Component, createEffect } from "solid-js";
 import {
+  animating,
   appRooms,
   appSettings,
   createRollInfo,
   diceBox,
+  netPublish,
   rollComment,
   rollerRoomsKey,
   saveToStorage,
   setDiceBox,
   setRollComment,
   setRolling,
+  topicRollInfo,
+  updateRolls,
 } from "~/common";
 import { rollViewStyle } from "./styles.css";
 
@@ -49,17 +53,11 @@ export const RollView: Component = () => {
       });
     });
     Box.onRollComplete = (results: any) => {
+      if (animating()) return;
       const info = createRollInfo(results, rollComment());
-      const data = { ...appRooms() };
-      const settings = appSettings();
-      if (settings.currentRoom === "") return;
-      data[settings.currentRoom].rolls = [
-        info,
-        ...data[settings.currentRoom].rolls,
-      ];
-      setRollComment("");
-      saveToStorage(rollerRoomsKey, data);
+      updateRolls(info);
       setRolling(false);
+      netPublish(topicRollInfo, info);
     };
   });
 

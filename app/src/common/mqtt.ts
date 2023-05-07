@@ -8,8 +8,19 @@ import {
   rollerRoomsKey,
   saveToStorage,
 } from "./storage";
-import { NetMessage, RoomInfo, topicRoomInfo } from "./types";
-import { compressData64, decompressData64 } from "./util";
+import {
+  NetMessage,
+  RollInfo,
+  RoomInfo,
+  topicRollInfo,
+  topicRoomInfo,
+} from "./types";
+import {
+  animateRemoteRoll,
+  compressData64,
+  decompressData64,
+  updateRolls,
+} from "./util";
 
 export const mqttPack = (sender: string, payload: any) => {
   const msg: NetMessage = {
@@ -60,6 +71,12 @@ export const mqttProcess = (topic: string, payload: string) => {
       const newState = { ...appRooms() };
       newState[room.id] = room;
       saveToStorage(rollerRoomsKey, newState);
+      break;
+    case mqttTopic(topicRollInfo):
+      const info = m.data as RollInfo;
+      if (!info) return;
+      updateRolls(info);
+      animateRemoteRoll(info);
       break;
     default:
       console.log("Message for unknown topic", m.sender, m.data);

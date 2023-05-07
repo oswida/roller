@@ -10,6 +10,7 @@ export const [diceBox, setDiceBox] = createSignal<any>(undefined);
 
 export const [rollComment, setRollComment] = createSignal("");
 export const [rolling, setRolling] = createSignal(false);
+export const [animating, setAnimating] = createSignal(false);
 
 export const [roomUsers, setRoomUsers] = createSignal<Record<string, string[]>>(
   {}

@@ -64,5 +64,5 @@ export type NetMessage = {
   data: any;
 };
 
-export const topicRolls = "rolls";
 export const topicRoomInfo = "room_info";
+export const topicRollInfo = "roll_info";

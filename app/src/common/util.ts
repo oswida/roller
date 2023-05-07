@@ -4,10 +4,21 @@ import {
   decompress,
   decompressFromBase64,
 } from "@eonasdan/lz-string";
-import { appSettings } from "./storage";
+import {
+  appRooms,
+  appSettings,
+  rollerRoomsKey,
+  saveToStorage,
+} from "./storage";
 import { spaceSize, sprinkles } from "./theme.css";
 import { RollInfo } from "./types";
-import { rolling, setRolling, diceBox } from "./state";
+import {
+  rolling,
+  setRolling,
+  diceBox,
+  setRollComment,
+  setAnimating,
+} from "./state";
 
 export const createSpaceVariants = (name: string) => {
   const result: Record<string, any> = {};
@@ -94,8 +105,8 @@ export const createRollInfo = (result: any, comment?: string) => {
     rollTotal: result.total,
     rollResults: r,
     rollDice: dice,
-    diceColor: "",
-    diceMaterial: "",
+    diceColor: appSettings().diceColor,
+    diceMaterial: appSettings().diceMaterial,
     tstamp: prettyNow(),
     comment: comment,
   } as RollInfo;
@@ -164,4 +175,40 @@ const addDice = async (notation: string, color: string, material: string) => {
     theme_texture: s.diceMaterial,
   });
   setRolling(false);
+};
+
+export const updateRolls = (info: RollInfo) => {
+  const data = { ...appRooms() };
+  const settings = appSettings();
+  if (settings.currentRoom === "") return;
+  data[settings.currentRoom].rolls = [
+    info,
+    ...data[settings.currentRoom].rolls,
+  ];
+  setRollComment("");
+  saveToStorage(rollerRoomsKey, data);
+};
+
+export const animateRemoteRoll = async (info: RollInfo) => {
+  setAnimating(true);
+  const db = diceBox();
+  if (!db) return;
+  const s = appSettings();
+  console.log("animating", info);
+  await db.updateConfig({
+    theme_colorset: info.diceColor,
+    theme_texture: info.diceMaterial,
+  });
+  const results: number[] = [];
+  Object.keys(info.rollResults).forEach((key) => {
+    const values = info.rollResults[key];
+    values.forEach((v) => results.push(v));
+  });
+  const r = `${info.rollDice.join("+")}@${results.join(",")}`;
+  await db.add(r);
+  await db.updateConfig({
+    theme_colorset: s.diceColor,
+    theme_texture: s.diceMaterial,
+  });
+  setAnimating(false);
 };
