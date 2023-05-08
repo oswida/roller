@@ -28,8 +28,13 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
         <Flex gap="medium">
           <Text colorSchema="secondary">{item.rollDice.join(", ")} ⇒ </Text>
           <div>{item.rollTotal} </div>
-          <div>{rolls()}</div>
+          <Show when={item.rollDice.length <= 1}>
+            <div>{rolls()}</div>
+          </Show>
         </Flex>
+        <Show when={item.rollDice.length > 1}>
+          <div>{rolls()}</div>
+        </Show>
         <Show when={item.comment !== undefined && item.comment !== ""}>
           <div class={chatItemCommentStyle}>{item.comment}</div>
         </Show>

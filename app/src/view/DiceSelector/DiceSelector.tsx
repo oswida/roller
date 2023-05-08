@@ -3,6 +3,7 @@ import {
   appSettings,
   diceBox,
   dicePool,
+  rightLayout,
   rolling,
   setDicePool,
   setRollComment,
@@ -52,24 +53,27 @@ export const DiceSelector: Component = () => {
 
   return (
     <div class={diceSelectorStyle}>
-      <Flex gap="medium" center>
-        <DiceEntry face="4" />
-        <DiceEntry face="6" />
-        <DiceEntry face="8" />
-        <DiceEntry face="10" />
-        <DiceEntry face="12" />
-        <DiceEntry face="20" />
-        <DiceEntry face="100" />
-        <DiceEntry face="f" />
-        <Button variant="ghost" onClick={resetPool} title="Reset">
-          <IoReload />
-          <Text>Reset</Text>
-        </Button>
-        <Button variant="ghost" onClick={clearTable} title="Clear table">
-          <AiOutlineClear />
-          <Text>Clear</Text>
-        </Button>
-      </Flex>
+      <Show when={rightLayout()}>
+        <Flex gap="medium" center>
+          <DiceEntry face="4" />
+          <DiceEntry face="6" />
+          <DiceEntry face="8" />
+          <DiceEntry face="10" />
+          <DiceEntry face="12" />
+          <DiceEntry face="20" />
+          <DiceEntry face="100" />
+          <DiceEntry face="f" />
+          <Button variant="ghost" onClick={resetPool} title="Reset">
+            <IoReload />
+            <Text>Reset</Text>
+          </Button>
+          <Button variant="ghost" onClick={clearTable} title="Clear table">
+            <AiOutlineClear />
+            <Text>Clear</Text>
+          </Button>
+        </Flex>
+      </Show>
+
       <Flex center>
         <Show when={!rolling()}>
           <Button variant="ghost" onClick={roll}>
@@ -85,6 +89,27 @@ export const DiceSelector: Component = () => {
           />
         </Show>
       </Flex>
+
+      <Show when={!rightLayout()}>
+        <Flex gap="medium" center>
+          <DiceEntry face="4" />
+          <DiceEntry face="6" />
+          <DiceEntry face="8" />
+          <DiceEntry face="10" />
+          <DiceEntry face="12" />
+          <DiceEntry face="20" />
+          <DiceEntry face="100" />
+          <DiceEntry face="f" />
+          <Button variant="ghost" onClick={resetPool} title="Reset">
+            <IoReload />
+            <Text>Reset</Text>
+          </Button>
+          <Button variant="ghost" onClick={clearTable} title="Clear table">
+            <AiOutlineClear />
+            <Text>Clear</Text>
+          </Button>
+        </Flex>
+      </Show>
     </div>
   );
 };

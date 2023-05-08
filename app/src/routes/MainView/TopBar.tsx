@@ -58,8 +58,6 @@ export const TopBar: Component = () => {
         >
           <RoomSettingsView />
         </Popover>
-
-        {/* </Dialog> */}
         <Dynamic component={"Text"} colorSchema="secondary">
           {currentRoom()?.name}
         </Dynamic>
