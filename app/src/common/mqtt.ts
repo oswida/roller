@@ -14,6 +14,7 @@ import {
   RoomInfo,
   topicRollInfo,
   topicRoomInfo,
+  topicRoomUpdateRequest,
 } from "./types";
 import {
   animateRemoteRoll,
@@ -21,6 +22,7 @@ import {
   decompressData64,
   updateRolls,
 } from "./util";
+import { netPublish } from "./net";
 
 export const mqttPack = (sender: string, payload: any) => {
   const msg: NetMessage = {
@@ -76,6 +78,12 @@ export const mqttProcess = (topic: string, payload: string) => {
       if (!info) return;
       updateRolls(info);
       animateRemoteRoll(info);
+      break;
+    case mqttTopic(topicRoomUpdateRequest):
+      const id = m.data as string;
+      if (appRooms()[id].owner == appSettings().userIdent) {
+        netPublish(topicRoomInfo, appRooms()[id]);
+      }
       break;
     default:
       console.log("Message for unknown topic", m.sender, m.data);
@@ -149,10 +157,5 @@ export const mqttC = "EQJwrgDghg1gXAQQDZQLawPYBcoHYBMwQA==";
 export const mqttClientLink = () => {
   const room = currentRoom();
   if (!room) return "";
-  const obj = {
-    roomInfo: { ...room, rolls: [] },
-  };
-  return `${window.location}connect?data=${encodeURIComponent(
-    compressData64(obj)
-  )}`;
+  return `${window.location}connect?r=${encodeURIComponent(room.id)}`;
 };

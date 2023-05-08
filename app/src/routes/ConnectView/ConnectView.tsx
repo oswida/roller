@@ -5,26 +5,26 @@ import {
   appRooms,
   appSettings,
   decompressData64,
+  emptyRoomInfo,
   rollerRoomsKey,
   rollerSettingsKey,
   saveToStorage,
+  topicRoomUpdateRequest,
 } from "~/common";
-import { netConnect } from "~/common/net";
+import { netConnect, netPublish } from "~/common/net";
 
 export const ConnectView: Component = () => {
   const [params] = useSearchParams();
 
-  let data = params.data;
-  if (data.trim() !== "") {
-    const dt = decompressData64(data);
+  let id = params.r;
+  if (id.trim() !== "") {
     const newState = {
       ...appSettings(),
     };
-    const room = dt.roomInfo as RoomInfo;
-    newState.currentRoom = room.id;
+    newState.currentRoom = id;
     saveToStorage(rollerSettingsKey, newState);
     const nr = { ...appRooms() };
-    nr[room.id] = room;
+    nr[id] = emptyRoomInfo(id);
     saveToStorage(rollerRoomsKey, nr);
     netConnect();
   }

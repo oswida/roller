@@ -60,6 +60,15 @@ export type RoomInfo = {
   rolls: RollInfo[];
 };
 
+export const emptyRoomInfo = (rid?: string) => {
+  return {
+    id: rid ? rid : uuid(),
+    name: "",
+    owner: "",
+    rolls: [],
+  } as RoomInfo;
+};
+
 export type StorageItem = AppSettings | Record<string, RoomInfo> | string;
 
 export type NetMessage = {
@@ -69,3 +78,4 @@ export type NetMessage = {
 
 export const topicRoomInfo = "room_info";
 export const topicRollInfo = "roll_info";
+export const topicRoomUpdateRequest = "room_update";
