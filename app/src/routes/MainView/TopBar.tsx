@@ -1,22 +1,35 @@
-import { FaSolidClipboardUser, FaSolidPlug, FaSolidUser } from "solid-icons/fa";
+import {
+  FaSolidClipboardUser,
+  FaSolidPlug,
+  FaSolidPlus,
+  FaSolidUser,
+} from "solid-icons/fa";
 import { Component, Show, createMemo } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import {
+  appRooms,
   appSettings,
   currentRoom,
   diceColorSet,
   diceMaterialSet,
+  emptyRoomInfo,
+  generateSerialKeys,
   mqttConnectionStatus,
+  netChangeRoom,
+  rollerRoomsKey,
   rollerSettingsKey,
   saveToStorage,
   storageSize,
 } from "~/common";
-import { Dialog, Flex, Popover, Select, Text } from "~/component";
+import { Button, Dialog, Flex, Popover, Select, Text } from "~/component";
 import { SettingsView } from "../../view/SettingsView";
 import { RoomSettingsView } from "../../view/SettingsView/RoomSettingsView";
 import { topbarStyle } from "./styles.css";
+import { Navigate, useNavigate } from "@solidjs/router";
 
 export const TopBar: Component = () => {
+  const navigate = useNavigate();
+
   const username = createMemo(() => {
     return appSettings().userName;
   });
@@ -40,6 +53,37 @@ export const TopBar: Component = () => {
     saveToStorage(rollerSettingsKey, data);
   };
 
+  const createRoom = () => {
+    const room = emptyRoomInfo();
+    room.name = `room-${generateSerialKeys(4, "-")}`;
+    room.owner = appSettings().userIdent;
+    const newState = { ...appRooms() };
+    newState[room.id] = room;
+    saveToStorage(rollerRoomsKey, newState);
+    const na = { ...appSettings() };
+    na.currentRoom = room.id;
+    saveToStorage(rollerSettingsKey, na);
+  };
+
+  const roomName = createMemo(() => {
+    const room = currentRoom();
+    if (!room) return "";
+    return room.name;
+  });
+
+  const roomList = createMemo(() => {
+    return Object.values(appRooms()).map((v) => v.name);
+  });
+
+  const changeRoom = (name: string) => {
+    const r = Object.values(appRooms()).filter((it) => it.name == name);
+    if (r.length <= 0) return;
+    const na = { ...appSettings() };
+    na.currentRoom = r[0].id;
+    saveToStorage(rollerSettingsKey, na);
+    netChangeRoom(na.currentRoom);
+  };
+
   return (
     <div class={topbarStyle}>
       <Flex gap="medium" center>
@@ -58,9 +102,15 @@ export const TopBar: Component = () => {
         >
           <RoomSettingsView />
         </Popover>
-        <Dynamic component={"Text"} colorSchema="secondary">
-          {currentRoom()?.name}
-        </Dynamic>
+        <Dynamic
+          component={Select}
+          options={roomList}
+          selected={roomName}
+          onChange={changeRoom}
+        />
+        <Button variant="icon" onClick={createRoom}>
+          <FaSolidPlus />
+        </Button>
       </Flex>
       <Flex gap="large" center>
         <Flex>
@@ -68,7 +118,7 @@ export const TopBar: Component = () => {
             Color set
           </Text>
           <Select
-            options={diceColorSet}
+            options={() => diceColorSet}
             selected={currentDiceColor}
             onChange={diceColorChange}
           ></Select>
@@ -76,13 +126,15 @@ export const TopBar: Component = () => {
             Material
           </Text>
           <Select
-            options={diceMaterialSet}
+            options={() => diceMaterialSet}
             selected={currentDiceMaterial}
             onChange={diceMaterialChange}
           ></Select>
         </Flex>
         <Show when={mqttConnectionStatus()}>
-          <FaSolidPlug />
+          <Dynamic component={"div"} title={currentRoom()?.id}>
+            <FaSolidPlug />
+          </Dynamic>
         </Show>
         <Text colorSchema="secondary" fontSize="small">
           {storageSize()} kB

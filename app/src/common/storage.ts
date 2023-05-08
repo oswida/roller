@@ -1,7 +1,7 @@
 import { createLocalStorage } from "@solid-primitives/storage";
 import { setStorageSize } from "./state";
 import { AppSettings, RoomInfo, StorageItem, emptyAppSettings } from "./types";
-import { compressData, decompressData } from "./util";
+import { compressData, decompressData, generateSerialKeys } from "./util";
 
 export const rollerSettingsKey = "settings";
 export const rollerRoomsKey = "rooms";
@@ -55,7 +55,7 @@ export const appRooms = () => {
     rooms = {
       [appSettings().currentRoom]: {
         id: appSettings().currentRoom,
-        name: "Default room",
+        name: generateSerialKeys(4, "-"),
         owner: appSettings().userIdent,
         rolls: [],
       },

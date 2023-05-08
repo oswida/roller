@@ -22,7 +22,6 @@ import {
   decompressData64,
   updateRolls,
 } from "./util";
-import { netPublish } from "./net";
 
 export const mqttPack = (sender: string, payload: any) => {
   const msg: NetMessage = {
@@ -45,7 +44,10 @@ export const mqttTopic = (name: string) => {
 
 export const mqttPublish = (topic: string, payload: any) => {
   const client = mqttClient();
-  if (!client) return;
+  if (!client) {
+    // console.log("publish: mqtt client not present", client);
+    return;
+  }
   client.publish(
     mqttTopic(topic),
     mqttPack(appSettings().userIdent, payload),
@@ -82,7 +84,7 @@ export const mqttProcess = (topic: string, payload: string) => {
     case mqttTopic(topicRoomUpdateRequest):
       const id = m.data as string;
       if (appRooms()[id].owner == appSettings().userIdent) {
-        netPublish(topicRoomInfo, appRooms()[id]);
+        mqttPublish(topicRoomInfo, appRooms()[id]);
       }
       break;
     default:
@@ -95,6 +97,7 @@ export const mqttDisconnect = () => {
   if (!cl) return;
   cl.end();
   setMqttClient(undefined);
+  setMqttConnectionStatus(false);
 };
 
 export const mqttConnect = () => {
@@ -122,7 +125,14 @@ export const mqttConnect = () => {
     const client = mqtt.connect(env.serverUri, {
       username: un,
       password: pw,
+      clientId: appSettings().userIdent,
     });
+
+    if (!client) {
+      console.log("Cannot connect to MQTT server");
+      return;
+    }
+    setMqttClient(client);
 
     client.on("connect", (e: any) => {
       const topic = mqttTopic("+");
@@ -132,7 +142,6 @@ export const mqttConnect = () => {
       }
       client.subscribe(topic, (err, granted) => {
         if (!err) {
-          setMqttClient(client);
           setMqttConnectionStatus(true);
         }
       });
@@ -140,6 +149,7 @@ export const mqttConnect = () => {
 
     client.on("disconnect", (e: any) => {
       setMqttClient(undefined);
+      setMqttConnectionStatus(false);
     });
 
     client.on("message", (topic: string, payload: Buffer, packet: any) => {
@@ -158,4 +168,9 @@ export const mqttClientLink = () => {
   const room = currentRoom();
   if (!room) return "";
   return `${window.location}connect?r=${encodeURIComponent(room.id)}`;
+};
+
+export const mqttChangeRoom = (id: string) => {
+  mqttDisconnect();
+  mqttConnect();
 };

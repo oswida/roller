@@ -24,6 +24,7 @@ export const colorType = {
   primary: "#fff",
   secondary: "#91D3C2",
   none: "transparent",
+  danger: "	#ff5252",
 };
 
 const fontType = {

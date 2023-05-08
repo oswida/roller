@@ -7,13 +7,6 @@ import { MainView } from "./routes/MainView";
 import { currentRoom, netPublish, topicRoomUpdateRequest } from "./common";
 
 const App: Component = () => {
-  createEffect(() => {
-    const room = currentRoom();
-    if (!room) return;
-    if (room.owner == "") {
-      netPublish(topicRoomUpdateRequest, room.id);
-    }
-  });
   return (
     <div class={appStyle}>
       <Routes>

@@ -33,6 +33,7 @@ export const selectItemStyle = style([
     alignItems: "center",
     justifyContent: "space-between",
     borderRadius: "small",
+    gap: "large",
   }),
   {
     selectors: {

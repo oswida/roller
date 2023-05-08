@@ -11,7 +11,12 @@ import {
   saveToStorage,
   topicRoomUpdateRequest,
 } from "~/common";
-import { netConnect, netPublish } from "~/common/net";
+import {
+  netConnect,
+  netConnectionsStatus,
+  netDisconnect,
+  netPublish,
+} from "~/common/net";
 
 export const ConnectView: Component = () => {
   const [params] = useSearchParams();
@@ -26,6 +31,7 @@ export const ConnectView: Component = () => {
     const nr = { ...appRooms() };
     nr[id] = emptyRoomInfo(id);
     saveToStorage(rollerRoomsKey, nr);
+    if (netConnectionsStatus()) netDisconnect();
     netConnect();
   }
   return <Navigate href={"/"}></Navigate>;

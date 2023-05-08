@@ -13,6 +13,7 @@ globalStyle("*, *:before, *:after", {
 
 globalStyle("div", {
   boxSizing: "border-box",
+  scrollbarWidth: "thin",
 });
 
 export const appStyle = style([

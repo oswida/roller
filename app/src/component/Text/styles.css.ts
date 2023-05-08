@@ -15,6 +15,7 @@ export const textStyle = recipe({
       secondary: sprinkles({ color: "secondary" }),
       background: sprinkles({ color: "background" }),
       accent: sprinkles({ color: "accent" }),
+      danger: sprinkles({ color: "danger" }),
     },
     fontSize: {
       smaller: sprinkles({ fontSize: "smaller" }),

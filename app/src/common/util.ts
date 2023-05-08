@@ -159,23 +159,23 @@ export const diceMaterialSet = [
   "none",
 ];
 
-const addDice = async (notation: string, color: string, material: string) => {
-  if (rolling()) return;
-  setRolling(true);
-  const db = diceBox();
-  if (!db) return;
-  const s = appSettings();
-  await db.updateConfig({
-    theme_colorset: color,
-    theme_texture: material,
-  });
-  await db.add(notation);
-  await db.updateConfig({
-    theme_colorset: s.diceColor,
-    theme_texture: s.diceMaterial,
-  });
-  setRolling(false);
-};
+// const addDice = async (notation: string, color: string, material: string) => {
+//   if (rolling()) return;
+//   setRolling(true);
+//   const db = diceBox();
+//   if (!db) return;
+//   const s = appSettings();
+//   await db.updateConfig({
+//     theme_colorset: color,
+//     theme_texture: material,
+//   });
+//   await db.add(notation);
+//   await db.updateConfig({
+//     theme_colorset: s.diceColor,
+//     theme_texture: s.diceMaterial,
+//   });
+//   setRolling(false);
+// };
 
 export const updateRolls = (info: RollInfo) => {
   const data = { ...appRooms() };
@@ -210,4 +210,15 @@ export const animateRemoteRoll = async (info: RollInfo) => {
     theme_texture: s.diceMaterial,
   });
   setAnimating(false);
+};
+
+export const generateSerialKeys = (length: number, separator: string) => {
+  separator = separator || "-";
+  var license = new Array(length + 1)
+    .join((Math.random().toString(36) + "00000000000000000").slice(2, 18))
+    .slice(0, length);
+  return license
+    .toUpperCase()
+    .replace(/(\w{4})/g, "$1" + separator)
+    .substring(0, length + Math.round(length / 4) - 1);
 };

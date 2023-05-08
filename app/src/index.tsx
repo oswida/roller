@@ -2,12 +2,17 @@
 import { render } from "solid-js/web";
 
 import App from "./App";
-import { appSettings, netConnect, updateStoreSize } from "./common";
+import {
+  appSettings,
+  netConnect,
+  netConnectionsStatus,
+  updateStoreSize,
+} from "./common";
 import { Router, hashIntegration } from "@solidjs/router";
 
 const root = document.getElementById("root");
 updateStoreSize();
-if (appSettings().currentRoom !== "") netConnect();
+if (appSettings().currentRoom !== "" && !netConnectionsStatus()) netConnect();
 
 if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   throw new Error(

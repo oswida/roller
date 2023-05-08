@@ -8,12 +8,14 @@ type Props = {
   label?: string;
   tooltip?: string;
   placeholder?: string;
+  currentValue?: () => string;
 };
 
 export const Input: Component<Props & ComponentProps<"input">> = ({
   label,
   tooltip,
   placeholder,
+  currentValue,
   ...rest
 }) => {
   return (
@@ -29,6 +31,7 @@ export const Input: Component<Props & ComponentProps<"input">> = ({
           title={tooltip}
           placeholder={placeholder}
           {...rest}
+          value={currentValue ? currentValue() : undefined}
         />
       </Flex>
     </TextField.Root>

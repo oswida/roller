@@ -23,7 +23,7 @@ export const ChatView: Component = () => {
 
   return (
     <div class={chatRootStyle}>
-      <Flex gap="large">
+      <Flex gap="large" style={{ "justify-content": "space-between" }}>
         <Text>Rolls</Text>
         <Button onClick={clearRolls}>
           <FaSolidTrash />
