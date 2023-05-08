@@ -1,11 +1,17 @@
 import { Show, createMemo } from "solid-js";
 import { RollInfo } from "~/common";
-import { Flex, Text } from "~/component";
+import { Button, Flex, Text } from "~/component";
 import {
   chatItemCommentStyle,
   chatItemContentStyle,
   chatItemHeaderStyle,
 } from "./styles.css";
+import {
+  FaSolidCommentDots,
+  FaSolidDice,
+  FaSolidDiceD20,
+  FaSolidHandDots,
+} from "solid-icons/fa";
 
 export const ChatItem = ({ item }: { item: RollInfo }) => {
   const rolls = createMemo(() => {
@@ -19,14 +25,28 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
     return results.join(" ");
   });
 
+  const itemHour = createMemo(() => {
+    const parts = item.tstamp.split("__");
+    if (parts && parts.length == 2) return parts[1];
+    return item.tstamp;
+  });
+
+  const oldTime = 1 * 60 * 1000;
+
+  const isOld = createMemo(() => {
+    return Date.now() - item.realtstamp > oldTime;
+  });
+
   return (
     <Flex gap="none" direction="column">
       <div class={chatItemHeaderStyle}>
-        <div>{item.user}</div> <div>{item.tstamp}</div>
+        <div>{item.user}</div>
+        <Flex title={item.tstamp}>{itemHour()}</Flex>
       </div>
-      <div class={chatItemContentStyle}>
-        <Flex gap="medium">
-          <Text colorSchema="secondary">{item.rollDice.join(", ")} ⇒ </Text>
+      <div class={chatItemContentStyle({ old: isOld() })}>
+        <Flex gap="medium" style={{ "align-items": "center" }}>
+          <Text colorSchema="secondary">{item.rollDice.join(", ")}</Text>
+          <Text colorSchema="secondary"> ⇒ </Text>
           <div>{item.rollTotal} </div>
           <Show when={item.rollDice.length <= 1}>
             <div>{rolls()}</div>

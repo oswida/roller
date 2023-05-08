@@ -137,7 +137,7 @@ export const TopBar: Component = () => {
           </Dynamic>
         </Show>
         <Text colorSchema="secondary" fontSize="small">
-          {storageSize()} kB
+          {(storageSize() / 1000).toFixed(2)} kB
         </Text>
       </Flex>
     </div>

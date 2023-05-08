@@ -107,8 +107,9 @@ export const createRollInfo = (result: any, comment?: string) => {
     rollDice: dice,
     diceColor: appSettings().diceColor,
     diceMaterial: appSettings().diceMaterial,
-    tstamp: prettyNow(),
+    tstamp: prettyToday(),
     comment: comment,
+    realtstamp: Date.now(),
   } as RollInfo;
 };
 

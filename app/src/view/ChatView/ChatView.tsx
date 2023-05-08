@@ -1,9 +1,26 @@
+import {
+  FaSolidFileExport,
+  FaSolidFileImport,
+  FaSolidTrash,
+} from "solid-icons/fa";
 import { Component, For, createMemo } from "solid-js";
+import {
+  RollInfo,
+  appRooms,
+  appSettings,
+  currentRoom,
+  exportData,
+  importData,
+  netPublish,
+  prettyToday,
+  rollerRoomsKey,
+  saveToStorage,
+  topicRoomInfo,
+} from "~/common";
 import { Button, Flex, Text } from "~/component";
-import { chatListStyle, chatRootStyle } from "./styles.css";
 import { ChatItem } from "./ChatItem";
-import { appRooms, appSettings, rollerRoomsKey, saveToStorage } from "~/common";
-import { FaSolidTrash } from "solid-icons/fa";
+import { chatListStyle, chatRootStyle } from "./styles.css";
+import toast from "solid-toast";
 
 export const ChatView: Component = () => {
   const items = createMemo(() => {
@@ -19,15 +36,43 @@ export const ChatView: Component = () => {
     if (appSettings().currentRoom == "") return;
     data[appSettings().currentRoom].rolls = [];
     saveToStorage(rollerRoomsKey, data);
+    toast("Rolls exported");
+  };
+
+  const importRolls = () => {
+    importData((data: any) => {
+      const room = currentRoom();
+      if (!room) return;
+      const newState = { ...appRooms() };
+      newState[room.id].rolls = data as RollInfo[];
+      saveToStorage(rollerRoomsKey, newState);
+      netPublish(topicRoomInfo, newState[room.id]);
+      toast("Rolls imported");
+    });
+  };
+
+  const exportRolls = () => {
+    const room = currentRoom();
+    if (!room) return;
+    const filename = `rolls-${prettyToday()}.json`;
+    exportData(room.rolls, filename);
   };
 
   return (
     <div class={chatRootStyle}>
       <Flex gap="large" style={{ "justify-content": "space-between" }}>
         <Text>Rolls</Text>
-        <Button onClick={clearRolls}>
-          <FaSolidTrash />
-        </Button>
+        <Flex>
+          <Button title="Import rolls" onClick={importRolls}>
+            <FaSolidFileImport />
+          </Button>
+          <Button title="Export rolls" onClick={exportRolls}>
+            <FaSolidFileExport />
+          </Button>
+          <Button title="Clear rolls" onClick={clearRolls}>
+            <FaSolidTrash />
+          </Button>
+        </Flex>
       </Flex>
       <div class={chatListStyle}>
         <For each={items()}>

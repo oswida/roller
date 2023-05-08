@@ -44,6 +44,7 @@ export type RollInfo = {
   user: string;
   userColor: string;
   tstamp: string;
+  realtstamp: number;
   rollTotal: number;
   rollDice: string[];
   rollResults: Record<string, number[]>;

@@ -1,4 +1,5 @@
 import { style } from "@vanilla-extract/css";
+import { recipe } from "@vanilla-extract/recipes";
 import { sprinkles } from "~/common";
 
 export const chatRootStyle = style([
@@ -12,8 +13,6 @@ export const chatRootStyle = style([
   }),
   {
     minWidth: "25vw",
-    height: "calc(100vh - 8em)",
-    overflowY: "auto",
   },
 ]);
 
@@ -27,24 +26,46 @@ export const chatListStyle = style([
     color: "primary",
     gap: "small",
   }),
-  {},
-]);
-
-export const chatItemContentStyle = style([
-  sprinkles({
-    display: "flex",
-    flexDirection: "column",
-    color: "primary",
-    backgroundColor: "background",
-    borderBottomLeftRadius: "small",
-    borderBottomRightRadius: "small",
-    gap: "medium",
-    padding: "medium",
-  }),
   {
+    height: "calc(100vh - 14em)",
     overflowY: "auto",
   },
 ]);
+
+export const chatItemContentStyle = recipe({
+  base: [
+    sprinkles({
+      display: "flex",
+      flexDirection: "column",
+      color: "primary",
+      backgroundColor: "background",
+      borderBottomLeftRadius: "small",
+      borderBottomRightRadius: "small",
+      gap: "medium",
+      padding: "medium",
+      fontSize: "standard",
+    }),
+    {
+      overflowY: "auto",
+      cursor: "pointer",
+      selectors: {
+        "&:hover": {
+          opacity: 1,
+        },
+      },
+    },
+  ],
+  variants: {
+    old: {
+      true: {
+        opacity: 0.5,
+      },
+      false: {
+        opacity: 1,
+      },
+    },
+  },
+});
 
 export const chatItemHeaderStyle = style([
   sprinkles({
