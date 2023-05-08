@@ -1,5 +1,5 @@
-import { Match, Switch } from "solid-js";
-import { rightLayout } from "~/common";
+import { Match, Show, Switch } from "solid-js";
+import { appSettings } from "~/common";
 import { Flex } from "../../component/Flex";
 import { ChatView } from "../../view/ChatView";
 import { DiceSelector } from "../../view/DiceSelector";
@@ -14,16 +14,13 @@ export const MainView = () => {
     <div id="app" class={mainStyle} ref={(e) => (mainRef = e)}>
       <TopBar />
       <Flex>
-        <Switch>
-          <Match when={rightLayout()}>
-            <RollView />
-            <ChatView />
-          </Match>
-          <Match when={!rightLayout()}>
-            <ChatView />
-            <RollView />
-          </Match>
-        </Switch>
+        <Show when={!appSettings().rightLayout}>
+          <ChatView />
+        </Show>
+        <RollView />
+        <Show when={appSettings().rightLayout}>
+          <ChatView />
+        </Show>
       </Flex>
       <DiceSelector />
     </div>

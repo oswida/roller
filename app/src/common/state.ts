@@ -22,5 +22,3 @@ export const [mqttConnectionStatus, setMqttConnectionStatus] =
 export const [mqttClient, setMqttClient] = createSignal<
   mqtt.MqttClient | undefined
 >(undefined);
-
-export const [rightLayout, setRightLayout] = createSignal(false);

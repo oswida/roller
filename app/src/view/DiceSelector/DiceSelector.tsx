@@ -3,7 +3,6 @@ import {
   appSettings,
   diceBox,
   dicePool,
-  rightLayout,
   rolling,
   setDicePool,
   setRollComment,
@@ -53,7 +52,7 @@ export const DiceSelector: Component = () => {
 
   return (
     <div class={diceSelectorStyle}>
-      <Show when={rightLayout()}>
+      <Show when={appSettings().rightLayout}>
         <Flex gap="medium" center>
           <DiceEntry face="4" />
           <DiceEntry face="6" />
@@ -90,7 +89,7 @@ export const DiceSelector: Component = () => {
         </Show>
       </Flex>
 
-      <Show when={!rightLayout()}>
+      <Show when={!appSettings().rightLayout}>
         <Flex gap="medium" center>
           <DiceEntry face="4" />
           <DiceEntry face="6" />

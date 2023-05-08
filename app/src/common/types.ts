@@ -20,6 +20,8 @@ export type AppSettings = {
   currentRoom: string;
   diceColor: string;
   diceMaterial: string;
+  rightLayout?: boolean;
+  appTheme?: string;
 };
 
 export const emptyAppSettings = () => {
