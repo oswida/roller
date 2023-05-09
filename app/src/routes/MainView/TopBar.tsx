@@ -15,7 +15,6 @@ import {
   emptyRoomInfo,
   generateSerialKeys,
   mqttConnectionStatus,
-  netChangeRoom,
   rollerRoomsKey,
   rollerSettingsKey,
   saveToStorage,
@@ -81,7 +80,6 @@ export const TopBar: Component = () => {
     const na = { ...appSettings() };
     na.currentRoom = r[0].id;
     saveToStorage(rollerSettingsKey, na);
-    netChangeRoom(na.currentRoom);
   };
 
   return (

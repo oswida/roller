@@ -1,13 +1,11 @@
 import { createMemo } from "solid-js";
 import {
-  mqttChangeRoom,
   mqttClientLink,
   mqttConnect,
   mqttDisconnect,
   mqttPublish,
-  mqttTopic,
 } from "./mqtt";
-import { mqttClient, mqttConnectionStatus } from "./state";
+import { mqttConnectionStatus } from "./state";
 import { appSettings } from "./storage";
 
 export const netSessionLink = () => {
@@ -46,18 +44,6 @@ export const netPublish = (topic: string, payload: any) => {
   switch (appSettings().network.type) {
     case "mqtt":
       return mqttPublish(topic, payload);
-    default:
-      console.log("unsupported net type");
-      return "";
-  }
-};
-
-export const netChangeRoom = (id: string) => {
-  switch (appSettings().network.type) {
-    case "mqtt":
-      const cl = mqttClient();
-      if (!cl) return;
-      return mqttChangeRoom(id);
     default:
       console.log("unsupported net type");
       return "";

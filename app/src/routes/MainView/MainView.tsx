@@ -16,14 +16,6 @@ import { mainStyle } from "./styles.css";
 export const MainView = () => {
   let mainRef: HTMLDivElement;
 
-  createEffect(() => {
-    const room = currentRoom();
-    if (!room) return;
-    if (room.owner == "") {
-      netPublish(topicRoomUpdateRequest, room.id);
-    }
-  });
-
   return (
     <div id="app" class={mainStyle} ref={(e) => (mainRef = e)}>
       <TopBar />

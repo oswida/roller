@@ -36,8 +36,13 @@ export const mqttUnpack = (payload: any) => {
   return d as NetMessage;
 };
 
-export const mqttTopic = (name: string) => {
-  const room = currentRoom();
+export const mqttTopic = (name: string, roomId?: string) => {
+  let room: RoomInfo | undefined;
+  if (roomId !== undefined) {
+    room = appRooms()[roomId];
+  } else {
+    room = currentRoom();
+  }
   if (!room) return "";
   return `${room.id}/${name}`;
 };
@@ -88,7 +93,8 @@ export const mqttProcess = (topic: string, payload: string) => {
       }
       break;
     default:
-      console.log("Message for unknown topic", m.sender, m.data);
+      // console.log("Ignoring message for topic", topic, m);
+      break;
   }
 };
 
@@ -135,16 +141,18 @@ export const mqttConnect = () => {
     setMqttClient(client);
 
     client.on("connect", (e: any) => {
-      const topic = mqttTopic("+");
-      if (topic == "") {
-        console.error("empty room?", currentRoom(), topic);
-        return;
-      }
-      client.subscribe(topic, (err, granted) => {
-        if (!err) {
-          setMqttConnectionStatus(true);
+      // Subscribe to all defined rooms
+      Object.values(appRooms()).forEach((room) => {
+        const topic = mqttTopic("+", room.id);
+        if (topic && topic != "") {
+          client.subscribe(topic, (err, granted) => {
+            if (err) {
+              console.error("subscribe", topic, err);
+            }
+          });
         }
       });
+      setMqttConnectionStatus(true);
     });
 
     client.on("disconnect", (e: any) => {
@@ -168,9 +176,4 @@ export const mqttClientLink = () => {
   const room = currentRoom();
   if (!room) return "";
   return `${window.location}connect?r=${encodeURIComponent(room.id)}`;
-};
-
-export const mqttChangeRoom = (id: string) => {
-  mqttDisconnect();
-  mqttConnect();
 };
