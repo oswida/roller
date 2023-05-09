@@ -5,6 +5,8 @@ import {
   chatItemCommentStyle,
   chatItemContentStyle,
   chatItemHeaderStyle,
+  chatItemRootStyle,
+  chatRootStyle,
 } from "./styles.css";
 import {
   FaSolidCommentDots,
@@ -38,12 +40,16 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
   });
 
   return (
-    <Flex gap="none" direction="column">
-      <div class={chatItemHeaderStyle}>
+    <Flex
+      gap="none"
+      direction="column"
+      class={chatItemRootStyle({ old: isOld() })}
+    >
+      <div class={chatItemHeaderStyle({})}>
         <div>{item.user}</div>
         <Flex title={item.tstamp}>{itemHour()}</Flex>
       </div>
-      <div class={chatItemContentStyle({ old: isOld() })}>
+      <div class={chatItemContentStyle({})}>
         <Flex gap="medium" style={{ "align-items": "center" }}>
           <Text colorSchema="secondary">{item.rollDice.join(", ")}</Text>
           <Text colorSchema="secondary"> ⇒ </Text>

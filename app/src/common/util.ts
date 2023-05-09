@@ -12,13 +12,7 @@ import {
 } from "./storage";
 import { spaceSize, sprinkles } from "./theme.css";
 import { RollInfo } from "./types";
-import {
-  rolling,
-  setRolling,
-  diceBox,
-  setRollComment,
-  setAnimating,
-} from "./state";
+import { diceBox, setRollComment, setAnimating } from "./state";
 
 export const createSpaceVariants = (name: string) => {
   const result: Record<string, any> = {};
@@ -159,24 +153,6 @@ export const diceMaterialSet = [
   "bronze04",
   "none",
 ];
-
-// const addDice = async (notation: string, color: string, material: string) => {
-//   if (rolling()) return;
-//   setRolling(true);
-//   const db = diceBox();
-//   if (!db) return;
-//   const s = appSettings();
-//   await db.updateConfig({
-//     theme_colorset: color,
-//     theme_texture: material,
-//   });
-//   await db.add(notation);
-//   await db.updateConfig({
-//     theme_colorset: s.diceColor,
-//     theme_texture: s.diceMaterial,
-//   });
-//   setRolling(false);
-// };
 
 export const updateRolls = (info: RollInfo) => {
   const data = { ...appRooms() };

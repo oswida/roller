@@ -1,5 +1,5 @@
 import { recipe } from "@vanilla-extract/recipes";
-import { colorType, sprinkles, spaceType, spaceSize } from "~/common";
+import { colorType, spaceSize, sprinkles } from "~/common";
 
 export const buttonStyle = recipe({
   base: [
@@ -9,16 +9,20 @@ export const buttonStyle = recipe({
       paddingX: "medium",
       paddingY: "small",
       display: "flex",
-      gap: "small",
+      gap: "medium",
       alignItems: "center",
       justifyContent: "center",
       borderRadius: "small",
+      fontSize: "standard",
     }),
     {
-      boxShadow: "none",
-      outline: "none",
       cursor: "pointer",
-      height: "2.5em",
+      appearance: "none",
+      display: "inline-flex",
+      width: "auto",
+      outline: "none",
+      lineHeight: 0,
+      transition: "250ms background-color",
       selectors: {
         "&:hover": {
           backgroundColor: colorType.backgroundSecondary,
@@ -30,9 +34,11 @@ export const buttonStyle = recipe({
     variant: {
       flat: {
         border: "none",
+        height: "35px",
       },
       ghost: {
         border: "solid 1px",
+        height: "35px",
       },
       underline: {
         border: "none",

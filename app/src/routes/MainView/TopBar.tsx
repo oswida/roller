@@ -4,7 +4,7 @@ import {
   FaSolidPlus,
   FaSolidUser,
 } from "solid-icons/fa";
-import { Component, Show, createMemo } from "solid-js";
+import { Component, Show, createMemo, createSignal } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import {
   appRooms,
@@ -20,14 +20,14 @@ import {
   saveToStorage,
   storageSize,
 } from "~/common";
-import { Button, Dialog, Flex, Popover, Select, Text } from "~/component";
+import { Button, Flex, Popover, Select, Text } from "~/component";
 import { SettingsView } from "../../view/SettingsView";
 import { RoomSettingsView } from "../../view/SettingsView/RoomSettingsView";
 import { topbarStyle } from "./styles.css";
-import { Navigate, useNavigate } from "@solidjs/router";
+import { useNavigate } from "@solidjs/router";
 
 export const TopBar: Component = () => {
-  const navigate = useNavigate();
+  const [roomSettingOpen, setRoomSettingsOpen] = createSignal(false);
 
   const username = createMemo(() => {
     return appSettings().userName;
@@ -97,8 +97,10 @@ export const TopBar: Component = () => {
             <FaSolidClipboardUser style={{ height: "1.5em", width: "1.5em" }} />
           }
           title="Room"
+          open={roomSettingOpen}
+          onOpenChange={setRoomSettingsOpen}
         >
-          <RoomSettingsView />
+          <RoomSettingsView onOpenChange={setRoomSettingsOpen} />
         </Popover>
         <Dynamic
           component={Select}

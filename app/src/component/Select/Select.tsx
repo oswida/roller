@@ -12,6 +12,7 @@ import {
   selectItemStyle,
   selectListStyle,
   selectListboxStyle,
+  selectTriggerStyle,
 } from "./styles.css";
 import { Dynamic } from "solid-js/web";
 
@@ -36,7 +37,7 @@ export const Select: Component<Props> = ({ options, selected, onChange }) => {
         </Sel.Item>
       )}
     >
-      <Sel.Trigger class={buttonStyle({ variant: "underline" })}>
+      <Sel.Trigger class={selectTriggerStyle}>
         <Sel.Value>{(state) => state.selectedOption() as string}</Sel.Value>
       </Sel.Trigger>
       <Sel.Portal>
