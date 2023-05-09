@@ -36,7 +36,7 @@ export const ChatView: Component = () => {
     if (appSettings().currentRoom == "") return;
     data[appSettings().currentRoom].rolls = [];
     saveToStorage(rollerRoomsKey, data);
-    toast("Rolls exported");
+    toast("Rolls cleared");
   };
 
   const importRolls = () => {
@@ -56,6 +56,7 @@ export const ChatView: Component = () => {
     if (!room) return;
     const filename = `rolls-${prettyToday()}.json`;
     exportData(room.rolls, filename);
+    toast("Rolls exported");
   };
 
   return (
