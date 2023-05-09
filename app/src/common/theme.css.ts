@@ -18,11 +18,11 @@ export type spaceType =
   | "circle";
 
 export const colorType = {
-  background: "#080014",
-  backgroundSecondary: "#21293B",
-  accent: "#335064",
+  background: "#080014", //"#2E0003",  ,
+  backgroundSecondary: "#21293B", //"#60251D", // "#21293B",
+  accent: "#93502D", // "#335064",
   primary: "#fff",
-  secondary: "#91D3C2",
+  secondary: "#E2BA51", //"#91D3C2",
   none: "transparent",
   danger: "	#ff5252",
 };

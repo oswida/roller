@@ -33,7 +33,7 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
     return item.tstamp;
   });
 
-  const oldTime = 1 * 60 * 1000;
+  const oldTime = 5 * 60 * 1000;
 
   const isOld = createMemo(() => {
     return Date.now() - item.realtstamp > oldTime;

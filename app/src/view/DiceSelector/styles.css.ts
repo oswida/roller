@@ -50,7 +50,7 @@ export const diceNumberStyle = style([
     padding: "small",
     alignItems: "center",
     borderRadius: "circle",
-    borderColor: "secondary",
+    borderColor: "accent",
     borderStyle: "solid",
     justifyContent: "center",
     fontSize: "standard",
