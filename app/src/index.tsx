@@ -12,6 +12,7 @@ import { Router, hashIntegration } from "@solidjs/router";
 
 const root = document.getElementById("root");
 updateStoreSize();
+console.log(appSettings());
 if (appSettings().currentRoom !== "" && !netConnectionsStatus()) netConnect();
 
 if (import.meta.env.DEV && !(root instanceof HTMLElement)) {

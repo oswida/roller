@@ -1,5 +1,6 @@
 import { createSignal } from "solid-js";
 import mqtt from "mqtt/dist/mqtt";
+import { Centrifuge } from "centrifuge";
 
 export const [storageSize, setStorageSize] = createSignal(0);
 
@@ -20,3 +21,10 @@ export const [mqttConnectionStatus, setMqttConnectionStatus] =
 export const [mqttClient, setMqttClient] = createSignal<
   mqtt.MqttClient | undefined
 >(undefined);
+
+// Centrifuge
+export const [centConnectionStatus, setCentConnectionStatus] =
+  createSignal(false);
+export const [centClient, setCentClient] = createSignal<Centrifuge | undefined>(
+  undefined
+);

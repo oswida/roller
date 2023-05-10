@@ -13,7 +13,7 @@ export type AppSettings = {
   userName: string;
   userColor: string;
   network: {
-    type: "mqtt";
+    type: "mqtt" | "cent";
     serverUri: string;
     credentials: string;
   };
@@ -30,9 +30,11 @@ export const emptyAppSettings = () => {
     userName: "Anonymous",
     userColor: colorType.primary,
     network: {
-      type: "mqtt",
-      credentials: decompressData64(mqttC),
-      serverUri: decompressData64(mqttS),
+      type: "cent",
+      // credentials: decompressData64(mqttC),
+      // serverUri: decompressData64(mqttS),
+      credentials: "",
+      serverUri: "ws://localhost:5000/connection/websocket",
     },
     currentRoom: uuid(),
     diceColor: "white",
@@ -77,6 +79,13 @@ export type NetMessage = {
   data: any;
 };
 
+export type CentMessage = {
+  sender: string;
+  room: string;
+  data: any;
+};
+
 export const topicRoomInfo = "room_info";
 export const topicRollInfo = "roll_info";
 export const topicRoomUpdateRequest = "room_update";
+export const topicRoomConnect = "room_connect";
