@@ -4,6 +4,7 @@ import {
   decompress,
   decompressFromBase64,
 } from "@eonasdan/lz-string";
+import { diceBox, setAnimating, setRollComment } from "./state";
 import {
   appRooms,
   appSettings,
@@ -12,7 +13,6 @@ import {
 } from "./storage";
 import { spaceSize, sprinkles } from "./theme.css";
 import { RollInfo } from "./types";
-import { diceBox, setRollComment, setAnimating } from "./state";
 
 export const createSpaceVariants = (name: string) => {
   const result: Record<string, any> = {};
@@ -100,7 +100,7 @@ export const createRollInfo = (result: any, comment?: string) => {
     rollResults: r,
     rollDice: dice,
     diceColor: appSettings().diceColor,
-    diceMaterial: appSettings().diceMaterial,
+    diceTexture: appSettings().diceTexture,
     tstamp: prettyToday(),
     comment: comment,
     realtstamp: Date.now(),
@@ -125,9 +125,12 @@ export const diceColorSet: string[] = [
   "lightning",
   "necrotic",
   "starynight",
+  "swrpg_boo",
   "swrpg_abi",
-  "swrpg_dif",
   "swrpg_pro",
+  "swrpg_set",
+  "swrpg_dif",
+  "swrpg_cha",
   "thunder",
   "water",
   "white",
@@ -141,6 +144,7 @@ export const diceMaterialSet = [
   "water",
   "ice",
   "paper",
+  "plastic",
   "speckles",
   "glitter",
   "stainedglass",
@@ -151,7 +155,6 @@ export const diceMaterialSet = [
   "bronze02",
   "bronze03",
   "bronze04",
-  "none",
 ];
 
 export const updateRolls = (info: RollInfo) => {
@@ -173,7 +176,8 @@ export const animateRemoteRoll = async (info: RollInfo) => {
   const s = appSettings();
   await db.updateConfig({
     theme_colorset: info.diceColor,
-    theme_texture: info.diceMaterial,
+    theme_texture: info.diceTexture,
+    theme_material: "none",
   });
   const results: number[] = [];
   Object.keys(info.rollResults).forEach((key) => {
@@ -184,7 +188,8 @@ export const animateRemoteRoll = async (info: RollInfo) => {
   await db.add(r);
   await db.updateConfig({
     theme_colorset: s.diceColor,
-    theme_texture: s.diceMaterial,
+    theme_texture: s.diceTexture,
+    theme_material: "none",
   });
   setAnimating(false);
 };

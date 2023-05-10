@@ -1,6 +1,6 @@
 /* @refresh reload */
+import { Router, hashIntegration } from "@solidjs/router";
 import { render } from "solid-js/web";
-
 import App from "./App";
 import {
   appSettings,
@@ -8,7 +8,7 @@ import {
   netConnectionsStatus,
   updateStoreSize,
 } from "./common";
-import { Router, hashIntegration } from "@solidjs/router";
+import "./genesys.css";
 
 const root = document.getElementById("root");
 updateStoreSize();

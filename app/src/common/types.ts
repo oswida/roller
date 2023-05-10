@@ -19,8 +19,9 @@ export type AppSettings = {
   };
   currentRoom: string;
   diceColor: string;
-  diceMaterial: string;
+  diceTexture: string;
   rightLayout?: boolean;
+  genesysDice?: boolean;
   appTheme?: string;
 };
 
@@ -36,7 +37,7 @@ export const emptyAppSettings = () => {
     },
     currentRoom: uuid(),
     diceColor: "white",
-    diceMaterial: "none",
+    diceTexture: "none",
   } as AppSettings;
 };
 
@@ -49,7 +50,7 @@ export type RollInfo = {
   rollDice: string[];
   rollResults: Record<string, number[]>;
   diceColor: string;
-  diceMaterial: string;
+  diceTexture: string;
   comment?: string;
 };
 

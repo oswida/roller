@@ -14,7 +14,6 @@ import {
   updateRolls,
 } from "~/common";
 import { rollViewStyle } from "./styles.css";
-import { CSSProperties } from "@vanilla-extract/css";
 
 const diceConfig = {
   framerate: 1 / 60,
@@ -22,11 +21,11 @@ const diceConfig = {
   volume: 100,
   color_spotlight: 0xffffff, // 0xefdfd5,
   shadows: true,
-  theme_surface: "green-felt",
+  theme_surface: "default", //"green-felt",
   sound_dieMaterial: "plastic",
   theme_customColorset: null,
   theme_colorset: "white", // see available colorsets in https://github.com/3d-dice/dice-box-threejs/blob/main/src/const/colorsets.js
-  theme_texture: "none", // see available textures in https://github.com/3d-dice/dice-box-threejs/blob/main/src/const/texturelist.js
+  theme_texture: "", // see available textures in https://github.com/3d-dice/dice-box-threejs/blob/main/src/const/texturelist.js
   theme_material: "none", // "none" | "metal" | "wood" | "glass" | "plastic"
   gravity_multiplier: 400,
   light_intensity: 0.8,
@@ -46,8 +45,8 @@ export const RollView: Component = () => {
       const s = appSettings();
       Box.loadTheme({
         colorset: s.diceColor,
-        texture: s.diceMaterial,
-        material: "none",
+        texture: s.diceTexture,
+        material: "glass",
       });
     });
     Box.onRollComplete = (results: any) => {
@@ -65,7 +64,8 @@ export const RollView: Component = () => {
     const s = appSettings();
     await box.updateConfig({
       theme_colorset: s.diceColor,
-      theme_texture: s.diceMaterial,
+      theme_texture: s.diceTexture,
+      theme_material: "none",
     });
   });
 

@@ -68,3 +68,12 @@ export const diceNumberStyle = style([
     userSelect: "none",
   },
 ]);
+
+export const dicePanelStyle = style([
+  sprinkles({
+    display: "flex",
+    flexDirection: "row",
+    gap: "medium",
+    marginRight: "medium",
+  }),
+]);

@@ -24,7 +24,6 @@ import { Button, Flex, Popover, Select, Text } from "~/component";
 import { SettingsView } from "../../view/SettingsView";
 import { RoomSettingsView } from "../../view/SettingsView/RoomSettingsView";
 import { topbarStyle } from "./styles.css";
-import { useNavigate } from "@solidjs/router";
 
 export const TopBar: Component = () => {
   const [roomSettingOpen, setRoomSettingsOpen] = createSignal(false);
@@ -37,7 +36,7 @@ export const TopBar: Component = () => {
   });
 
   const currentDiceMaterial = createMemo(() => {
-    return appSettings().diceMaterial;
+    return appSettings().diceTexture;
   });
 
   const diceColorChange = (value: string) => {
@@ -48,7 +47,7 @@ export const TopBar: Component = () => {
 
   const diceMaterialChange = (value: string) => {
     const data = { ...appSettings() };
-    data.diceMaterial = value;
+    data.diceTexture = value;
     saveToStorage(rollerSettingsKey, data);
   };
 

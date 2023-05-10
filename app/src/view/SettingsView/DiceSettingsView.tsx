@@ -6,7 +6,7 @@ import {
   rollerSettingsKey,
   saveToStorage,
 } from "~/common";
-import { Flex, Text, Select } from "~/component";
+import { Flex, Select, Text } from "~/component";
 
 export const DiceSettingsView: Component = () => {
   const currentDiceColor = createMemo(() => {
@@ -14,7 +14,7 @@ export const DiceSettingsView: Component = () => {
   });
 
   const currentDiceMaterial = createMemo(() => {
-    return appSettings().diceMaterial;
+    return appSettings().diceTexture;
   });
 
   const diceColorChange = (value: string) => {
@@ -25,7 +25,7 @@ export const DiceSettingsView: Component = () => {
 
   const diceMaterialChange = (value: string) => {
     const data = { ...appSettings() };
-    data.diceMaterial = value;
+    data.diceTexture = value;
     saveToStorage(rollerSettingsKey, data);
   };
 
