@@ -2,8 +2,11 @@ import { createMemo } from "solid-js";
 import {
   centClientLink,
   centConnect,
+  centCreateRoom,
+  centDeleteRoom,
   centDisconnect,
   centPublish,
+  centUpdateRoom,
 } from "./centrifuge";
 import {
   mqttClientLink,
@@ -13,6 +16,11 @@ import {
 } from "./mqtt";
 import { centConnectionStatus, mqttConnectionStatus } from "./state";
 import { appSettings } from "./storage";
+import { RoomInfo } from "./types";
+
+export const netInit = () => {
+  if (!netConnectionStatus()) netConnect();
+};
 
 export const netSessionLink = () => {
   switch (appSettings().network.type) {
@@ -66,7 +74,7 @@ export const netPublish = (topic: string, payload: any) => {
   }
 };
 
-export const netConnectionsStatus = createMemo(() => {
+export const netConnectionStatus = createMemo(() => {
   switch (appSettings().network.type) {
     case "mqtt":
       return mqttConnectionStatus();
@@ -76,3 +84,33 @@ export const netConnectionsStatus = createMemo(() => {
       return false;
   }
 });
+
+export const netCreateRoom = (room: RoomInfo) => {
+  switch (appSettings().network.type) {
+    case "cent":
+      centCreateRoom(room);
+      break;
+    default:
+      break;
+  }
+};
+
+export const netDeleteRoom = (room: RoomInfo) => {
+  switch (appSettings().network.type) {
+    case "cent":
+      centDeleteRoom(room);
+      break;
+    default:
+      break;
+  }
+};
+
+export const netUpdateRoom = (room: RoomInfo) => {
+  switch (appSettings().network.type) {
+    case "cent":
+      centUpdateRoom(room);
+      break;
+    default:
+      break;
+  }
+};

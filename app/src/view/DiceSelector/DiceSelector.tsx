@@ -15,6 +15,7 @@ import { diceSelectorStyle } from "./styles.css";
 import { IoReload } from "solid-icons/io";
 import { FaSolidDice } from "solid-icons/fa";
 import { AiOutlineClear } from "solid-icons/ai";
+import { DicePanel } from "./DicePanel";
 
 export const DiceSelector: Component = () => {
   let inputRef: HTMLInputElement;
@@ -29,7 +30,10 @@ export const DiceSelector: Component = () => {
     if (!db) return;
     const pool = dicePool();
     if (!pool || Object.values(pool).length == 0) return;
-    const dice = Object.entries(pool).map(([k, v]) => `${v}d${k}`);
+    const dice = Object.entries(pool)
+      .filter(([k, v]) => v > 0)
+      .map(([k, v]) => `${v}d${k}`);
+    if (dice.length <= 0) return;
     setRolling(true);
     const s = appSettings();
     await db.updateConfig({
@@ -54,18 +58,12 @@ export const DiceSelector: Component = () => {
     <div class={diceSelectorStyle}>
       <Show when={appSettings().rightLayout}>
         <Flex gap="medium" center>
-          <DiceEntry face="4" />
-          <DiceEntry face="6" />
-          <DiceEntry face="8" />
-          <DiceEntry face="10" />
-          <DiceEntry face="12" />
-          <DiceEntry face="20" />
-          <DiceEntry face="100" />
-          <DiceEntry face="f" />
           <Button variant="ghost" onClick={resetPool} title="Reset">
             <IoReload />
             <Text>Reset</Text>
           </Button>
+          <DicePanel />
+
           <Button variant="ghost" onClick={clearTable} title="Clear table">
             <AiOutlineClear />
             <Text>Clear</Text>
@@ -91,18 +89,12 @@ export const DiceSelector: Component = () => {
 
       <Show when={!appSettings().rightLayout}>
         <Flex gap="medium" center>
-          <DiceEntry face="4" />
-          <DiceEntry face="6" />
-          <DiceEntry face="8" />
-          <DiceEntry face="10" />
-          <DiceEntry face="12" />
-          <DiceEntry face="20" />
-          <DiceEntry face="100" />
-          <DiceEntry face="f" />
           <Button variant="ghost" onClick={resetPool} title="Reset">
             <IoReload />
             <Text>Reset</Text>
           </Button>
+          <DicePanel />
+
           <Button variant="ghost" onClick={clearTable} title="Clear table">
             <AiOutlineClear />
             <Text>Clear</Text>

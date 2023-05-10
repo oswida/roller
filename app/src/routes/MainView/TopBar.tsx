@@ -15,6 +15,8 @@ import {
   emptyRoomInfo,
   generateSerialKeys,
   mqttConnectionStatus,
+  netConnectionStatus,
+  netCreateRoom,
   rollerRoomsKey,
   rollerSettingsKey,
   saveToStorage,
@@ -62,6 +64,7 @@ export const TopBar: Component = () => {
     const na = { ...appSettings() };
     na.currentRoom = room.id;
     saveToStorage(rollerSettingsKey, na);
+    netCreateRoom(room);
   };
 
   const roomName = createMemo(() => {
@@ -131,7 +134,7 @@ export const TopBar: Component = () => {
             onChange={diceMaterialChange}
           ></Select>
         </Flex>
-        <Show when={mqttConnectionStatus()}>
+        <Show when={netConnectionStatus()}>
           <Dynamic component={"div"} title={currentRoom()?.id}>
             <FaSolidPlug />
           </Dynamic>

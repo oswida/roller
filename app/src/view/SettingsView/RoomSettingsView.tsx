@@ -4,7 +4,7 @@ import {
   FaSolidSkullCrossbones,
   FaSolidTrash,
 } from "solid-icons/fa";
-import { Component, createMemo } from "solid-js";
+import { Component, Show, createMemo } from "solid-js";
 import toast from "solid-toast";
 import {
   appRooms,
@@ -15,7 +15,12 @@ import {
   saveToStorage,
   topicRoomInfo,
 } from "~/common";
-import { netPublish, netSessionLink } from "~/common/net";
+import {
+  netDeleteRoom,
+  netPublish,
+  netSessionLink,
+  netUpdateRoom,
+} from "~/common/net";
 import { Button, Flex, Input, Text } from "~/component";
 import { buttonStyle } from "~/component/Button/styles.css";
 
@@ -29,6 +34,7 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
     if (!data[appSettings().currentRoom]) return;
     data[appSettings().currentRoom][field] = value;
     saveToStorage(rollerRoomsKey, data);
+    netUpdateRoom(data[appSettings().currentRoom]);
     netPublish(topicRoomInfo, data[appSettings().currentRoom]);
   };
 
@@ -46,7 +52,10 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
 
   const deleteRoom = () => {
     const room = currentRoom();
-    if (!room) return "";
+    if (!room || room.owner !== appSettings().userIdent) {
+      toast("Cannot delete room. Room can be deleted only by an owner.");
+      return;
+    }
     const newState = { ...appRooms() };
     delete newState[room.id];
     saveToStorage(rollerRoomsKey, newState);
@@ -57,22 +66,25 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
     }
     saveToStorage(rollerSettingsKey, ns);
     onOpenChange(false);
+    netDeleteRoom(room);
   };
 
   return (
     <Flex direction="column" gap="large">
-      <Input
-        label="Room name"
-        currentValue={() => roomName()}
-        onChange={(e) => updateRoom("name", e.target.value)}
-        style={{ width: "20em" }}
-      />
-      <Input
-        label="Room background URI"
-        currentValue={() => roomBkg()}
-        onChange={(e) => updateRoom("bkguri", e.target.value)}
-        style={{ width: "20em" }}
-      />
+      <Show when={appSettings().userIdent == currentRoom()?.owner}>
+        <Input
+          label="Room name"
+          currentValue={() => roomName()}
+          onChange={(e) => updateRoom("name", e.target.value)}
+          style={{ width: "20em" }}
+        />
+        <Input
+          label="Room background URI"
+          currentValue={() => roomBkg()}
+          onChange={(e) => updateRoom("bkguri", e.target.value)}
+          style={{ width: "20em" }}
+        />
+      </Show>
       <Flex style={{ "justify-content": "space-between" }}>
         <CopyToClipboard
           text={netSessionLink()}
@@ -88,10 +100,12 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
             <Text>Share link </Text>
           </div>
         </CopyToClipboard>
-        <Button variant="ghost" onClick={deleteRoom}>
-          <FaSolidTrash />
-          <Text colorSchema="danger">Delete room</Text>
-        </Button>
+        <Show when={appSettings().userIdent == currentRoom()?.owner}>
+          <Button variant="ghost" onClick={deleteRoom}>
+            <FaSolidTrash />
+            <Text colorSchema="danger">Delete room</Text>
+          </Button>
+        </Show>
       </Flex>
     </Flex>
   );

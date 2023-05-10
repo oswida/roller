@@ -1,4 +1,5 @@
 import { style } from "@vanilla-extract/css";
+import { recipe } from "@vanilla-extract/recipes";
 import { colorType, sprinkles } from "~/common";
 
 export const diceSelectorStyle = style([
@@ -68,3 +69,14 @@ export const diceNumberStyle = style([
     userSelect: "none",
   },
 ]);
+
+export const dicePanelStyle = recipe({
+  base: [
+    sprinkles({
+      display: "flex",
+      flexDirection: "row",
+      padding: "none",
+      gap: "medium",
+    }),
+  ],
+});

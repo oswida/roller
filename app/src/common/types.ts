@@ -68,6 +68,7 @@ export const emptyRoomInfo = (rid?: string) => {
     id: rid ? rid : uuid(),
     name: "",
     owner: "",
+    bkguri: "",
     rolls: [],
   } as RoomInfo;
 };

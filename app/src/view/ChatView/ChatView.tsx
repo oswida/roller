@@ -3,7 +3,7 @@ import {
   FaSolidFileImport,
   FaSolidTrash,
 } from "solid-icons/fa";
-import { Component, For, createMemo } from "solid-js";
+import { Component, For, Show, createMemo } from "solid-js";
 import {
   RollInfo,
   appRooms,
@@ -12,6 +12,7 @@ import {
   exportData,
   importData,
   netPublish,
+  netUpdateRoom,
   prettyToday,
   rollerRoomsKey,
   saveToStorage,
@@ -37,6 +38,7 @@ export const ChatView: Component = () => {
     data[appSettings().currentRoom].rolls = [];
     saveToStorage(rollerRoomsKey, data);
     toast("Rolls cleared");
+    netUpdateRoom(data[appSettings().currentRoom]);
   };
 
   const importRolls = () => {
@@ -63,17 +65,19 @@ export const ChatView: Component = () => {
     <div class={chatRootStyle}>
       <Flex gap="large" style={{ "justify-content": "space-between" }}>
         <Text>Rolls</Text>
-        <Flex>
-          <Button title="Import rolls" onClick={importRolls}>
-            <FaSolidFileImport />
-          </Button>
-          <Button title="Export rolls" onClick={exportRolls}>
-            <FaSolidFileExport />
-          </Button>
-          <Button title="Clear rolls" onClick={clearRolls}>
-            <FaSolidTrash />
-          </Button>
-        </Flex>
+        <Show when={appSettings().userIdent == currentRoom()?.owner}>
+          <Flex>
+            <Button title="Import rolls" onClick={importRolls}>
+              <FaSolidFileImport />
+            </Button>
+            <Button title="Export rolls" onClick={exportRolls}>
+              <FaSolidFileExport />
+            </Button>
+            <Button title="Clear rolls" onClick={clearRolls}>
+              <FaSolidTrash />
+            </Button>
+          </Flex>
+        </Show>
       </Flex>
       <div class={chatListStyle}>
         <For each={items()}>

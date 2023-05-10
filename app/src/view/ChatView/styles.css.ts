@@ -13,6 +13,7 @@ export const chatRootStyle = style([
   }),
   {
     minWidth: "25vw",
+    maxWidth: "25vw",
   },
 ]);
 
