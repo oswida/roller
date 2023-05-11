@@ -5,6 +5,7 @@ import {
   centCreateRoom,
   centDeleteRoom,
   centDisconnect,
+  centLoadRooms,
   centPublish,
   centUpdateRoom,
 } from "./centrifuge";
@@ -109,6 +110,16 @@ export const netUpdateRoom = (room: RoomInfo) => {
   switch (appSettings().network.type) {
     case "cent":
       centUpdateRoom(room);
+      break;
+    default:
+      break;
+  }
+};
+
+export const netLoadRoom = (id: string) => {
+  switch (appSettings().network.type) {
+    case "cent":
+      centLoadRooms([id]);
       break;
     default:
       break;

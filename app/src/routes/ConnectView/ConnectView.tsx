@@ -1,23 +1,15 @@
-import { Navigate, useSearchParams } from "@solidjs/router";
+import { useSearchParams } from "@solidjs/router";
 import { Component, createEffect } from "solid-js";
 import {
-  RoomInfo,
   appRooms,
   appSettings,
   currentRoom,
-  decompressData64,
   emptyRoomInfo,
+  netConnect,
   rollerRoomsKey,
   rollerSettingsKey,
   saveToStorage,
-  topicRoomUpdateRequest,
 } from "~/common";
-import {
-  netConnect,
-  netConnectionsStatus,
-  netDisconnect,
-  netPublish,
-} from "~/common/net";
 
 export const ConnectView: Component = () => {
   const [params] = useSearchParams();
@@ -32,15 +24,16 @@ export const ConnectView: Component = () => {
     const nr = { ...appRooms() };
     nr[id] = emptyRoomInfo(id);
     saveToStorage(rollerRoomsKey, nr);
+    netConnect();
   }
 
-  createEffect(() => {
-    const room = currentRoom();
-    if (!room || room.id !== id) return;
-    const suffix = `connect?r=${id}`;
-    window.location.href = window.location.href.replace(suffix, "");
-    window.location.reload();
-  });
+  // createEffect(() => {
+  //   const room = currentRoom();
+  //   if (!room || room.id !== id) return;
+  //   const suffix = `connect?r=${id}`;
+  //   window.location.href = window.location.href.replace(suffix, "");
+  //   window.location.reload();
+  // });
 
   return <div></div>;
 };

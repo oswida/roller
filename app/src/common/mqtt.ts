@@ -50,7 +50,6 @@ export const mqttTopic = (name: string, roomId?: string) => {
 export const mqttPublish = (topic: string, payload: any) => {
   const client = mqttClient();
   if (!client) {
-    // console.log("publish: mqtt client not present", client);
     return;
   }
   client.publish(
@@ -135,7 +134,6 @@ export const mqttConnect = () => {
     });
 
     if (!client) {
-      console.log("Cannot connect to MQTT server");
       return;
     }
     setMqttClient(client);

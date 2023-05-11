@@ -69,6 +69,12 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
     netDeleteRoom(room);
   };
 
+  const roomId = createMemo(() => {
+    const room = currentRoom();
+    if (!room) return "";
+    return room.id;
+  });
+
   return (
     <Flex direction="column" gap="large">
       <Show when={appSettings().userIdent == currentRoom()?.owner}>
@@ -87,17 +93,17 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
       </Show>
       <Flex style={{ "justify-content": "space-between" }}>
         <CopyToClipboard
-          text={netSessionLink()}
+          text={roomId()}
           options={{ debug: true }}
           onCopy={() => {
-            toast("Session link copied to clipboard");
+            toast("Room ID copied to clipboard");
             onOpenChange(false);
           }}
           eventTrigger="onClick"
         >
-          <div class={buttonStyle({ variant: "ghost" })} title="Copy room link">
+          <div class={buttonStyle({ variant: "ghost" })} title="Copy room id">
             <FaSolidShareNodes />
-            <Text>Share link </Text>
+            <Text>Copy room ID </Text>
           </div>
         </CopyToClipboard>
         <Show when={appSettings().userIdent == currentRoom()?.owner}>

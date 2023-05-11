@@ -25,7 +25,9 @@ export const Popover: ParentComponent<Props> = ({
 }) => {
   return (
     <Pop.Root open={open ? open() : undefined} onOpenChange={onOpenChange}>
-      <Pop.Trigger class={popoverTriggerStyle}>{trigger}</Pop.Trigger>
+      <Pop.Trigger class={popoverTriggerStyle} title={title}>
+        {trigger}
+      </Pop.Trigger>
       <Pop.Portal>
         <Pop.Content class={popoverContentStyle}>
           <Pop.Arrow />

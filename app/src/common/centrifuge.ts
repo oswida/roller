@@ -33,7 +33,12 @@ export const centUnpack = (payload: any) => {
 
 const processRollInfo = (ctx: PublicationContext) => {
   const data = ctx.data as CentMessage;
-  if (!data || data.sender == appSettings().userIdent) return;
+  if (
+    !data ||
+    data.sender == appSettings().userIdent ||
+    data.room !== currentRoom()?.id
+  )
+    return;
   const info = data.data as RollInfo;
   updateRolls(info);
   animateRemoteRoll(info);
@@ -46,10 +51,18 @@ const processRoomInfo = (ctx: PublicationContext) => {
   centLoadRooms([info.id]);
 };
 
+export const serverAddress = () => {
+  const schema = window.location.protocol == "https" ? "wss" : "ws";
+  const addr = `${schema}://${window.location.host}/connection/websocket`;
+  console.log("server address", addr);
+  // wss://localhost:5000/connection/websocket
+  return addr;
+};
+
 export const centConnect = () => {
   const s = appSettings();
   if (!appSettings) return;
-  const centrifuge = new Centrifuge(s.network.serverUri);
+  const centrifuge = new Centrifuge(serverAddress());
   if (!centrifuge) return;
   centrifuge.on("connected", function (ctx) {
     setCentClient(centrifuge);
@@ -87,7 +100,7 @@ export const centPublish = (topic: string, payload: any) => {
   client
     .publish(topic, centPack(appSettings().userIdent, payload))
     .then((result: PublishResult) => {
-      console.log("message sent to", topic);
+      // Message sent
     })
     .catch((err) => console.error(err));
 };

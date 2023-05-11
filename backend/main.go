@@ -10,6 +10,7 @@ import (
 	"syscall"
 
 	"github.com/centrifugal/centrifuge"
+	"go.uber.org/zap"
 )
 
 func auth(h http.Handler) http.Handler {
@@ -25,21 +26,29 @@ func auth(h http.Handler) http.Handler {
 }
 
 func main() {
+
+	logcfg := zap.NewProductionConfig()
+	logcfg.OutputPaths = []string{"roller.log"}
+	logger, err := logcfg.Build()
+	if err != nil {
+		panic(err)
+	}
+
 	dbase, err := db.InitDatabase()
 	if err != nil {
 		panic(err)
 	}
 
-	node, err := net.NewCentrifugeNode(dbase)
+	engine, err := net.NewRollerEngine(dbase, logger)
 	if err != nil {
 		panic(err)
 	}
 
-	if err := node.Run(); err != nil {
+	if err := engine.Run(); err != nil {
 		log.Fatal(err)
 	}
 
-	wsHandler := centrifuge.NewWebsocketHandler(node, centrifuge.WebsocketConfig{
+	wsHandler := centrifuge.NewWebsocketHandler(engine.Node, centrifuge.WebsocketConfig{
 		CheckOrigin: func(r *http.Request) bool { return true },
 	})
 	http.Handle("/connection/websocket", auth(wsHandler))
@@ -54,7 +63,7 @@ func main() {
 		os.Exit(1)
 	}()
 
-	log.Printf("Starting server, visit http://localhost:5000")
+	logger.Info("Starting server, visit http://localhost:5000")
 	if err := http.ListenAndServe(":5000", nil); err != nil {
 		log.Fatal(err)
 	}

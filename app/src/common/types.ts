@@ -34,7 +34,7 @@ export const emptyAppSettings = () => {
       // credentials: decompressData64(mqttC),
       // serverUri: decompressData64(mqttS),
       credentials: "",
-      serverUri: "ws://localhost:5000/connection/websocket",
+      serverUri: "",
     },
     currentRoom: uuid(),
     diceColor: "white",

@@ -2,14 +2,17 @@ package net
 
 import (
 	"encoding/json"
-	"log"
 	"roller/db"
 
 	"github.com/centrifugal/centrifuge"
 	badger "github.com/dgraph-io/badger/v4"
+	"go.uber.org/zap"
 )
 
-func RpcRoomCreate(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
+func (eng *RollerEngine) RpcRoomCreate(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
+	eng.mux.Lock()
+	defer eng.mux.Unlock()
+
 	var data RoomMessage
 	err := json.Unmarshal(e.Data, &data)
 	if err != nil {
@@ -19,11 +22,14 @@ func RpcRoomCreate(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("Creating room %v", data.Data.Id)
+	eng.Log.Info("Creating room", zap.String("id", data.Data.Id))
 	return []byte{}, nil
 }
 
-func RpcRoomUpdate(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
+func (eng *RollerEngine) RpcRoomUpdate(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
+	eng.mux.Lock()
+	defer eng.mux.Unlock()
+
 	var data RoomMessage
 	err := json.Unmarshal(e.Data, &data)
 	if err != nil {
@@ -33,21 +39,27 @@ func RpcRoomUpdate(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("Updating room %v", data.Data.Id)
+	eng.Log.Info("Updating room", zap.String("id", data.Data.Id))
 	return []byte{}, nil
 }
 
-func RpcRoomDelete(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
+func (eng *RollerEngine) RpcRoomDelete(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
+	eng.mux.Lock()
+	defer eng.mux.Unlock()
+
 	var data RoomMessage
 	err := json.Unmarshal(e.Data, &data)
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("Deleting room %v", data.Data.Id)
+	eng.Log.Info("Deleting room", zap.String("id", data.Data.Id))
 	return []byte{}, db.RoomDelete(dbase, data.Room)
 }
 
-func RpcRoomList(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
+func (eng *RollerEngine) RpcRoomList(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
+	eng.mux.Lock()
+	defer eng.mux.Unlock()
+
 	var data RoomListMessage
 	err := json.Unmarshal(e.Data, &data)
 	if err != nil {

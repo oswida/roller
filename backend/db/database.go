@@ -8,7 +8,8 @@ import (
 )
 
 func InitDatabase() (*badger.DB, error) {
-	db, err := badger.Open(badger.DefaultOptions("data"))
+	opts := badger.DefaultOptions("data")
+	db, err := badger.Open(opts)
 	if err != nil {
 		return nil, err
 	}

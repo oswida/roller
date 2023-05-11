@@ -1,0 +1,96 @@
+package net
+
+import (
+	"errors"
+	"sync"
+	"time"
+
+	"github.com/centrifugal/centrifuge"
+	badger "github.com/dgraph-io/badger/v4"
+	"go.uber.org/zap"
+)
+
+type RollerEngine struct {
+	DB   *badger.DB
+	Node *centrifuge.Node
+	Log  *zap.Logger
+
+	mux sync.Mutex
+}
+
+func NewRollerEngine(dbase *badger.DB, log *zap.Logger) (*RollerEngine, error) {
+	node, err := centrifuge.New(centrifuge.Config{})
+	if err != nil {
+		return nil, err
+	}
+	result := &RollerEngine{
+		DB:   dbase,
+		Node: node,
+		Log:  log,
+	}
+
+	node.OnConnect(func(client *centrifuge.Client) {
+
+		client.OnSubscribe(func(e centrifuge.SubscribeEvent, cb centrifuge.SubscribeCallback) {
+			cb(centrifuge.SubscribeReply{}, nil)
+		})
+
+		client.OnPublish(func(e centrifuge.PublishEvent, cb centrifuge.PublishCallback) {
+			result.PublishCallback(e)
+			r, err := node.Publish(
+				e.Channel, e.Data,
+				centrifuge.WithHistory(100, 120*time.Second),
+				centrifuge.WithClientInfo(e.ClientInfo),
+			)
+			if err != nil {
+				result.Log.Error("publish", zap.Error(err))
+			}
+			cb(centrifuge.PublishReply{Result: &r}, err)
+		})
+
+		client.OnRPC(func(e centrifuge.RPCEvent, cb centrifuge.RPCCallback) {
+			r, err := result.RPCCallback(dbase, e)
+			if err != nil {
+				result.Log.Error("rpc", zap.Error(err))
+			}
+			cb(centrifuge.RPCReply{Data: r}, err)
+		})
+
+		client.OnDisconnect(func(e centrifuge.DisconnectEvent) {
+			result.Log.Info("client disconnected")
+		})
+	})
+
+	return result, nil
+}
+
+func (eng *RollerEngine) Run() error {
+	if eng.Node == nil {
+		return errors.New("Centrifuge node not initialized")
+	}
+	return eng.Node.Run()
+}
+
+func (eng *RollerEngine) PublishCallback(e centrifuge.PublishEvent) {
+	switch e.Channel {
+	case "roll_info":
+		err := eng.RollPublishCallback(e)
+		if err != nil {
+			eng.Log.Error("publish callback", zap.Error(err))
+		}
+	}
+}
+
+func (eng *RollerEngine) RPCCallback(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
+	switch e.Method {
+	case "room_create":
+		return eng.RpcRoomCreate(dbase, e)
+	case "room_update":
+		return eng.RpcRoomUpdate(dbase, e)
+	case "room_delete":
+		return eng.RpcRoomDelete(dbase, e)
+	case "room_list":
+		return eng.RpcRoomList(dbase, e)
+	}
+	return nil, nil
+}

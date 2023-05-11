@@ -1,9 +1,10 @@
 import {
-  FaSolidClipboardUser,
+  FaSolidChalkboardUser,
   FaSolidPlug,
   FaSolidPlus,
   FaSolidUser,
 } from "solid-icons/fa";
+import { TbPlugConnected } from "solid-icons/tb";
 import { Component, Show, createMemo, createSignal } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import {
@@ -14,7 +15,6 @@ import {
   diceMaterialSet,
   emptyRoomInfo,
   generateSerialKeys,
-  mqttConnectionStatus,
   netConnectionStatus,
   netCreateRoom,
   rollerRoomsKey,
@@ -26,10 +26,11 @@ import { Button, Flex, Popover, Select, Text } from "~/component";
 import { SettingsView } from "../../view/SettingsView";
 import { RoomSettingsView } from "../../view/SettingsView/RoomSettingsView";
 import { topbarStyle } from "./styles.css";
-import { useNavigate } from "@solidjs/router";
+import { RoomConnectView } from "~/view/SettingsView/RoomConnectView";
 
 export const TopBar: Component = () => {
   const [roomSettingOpen, setRoomSettingsOpen] = createSignal(false);
+  const [roomConnectOpen, setRoomConnectOpen] = createSignal(false);
 
   const username = createMemo(() => {
     return appSettings().userName;
@@ -95,25 +96,45 @@ export const TopBar: Component = () => {
           <SettingsView />
         </Popover>
         <Dynamic component={"Text"}>{username()}</Dynamic>
-        <Popover
-          trigger={
-            <FaSolidClipboardUser style={{ height: "1.5em", width: "1.5em" }} />
-          }
-          title="Room"
-          open={roomSettingOpen}
-          onOpenChange={setRoomSettingsOpen}
-        >
-          <RoomSettingsView onOpenChange={setRoomSettingsOpen} />
-        </Popover>
-        <Dynamic
-          component={Select}
-          options={roomList}
-          selected={roomName}
-          onChange={changeRoom}
-        />
-        <Button variant="icon" onClick={createRoom}>
+        <Show when={roomList().length > 0}>
+          <Popover
+            trigger={
+              <FaSolidChalkboardUser
+                style={{ height: "1.5em", width: "1.5em" }}
+              />
+            }
+            title="Rooms"
+            open={roomSettingOpen}
+            onOpenChange={setRoomSettingsOpen}
+          >
+            <RoomSettingsView onOpenChange={setRoomSettingsOpen} />
+          </Popover>
+          <Dynamic
+            component={Select}
+            options={roomList}
+            selected={roomName}
+            onChange={changeRoom}
+          />
+        </Show>
+        <Show when={roomList().length <= 0}>
+          <FaSolidChalkboardUser
+            title="Rooms"
+            style={{ height: "1.5em", width: "1.5em" }}
+          />
+        </Show>
+        <Button variant="icon" title="Create room" onClick={createRoom}>
           <FaSolidPlus />
         </Button>
+        <Popover
+          trigger={
+            <TbPlugConnected style={{ height: "1.5em", width: "1.5em" }} />
+          }
+          title="Connect to room"
+          open={roomConnectOpen}
+          onOpenChange={setRoomConnectOpen}
+        >
+          <RoomConnectView onOpenChange={setRoomConnectOpen} />
+        </Popover>
       </Flex>
       <Flex gap="large" center>
         <Flex>
