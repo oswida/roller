@@ -48,11 +48,12 @@ const processRoomInfo = (ctx: PublicationContext) => {
   const data = ctx.data as CentMessage;
   if (!data || data.sender == appSettings().userIdent) return;
   const info = data.data as RoomInfo;
+  if (!appRooms()[info.id]) return;
   centLoadRooms([info.id]);
 };
 
 export const serverAddress = () => {
-  const schema = window.location.protocol == "https" ? "wss" : "ws";
+  const schema = "wss";
   const addr = `${schema}://${window.location.host}/connection/websocket`;
   console.log("server address", addr);
   // wss://localhost:5000/connection/websocket

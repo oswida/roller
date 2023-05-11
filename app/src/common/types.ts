@@ -36,7 +36,7 @@ export const emptyAppSettings = () => {
       credentials: "",
       serverUri: "",
     },
-    currentRoom: uuid(),
+    currentRoom: "",
     diceColor: "white",
     diceMaterial: "none",
   } as AppSettings;

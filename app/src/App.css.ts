@@ -16,6 +16,11 @@ globalStyle("div", {
   scrollbarWidth: "thin",
 });
 
+globalStyle("body>p", {
+  display: "none",
+  visibility: "hidden",
+});
+
 export const appStyle = style([
   sprinkles({ backgroundColor: "background", color: "primary" }),
   {

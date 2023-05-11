@@ -17,7 +17,7 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 
 render(
   () => (
-    <Router source={hashIntegration()}>
+    <Router>
       <App />
     </Router>
   ),

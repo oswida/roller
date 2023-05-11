@@ -52,14 +52,7 @@ export const appSettings = () => {
 export const appRooms = () => {
   let rooms = appStore.rooms as Record<string, RoomInfo>;
   if (!rooms) {
-    rooms = {
-      [appSettings().currentRoom]: {
-        id: appSettings().currentRoom,
-        name: generateSerialKeys(4, "-"),
-        owner: appSettings().userIdent,
-        rolls: [],
-      },
-    };
+    rooms = {};
     setAppStore(rollerRoomsKey, rooms);
   }
   return rooms;
