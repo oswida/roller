@@ -28,6 +28,12 @@ export const SettingsView: Component = () => {
     return rl;
   });
 
+  const smallerDice = createMemo(() => {
+    const rl = appSettings().smallerDice;
+    if (!rl) return false;
+    return rl;
+  });
+
 
   const setRightLayout = (value: boolean) => {
     const newState = { ...appSettings(), rightLayout: value };
@@ -41,6 +47,11 @@ export const SettingsView: Component = () => {
 
   const setSuccess = (value: boolean) => {
     const newState = { ...appSettings(), showRollSuccess: value };
+    saveToStorage(rollerSettingsKey, newState);
+  };
+
+  const setSmalldice = (value: boolean) => {
+    const newState = { ...appSettings(), smallerDice: value };
     saveToStorage(rollerSettingsKey, newState);
   };
 
@@ -66,6 +77,11 @@ export const SettingsView: Component = () => {
         label="Show roll success"
         checked={success}
         setChecked={setSuccess}
+      />
+      <Switch
+        label="Smaller dice"
+        checked={smallerDice}
+        setChecked={setSmalldice}
       />
     </Flex>
   );

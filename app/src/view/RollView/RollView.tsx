@@ -4,7 +4,6 @@ import {
   Host2NetRollInfo,
   animating,
   appSettings,
-  compressData64,
   createRollInfo,
   currentRoom,
   diceBox,
@@ -39,9 +38,11 @@ const diceConfig = {
 export const RollView: Component = () => {
   let tableRef: HTMLDivElement;
 
+
+
   createEffect(() => {
     if (!tableRef || diceBox() !== undefined) return;
-    const Box = new DiceBox("#table", diceConfig);
+    const Box = new DiceBox("#table", { ...diceConfig, baseScale: appSettings().smallerDice ? 70 : 100 });
     setDiceBox(Box);
     Box.initialize().then(() => {
       const s = appSettings();
@@ -67,6 +68,7 @@ export const RollView: Component = () => {
     await box.updateConfig({
       theme_colorset: s.diceColor,
       theme_texture: s.diceMaterial,
+      baseScale: appSettings().smallerDice ? 40 : 100,
     });
   });
 

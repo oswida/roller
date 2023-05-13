@@ -13,7 +13,6 @@ import {
 } from "~/common";
 import { Flex, Input, Text } from "~/component";
 import { Button } from "~/component/Button";
-import { DiceEntry } from "./DiceEntry";
 import { diceSelectorStyle } from "./styles.css";
 import { IoReload } from "solid-icons/io";
 import { FaSolidDice } from "solid-icons/fa";

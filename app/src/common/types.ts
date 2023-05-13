@@ -23,6 +23,7 @@ export type AppSettings = {
   appTheme?: string;
   showRollSuccess?: boolean;
   showRollTotal?: boolean;
+  smallerDice?: boolean;
 };
 
 export const emptyAppSettings = () => {
