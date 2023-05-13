@@ -1,8 +1,10 @@
 import DiceBox from "@3d-dice/dice-box-threejs";
 import { Component, JSX, createEffect, createMemo } from "solid-js";
 import {
+  Host2NetRollInfo,
   animating,
   appSettings,
+  compressData64,
   createRollInfo,
   currentRoom,
   diceBox,
@@ -54,7 +56,7 @@ export const RollView: Component = () => {
       const info = createRollInfo(results, rollComment());
       updateRolls(info);
       setRolling(false);
-      netPublish(topicRollInfo, info);
+      netPublish(topicRollInfo, Host2NetRollInfo(info));
     };
   });
 

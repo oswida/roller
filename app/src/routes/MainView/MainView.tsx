@@ -1,11 +1,7 @@
 import { Show, createEffect } from "solid-js";
 import {
   appSettings,
-  currentRoom,
-  mqttClient,
   netConnectionStatus,
-  netPublish,
-  topicRoomUpdateRequest,
 } from "~/common";
 import { Flex } from "../../component/Flex";
 import { ChatView } from "../../view/ChatView";

@@ -55,12 +55,32 @@ export type RollInfo = {
   successRule?: string;
 };
 
+export type NetRollInfo = {
+  user: string;
+  userColor: string;
+  tstamp: string;
+  realtstamp: number;
+  result: string;
+  diceColor: string;
+  diceMaterial: string;
+  comment?: string;
+  successRule?: string;
+};
+
 export type RoomInfo = {
   id: string;
   name: string;
   owner: string;
   bkguri?: string;
   rolls: RollInfo[];
+};
+
+export type NetRoomInfo = {
+  id: string;
+  name: string;
+  owner: string;
+  bkguri?: string;
+  rolls: NetRollInfo[];
 };
 
 export const emptyRoomInfo = (rid?: string) => {

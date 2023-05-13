@@ -9,12 +9,14 @@ import {
 } from "./storage";
 import {
   CentMessage,
-  RollInfo,
+  NetRollInfo,
+  NetRoomInfo,
   RoomInfo,
   topicRollInfo,
   topicRoomInfo,
 } from "./types";
-import { animateRemoteRoll, updateRolls } from "./util";
+import { Net2HostRollInfo, Net2HostRoomInfo, animateRemoteRoll, updateRolls } from "./util";
+import { Host2NetRoomInfo } from "./util";
 
 export const centPack = (sender: string, payload: any) => {
   const room = currentRoom();
@@ -39,7 +41,7 @@ const processRollInfo = (ctx: PublicationContext) => {
     data.room !== currentRoom()?.id
   )
     return;
-  const info = data.data as RollInfo;
+  const info = Net2HostRollInfo(data.data as NetRollInfo);
   updateRolls(info);
   animateRemoteRoll(info);
 };
@@ -131,11 +133,18 @@ export const centLoadRooms = (ids?: string[]) => {
   client
     .rpc("room_list", msg)
     .then((result) => {
-      console.log("room_list result", result.data);
-      const data = result.data as RoomInfo[];
+      const data = result.data as NetRoomInfo[];
       if (data) {
         const newState = { ...appRooms() };
-        data.forEach((r) => (newState[r.id] = r));
+        data.forEach((r) => (newState[r.id] = Net2HostRoomInfo(r)));
+
+        const receivedIds = data.map((r) => r.id);
+        const toCheck = ids ? ids : Object.values(appRooms()).map((r) => r.id);
+        console.log(receivedIds, toCheck);
+        toCheck.forEach((id) => {
+          if (!receivedIds.includes(id)) delete newState[id]; // room has been deleted
+        });
+
         saveToStorage(rollerRoomsKey, newState);
       }
     })
@@ -152,7 +161,7 @@ export const centCreateRoom = (room: RoomInfo) => {
   const msg = {
     sender: appSettings().userIdent,
     room: room.id,
-    data: room,
+    data: Host2NetRoomInfo(room),
   } as CentMessage;
   client
     .rpc("room_create", msg)
@@ -172,7 +181,7 @@ export const centDeleteRoom = (room: RoomInfo) => {
   const msg = {
     sender: appSettings().userIdent,
     room: room.id,
-    data: room,
+    data: Host2NetRoomInfo(room),
   } as CentMessage;
   client
     .rpc("room_delete", msg)
@@ -192,7 +201,7 @@ export const centUpdateRoom = (room: RoomInfo) => {
   const msg = {
     sender: appSettings().userIdent,
     room: room.id,
-    data: room,
+    data: Host2NetRoomInfo(room),
   } as CentMessage;
   client
     .rpc("room_update", msg)

@@ -33,7 +33,7 @@ func NewRollerEngine(dbase *badger.DB, log *zap.Logger) (*RollerEngine, error) {
 		result.Log.Info("client connected")
 
 		client.OnSubscribe(func(e centrifuge.SubscribeEvent, cb centrifuge.SubscribeCallback) {
-			result.Log.Info("client subscribed", zap.String("channel", e.Channel))
+			// result.Log.Info("client subscribed", zap.String("channel", e.Channel))
 			cb(centrifuge.SubscribeReply{}, nil)
 		})
 

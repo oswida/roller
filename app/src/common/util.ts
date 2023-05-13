@@ -11,7 +11,7 @@ import {
   saveToStorage,
 } from "./storage";
 import { spaceSize, sprinkles } from "./theme.css";
-import { RollInfo } from "./types";
+import { NetRollInfo, NetRoomInfo, RollInfo, RoomInfo } from "./types";
 import { diceBox, setRollComment, setAnimating, rolling } from "./state";
 import { rollNotationWithResults } from "./rollinfo";
 
@@ -176,3 +176,20 @@ export const generateSerialKeys = (length: number, separator: string) => {
     .replace(/(\w{4})/g, "$1" + separator)
     .substring(0, length + Math.round(length / 4) - 1);
 };
+
+
+export const Net2HostRollInfo = (info: NetRollInfo) => {
+  return { ...info, result: decompressData64(info.result) } as RollInfo;
+}
+
+export const Host2NetRollInfo = (info: RollInfo) => {
+  return { ...info, result: compressData64(info.result) } as NetRollInfo;
+}
+
+export const Net2HostRoomInfo = (room: NetRoomInfo) => {
+  return { ...room, rolls: room.rolls.map((r) => Net2HostRollInfo(r)) } as RoomInfo;
+}
+
+export const Host2NetRoomInfo = (room: RoomInfo) => {
+  return { ...room, rolls: room.rolls.map((r) => Host2NetRollInfo(r)) } as NetRoomInfo;
+}
