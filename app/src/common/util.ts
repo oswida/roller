@@ -12,7 +12,8 @@ import {
 } from "./storage";
 import { spaceSize, sprinkles } from "./theme.css";
 import { RollInfo } from "./types";
-import { diceBox, setRollComment, setAnimating } from "./state";
+import { diceBox, setRollComment, setAnimating, rolling } from "./state";
+import { rollNotationWithResults } from "./rollinfo";
 
 export const createSpaceVariants = (name: string) => {
   const result: Record<string, any> = {};
@@ -86,26 +87,6 @@ export const prettyToday = () => {
     .replaceAll(" ", "_");
 };
 
-export const createRollInfo = (result: any, comment?: string) => {
-  const r: Record<string, number[]> = {};
-  const dice = result.notation.split("+");
-  result.sets.forEach((set: any) => {
-    const id = set.type;
-    r[id] = set.rolls.map((r: any) => r.value);
-  });
-  return {
-    user: appSettings().userName,
-    userColor: appSettings().userColor,
-    rollTotal: result.total,
-    rollResults: r,
-    rollDice: dice,
-    diceColor: appSettings().diceColor,
-    diceMaterial: appSettings().diceMaterial,
-    tstamp: prettyToday(),
-    comment: comment,
-    realtstamp: Date.now(),
-  } as RollInfo;
-};
 
 export const diceColorSet: string[] = [
   "acid",
@@ -134,24 +115,24 @@ export const diceColorSet: string[] = [
 ];
 
 export const diceMaterialSet = [
-  "cloudy",
-  "cloudy_2",
-  "fire",
-  "marble",
-  "water",
-  "ice",
-  "paper",
-  "speckles",
-  "glitter",
-  "stainedglass",
-  "wood",
-  "metal",
-  "dragon",
   "bronze01",
   "bronze02",
   "bronze03",
   "bronze04",
+  "cloudy_2",
+  "cloudy",
+  "dragon",
+  "fire",
+  "glitter",
+  "ice",
+  "marble",
+  "metal",
   "none",
+  "paper",
+  "speckles",
+  "stainedglass",
+  "water",
+  "wood",
 ];
 
 export const updateRolls = (info: RollInfo) => {
@@ -167,6 +148,7 @@ export const updateRolls = (info: RollInfo) => {
 };
 
 export const animateRemoteRoll = async (info: RollInfo) => {
+  if (rolling()) return;
   setAnimating(true);
   const db = diceBox();
   if (!db) return;
@@ -175,13 +157,8 @@ export const animateRemoteRoll = async (info: RollInfo) => {
     theme_colorset: info.diceColor,
     theme_texture: info.diceMaterial,
   });
-  const results: number[] = [];
-  Object.keys(info.rollResults).forEach((key) => {
-    const values = info.rollResults[key];
-    values.forEach((v) => results.push(v));
-  });
-  const r = `${info.rollDice.join("+")}@${results.join(",")}`;
-  await db.add(r);
+  const notation = rollNotationWithResults(info.result);
+  await db.add(notation);
   await db.updateConfig({
     theme_colorset: s.diceColor,
     theme_texture: s.diceMaterial,

@@ -122,3 +122,43 @@ export const chatItemHeaderStyle = recipe({
 export const chatItemCommentStyle = style({
   fontStyle: "italic",
 });
+
+export const chatDatablockStyle = recipe({
+  base: [sprinkles({
+    display: "flex",
+    flexDirection: 'row',
+    alignItems: "center",
+    borderColor: "accent",
+    borderStyle: "solid",
+    borderWidth: "thin",
+    paddingY: "small",
+    paddingX: "medium",
+    color: "primary",
+
+  }), {
+    width: "auto",
+    minWidth: "3em"
+  }],
+  variants: {
+    background: {
+      secondary: sprinkles({ backgroundColor: "backgroundSecondary" }),
+      none: sprinkles({ backgroundColor: "none" })
+    },
+    position: {
+      left: sprinkles({
+        borderBottomLeftRadius: "medium",
+        borderTopLeftRadius: 'medium',
+        justifyContent: "flex-start",
+      }),
+      right: sprinkles({
+        borderBottomRightRadius: "medium",
+        borderTopRightRadius: 'medium',
+        justifyContent: "flex-end",
+      })
+    }
+  },
+  defaultVariants: {
+    background: "none",
+    position: 'left'
+  }
+})

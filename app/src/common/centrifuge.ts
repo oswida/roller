@@ -52,11 +52,17 @@ const processRoomInfo = (ctx: PublicationContext) => {
   centLoadRooms([info.id]);
 };
 
+
+
 export const serverAddress = () => {
-  const schema = "wss";
-  const addr = `${schema}://${window.location.host}/connection/websocket`;
-  console.log("server address", addr);
-  // wss://localhost:5000/connection/websocket
+  // DEV version
+  //const addr = "ws://localhost:5000/connection/websocket";
+  // PROD version
+  // const addr =  `wss://${window.location.host}/connection/websocket`;
+  const schema = import.meta.env.DEV ? "ws" : "wss";
+  const host = import.meta.env.DEV ? "localhost:5000" : window.location.host;
+  const addr = `${schema}://${host}/connection/websocket`;
+  console.log("server address", addr, import.meta.env.DEV, import.meta.env.PROD);
   return addr;
 };
 
@@ -190,7 +196,7 @@ export const centUpdateRoom = (room: RoomInfo) => {
   } as CentMessage;
   client
     .rpc("room_update", msg)
-    .then((result) => {})
+    .then((result) => { })
     .catch((err) => {
       console.error(err);
     });

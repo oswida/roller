@@ -3,6 +3,7 @@ import {
   appSettings,
   currentRoom,
   mqttClient,
+  netConnectionStatus,
   netPublish,
   topicRoomUpdateRequest,
 } from "~/common";
@@ -12,9 +13,15 @@ import { DiceSelector } from "../../view/DiceSelector";
 import { RollView } from "../../view/RollView";
 import { TopBar } from "./TopBar";
 import { mainStyle } from "./styles.css";
+import toast from "solid-toast";
 
 export const MainView = () => {
   let mainRef: HTMLDivElement;
+
+  createEffect(() => {
+    if (netConnectionStatus()) toast("Connected to server");
+    else toast("Disconnected from server");
+  });
 
   return (
     <div id="app" class={mainStyle} ref={(e) => (mainRef = e)}>

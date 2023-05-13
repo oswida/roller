@@ -3,7 +3,6 @@ package net
 import (
 	"errors"
 	"sync"
-	"time"
 
 	"github.com/centrifugal/centrifuge"
 	badger "github.com/dgraph-io/badger/v4"
@@ -31,19 +30,18 @@ func NewRollerEngine(dbase *badger.DB, log *zap.Logger) (*RollerEngine, error) {
 
 	node.OnConnect(func(client *centrifuge.Client) {
 
+		result.Log.Info("client connected")
+
 		client.OnSubscribe(func(e centrifuge.SubscribeEvent, cb centrifuge.SubscribeCallback) {
+			result.Log.Info("client subscribed", zap.String("channel", e.Channel))
 			cb(centrifuge.SubscribeReply{}, nil)
 		})
 
 		client.OnPublish(func(e centrifuge.PublishEvent, cb centrifuge.PublishCallback) {
 			result.PublishCallback(e)
-			r, err := node.Publish(
-				e.Channel, e.Data,
-				centrifuge.WithHistory(100, 120*time.Second),
-				centrifuge.WithClientInfo(e.ClientInfo),
-			)
+			r, err := node.Publish(e.Channel, e.Data)
 			if err != nil {
-				result.Log.Error("publish", zap.Error(err))
+				result.Log.Error("publish error", zap.Error(err))
 			}
 			cb(centrifuge.PublishReply{Result: &r}, err)
 		})
@@ -51,13 +49,13 @@ func NewRollerEngine(dbase *badger.DB, log *zap.Logger) (*RollerEngine, error) {
 		client.OnRPC(func(e centrifuge.RPCEvent, cb centrifuge.RPCCallback) {
 			r, err := result.RPCCallback(dbase, e)
 			if err != nil {
-				result.Log.Error("rpc", zap.Error(err))
+				result.Log.Error("rpc error", zap.Error(err))
 			}
 			cb(centrifuge.RPCReply{Data: r}, err)
 		})
 
 		client.OnDisconnect(func(e centrifuge.DisconnectEvent) {
-			result.Log.Info("client disconnected")
+			result.Log.Info("client disconnected", zap.String("reason", e.Reason), zap.String("err", e.String()))
 		})
 	})
 
@@ -66,7 +64,7 @@ func NewRollerEngine(dbase *badger.DB, log *zap.Logger) (*RollerEngine, error) {
 
 func (eng *RollerEngine) Run() error {
 	if eng.Node == nil {
-		return errors.New("Centrifuge node not initialized")
+		return errors.New("centrifuge node not initialized")
 	}
 	return eng.Node.Run()
 }

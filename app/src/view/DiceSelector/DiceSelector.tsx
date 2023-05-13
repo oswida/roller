@@ -1,6 +1,8 @@
 import { Component, Show } from "solid-js";
 import {
+  animating,
   appSettings,
+  currentRoom,
   diceBox,
   dicePool,
   rolling,
@@ -25,7 +27,7 @@ export const DiceSelector: Component = () => {
   };
 
   const roll = async () => {
-    if (rolling()) return;
+    if (rolling() || !currentRoom() || currentRoom()?.id == "") return;
     const db = diceBox();
     if (!db) return;
     const pool = dicePool();
@@ -50,7 +52,7 @@ export const DiceSelector: Component = () => {
 
   const clearTable = () => {
     const db = diceBox();
-    if (!db) return;
+    if (!db || rolling() || animating()) return;
     db.clearDice();
   };
 

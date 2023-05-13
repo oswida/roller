@@ -1,5 +1,5 @@
-import { Show, createMemo } from "solid-js";
-import { RollInfo } from "~/common";
+import { For, Show, createMemo } from "solid-js";
+import { RollInfo, appSettings } from "~/common";
 import { Button, Flex, Text } from "~/component";
 import {
   chatItemCommentStyle,
@@ -7,25 +7,14 @@ import {
   chatItemHeaderStyle,
   chatItemRootStyle,
   chatRootStyle,
+  chatDatablockStyle,
 } from "./styles.css";
 import {
-  FaSolidCommentDots,
-  FaSolidDice,
-  FaSolidDiceD20,
-  FaSolidHandDots,
-} from "solid-icons/fa";
+  TbSum
+} from "solid-icons/tb";
+import { DataBlock } from "./DataBlock";
 
 export const ChatItem = ({ item }: { item: RollInfo }) => {
-  const rolls = createMemo(() => {
-    const results = item.rollDice.map((d) => {
-      const p = d.split("d");
-      if (p.length != 2) return 0;
-      const val = item.rollResults[`d${p[1]}`];
-      if (!val) return 0;
-      return `[ ${val.sort((a, b) => a - b).join(", ")} ]`;
-    });
-    return results.join(" ");
-  });
 
   const itemHour = createMemo(() => {
     const parts = item.tstamp.split("__");
@@ -50,17 +39,36 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
         <Flex title={item.tstamp}>{itemHour()}</Flex>
       </div>
       <div class={chatItemContentStyle({})}>
-        <Flex gap="medium" style={{ "align-items": "center" }}>
-          <Text colorSchema="secondary">{item.rollDice.join(", ")}</Text>
+        <Flex gap="medium" direction="column">
+          {/* <Text colorSchema="secondary">{item.result.notation}</Text> */}
+          <Flex style={{ "justify-content": "space-between", flex: 1 }}>
+            <Show when={appSettings().showRollTotal}>
+              <DataBlock left={<Text colorSchema="secondary">Total</Text>} right={<div>{item.result.total}</div>} rightBackground="secondary" />
+            </Show>
+            <Show when={item.successRule && appSettings().showRollSuccess}>
+              <DataBlock left={<div>Result</div>} right={<div>Success??</div>} />
+            </Show>
+          </Flex>
+
+          <For each={item.result.sets}>
+            {(set) => (
+              <Flex>
+                <Text colorSchema="secondary">{`${set.num}${set.type}: `}</Text>
+                <DataBlock right={set.rolls.map((r) => (
+                  r.value
+                )).join(", ")} />
+              </Flex>
+            )}
+          </For>
+
+          {/* <Text colorSchema="secondary">{item.rollDice.join(", ")}</Text>
           <Text colorSchema="secondary"> ⇒ </Text>
           <div>{item.rollTotal} </div>
           <Show when={item.rollDice.length <= 1}>
             <div>{rolls()}</div>
-          </Show>
+          </Show> */}
         </Flex>
-        <Show when={item.rollDice.length > 1}>
-          <div>{rolls()}</div>
-        </Show>
+
         <Show when={item.comment !== undefined && item.comment !== ""}>
           <div class={chatItemCommentStyle}>{item.comment}</div>
         </Show>

@@ -15,8 +15,32 @@ export const SettingsView: Component = () => {
     return rl;
   });
 
+  const total = createMemo(() => {
+    const rl = appSettings().showRollTotal;
+    if (!rl) return false;
+    return rl;
+  });
+
+
+  const success = createMemo(() => {
+    const rl = appSettings().showRollSuccess;
+    if (!rl) return false;
+    return rl;
+  });
+
+
   const setRightLayout = (value: boolean) => {
     const newState = { ...appSettings(), rightLayout: value };
+    saveToStorage(rollerSettingsKey, newState);
+  };
+
+  const setTotal = (value: boolean) => {
+    const newState = { ...appSettings(), showRollTotal: value };
+    saveToStorage(rollerSettingsKey, newState);
+  };
+
+  const setSuccess = (value: boolean) => {
+    const newState = { ...appSettings(), showRollSuccess: value };
     saveToStorage(rollerSettingsKey, newState);
   };
 
@@ -32,6 +56,16 @@ export const SettingsView: Component = () => {
         label="Chat on right"
         checked={rightLayout}
         setChecked={setRightLayout}
+      />
+      <Switch
+        label="Show roll total"
+        checked={total}
+        setChecked={setTotal}
+      />
+      <Switch
+        label="Show roll success"
+        checked={success}
+        setChecked={setSuccess}
       />
     </Flex>
   );

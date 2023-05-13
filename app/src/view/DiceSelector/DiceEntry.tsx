@@ -9,11 +9,12 @@ type Props = {
 
 export const DiceEntry: Component<Props> = ({ face, label }) => {
   const inc = (e: any) => {
+    console.log(e);
     let value = dicePool()[face];
     if (!value) {
       value = 0;
     }
-    if (e.ctrlKey) {
+    if (e.shiftKey) {
       value -= 1;
     } else {
       value += 1;
@@ -32,7 +33,7 @@ export const DiceEntry: Component<Props> = ({ face, label }) => {
     <div
       class={diceEntryStyle}
       onClick={(e) => inc(e)}
-      title="Click to increase dice pool. Ctrl+click to decrease."
+      title="Click to increase dice pool. Shift+click to decrease."
     >
       <div>{label}</div>
       <Show when={diceNum() > 0}>

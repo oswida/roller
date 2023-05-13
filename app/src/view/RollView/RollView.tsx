@@ -14,7 +14,6 @@ import {
   updateRolls,
 } from "~/common";
 import { rollViewStyle } from "./styles.css";
-import { CSSProperties } from "@vanilla-extract/css";
 
 const diceConfig = {
   framerate: 1 / 60,
@@ -32,7 +31,7 @@ const diceConfig = {
   light_intensity: 0.8,
   baseScale: 100,
   strength: 1, // toss strength of dice
-  onRollComplete: () => {},
+  onRollComplete: () => { },
 };
 
 export const RollView: Component = () => {

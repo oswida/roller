@@ -1,7 +1,6 @@
 import { v4 as uuid } from "uuid";
-import { mqttC, mqttS } from "./mqtt";
 import { colorType } from "./theme.css";
-import { decompressData64 } from "./util";
+import { RollResult } from "./rollinfo";
 
 export type SelectOption = {
   label: string;
@@ -22,6 +21,8 @@ export type AppSettings = {
   diceMaterial: string;
   rightLayout?: boolean;
   appTheme?: string;
+  showRollSuccess?: boolean;
+  showRollTotal?: boolean;
 };
 
 export const emptyAppSettings = () => {
@@ -47,12 +48,11 @@ export type RollInfo = {
   userColor: string;
   tstamp: string;
   realtstamp: number;
-  rollTotal: number;
-  rollDice: string[];
-  rollResults: Record<string, number[]>;
+  result: RollResult;
   diceColor: string;
   diceMaterial: string;
   comment?: string;
+  successRule?: string;
 };
 
 export type RoomInfo = {
