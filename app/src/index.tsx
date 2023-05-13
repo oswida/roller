@@ -2,12 +2,13 @@
 import { render } from "solid-js/web";
 
 import App from "./App";
-import { netInit, updateStoreSize } from "./common";
-import { Router, hashIntegration } from "@solidjs/router";
+import { netInit, queueInit, updateStoreSize } from "./common";
+import { Router } from "@solidjs/router";
 
 const root = document.getElementById("root");
 updateStoreSize();
 netInit();
+queueInit();
 
 if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   throw new Error(

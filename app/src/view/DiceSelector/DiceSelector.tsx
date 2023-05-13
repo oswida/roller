@@ -5,6 +5,7 @@ import {
   currentRoom,
   diceBox,
   dicePool,
+  enrollTask,
   rolling,
   setDicePool,
   setRollComment,
@@ -75,7 +76,7 @@ export const DiceSelector: Component = () => {
 
       <Flex center>
         <Show when={!rolling()}>
-          <Button variant="ghost" onClick={roll}>
+          <Button variant="ghost" onClick={() => enrollTask(roll)}>
             <FaSolidDice />
             <Text>Roll</Text>
           </Button>

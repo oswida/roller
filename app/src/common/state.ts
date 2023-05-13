@@ -1,6 +1,8 @@
 import { createSignal } from "solid-js";
 import mqtt from "mqtt/dist/mqtt";
 import { Centrifuge } from "centrifuge";
+import Queue from "queue";
+import { Mutex } from "async-mutex";
 
 export const [storageSize, setStorageSize] = createSignal(0);
 
@@ -28,3 +30,7 @@ export const [centConnectionStatus, setCentConnectionStatus] =
 export const [centClient, setCentClient] = createSignal<Centrifuge | undefined>(
   undefined
 );
+
+// Task queue
+export const [taskQueue, setTaskQueue] = createSignal<Queue | undefined>(undefined);
+export const [taskMutex, setTaskMutex] = createSignal<Mutex | undefined>(undefined);

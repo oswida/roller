@@ -21,6 +21,7 @@ import {
   rollerSettingsKey,
   saveToStorage,
   storageSize,
+  taskQueue,
 } from "~/common";
 import { Button, Flex, Popover, Select, Text } from "~/component";
 import { SettingsView } from "../../view/SettingsView";
@@ -54,6 +55,12 @@ export const TopBar: Component = () => {
     data.diceMaterial = value;
     saveToStorage(rollerSettingsKey, data);
   };
+
+  const pendingRolls = createMemo(() => {
+    const q = taskQueue();
+    if (!q) return 0;
+    return q.length;
+  });
 
   const createRoom = () => {
     const room = emptyRoomInfo();
@@ -163,6 +170,9 @@ export const TopBar: Component = () => {
         <Text colorSchema="secondary" fontSize="small">
           {(storageSize() / 1000).toFixed(2)} kB
         </Text>
+        <Dynamic component={Text} colorSchema="secondary" fontSize="small">
+          PR: {pendingRolls()}
+        </Dynamic>
       </Flex>
     </div>
   );

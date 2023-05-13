@@ -15,7 +15,7 @@ import {
   topicRollInfo,
   topicRoomInfo,
 } from "./types";
-import { Net2HostRollInfo, Net2HostRoomInfo, animateRemoteRoll, updateRolls } from "./util";
+import { Net2HostRollInfo, Net2HostRoomInfo, animateRemoteRoll, enrollTask, updateRolls } from "./util";
 import { Host2NetRoomInfo } from "./util";
 
 export const centPack = (sender: string, payload: any) => {
@@ -79,7 +79,7 @@ export const centConnect = () => {
     centLoadRooms();
     const sub = centrifuge.newSubscription(topicRollInfo);
     sub.on("publication", (ctx) => {
-      processRollInfo(ctx);
+      enrollTask(() => processRollInfo(ctx));
     });
     sub.subscribe();
     const sub2 = centrifuge.newSubscription(topicRoomInfo);

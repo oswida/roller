@@ -50,16 +50,18 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
             </Show>
           </Flex>
 
-          <For each={item.result.sets}>
-            {(set) => (
-              <Flex>
-                <Text colorSchema="secondary">{`${set.num}${set.type}: `}</Text>
-                <DataBlock right={set.rolls.map((r) => (
-                  r.value
-                )).join(", ")} />
-              </Flex>
-            )}
-          </For>
+          <Flex gap="medium">
+            <For each={item.result.sets}>
+              {(set) => (
+                <Flex>
+                  <Text colorSchema="secondary">{`${set.num}${set.type}: `}</Text>
+                  <DataBlock right={set.rolls.map((r) => (
+                    r.value
+                  )).join(", ")} />
+                </Flex>
+              )}
+            </For>
+          </Flex>
 
           {/* <Text colorSchema="secondary">{item.rollDice.join(", ")}</Text>
           <Text colorSchema="secondary"> ⇒ </Text>

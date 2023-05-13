@@ -12,8 +12,10 @@ import {
 } from "./storage";
 import { spaceSize, sprinkles } from "./theme.css";
 import { NetRollInfo, NetRoomInfo, RollInfo, RoomInfo } from "./types";
-import { diceBox, setRollComment, setAnimating, rolling } from "./state";
+import { diceBox, setRollComment, setAnimating, rolling, setTaskQueue, taskQueue, setTaskMutex, taskMutex } from "./state";
 import { rollNotationWithResults } from "./rollinfo";
+import Queue from "queue";
+import { Mutex } from "async-mutex";
 
 export const createSpaceVariants = (name: string) => {
   const result: Record<string, any> = {};
@@ -192,4 +194,30 @@ export const Net2HostRoomInfo = (room: NetRoomInfo) => {
 
 export const Host2NetRoomInfo = (room: RoomInfo) => {
   return { ...room, rolls: room.rolls.map((r) => Host2NetRollInfo(r)) } as NetRoomInfo;
+}
+
+
+export const queueInit = () => {
+  const q = new Queue({ autostart: true, concurrency: 1 });
+  setTaskQueue(q);
+}
+
+export const enrollTask = (f: () => void) => {
+  const q = taskQueue();
+  const mutex = new Mutex();
+  setTaskMutex(mutex);
+  if (!q) {
+    console.error("Cannot find task queue");
+    return;
+  }
+  q.push(cb => {
+    const mux = taskMutex();
+    if (!mux) {
+      console.error("cannot find mutex!");
+      if (cb) cb(new Error("cannot find mutex"));
+      return;
+    }
+    mux.runExclusive(f);
+    if (cb) cb();
+  });
 }

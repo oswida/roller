@@ -52,11 +52,11 @@ export const RollView: Component = () => {
       });
     });
     Box.onRollComplete = (results: any) => {
-      if (animating()) return;
+      if (animating()) { setRolling(false); return; }
       const info = createRollInfo(results, rollComment());
       updateRolls(info);
-      setRolling(false);
       netPublish(topicRollInfo, Host2NetRollInfo(info));
+      setRolling(false);
     };
   });
 
