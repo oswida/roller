@@ -1,10 +1,12 @@
 import {
+  FaSolidCircleInfo,
   FaSolidFileExport,
   FaSolidFileImport,
   FaSolidTrash,
 } from "solid-icons/fa";
 import { Component, For, Show, createMemo } from "solid-js";
 import {
+  RefProps,
   RollInfo,
   appRooms,
   appSettings,
@@ -23,7 +25,7 @@ import { ChatItem } from "./ChatItem";
 import { chatListStyle, chatRootStyle } from "./styles.css";
 import toast from "solid-toast";
 
-export const ChatView: Component = () => {
+export const ChatView: Component<RefProps> = ({ ref }) => {
   const items = createMemo(() => {
     const data = appRooms();
     const settings = appSettings();
@@ -37,7 +39,7 @@ export const ChatView: Component = () => {
     if (appSettings().currentRoom == "") return;
     data[appSettings().currentRoom].rolls = [];
     saveToStorage(rollerRoomsKey, data);
-    toast("Rolls cleared");
+    toast("Rolls cleared", { icon: <FaSolidCircleInfo /> });
     netUpdateRoom(data[appSettings().currentRoom]);
   };
 
@@ -49,7 +51,7 @@ export const ChatView: Component = () => {
       newState[room.id].rolls = data as RollInfo[];
       saveToStorage(rollerRoomsKey, newState);
       netPublish(topicRoomInfo, newState[room.id]);
-      toast("Rolls imported");
+      toast("Rolls imported", { icon: <FaSolidCircleInfo /> });
     });
   };
 
@@ -58,7 +60,7 @@ export const ChatView: Component = () => {
     if (!room) return;
     const filename = `rolls-${prettyToday()}.json`;
     exportData(room.rolls, filename);
-    toast("Rolls exported");
+    toast("Rolls exported", { icon: <FaSolidCircleInfo /> });
   };
 
   return (
@@ -79,7 +81,7 @@ export const ChatView: Component = () => {
           </Flex>
         </Show>
       </Flex>
-      <div class={chatListStyle}>
+      <div class={chatListStyle} ref={ref}>
         <For each={items()}>
           {(it) => (
             <Flex direction="column">

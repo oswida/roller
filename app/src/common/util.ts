@@ -200,12 +200,12 @@ export const Host2NetRoomInfo = (room: RoomInfo) => {
 export const queueInit = () => {
   const q = new Queue({ autostart: true, concurrency: 1 });
   setTaskQueue(q);
+  const mutex = new Mutex();
+  setTaskMutex(mutex);
 }
 
 export const enrollTask = (f: () => void) => {
   const q = taskQueue();
-  const mutex = new Mutex();
-  setTaskMutex(mutex);
   if (!q) {
     console.error("Cannot find task queue");
     return;

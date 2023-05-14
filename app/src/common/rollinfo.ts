@@ -56,6 +56,5 @@ export const rollNotationWithResults = (result: RollResult) => {
         diceRes[it].rolls.map((r) => r.value).join(",")
     );
     const retv = `${result.notation}@${dicePreset.join(",")}`;
-    console.log("notation", retv);
     return retv;
 }

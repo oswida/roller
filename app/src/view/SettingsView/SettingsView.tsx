@@ -63,26 +63,30 @@ export const SettingsView: Component = () => {
         value={appSettings().userName}
         onChange={(e) => updateName(e.target.value)}
       />
-      <Switch
-        label="Chat on right"
-        checked={rightLayout}
-        setChecked={setRightLayout}
-      />
-      <Switch
-        label="Show roll total"
-        checked={total}
-        setChecked={setTotal}
-      />
-      <Switch
-        label="Show roll success"
-        checked={success}
-        setChecked={setSuccess}
-      />
-      <Switch
-        label="Smaller dice"
-        checked={smallerDice}
-        setChecked={setSmalldice}
-      />
+      <Flex style={{ "justify-content": "space-between" }}>
+        <Switch
+          label="Chat on right"
+          checked={rightLayout}
+          setChecked={setRightLayout}
+        />
+        <Switch
+          label="Smaller dice"
+          checked={smallerDice}
+          setChecked={setSmalldice}
+        />
+      </Flex>
+      <Flex style={{ "justify-content": "space-between" }}>
+        <Switch
+          label="Show roll total"
+          checked={total}
+          setChecked={setTotal}
+        />
+        <Switch
+          label="Show roll success"
+          checked={success}
+          setChecked={setSuccess}
+        />
+      </Flex>
     </Flex>
   );
 };

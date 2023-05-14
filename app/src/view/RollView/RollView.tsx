@@ -2,6 +2,7 @@ import DiceBox from "@3d-dice/dice-box-threejs";
 import { Component, JSX, createEffect, createMemo } from "solid-js";
 import {
   Host2NetRollInfo,
+  RefProps,
   animating,
   appSettings,
   createRollInfo,
@@ -35,13 +36,12 @@ const diceConfig = {
   onRollComplete: () => { },
 };
 
-export const RollView: Component = () => {
-  let tableRef: HTMLDivElement;
-
-
+export const RollView: Component<RefProps> = ({ ref }) => {
 
   createEffect(() => {
-    if (!tableRef || diceBox() !== undefined) return;
+    if (diceBox() !== undefined) {
+      return;
+    }
     const Box = new DiceBox("#table", { ...diceConfig, baseScale: appSettings().smallerDice ? 70 : 100 });
     setDiceBox(Box);
     Box.initialize().then(() => {
@@ -68,7 +68,6 @@ export const RollView: Component = () => {
     await box.updateConfig({
       theme_colorset: s.diceColor,
       theme_texture: s.diceMaterial,
-      baseScale: appSettings().smallerDice ? 40 : 100,
     });
   });
 
@@ -87,7 +86,7 @@ export const RollView: Component = () => {
     <div
       class={rollViewStyle}
       id="table"
-      ref={(e) => (tableRef = e)}
+      ref={ref}
       style={bkg()}
     ></div>
   );

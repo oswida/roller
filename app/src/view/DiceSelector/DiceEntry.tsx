@@ -9,7 +9,6 @@ type Props = {
 
 export const DiceEntry: Component<Props> = ({ face, label }) => {
   const inc = (e: any) => {
-    console.log(e);
     let value = dicePool()[face];
     if (!value) {
       value = 0;

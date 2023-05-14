@@ -1,5 +1,7 @@
 import { CopyToClipboard } from "solid-copy-to-clipboard";
 import {
+  FaSolidCircleInfo,
+  FaSolidCircleStop,
   FaSolidShareNodes,
   FaSolidSkullCrossbones,
   FaSolidTrash,
@@ -18,7 +20,6 @@ import {
 import {
   netDeleteRoom,
   netPublish,
-  netSessionLink,
   netUpdateRoom,
 } from "~/common/net";
 import { Button, Flex, Input, Text } from "~/component";
@@ -35,7 +36,8 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
     data[appSettings().currentRoom][field] = value;
     saveToStorage(rollerRoomsKey, data);
     netUpdateRoom(data[appSettings().currentRoom]);
-    netPublish(topicRoomInfo, data[appSettings().currentRoom]);
+    if (currentRoom()?.owner == appSettings().userIdent)
+      netPublish(topicRoomInfo, data[appSettings().currentRoom]);
   };
 
   const roomName = createMemo(() => {
@@ -53,7 +55,7 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
   const deleteRoom = () => {
     const room = currentRoom();
     if (!room || room.owner !== appSettings().userIdent) {
-      toast("Cannot delete room. Room can be deleted only by an owner.");
+      toast("Cannot delete room. Room can be deleted only by an owner.", { icon: <FaSolidCircleStop /> });
       return;
     }
     const newState = { ...appRooms() };
@@ -84,19 +86,19 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
           onChange={(e) => updateRoom("name", e.target.value)}
           style={{ width: "20em" }}
         />
-        <Input
-          label="Room background URI"
-          currentValue={() => roomBkg()}
-          onChange={(e) => updateRoom("bkguri", e.target.value)}
-          style={{ width: "20em" }}
-        />
       </Show>
+      <Input
+        label="Room background URI"
+        currentValue={() => roomBkg()}
+        onChange={(e) => updateRoom("bkguri", e.target.value)}
+        style={{ width: "20em" }}
+      />
       <Flex style={{ "justify-content": "space-between" }}>
         <CopyToClipboard
           text={roomId()}
           options={{ debug: true }}
           onCopy={() => {
-            toast("Room ID copied to clipboard");
+            toast("Room ID copied to clipboard", { icon: <FaSolidCircleInfo /> });
             onOpenChange(false);
           }}
           eventTrigger="onClick"

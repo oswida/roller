@@ -1,6 +1,5 @@
 import { createMemo } from "solid-js";
 import {
-  centClientLink,
   centConnect,
   centCreateRoom,
   centDeleteRoom,
@@ -10,7 +9,6 @@ import {
   centUpdateRoom,
 } from "./centrifuge";
 import {
-  mqttClientLink,
   mqttConnect,
   mqttDisconnect,
   mqttPublish,
@@ -23,17 +21,6 @@ export const netInit = () => {
   if (!netConnectionStatus()) netConnect();
 };
 
-export const netSessionLink = () => {
-  switch (appSettings().network.type) {
-    case "mqtt":
-      return mqttClientLink();
-    case "cent":
-      return centClientLink();
-    default:
-      console.log("unsupported net type");
-      return "";
-  }
-};
 
 export const netConnect = () => {
   switch (appSettings().network.type) {

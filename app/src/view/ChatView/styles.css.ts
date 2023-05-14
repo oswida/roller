@@ -12,8 +12,8 @@ export const chatRootStyle = style([
     gap: "small",
   }),
   {
-    minWidth: "25vw",
-    maxWidth: "25vw",
+    minWidth: "340px",
+    maxWidth: "340px",
   },
 ]);
 
@@ -28,7 +28,7 @@ export const chatListStyle = style([
     gap: "small",
   }),
   {
-    height: "calc(100vh - 14em)",
+    // height: "100%",//"calc(100vh - 14em)",
     overflowY: "auto",
   },
 ]);

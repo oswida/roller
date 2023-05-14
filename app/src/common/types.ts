@@ -111,3 +111,7 @@ export const topicRoomInfo = "room_info";
 export const topicRollInfo = "roll_info";
 export const topicRoomUpdateRequest = "room_update";
 export const topicRoomConnect = "room_connect";
+
+export type RefProps = {
+  ref: any;
+}

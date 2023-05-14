@@ -20,9 +20,9 @@ export const Button: ParentComponent<Props & ComponentProps<"button">> = ({
 }) => {
   return (
     <Btn.Root
-      class={buttonStyle({ variant: variant })}
-      disabled={disabled}
+      class={buttonStyle({ variant: variant, disabled: disabled ? disabled : false })}
       {...rest}
+      disabled={disabled}
     >
       {children}
     </Btn.Root>

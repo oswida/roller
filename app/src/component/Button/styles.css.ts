@@ -45,19 +45,28 @@ export const buttonStyle = recipe({
         borderBottom: "solid 1px",
       },
       icon: {
-        width: "2.3em",
-        height: "2.3em",
+        width: 40,
+        height: 40,
         border: "none",
         borderRadius: spaceSize.small,
       },
       bigicon: {
-        width: "3em",
-        height: "3em",
+        width: 50,
+        height: 50,
         border: "none",
       },
     },
+    disabled: {
+      true: {
+        opacity: 0.5,
+      },
+      false: {
+        opacity: 1
+      }
+    }
   },
   defaultVariants: {
     variant: "flat",
+    disabled: false,
   },
 });

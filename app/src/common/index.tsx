@@ -5,3 +5,4 @@ export * from "./util";
 export * from "./storage";
 export * from "./net";
 export * from "./rollinfo";
+export * from "./dice";

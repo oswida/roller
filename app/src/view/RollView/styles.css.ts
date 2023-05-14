@@ -8,8 +8,9 @@ export const rollViewStyle = style([
     backgroundColor: "backgroundSecondary",
   }),
   {
-    flex: 1,
-    height: "calc(100vh - 8em)",
+    //height: "100%",
+    // flex: 1,
+    // height: "calc(100vh - 8em)",
     width: "calc(75vw)",
   },
 ]);

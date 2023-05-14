@@ -54,8 +54,6 @@ const processRoomInfo = (ctx: PublicationContext) => {
   centLoadRooms([info.id]);
 };
 
-
-
 export const serverAddress = () => {
   // DEV version
   //const addr = "ws://localhost:5000/connection/websocket";
@@ -64,7 +62,7 @@ export const serverAddress = () => {
   const schema = import.meta.env.DEV ? "ws" : "wss";
   const host = import.meta.env.DEV ? "localhost:5000" : window.location.host;
   const addr = `${schema}://${host}/connection/websocket`;
-  console.log("server address", addr, import.meta.env.DEV, import.meta.env.PROD);
+  console.log("server address", addr);
   return addr;
 };
 
@@ -114,12 +112,6 @@ export const centPublish = (topic: string, payload: any) => {
     .catch((err) => console.error(err));
 };
 
-export const centClientLink = () => {
-  const room = currentRoom();
-  if (!room) return "";
-  return `${window.location}connect?r=${encodeURIComponent(room.id)}`;
-};
-
 export const centLoadRooms = (ids?: string[]) => {
   const client = centClient();
   if (!client) {
@@ -140,7 +132,6 @@ export const centLoadRooms = (ids?: string[]) => {
 
         const receivedIds = data.map((r) => r.id);
         const toCheck = ids ? ids : Object.values(appRooms()).map((r) => r.id);
-        console.log(receivedIds, toCheck);
         toCheck.forEach((id) => {
           if (!receivedIds.includes(id)) delete newState[id]; // room has been deleted
         });

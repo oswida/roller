@@ -7,13 +7,15 @@ export const diceSelectorStyle = style([
     display: "flex",
     justifyContent: "space-between",
     backgroundColor: "background",
-    padding: "medium",
-    paddingX: "large",
+    paddingBottom: "medium",
+    paddingX: "medium",
     paddingTop: "large",
     alignItems: "center",
     gap: "large",
-  }),
-]);
+  }), {
+    flexWrap: "wrap"
+  }
+],);
 
 export const diceEntryStyle = style([
   sprinkles({

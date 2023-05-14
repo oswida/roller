@@ -1,5 +1,6 @@
 import { Component, Show } from "solid-js";
 import {
+  RefProps,
   animating,
   appSettings,
   currentRoom,
@@ -15,11 +16,12 @@ import { Flex, Input, Text } from "~/component";
 import { Button } from "~/component/Button";
 import { diceSelectorStyle } from "./styles.css";
 import { IoReload } from "solid-icons/io";
-import { FaSolidDice } from "solid-icons/fa";
+import { FaSolidDice, FaSolidHourglass } from "solid-icons/fa";
 import { AiOutlineClear } from "solid-icons/ai";
 import { DicePanel } from "./DicePanel";
+import { Dynamic } from "solid-js/web";
 
-export const DiceSelector: Component = () => {
+export const DiceSelector: Component<RefProps> = ({ ref }) => {
   let inputRef: HTMLInputElement;
 
   const resetPool = () => {
@@ -57,7 +59,7 @@ export const DiceSelector: Component = () => {
   };
 
   return (
-    <div class={diceSelectorStyle}>
+    <div class={diceSelectorStyle} ref={ref}>
       <Show when={appSettings().rightLayout}>
         <Flex gap="medium" center>
           <Button variant="ghost" onClick={resetPool} title="Reset">
@@ -87,19 +89,32 @@ export const DiceSelector: Component = () => {
             onInput={(e) => updateComment(e)}
           />
         </Show>
+        <Show when={rolling()}>
+          <Button variant="ghost" >
+            <FaSolidHourglass />
+            <Text>Rolling...</Text>
+          </Button>
+
+          <Input
+            tooltip="Please wait"
+            placeholder="Please wait"
+            disabled
+          />
+        </Show>
+
       </Flex>
 
       <Show when={!appSettings().rightLayout}>
         <Flex gap="medium" center>
           <Button variant="ghost" onClick={resetPool} title="Reset">
             <IoReload />
-            <Text>Reset</Text>
+            {/* <Text>Reset</Text> */}
           </Button>
           <DicePanel />
 
-          <Button variant="ghost" onClick={clearTable} title="Clear table">
+          <Button variant="ghost" onClick={clearTable} title="Clear table" style={{ "margin-left": "32px" }}>
             <AiOutlineClear />
-            <Text>Clear</Text>
+            {/* <Text>Clear</Text> */}
           </Button>
         </Flex>
       </Show>

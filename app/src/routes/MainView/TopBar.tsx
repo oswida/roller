@@ -8,6 +8,7 @@ import { TbPlugConnected } from "solid-icons/tb";
 import { Component, Show, createMemo, createSignal } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import {
+  RefProps,
   appRooms,
   appSettings,
   currentRoom,
@@ -29,7 +30,7 @@ import { RoomSettingsView } from "../../view/SettingsView/RoomSettingsView";
 import { topbarStyle } from "./styles.css";
 import { RoomConnectView } from "~/view/SettingsView/RoomConnectView";
 
-export const TopBar: Component = () => {
+export const TopBar: Component<RefProps> = ({ ref }) => {
   const [roomSettingOpen, setRoomSettingsOpen] = createSignal(false);
   const [roomConnectOpen, setRoomConnectOpen] = createSignal(false);
 
@@ -94,7 +95,7 @@ export const TopBar: Component = () => {
   };
 
   return (
-    <div class={topbarStyle}>
+    <div class={topbarStyle} ref={ref}>
       <Flex gap="medium" center>
         <Popover
           trigger={<FaSolidUser style={{ height: "1.5em", width: "1.5em" }} />}
