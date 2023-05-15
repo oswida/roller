@@ -52,6 +52,14 @@ export const CsContent: Component<Props> = ({ ref, changeTab, adjustSize }) => {
         return undefined;
     });
 
+    const currentCharObj = createMemo(() => {
+        const chars = appChars();
+        if (!chars) return undefined;
+        const r = items().filter(it => it.id == selChar());
+        if (r.length > 0) return chars[r[0].id];
+        return undefined;
+    });
+
     const removeChar = () => {
         const c = selChar();
         if (!c) return;
@@ -65,6 +73,7 @@ export const CsContent: Component<Props> = ({ ref, changeTab, adjustSize }) => {
         if (!v) return;
         setSelChar(v.id);
     }
+
 
     return <>
         <Flex gap="large" style={{ "justify-content": "space-between" }}>
@@ -85,7 +94,7 @@ export const CsContent: Component<Props> = ({ ref, changeTab, adjustSize }) => {
             </Flex>
         </Flex>
         <div class={chatListStyle} ref={(e: any) => ref(e)}>
-            <TplRenderer />
+            <TplRenderer tplId={() => currentCharObj()?.template} />
         </div>
     </>
 }
