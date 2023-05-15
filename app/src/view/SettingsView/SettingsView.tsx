@@ -1,8 +1,18 @@
+import { CopyToClipboard } from "solid-copy-to-clipboard";
+import { FaSolidCircleInfo, FaSolidShareNodes } from "solid-icons/fa";
 import { Component, createMemo } from "solid-js";
+import toast from "solid-toast";
 import { appSettings, rollerSettingsKey, saveToStorage } from "~/common";
-import { Flex, Input, Switch } from "~/component";
+import { Flex, Input, Switch, Text } from "~/component";
+import { buttonStyle } from "~/component/Button/styles.css";
 
-export const SettingsView: Component = () => {
+type Props = {
+  onOpenChange: (value: boolean) => void;
+};
+
+
+
+export const SettingsView: Component<Props> = ({ onOpenChange }) => {
   const updateName = (value: string) => {
     const data = { ...appSettings() };
     data.userName = value;
@@ -55,6 +65,7 @@ export const SettingsView: Component = () => {
     saveToStorage(rollerSettingsKey, newState);
   };
 
+
   return (
     <Flex direction="column" gap="medium">
       <Input
@@ -87,6 +98,19 @@ export const SettingsView: Component = () => {
           setChecked={setSuccess}
         />
       </Flex>
+      <CopyToClipboard
+        text={appSettings().userIdent}
+        onCopy={() => {
+          toast("User ID copied to clipboard", { icon: <FaSolidCircleInfo /> });
+          onOpenChange(false);
+        }}
+        eventTrigger="onClick"
+      >
+        <div class={buttonStyle({ variant: "ghost" })} title="Copy room id">
+          <FaSolidShareNodes />
+          <Text>Copy user ID </Text>
+        </div>
+      </CopyToClipboard>
     </Flex>
   );
 };

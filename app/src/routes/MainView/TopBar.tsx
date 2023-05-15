@@ -33,6 +33,7 @@ import { RoomConnectView } from "~/view/SettingsView/RoomConnectView";
 export const TopBar: Component<RefProps> = ({ ref }) => {
   const [roomSettingOpen, setRoomSettingsOpen] = createSignal(false);
   const [roomConnectOpen, setRoomConnectOpen] = createSignal(false);
+  const [userSettingOpen, setUserSettingsOpen] = createSignal(false);
 
   const username = createMemo(() => {
     return appSettings().userName;
@@ -99,9 +100,11 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
       <Flex gap="medium" center>
         <Popover
           trigger={<FaSolidUser style={{ height: "1.5em", width: "1.5em" }} />}
-          title="Settings"
+          title="User settings"
+          open={userSettingOpen}
+          onOpenChange={setUserSettingsOpen}
         >
-          <SettingsView />
+          <SettingsView onOpenChange={setUserSettingsOpen} />
         </Popover>
         <Dynamic component={"Text"}>{username()}</Dynamic>
         <Show when={roomList().length > 0}>

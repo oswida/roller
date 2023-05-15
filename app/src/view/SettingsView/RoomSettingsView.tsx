@@ -1,9 +1,9 @@
 import { CopyToClipboard } from "solid-copy-to-clipboard";
 import {
+  FaSolidArrowRight,
   FaSolidCircleInfo,
   FaSolidCircleStop,
   FaSolidShareNodes,
-  FaSolidSkullCrossbones,
   FaSolidTrash,
 } from "solid-icons/fa";
 import { Component, Show, createMemo } from "solid-js";
@@ -30,15 +30,24 @@ type Props = {
 };
 
 export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
-  const updateRoom = (field: "name" | "bkguri", value: string) => {
+  let passRef: HTMLInputElement;
+
+  const updateRoom = (field: "name" | "bkguri" | "owner", value: string) => {
     const data = { ...appRooms() };
     if (!data[appSettings().currentRoom]) return;
+    const isOwner = currentRoom()?.owner == appSettings().userIdent;
     data[appSettings().currentRoom][field] = value;
     saveToStorage(rollerRoomsKey, data);
     netUpdateRoom(data[appSettings().currentRoom]);
-    if (currentRoom()?.owner == appSettings().userIdent)
+    if (isOwner)
       netPublish(topicRoomInfo, data[appSettings().currentRoom]);
   };
+
+  const passOwnership = () => {
+    if (!passRef || !passRef.value || passRef.value.trim() == "") return;
+    updateRoom("owner", passRef.value);
+    onOpenChange(false);
+  }
 
   const roomName = createMemo(() => {
     const room = currentRoom();
@@ -113,8 +122,18 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
             <FaSolidTrash />
             <Text colorSchema="danger">Delete room</Text>
           </Button>
+
+
         </Show>
       </Flex>
+      <Show when={appSettings().userIdent == currentRoom()?.owner}>
+        <Flex center>
+          <Input label="Pass ownership to user" style={{ flex: 1, width: "16em" }} ref={(e) => passRef = e} />
+          <Button variant="icon" onClick={passOwnership}>
+            <FaSolidArrowRight />
+          </Button>
+        </Flex>
+      </Show>
     </Flex>
   );
 };
