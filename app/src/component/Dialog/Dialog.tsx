@@ -12,18 +12,22 @@ import { buttonStyle } from "../Button/styles.css";
 import { Text } from "~/component";
 
 type Props = {
-  title: string;
-  trigger: any;
+  dialogTitle: () => string;
+  trigger?: any;
+  open?: () => boolean;
+  onOpenChange?: (value: boolean) => void
 };
 
 export const Dialog: ParentComponent<Props> = ({
-  title,
+  dialogTitle,
   trigger,
   children,
+  open,
+  onOpenChange
 }) => {
   return (
-    <Dlg.Root>
-      <Dlg.Trigger class={buttonStyle({ variant: "icon" })}>
+    <Dlg.Root open={open ? open() : undefined} onOpenChange={onOpenChange}>
+      <Dlg.Trigger class={buttonStyle({})}>
         {trigger}
       </Dlg.Trigger>
       <Dlg.Portal>
@@ -32,9 +36,9 @@ export const Dialog: ParentComponent<Props> = ({
           <Dlg.Content class={dialogRootStyle}>
             <div class={dialogHeaderStyle}>
               <Text>
-                <b>{title}</b>
+                <b>{dialogTitle()}</b>
               </Text>
-              <Dlg.CloseButton class={buttonStyle({ variant: "icon" })}>
+              <Dlg.CloseButton class={buttonStyle({})}>
                 <FaSolidXmark />
               </Dlg.CloseButton>
             </div>

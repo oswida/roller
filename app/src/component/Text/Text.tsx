@@ -1,4 +1,4 @@
-import { ParentComponent } from "solid-js";
+import { ComponentProps, ParentComponent } from "solid-js";
 import { textStyle } from "./styles.css";
 
 type Props = {
@@ -6,13 +6,14 @@ type Props = {
   fontSize?: "smaller" | "small" | "standard" | "bigger" | "big";
 };
 
-export const Text: ParentComponent<Props> = ({
+export const Text: ParentComponent<Props & ComponentProps<"div">> = ({
   children,
   colorSchema,
   fontSize,
+  ...rest
 }) => {
   return (
-    <div class={textStyle({ colorSchema: colorSchema, fontSize: fontSize })}>
+    <div class={textStyle({ colorSchema: colorSchema, fontSize: fontSize })} {...rest}>
       {children}
     </div>
   );

@@ -1,95 +1,29 @@
-import {
-  FaSolidCircleInfo,
-  FaSolidFileExport,
-  FaSolidFileImport,
-  FaSolidTrash,
-} from "solid-icons/fa";
-import { Component, For, Show, createMemo } from "solid-js";
+import { Component, Show, createEffect, createSignal, onMount } from "solid-js";
 import {
   RefProps,
-  RollInfo,
-  appRooms,
-  appSettings,
-  currentRoom,
-  exportData,
-  importData,
-  netPublish,
-  netUpdateRoom,
-  prettyToday,
-  rollerRoomsKey,
-  saveToStorage,
-  topicRoomInfo,
 } from "~/common";
-import { Button, Flex, Text } from "~/component";
-import { ChatItem } from "./ChatItem";
-import { chatListStyle, chatRootStyle } from "./styles.css";
-import toast from "solid-toast";
+import { chatRootStyle } from "./styles.css";
+import { RollsContent } from "./RollsContent";
+import { CsContent } from "./CsContent";
 
-export const ChatView: Component<RefProps> = ({ ref }) => {
-  const items = createMemo(() => {
-    const data = appRooms();
-    const settings = appSettings();
-    if (!data || settings.currentRoom === "" || !data[settings.currentRoom])
-      return [];
-    return data[settings.currentRoom].rolls;
-  });
+type Props = {
+  chatRef: (e: any) => void;
+  csRef: (e: any) => void;
+  adjustSize: () => void;
+}
 
-  const clearRolls = () => {
-    const data = { ...appRooms() };
-    if (appSettings().currentRoom == "") return;
-    data[appSettings().currentRoom].rolls = [];
-    saveToStorage(rollerRoomsKey, data);
-    toast("Rolls cleared", { icon: <FaSolidCircleInfo /> });
-    netUpdateRoom(data[appSettings().currentRoom]);
-  };
+export const ChatView: Component<Props> = ({ chatRef, csRef, adjustSize }) => {
+  const [activeTab, setActiveTab] = createSignal("rolls");
 
-  const importRolls = () => {
-    importData((data: any) => {
-      const room = currentRoom();
-      if (!room) return;
-      const newState = { ...appRooms() };
-      newState[room.id].rolls = data as RollInfo[];
-      saveToStorage(rollerRoomsKey, newState);
-      netPublish(topicRoomInfo, newState[room.id]);
-      toast("Rolls imported", { icon: <FaSolidCircleInfo /> });
-    });
-  };
-
-  const exportRolls = () => {
-    const room = currentRoom();
-    if (!room) return;
-    const filename = `rolls-${prettyToday()}.json`;
-    exportData(room.rolls, filename);
-    toast("Rolls exported", { icon: <FaSolidCircleInfo /> });
-  };
 
   return (
     <div class={chatRootStyle}>
-      <Flex gap="large" style={{ "justify-content": "space-between" }}>
-        <Text>Rolls</Text>
-        <Show when={appSettings().userIdent == currentRoom()?.owner}>
-          <Flex>
-            <Button title="Import rolls" onClick={importRolls}>
-              <FaSolidFileImport />
-            </Button>
-            <Button title="Export rolls" onClick={exportRolls}>
-              <FaSolidFileExport />
-            </Button>
-            <Button title="Clear rolls" onClick={clearRolls}>
-              <FaSolidTrash />
-            </Button>
-          </Flex>
-        </Show>
-      </Flex>
-      <div class={chatListStyle} ref={ref}>
-        <For each={items()}>
-          {(it) => (
-            <Flex direction="column">
-              <ChatItem item={it} />
-            </Flex>
-          )}
-        </For>
-      </div>
+      <Show when={activeTab() == "rolls"}>
+        <RollsContent ref={chatRef} changeTab={setActiveTab} adjustSize={adjustSize} />
+      </Show>
+      <Show when={activeTab() == "cs"}>
+        <CsContent ref={csRef} changeTab={setActiveTab} adjustSize={adjustSize} />
+      </Show>
     </div>
   );
 };

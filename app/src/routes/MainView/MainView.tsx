@@ -1,6 +1,7 @@
-import { Show, createEffect, onCleanup } from "solid-js";
+import { Show, createEffect, createSignal, onCleanup, onMount } from "solid-js";
 import {
   appSettings,
+  currentRoom,
   netConnectionStatus,
 } from "~/common";
 import { Flex } from "../../component/Flex";
@@ -17,25 +18,39 @@ export const MainView = () => {
   let mainRef: HTMLDivElement;
   let selRef: HTMLDivElement;
   let barRef: HTMLDivElement;
-  let chatRef: HTMLDivElement;
+  let chatRef: HTMLDivElement | undefined;
+  let csRef: HTMLDivElement | undefined;
   let rollRef: HTMLDivElement;
 
-  const adjustSize = () => {
-    if (!mainRef || !selRef || !barRef || !chatRef || !rollRef) return;
-    const delta = barRef.getBoundingClientRect().height + selRef.getBoundingClientRect().height + 60; // 40 - button height
-    chatRef.style.height = `calc(100vh - ${delta}px)`;
-    rollRef.style.height = `calc(100vh - ${delta}px + 60px)`;
-  }
-
-  window.addEventListener("resize", () => adjustSize());
-  onCleanup(() => {
-    window.removeEventListener("resize", () => adjustSize());
+  const [rect, setRect] = createSignal({
+    height: window.innerHeight,
+    width: window.innerWidth
   });
 
-  createEffect(() => {
-    if (!mainRef || !selRef || !barRef || !chatRef || !rollRef) return;
+  const handler = (event: Event) => {
+    setRect({ height: window.innerHeight, width: window.innerWidth });
+    adjustSize();
+  };
+
+  onMount(() => {
+    window.addEventListener('resize', handler);
     adjustSize();
   });
+
+  onCleanup(() => {
+    window.removeEventListener('resize', handler);
+  })
+
+  const adjustSize = () => {
+    if (!mainRef || !selRef || !barRef || !rollRef) {
+      console.log("main", mainRef, "sel", selRef, "bar", barRef);
+      return;
+    }
+    const delta = barRef.getBoundingClientRect().height + selRef.getBoundingClientRect().height + 60; // 40 - button height
+    if (chatRef) chatRef.style.height = `calc(100vh - ${delta}px)`;
+    if (csRef) csRef.style.height = `calc(100vh - ${delta}px)`;
+    rollRef.style.height = `calc(100vh - ${delta}px + 60px)`;
+  }
 
 
   createEffect(() => {
@@ -48,11 +63,11 @@ export const MainView = () => {
       <TopBar ref={(e: any) => barRef = e} />
       <Flex>
         <Show when={!appSettings().rightLayout}>
-          <ChatView ref={(e: any) => chatRef = e} />
+          <ChatView chatRef={(e) => chatRef = e} csRef={(e) => csRef = e} adjustSize={adjustSize} />
         </Show>
         <RollView ref={(e: any) => rollRef = e} />
         <Show when={appSettings().rightLayout}>
-          <ChatView ref={(e: any) => chatRef = e} />
+          <ChatView chatRef={(e) => chatRef = e} csRef={(e) => csRef = e} adjustSize={adjustSize} />
         </Show>
       </Flex>
       <DiceSelector ref={(e: any) => selRef = e} />

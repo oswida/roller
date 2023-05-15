@@ -1,36 +1,38 @@
 import { Select as Sel } from "@kobalte/core";
-import { Accessor, Component, ParentComponent, createEffect } from "solid-js";
-import { SelectOption } from "~/common";
+import { Component } from "solid-js";
 import {
-  FaSolidCheck,
-  FaSolidCheckDouble,
-  FaSolidCheckToSlot,
   FaSolidCircleCheck,
 } from "solid-icons/fa";
-import { buttonStyle } from "../Button/styles.css";
 import {
   selectItemStyle,
   selectListStyle,
   selectListboxStyle,
   selectTriggerStyle,
 } from "./styles.css";
-import { Dynamic } from "solid-js/web";
+
+export type SelectItem = {
+  id: string;
+  label: string;
+}
 
 type Props = {
-  options: () => string[];
-  selected: () => string;
-  onChange: (value: string) => void;
+  options: () => SelectItem[];
+  selected: () => SelectItem | undefined;
+  onChange: (value: SelectItem) => void;
 };
 
 export const Select: Component<Props> = ({ options, selected, onChange }) => {
   return (
     <Sel.Root
+      placeholder="--- select ---"
       onChange={onChange}
+      optionValue="id"
+      optionTextValue="label"
       value={selected()}
       options={options()}
-      itemComponent={(props: any) => (
+      itemComponent={(props) => (
         <Sel.Item item={props.item} class={selectItemStyle}>
-          <Sel.ItemLabel>{props.item.rawValue}</Sel.ItemLabel>
+          <Sel.ItemLabel>{props.item.rawValue.label}</Sel.ItemLabel>
           <Sel.ItemIndicator>
             <FaSolidCircleCheck />
           </Sel.ItemIndicator>
@@ -38,7 +40,7 @@ export const Select: Component<Props> = ({ options, selected, onChange }) => {
       )}
     >
       <Sel.Trigger class={selectTriggerStyle}>
-        <Sel.Value>{(state) => state.selectedOption() as string}</Sel.Value>
+        <Sel.Value<SelectItem>>{state => state.selectedOption() ? state.selectedOption().label : "---"}</Sel.Value>
       </Sel.Trigger>
       <Sel.Portal>
         <Sel.Content class={selectListStyle}>

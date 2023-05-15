@@ -24,7 +24,7 @@ import {
   storageSize,
   taskQueue,
 } from "~/common";
-import { Button, Flex, Popover, Select, Text } from "~/component";
+import { Button, Flex, Popover, Select, SelectItem, Text } from "~/component";
 import { SettingsView } from "../../view/SettingsView";
 import { RoomSettingsView } from "../../view/SettingsView/RoomSettingsView";
 import { topbarStyle } from "./styles.css";
@@ -38,23 +38,36 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
   const username = createMemo(() => {
     return appSettings().userName;
   });
+
+  const colorList = createMemo(() => {
+    return diceColorSet.map(it => ({ id: it, label: it } as SelectItem));
+  });
+
+  const materialList = createMemo(() => {
+    return diceMaterialSet.map(it => ({ id: it, label: it } as SelectItem));
+  });
+
   const currentDiceColor = createMemo(() => {
-    return appSettings().diceColor;
+    const r = colorList().filter(it => it.id == appSettings().diceColor);
+    if (r.length > 0) return r[0];
+    return undefined;
   });
 
   const currentDiceMaterial = createMemo(() => {
-    return appSettings().diceMaterial;
+    const r = materialList().filter(it => it.id == appSettings().diceMaterial);
+    if (r.length > 0) return r[0];
+    return undefined;
   });
 
-  const diceColorChange = (value: string) => {
+  const diceColorChange = (value: SelectItem) => {
     const data = { ...appSettings() };
-    data.diceColor = value;
+    data.diceColor = value.id;
     saveToStorage(rollerSettingsKey, data);
   };
 
-  const diceMaterialChange = (value: string) => {
+  const diceMaterialChange = (value: SelectItem) => {
     const data = { ...appSettings() };
-    data.diceMaterial = value;
+    data.diceMaterial = value.id;
     saveToStorage(rollerSettingsKey, data);
   };
 
@@ -77,23 +90,29 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
     netCreateRoom(room);
   };
 
-  const roomName = createMemo(() => {
+  const selectedRoom = createMemo(() => {
     const room = currentRoom();
-    if (!room) return "";
-    return room.name;
+    if (!room) return undefined;
+    const list = Object.values(appRooms()).map((v) => ({ id: v.id, label: v.name } as SelectItem));
+    const rs = list.filter(r => (r.id == room.id));
+    if (rs.length > 0) return rs[0];
+    return undefined;
   });
 
   const roomList = createMemo(() => {
-    return Object.values(appRooms()).map((v) => v.name);
+    return Object.values(appRooms()).map((v) => ({ id: v.id, label: v.name } as SelectItem));
   });
 
-  const changeRoom = (name: string) => {
-    const r = Object.values(appRooms()).filter((it) => it.name == name);
+  const changeRoom = (item: SelectItem) => {
+    if (!item) return;
+    const r = Object.values(appRooms()).filter((it) => it.id == item.id);
     if (r.length <= 0) return;
     const na = { ...appSettings() };
     na.currentRoom = r[0].id;
     saveToStorage(rollerSettingsKey, na);
   };
+
+
 
   return (
     <div class={topbarStyle} ref={ref}>
@@ -123,7 +142,7 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
           <Dynamic
             component={Select}
             options={roomList}
-            selected={roomName}
+            selected={selectedRoom}
             onChange={changeRoom}
           />
         </Show>
@@ -153,7 +172,7 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
             Color set
           </Text>
           <Select
-            options={() => diceColorSet}
+            options={colorList}
             selected={currentDiceColor}
             onChange={diceColorChange}
           ></Select>
@@ -161,7 +180,7 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
             Material
           </Text>
           <Select
-            options={() => diceMaterialSet}
+            options={materialList}
             selected={currentDiceMaterial}
             onChange={diceMaterialChange}
           ></Select>

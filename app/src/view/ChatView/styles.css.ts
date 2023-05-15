@@ -5,7 +5,7 @@ import { colorType, sprinkles } from "~/common";
 export const chatRootStyle = style([
   sprinkles({
     backgroundColor: "backgroundSecondary",
-    padding: "medium",
+    padding: "small",
     color: "primary",
     display: "flex",
     flexDirection: "column",
@@ -28,7 +28,6 @@ export const chatListStyle = style([
     gap: "small",
   }),
   {
-    // height: "100%",//"calc(100vh - 14em)",
     overflowY: "auto",
   },
 ]);

@@ -3,6 +3,7 @@ import { Component } from "solid-js";
 import { Toaster } from "solid-toast";
 import { appStyle } from "./App.css";
 import { MainView } from "./routes/MainView";
+import { InputDialog } from "./component/Dialog/InputDialog";
 
 const App: Component = () => {
 
@@ -13,6 +14,7 @@ const App: Component = () => {
 
       </Routes>
       <Toaster />
+      <InputDialog />
     </div>
   );
 };

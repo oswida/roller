@@ -40,7 +40,11 @@ export const decompressData = (data: any) => {
 
 export const decompressData64 = (data: any) => {
   const d = decompressFromBase64(data);
-  return JSON.parse(d);
+  try {
+    return JSON.parse(d);
+  } catch (e) {
+    return undefined;
+  }
 };
 
 export const exportData = (data: any, filename: string) => {

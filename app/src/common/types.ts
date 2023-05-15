@@ -94,7 +94,7 @@ export const emptyRoomInfo = (rid?: string) => {
   } as RoomInfo;
 };
 
-export type StorageItem = AppSettings | Record<string, RoomInfo> | string;
+export type StorageItem = AppSettings | Record<string, RoomInfo> | Record<string, CharInfo> | string;
 
 export type NetMessage = {
   sender: string;
@@ -114,4 +114,16 @@ export const topicRoomConnect = "room_connect";
 
 export type RefProps = {
   ref: any;
+}
+
+
+export type CharInfo = {
+  id: string;
+  name: string;
+  template: string;
+  values: Record<string, any>;
+}
+
+export const emptyCharInfo = () => {
+  return { id: uuid(), name: "Some char", template: "" } as CharInfo;
 }
