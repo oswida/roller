@@ -94,7 +94,7 @@ export const emptyRoomInfo = (rid?: string) => {
   } as RoomInfo;
 };
 
-export type StorageItem = AppSettings | Record<string, RoomInfo> | Record<string, CharInfo> | string;
+export type StorageItem = AppSettings | Record<string, RoomInfo> | Record<string, RollDefInfo> | string;
 
 export type NetMessage = {
   sender: string;
@@ -116,14 +116,20 @@ export type RefProps = {
   ref: any;
 }
 
-
-export type CharInfo = {
+export type RollDefInfo = {
   id: string;
   name: string;
-  template: string;
-  values: Record<string, any>;
+  description: string;
+  dice: string;
+  modifier?: number;
+  successRule?: string;
 }
 
-export const emptyCharInfo = () => {
-  return { id: uuid(), name: "Some char", template: "" } as CharInfo;
+export const emptyRollDefInfo = () => {
+  return {
+    id: uuid(),
+    dice: "2k6",
+    name: "Roll definition",
+    description: ""
+  } as RollDefInfo
 }

@@ -9,7 +9,7 @@ import { Button as Btn } from "@kobalte/core";
 import { buttonStyle } from "./styles.css";
 
 type Props = {
-  variant?: "ghost" | "flat" | "icon" | "bigicon";
+  variant?: "ghost" | "flat" | "icon" | "bigicon" | "smallicon";
 };
 
 export const Button: ParentComponent<Props & ComponentProps<"button">> = ({

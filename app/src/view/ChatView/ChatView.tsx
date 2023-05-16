@@ -4,7 +4,7 @@ import {
 } from "~/common";
 import { chatRootStyle } from "./styles.css";
 import { RollsContent } from "./RollsContent";
-import { CsContent } from "./CsContent";
+import { DefsContent } from "./DefsContent";
 
 type Props = {
   chatRef: (e: any) => void;
@@ -22,7 +22,7 @@ export const ChatView: Component<Props> = ({ chatRef, csRef, adjustSize }) => {
         <RollsContent ref={chatRef} changeTab={setActiveTab} adjustSize={adjustSize} />
       </Show>
       <Show when={activeTab() == "cs"}>
-        <CsContent ref={csRef} changeTab={setActiveTab} adjustSize={adjustSize} />
+        <DefsContent ref={csRef} changeTab={setActiveTab} adjustSize={adjustSize} />
       </Show>
     </div>
   );

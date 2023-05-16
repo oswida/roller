@@ -161,3 +161,69 @@ export const chatDatablockStyle = recipe({
     position: 'left'
   }
 })
+
+
+export const defListStyle = style([
+  sprinkles({
+    backgroundColor: "background",
+    borderRadius: "small",
+    padding: "small",
+    fontSize: "smaller",
+    display: "flex",
+    flexDirection: "column",
+    color: "primary",
+    gap: "medium",
+  }),
+  {
+    overflowY: "auto",
+  },
+]);
+
+
+
+export const defItemStyle = recipe({
+  base: [
+    sprinkles({
+      display: "flex",
+      flexDirection: "column",
+      color: "primary",
+      borderRadius: "small",
+      gap: "medium",
+      padding: "medium",
+      fontSize: "standard",
+      borderColor: "accent",
+      borderWidth: "thin",
+      borderStyle: "solid"
+    })
+  ],
+  variants: {
+    sel: {
+      true: {
+        backgroundColor: colorType.backgroundSecondary
+      },
+      false: {
+        backgroundColor: colorType.background
+      }
+    }
+  },
+  defaultVariants: {
+    sel: false
+  }
+});
+
+
+export const defModifierStyle = style([
+  sprinkles({
+    display: "flex",
+    borderRadius: "small",
+    backgroundColor: "accent",
+    color: "primary",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: "small"
+  }), {
+    cursor: "pointer",
+    textAlign: "center",
+    verticalAlign: "middle"
+  }
+]);

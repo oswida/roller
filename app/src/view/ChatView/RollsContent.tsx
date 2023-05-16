@@ -60,7 +60,7 @@ export const RollsContent: Component<Props> = ({ ref, changeTab, adjustSize }) =
             <Flex style={{ "min-height": "35px" }}>
                 <Text colorSchema="secondary">Rolls</Text>
                 <Text>|</Text>
-                <Text onClick={() => ct("cs")} style={{ cursor: "pointer" }}>Chars</Text>
+                <Text onClick={() => ct("cs")} style={{ cursor: "pointer" }} title="Roll definitions">Defs</Text>
             </Flex>
 
             <Show when={appSettings().userIdent == currentRoom()?.owner}>

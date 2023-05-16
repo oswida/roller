@@ -28,6 +28,13 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
     return Date.now() - item.realtstamp > oldTime;
   });
 
+
+  const modValue = createMemo(() => {
+    if (!item.result.modifier || item.result.modifier == 0) return ``;
+    if (item.result.modifier > 0) return ` (+${item.result.modifier})`;
+    return ` (${item.result.modifier})`;
+  });
+
   return (
     <Flex
       gap="none"
@@ -40,14 +47,15 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
       </div>
       <div class={chatItemContentStyle({})}>
         <Flex gap="medium" direction="column">
-          {/* <Text colorSchema="secondary">{item.result.notation}</Text> */}
           <Flex style={{ "justify-content": "space-between", flex: 1 }}>
             <Show when={appSettings().showRollTotal}>
-              <DataBlock left={<Text colorSchema="secondary">Total</Text>} right={<div>{item.result.total}</div>} rightBackground="secondary" />
+              <DataBlock left={<Text colorSchema="secondary">Total {modValue()}</Text>}
+                right={<div>{item.result.total}</div>} rightBackground="secondary" />
             </Show>
             <Show when={item.successRule && appSettings().showRollSuccess}>
               <DataBlock left={<div>Result</div>} right={<div>Success??</div>} />
             </Show>
+
           </Flex>
 
           <Flex gap="medium">

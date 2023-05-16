@@ -55,6 +55,12 @@ export const buttonStyle = recipe({
         height: 50,
         border: "none",
       },
+      smallicon: {
+        width: 30,
+        height: 30,
+        border: "none",
+        borderRadius: spaceSize.small,
+      },
     },
     disabled: {
       true: {
