@@ -6,7 +6,7 @@ import {
   FaSolidShareNodes,
   FaSolidTrash,
 } from "solid-icons/fa";
-import { Component, Show, createMemo } from "solid-js";
+import { Component, Show, createMemo, createSignal } from "solid-js";
 import toast from "solid-toast";
 import {
   appRooms,
@@ -22,7 +22,7 @@ import {
   netPublish,
   netUpdateRoom,
 } from "~/common/net";
-import { Button, Flex, Input, Text } from "~/component";
+import { Alert, Button, Flex, Input, Text } from "~/component";
 import { buttonStyle } from "~/component/Button/styles.css";
 
 type Props = {
@@ -31,6 +31,7 @@ type Props = {
 
 export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
   let passRef: HTMLInputElement;
+  const [delConfirmOpen, setDelConfirmOpen] = createSignal(false);
 
   const updateRoom = (field: "name" | "bkguri" | "owner", value: string) => {
     const data = { ...appRooms() };
@@ -62,6 +63,7 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
   });
 
   const deleteRoom = () => {
+    setDelConfirmOpen(false);
     const room = currentRoom();
     if (!room || room.owner !== appSettings().userIdent) {
       toast("Cannot delete room. Room can be deleted only by an owner.", { icon: <FaSolidCircleStop /> });
@@ -118,12 +120,22 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
           </div>
         </CopyToClipboard>
         <Show when={appSettings().userIdent == currentRoom()?.owner}>
-          <Button variant="ghost" onClick={deleteRoom}>
-            <FaSolidTrash />
-            <Text colorSchema="danger">Delete room</Text>
-          </Button>
-
-
+          <Alert
+            label="Delete room"
+            onOpenChange={setDelConfirmOpen}
+            open={delConfirmOpen}
+            trigger={
+              <Flex gap="medium" center>
+                <FaSolidTrash />
+                <Text colorSchema="danger">Delete room</Text>
+              </Flex>
+            }>
+            <Text>Are you sure? </Text><Text>Delete room {currentRoom()?.name}?</Text>
+            <Flex center gap="large" style={{ "margin-top": "10px" }}>
+              <Button onClick={() => setDelConfirmOpen(false)}>Cancel</Button>
+              <Button onClick={deleteRoom}>Delete</Button>
+            </Flex>
+          </Alert>
         </Show>
       </Flex>
       <Show when={appSettings().userIdent == currentRoom()?.owner}>
@@ -134,6 +146,7 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
           </Button>
         </Flex>
       </Show>
+
     </Flex>
   );
 };

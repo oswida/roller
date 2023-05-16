@@ -22,7 +22,8 @@ export const dialogHeaderStyle = style([
     justifyContent: "space-between",
     display: "flex",
     color: "primary",
-    padding: "small",
+    paddingY: "small",
+    paddingX: "medium"
   }),
   {
     flex: 1,
@@ -33,7 +34,7 @@ export const dialogOverlayStyle = style({
   position: "fixed",
   inset: 0,
   zIndex: 50,
-  backgroundColor: "rgb(0 0 0 / 0.2)",
+  backgroundColor: "rgb(0 0 0 / 0.4)",
 });
 
 export const dialogPositionerStyle = style({
@@ -48,5 +49,16 @@ export const dialogPositionerStyle = style({
 export const dialogContentStyle = style([
   sprinkles({
     padding: "medium",
+    display: "flex",
+    flexDirection: "column",
+    gap: "medium",
+    alignItems: "center",
+    justifyContent: "center"
   }),
 ]);
+
+
+export const dialogTitleStyle = style([sprinkles({
+  fontSize: "standard",
+  color: "primary"
+})])
