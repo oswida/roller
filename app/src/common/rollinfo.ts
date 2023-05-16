@@ -58,3 +58,25 @@ export const rollNotationWithResults = (result: RollResult) => {
     const retv = `${result.notation}@${dicePreset.join(",")}`;
     return retv;
 }
+
+export const pbtaRollSuccessInfo = (result: RollResult, rule: string) => {
+    switch (rule) {
+        case "standard":
+            if (result.total < 7) return "Failure";
+            if (result.total >= 7 && result.total <= 9) return "Success w/price";
+            return "Full success";
+    }
+    return "";
+}
+
+export const roolSuccessInfo = (result: RollResult, rule: string | undefined) => {
+    if (!rule || rule.trim() === "") return "";
+    const parts = rule.split(":");
+    if (parts.length !== 2) return "";
+    switch (parts[0]) {
+        case "pbta":
+            return pbtaRollSuccessInfo(result, parts[1]);
+            break;
+        default: return "";
+    }
+}

@@ -1,5 +1,5 @@
 import { For, Show, createMemo } from "solid-js";
-import { RollInfo, appSettings } from "~/common";
+import { RollInfo, appSettings, roolSuccessInfo, successRule } from "~/common";
 import { Button, Flex, Text } from "~/component";
 import {
   chatItemCommentStyle,
@@ -35,6 +35,12 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
     return ` (${item.result.modifier})`;
   });
 
+  const succValue = createMemo(() => {
+    const r = roolSuccessInfo(item.result, item.successRule);
+    console.log("succ", r);
+    return r;
+  });
+
   return (
     <Flex
       gap="none"
@@ -52,8 +58,8 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
               <DataBlock left={<Text colorSchema="secondary">Total {modValue()}</Text>}
                 right={<div>{item.result.total}</div>} rightBackground="secondary" />
             </Show>
-            <Show when={item.successRule && appSettings().showRollSuccess}>
-              <DataBlock left={<div>Result</div>} right={<div>Success??</div>} />
+            <Show when={item.successRule && appSettings().showRollSuccess && succValue() !== ""}>
+              <DataBlock right={<Text colorSchema="accent"> {succValue()}</Text>} />
             </Show>
 
           </Flex>

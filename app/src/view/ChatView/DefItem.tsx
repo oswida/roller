@@ -1,4 +1,4 @@
-import { RollDefInfo, appSettings, currentRoom, diceBox, rolling, setRolling } from "~/common"
+import { RollDefInfo, appSettings, currentRoom, diceBox, rolling, setRolling, setSuccessRule } from "~/common"
 import { defItemStyle, defModifierStyle } from "./styles.css"
 import { Component, ComponentProps, createMemo } from "solid-js";
 import { Flex, Text } from "~/component";
@@ -9,9 +9,10 @@ import { FaSolidExclamation } from "solid-icons/fa";
 type Props = {
     item: RollDefInfo;
     selected: () => RollDefInfo | undefined;
+    changeTab: (value: string) => void;
 }
 
-export const DefItem: Component<Props & ComponentProps<"div">> = ({ item, selected, ...rest }) => {
+export const DefItem: Component<Props & ComponentProps<"div">> = ({ item, selected, changeTab, ...rest }) => {
 
     const isSelected = createMemo(() => {
         const sel = selected();
@@ -24,6 +25,7 @@ export const DefItem: Component<Props & ComponentProps<"div">> = ({ item, select
         const db = diceBox();
         if (!db) return;
         setRolling(true);
+        setSuccessRule(item.successRule);
         const s = appSettings();
         await db.updateConfig({
             theme_colorset: s.diceColor,
@@ -37,6 +39,7 @@ export const DefItem: Component<Props & ComponentProps<"div">> = ({ item, select
             toast("Unexpected error during roll", { icon: <FaSolidExclamation /> })
             setRolling(false);
         }
+        changeTab("rolls");
     }
 
     const notation = createMemo(() => {
@@ -52,5 +55,6 @@ export const DefItem: Component<Props & ComponentProps<"div">> = ({ item, select
                 <Text fontSize="bigger">{notation()}</Text>
             </div>
         </Flex>
+        <Text colorSchema="secondary" ><i>{item.successRule}</i></Text>
     </div>
 }

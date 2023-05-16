@@ -117,7 +117,10 @@ export const DefsContent: Component<Props> = ({ ref, changeTab, adjustSize }) =>
         </Flex>
         <div class={defListStyle} ref={(e: any) => ref(e)}>
             <For each={items()}>{(it) =>
-                (<DefItem item={it} onClick={() => setSelDef(it)} selected={selDef} />)}</For>
+            (<DefItem item={it}
+                onClick={() => setSelDef(it)}
+                selected={selDef}
+                changeTab={changeTab} />)}</For>
         </div>
     </>
 }
