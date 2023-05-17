@@ -16,7 +16,8 @@ type Props = {
   dialogTitle: () => string;
   trigger?: any;
   open?: () => boolean;
-  onOpenChange?: (value: boolean) => void
+  onOpenChange?: (value: boolean) => void;
+  modal?: boolean;
 };
 
 export const Dialog: ParentComponent<Props> = ({
@@ -24,10 +25,12 @@ export const Dialog: ParentComponent<Props> = ({
   trigger,
   children,
   open,
-  onOpenChange
+  onOpenChange,
+  modal
 }) => {
   return (
-    <Dlg.Root open={open ? open() : undefined} onOpenChange={onOpenChange}>
+    <Dlg.Root open={open ? open() : undefined}
+      onOpenChange={onOpenChange} modal={modal}>
       <Dlg.Trigger class={buttonStyle({})}>
         {trigger}
       </Dlg.Trigger>

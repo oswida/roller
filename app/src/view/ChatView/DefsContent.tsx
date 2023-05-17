@@ -1,12 +1,11 @@
-import { FaSolidPlus, FaSolidFileImport, FaSolidFileExport, FaSolidInfo, FaSolidTrash } from "solid-icons/fa";
+import { FaSolidPlus, FaSolidFileImport, FaSolidFileExport, FaSolidInfo, FaSolidTrash, FaSolidPen, FaSolidCircleInfo } from "solid-icons/fa";
 import { Component, For, Show, createMemo, createSignal } from "solid-js"
-import { Flex, Text, Button, TplRenderer, Dialog, Input, InputArea, Alert } from "~/component";
-import { chatListStyle, defListStyle } from "./styles.css";
-import { RollDefInfo, appDefs, emptyRollDefInfo, rollerDefsKey, saveToStorage } from "~/common";
+import { Flex, Text, Button, Dialog, Input, Alert, RadioGroup, RadioItem } from "~/component";
+import { defListStyle, defTabStyle } from "./styles.css";
+import { RollDefInfo, appDefs, emptyRollDefInfo, exportData, importData, prettyToday, rollerDefsKey, saveToStorage } from "~/common";
 import toast from "solid-toast";
 import { DefItem } from "./DefItem";
-import { createSign } from "crypto";
-import { Dynamic } from "solid-js/web";
+import { buttonStyle } from "~/component/Button/styles.css";
 
 type Props = {
     ref: (e: any) => void;
@@ -17,14 +16,10 @@ type Props = {
 
 export const DefsContent: Component<Props> = ({ ref, changeTab, adjustSize }) => {
     const [createDlgOpen, setCreateDlgOpen] = createSignal(false);
+    const [editDlgOpen, setEditDlgOpen] = createSignal(false);
     const [delDlgOpen, setDelDlgOpen] = createSignal(false);
     const [selDef, setSelDef] = createSignal<RollDefInfo>();
-
-    let refName: HTMLInputElement;
-    let refDice: HTMLInputElement;
-    let refDesc: HTMLTextAreaElement;
-    let refMod: HTMLInputElement;
-    let refSR: HTMLInputElement;
+    const [editDef, setEditDef] = createSignal<RollDefInfo>(emptyRollDefInfo());
 
     const ct = (val: string) => {
         changeTab(val);
@@ -35,21 +30,15 @@ export const DefsContent: Component<Props> = ({ ref, changeTab, adjustSize }) =>
         return Object.values(appDefs()).sort((a, b) => a.name.localeCompare(b.name));
     });
 
-
     const createDef = () => {
-        if (!refName || !refDesc || !refMod || !refSR ||
-            refName.value.trim() == "" || !refDice || refDice.value.trim() == "") return;
-        const info = emptyRollDefInfo();
-        info.description = refDesc.value;
-        info.modifier = Number.parseInt(refMod.value);
-        info.name = refName.value;
-        info.dice = refDice.value;
-        info.successRule = refSR.value;
+        const e = editDef();
+        if (!e) return;
         const ns = { ...appDefs() };
-        ns[info.id] = info;
+        ns[e.id] = e;
         saveToStorage(rollerDefsKey, ns);
         setCreateDlgOpen(false);
-        toast("New definition created", { icon: <FaSolidInfo /> })
+        toast("New definition created", { icon: <FaSolidInfo /> });
+        setEditDef(emptyRollDefInfo());
     }
 
     const deleteDef = () => {
@@ -61,23 +50,108 @@ export const DefsContent: Component<Props> = ({ ref, changeTab, adjustSize }) =>
         saveToStorage(rollerDefsKey, ns);
     }
 
+    const sRules: RadioItem[] = [
+        { id: "", label: "None" },
+        { id: "pbta:standard", label: "Standard PBTA" },
+        { id: "pio3s:standard", label: "Pio 3S" },
+        { id: "pio3s:hard", label: "Pio 3S Hard" },
+        { id: "total:ueq", label: "Total under/equal" },
+        { id: "total:oeq", label: "Total over/equal" }
+    ]
+
+    const updateField = (info: RollDefInfo | undefined,
+        field: "dice" | "modifier" | "successRule" | "name", value: string) => {
+        if (!info) return;
+        if (field !== "modifier") {
+            info[field] = value;
+        } else {
+            info.modifier = Number.parseInt(value);
+        }
+    }
+
+    const updateDef = () => {
+        const e = selDef();
+        if (!e) return;
+        const ns = { ...appDefs() };
+        ns[e.id] = e;
+        saveToStorage(rollerDefsKey, ns);
+        setEditDlgOpen(false);
+        toast("Definition updated", { icon: <FaSolidInfo /> });
+    }
 
     const importDefs = () => {
-
+        importData((data: any) => {
+            const e = data as Record<string, RollDefInfo>;
+            const newState = { ...appDefs() };
+            Object.values(e).forEach(it => {
+                newState[it.id] = it;
+            });
+            saveToStorage(rollerDefsKey, newState);
+            toast("Definitions imported", { icon: <FaSolidCircleInfo /> });
+        });
     }
 
     const exportDefs = () => {
-
+        const filename = `defs-${prettyToday()}.json`;
+        exportData(appDefs(), filename);
+        toast("Definitions exported", { icon: <FaSolidCircleInfo /> });
     }
 
     return <>
         <Flex gap="large" style={{ "justify-content": "space-between" }}>
             <Flex style={{ "min-height": "35px" }}>
-                <Text onClick={() => ct("rolls")} style={{ cursor: "pointer" }} title="Roll list">Rolls</Text>
-                <Text>|</Text>
-                <Text colorSchema="secondary">Defs</Text>
+                <div onClick={() => ct("rolls")} class={defTabStyle({})}>
+                    <Text title="Roll list">Rolls</Text>
+                </div>
+                <div class={defTabStyle({ sel: true })}>
+                    <Text colorSchema="secondary" >Defs</Text>
+                </div>
             </Flex>
             <Flex>
+                <Show when={selDef()}>
+                    <Flex style={{ "margin-right": "10px" }}>
+                        <Alert label="Delete definition"
+                            open={delDlgOpen}
+                            onOpenChange={setDelDlgOpen}
+                            trigger={<FaSolidTrash />}>
+                            <Text>Delete {selDef()?.name} {"?"}</Text>
+                            <Flex gap="large" style={{ "margin-top": "10px" }}>
+                                <Button onClick={() => setDelDlgOpen(false)}>Cancel</Button>
+                                <Button onClick={deleteDef}>Delete</Button>
+                            </Flex>
+                        </Alert>
+
+                        <Dialog
+                            open={editDlgOpen}
+                            onOpenChange={setEditDlgOpen}
+                            trigger={<FaSolidPen />}
+                            dialogTitle={() => "Edit definition"}>
+                            <Show when={editDlgOpen()}>
+                                <Input label="Name" style={{ width: "17em" }}
+                                    value={selDef()?.name}
+                                    onChange={(e) => updateField(selDef(), "name", e.target.value)} />
+                                <Flex direction="row" gap="large" >
+                                    <Flex direction="column">
+                                        <Input label="Dice" style={{ width: "4em" }}
+                                            onChange={(e) => updateField(selDef(), "dice", e.target.value)}
+                                            value={selDef()?.dice} />
+                                        <Input label="Modifier" style={{ width: "4em" }}
+                                            onChange={(e) => updateField(selDef(), "modifier", e.target.value)}
+                                            value={selDef()?.modifier} />
+                                    </Flex>
+                                    <RadioGroup label="Success rule" items={sRules} variant="list"
+                                        selected={() => selDef()?.successRule}
+                                        onChange={(e) => updateField(selDef(), "successRule", e)} />
+                                </Flex>
+                                <Flex gap="large" style={{ "margin-top": "10px" }}>
+                                    <Button onClick={() => setEditDlgOpen(false)}>Cancel</Button>
+                                    <Button onClick={updateDef}>Update</Button>
+                                </Flex>
+                            </Show>
+                        </Dialog>
+
+                    </Flex>
+                </Show>
                 <Button title="Import definitions" onClick={importDefs}>
                     <FaSolidFileImport />
                 </Button>
@@ -87,32 +161,28 @@ export const DefsContent: Component<Props> = ({ ref, changeTab, adjustSize }) =>
                 <Dialog
                     open={createDlgOpen}
                     onOpenChange={setCreateDlgOpen}
-                    trigger={<FaSolidPlus />} dialogTitle={() => "Create defimition"}>
-                    <Input label="Name" style={{ width: "17em" }} ref={(e) => refName = e} />
-                    <InputArea label="Description" style={{ width: "17em", height: "6em" }} ref={(e) => refDesc = e} />
-                    <Flex style={{ "align-items": "flex-end" }}>
-                        <Input label="Dice" style={{ width: "4em" }} ref={(e) => refDice = e} />
-                        <Input label="Modifier" style={{ width: "4em" }} ref={(e) => refMod = e} />
-                        <Button variant="smallicon"><FaSolidInfo /></Button>
-                    </Flex>
-                    <Input label="Success rule" style={{ width: "10em" }} ref={(e) => refSR = e} />
-                    <Flex gap="large" style={{ "margin-top": "10px" }}>
-                        <Button onClick={() => setCreateDlgOpen(false)}>Cancel</Button>
-                        <Button onClick={createDef}>Create</Button>
-                    </Flex>
-                </Dialog>
-                <Show when={selDef()}>
-                    <Alert label="Delete definition"
-                        open={delDlgOpen}
-                        onOpenChange={setDelDlgOpen}
-                        trigger={<FaSolidTrash />}>
-                        <Text>Delete {selDef()?.name} {"?"}</Text>
-                        <Flex gap="large" style={{ "margin-top": "10px" }}>
-                            <Button onClick={() => setDelDlgOpen(false)}>Cancel</Button>
-                            <Button onClick={deleteDef}>Delete</Button>
+                    trigger={<FaSolidPlus />}
+                    dialogTitle={() => "Create definition"}>
+                    <Show when={createDlgOpen()}>
+                        <Input label="Name" style={{ width: "17em" }}
+                            onChange={(e) => updateField(editDef(), "name", e.target.value)} />
+                        <Flex direction="row" gap="large" >
+                            <Flex direction="column">
+                                <Input label="Dice" style={{ width: "4em" }}
+                                    onChange={(e) => updateField(editDef(), "dice", e.target.value)} />
+                                <Input label="Modifier" style={{ width: "4em" }}
+                                    onChange={(e) => updateField(editDef(), "modifier", e.target.value)} />
+                            </Flex>
+                            <RadioGroup label="Success rule" items={sRules} variant="list" selected={() => ""}
+                                onChange={(e) => updateField(editDef(), "successRule", e)} />
                         </Flex>
-                    </Alert>
-                </Show>
+                        <Flex gap="large" style={{ "margin-top": "10px" }}>
+                            <Button onClick={() => setCreateDlgOpen(false)}>Cancel</Button>
+                            <Button onClick={createDef}>Create</Button>
+                        </Flex>
+                    </Show>
+                </Dialog>
+
             </Flex>
         </Flex>
         <div class={defListStyle} ref={(e: any) => ref(e)}>

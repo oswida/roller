@@ -16,7 +16,7 @@ type Props = {
 
 export const Alert: ParentComponent<Props> = ({ open, onOpenChange, children, label, trigger }) => {
     return <AlertDialog.Root onOpenChange={onOpenChange} open={open()} >
-        <AlertDialog.Trigger class={buttonStyle({ variant: "ghost" })}>
+        <AlertDialog.Trigger class={buttonStyle({})}>
             {trigger}
         </AlertDialog.Trigger>
         <AlertDialog.Portal>

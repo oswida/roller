@@ -3,7 +3,7 @@ import { Show, For, createMemo, Component } from "solid-js"
 import { RefProps, RollInfo, appRooms, appSettings, currentRoom, exportData, importData, netPublish, netUpdateRoom, prettyToday, rollerRoomsKey, saveToStorage, topicRoomInfo } from "~/common"
 import { Flex, Button, Text } from "~/component"
 import { ChatItem } from "./ChatItem"
-import { chatListStyle } from "./styles.css"
+import { chatListStyle, defTabStyle } from "./styles.css"
 import toast from "solid-toast"
 
 type Props = {
@@ -58,9 +58,10 @@ export const RollsContent: Component<Props> = ({ ref, changeTab, adjustSize }) =
     return <>
         <Flex gap="medium" style={{ "justify-content": "space-between" }}>
             <Flex style={{ "min-height": "35px" }}>
-                <Text colorSchema="secondary">Rolls</Text>
-                <Text>|</Text>
-                <Text onClick={() => ct("cs")} style={{ cursor: "pointer" }} title="Roll definitions">Defs</Text>
+                <div class={defTabStyle({ sel: true })}><Text colorSchema="secondary">Rolls</Text></div>
+                <div onClick={() => ct("cs")} class={defTabStyle({})}>
+                    <Text title="Roll definitions">Defs</Text>
+                </div>
             </Flex>
 
             <Show when={appSettings().userIdent == currentRoom()?.owner}>

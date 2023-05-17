@@ -227,3 +227,20 @@ export const defModifierStyle = style([
     verticalAlign: "middle"
   }
 ]);
+
+export const defTabStyle = recipe({
+  base: [sprinkles({
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "small",
+    paddingX: "small"
+  }), {
+    border: `solid 1px ${colorType.accent}`,
+    cursor: "pointer"
+  }], variants: {
+    sel: {
+      true: sprinkles({ backgroundColor: "background" })
+    }
+  }
+});

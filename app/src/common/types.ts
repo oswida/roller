@@ -119,10 +119,9 @@ export type RefProps = {
 export type RollDefInfo = {
   id: string;
   name: string;
-  description: string;
   dice: string;
-  modifier?: number;
-  successRule?: string;
+  modifier: number;
+  successRule: string;
 }
 
 export const emptyRollDefInfo = () => {
@@ -130,6 +129,7 @@ export const emptyRollDefInfo = () => {
     id: uuid(),
     dice: "2k6",
     name: "Roll definition",
-    description: ""
+    successRule: "",
+    modifier: 0,
   } as RollDefInfo
 }

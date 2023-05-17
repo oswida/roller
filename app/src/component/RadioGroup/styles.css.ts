@@ -1,11 +1,11 @@
 import { style } from "@vanilla-extract/css";
-import { sprinkles } from "~/common";
+import { colorType, sprinkles } from "~/common";
 
 export const rgRootStyle = style([
     sprinkles({
         display: "flex",
         flexDirection: "column",
-        gap: "small"
+        gap: "medium"
     }),
 ]);
 
@@ -14,8 +14,7 @@ export const rgLabelStyle = style([
         display: "flex",
     }),
     {
-        marginRight: "10px",
-        textDecoration: "underline"
+        marginRight: "10px"
     }
 ]);
 
@@ -24,7 +23,8 @@ export const rgItemStyle = style([
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-between"
+        justifyContent: "flex-start",
+        gap: "large"
     })
 ]);
 
@@ -40,7 +40,7 @@ export const rgRadioInputStyle = style({
     width: 16,
     borderRadius: 8,
     backgroundColor: "transparent",
-    outline: "solid 2px grey",
+    outline: `solid 2px ${colorType.accent} `,
     display: 'flex',
     alignItems: "center", justifyContent: "center"
 })

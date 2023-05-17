@@ -1,17 +1,12 @@
 import { For, Show, createMemo } from "solid-js";
-import { RollInfo, appSettings, roolSuccessInfo, successRule } from "~/common";
-import { Button, Flex, Text } from "~/component";
+import { RollInfo, appSettings, roolSuccessInfo } from "~/common";
+import { Flex, Text } from "~/component";
 import {
   chatItemCommentStyle,
   chatItemContentStyle,
   chatItemHeaderStyle,
   chatItemRootStyle,
-  chatRootStyle,
-  chatDatablockStyle,
 } from "./styles.css";
-import {
-  TbSum
-} from "solid-icons/tb";
 import { DataBlock } from "./DataBlock";
 
 export const ChatItem = ({ item }: { item: RollInfo }) => {
