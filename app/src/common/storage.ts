@@ -9,7 +9,7 @@ export const rollerDefsKey = "defs";
 
 export const [appStore, setAppStore, { remove, clear, toJSON }] =
   createLocalStorage({
-    prefix: "roller",
+    prefix: "roller2",
     serializer: (value: StorageItem, key: string) => {
       return compressData(value);
     },
