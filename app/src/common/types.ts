@@ -125,6 +125,7 @@ export type RollDefInfo = {
   dice: string;
   modifier: number;
   successRule: string;
+  successTarget: string;
 }
 
 export const emptyRollDefInfo = () => {
@@ -133,6 +134,7 @@ export const emptyRollDefInfo = () => {
     dice: "2k6",
     name: "Roll definition",
     successRule: "",
+    successTarget: "",
     modifier: 0,
   } as RollDefInfo
 }

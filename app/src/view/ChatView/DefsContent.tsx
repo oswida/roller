@@ -51,7 +51,7 @@ export const DefsContent: Component<Props> = ({ ref, adjustSize }) => {
 
 
     const updateField = (info: RollDefInfo | undefined,
-        field: "dice" | "modifier" | "successRule" | "name", value: string) => {
+        field: "dice" | "modifier" | "successRule" | "name" | "successTarget", value: string) => {
         if (!info) return;
         if (field !== "modifier") {
             info[field] = value;
@@ -129,6 +129,9 @@ export const DefsContent: Component<Props> = ({ ref, adjustSize }) => {
                                         <Input label="Modifier" style={{ width: "6em" }}
                                             onChange={(e) => updateField(selDef(), "modifier", e.target.value)}
                                             value={selDef()?.modifier} />
+                                        <Input label="Success target" style={{ width: "6em" }}
+                                            onChange={(e) => updateField(selDef(), "successTarget", e.target.value)}
+                                            value={selDef()?.successTarget} />
                                     </Flex>
                                     <RadioGroup label="Success rule" items={SuccessRules} variant="list"
                                         selected={() => selDef()?.successRule}
@@ -163,6 +166,8 @@ export const DefsContent: Component<Props> = ({ ref, adjustSize }) => {
                                     onChange={(e) => updateField(editDef(), "dice", e.target.value)} />
                                 <Input label="Modifier" style={{ width: "6em" }}
                                     onChange={(e) => updateField(editDef(), "modifier", e.target.value)} />
+                                <Input label="Success target" style={{ width: "6em" }}
+                                    onChange={(e) => updateField(editDef(), "successTarget", e.target.value)} />
                             </Flex>
                             <RadioGroup label="Success rule" items={SuccessRules} variant="list" selected={() => ""}
                                 onChange={(e) => updateField(editDef(), "successRule", e)} />

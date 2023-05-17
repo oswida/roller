@@ -8,6 +8,7 @@ import {
   chatItemRootStyle,
 } from "./styles.css";
 import { DataBlock } from "./DataBlock";
+import { BiRegularTargetLock } from "solid-icons/bi"
 
 export const ChatItem = ({ item }: { item: RollInfo }) => {
 
@@ -53,11 +54,25 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
                 right={<div>{item.result.total}</div>} rightBackground="secondary" />
             </Show>
             <Show when={item.successRule && appSettings().showRollSuccess && succValue() !== ""}>
-              <DataBlock
-                rightBackground="accent"
-                leftBackground="accent"
-                left={<Text colorSchema="primary">🞋 {item.successTarget}</Text>}
-                right={<Text colorSchema="primary" title={item.successRule}> {succValue()}</Text>} />
+              <Show when={item.successTarget && item.successTarget !== 0}>
+                <DataBlock
+                  rightBackground="accent"
+                  leftBackground="accent"
+                  left={
+                    <Flex center>
+                      <BiRegularTargetLock />{" "}
+                      <Text colorSchema="primary">{item.successTarget}</Text>
+                    </Flex>
+                  }
+                  right={<Text colorSchema="primary" title={item.successRule}> {succValue()}</Text>} />
+              </Show>
+              <Show when={!item.successTarget || item.successTarget == 0}>
+                <DataBlock
+                  rightBackground="accent"
+                  leftBackground="accent"
+                  right={<Text colorSchema="primary" title={item.successRule}> {succValue()}</Text>} />
+              </Show>
+
             </Show>
           </Flex>
 

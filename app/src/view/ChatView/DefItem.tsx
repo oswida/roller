@@ -4,6 +4,7 @@ import { Component, ComponentProps, Show, createMemo, createSignal } from "solid
 import { Flex, Text, Dialog, Button, Input } from "~/component";
 import toast from "solid-toast";
 import { FaSolidExclamation } from "solid-icons/fa";
+import { BiRegularTargetLock } from "solid-icons/bi";
 
 
 type Props = {
@@ -13,8 +14,6 @@ type Props = {
 }
 
 export const DefItem: Component<Props & ComponentProps<"div">> = ({ item, selected, adjustSize, ...rest }) => {
-
-    const [tgtValue, setTgtValue] = createSignal("");
     const [valOpen, setValOpen] = createSignal(false);
 
     const isSelected = createMemo(() => {
@@ -25,19 +24,6 @@ export const DefItem: Component<Props & ComponentProps<"div">> = ({ item, select
 
     const rollWithValue = async () => {
         setValOpen(false);
-        if (rolling() || !currentRoom() || currentRoom()?.id == "") return;
-        const v = tgtValue();
-        if (v == "" || v == undefined) {
-            toast(`Target value cannot be empty (${v})`);
-            return;
-        }
-        const num = Number.parseInt(v.trim());
-        if (Number.isNaN(num)) {
-            toast(`Target value has to be a number ${v}`);
-            return;
-        }
-        setSuccessTarget(num);
-        setTgtValue("");
         await roll();
     }
 
@@ -45,8 +31,14 @@ export const DefItem: Component<Props & ComponentProps<"div">> = ({ item, select
         if (rolling() || !currentRoom() || currentRoom()?.id == "") return;
         const db = diceBox();
         if (!db) return;
-        setRolling(true);
         setSuccessRule(item.successRule);
+        const st = Number.parseInt(item.successTarget);
+        if (Number.isNaN(st) && needsParam()) {
+            toast("Incorrect success target");
+            return;
+        }
+        setSuccessTarget(st);
+        setRolling(true);
         const s = appSettings();
         await db.updateConfig({
             theme_colorset: s.diceColor,
@@ -71,6 +63,7 @@ export const DefItem: Component<Props & ComponentProps<"div">> = ({ item, select
     });
 
     const needsParam = createMemo(() => {
+        if (item.successTarget && item.successTarget.trim() !== "") return false;
         if (!item.successRule || item.successRule == "") return false;
         if (item.successRule == "pbta:standard") return false;
         return true;
@@ -87,8 +80,8 @@ export const DefItem: Component<Props & ComponentProps<"div">> = ({ item, select
                     triggerStyle={{ "background-color": colorType.accent }}
                     dialogTitle={() => "Target value"}>
                     <Input style={{ width: "5em" }}
-                        value={tgtValue()}
-                        onChange={(e) => setTgtValue(e.target.value)}
+                        value={item.successTarget}
+                        onChange={(e) => item.successTarget = e.target.value}
                     />
                     <Button onClick={rollWithValue}>Roll</Button>
                 </Dialog>
@@ -99,6 +92,16 @@ export const DefItem: Component<Props & ComponentProps<"div">> = ({ item, select
                 </Button>
             </Show>
         </Flex>
-        <Text colorSchema="secondary" ><i>{item.successRule}</i></Text>
+        <Flex style={{ "justify-content": "space-between" }}>
+            <Show when={item.successRule !== ""}>
+                <Text colorSchema="secondary" ><i>{item.successRule}</i></Text>
+            </Show>
+            <Show when={item.successTarget && item.successTarget !== ""}>
+                <Flex center >
+                    <BiRegularTargetLock />{" "}
+                    <Text colorSchema="primary">{item.successTarget}</Text>
+                </Flex>
+            </Show>
+        </Flex>
     </div>
 }
