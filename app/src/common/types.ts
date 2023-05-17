@@ -1,6 +1,7 @@
 import { v4 as uuid } from "uuid";
 import { colorType } from "./theme.css";
 import { RollResult } from "./rollinfo";
+import { RadioItem } from "~/component";
 
 export type SelectOption = {
   label: string;
@@ -54,6 +55,7 @@ export type RollInfo = {
   diceMaterial: string;
   comment?: string;
   successRule?: string;
+  successTarget?: number;
 };
 
 export type NetRollInfo = {
@@ -66,6 +68,7 @@ export type NetRollInfo = {
   diceMaterial: string;
   comment?: string;
   successRule?: string;
+  successTarget?: number;
 };
 
 export type RoomInfo = {
@@ -133,3 +136,12 @@ export const emptyRollDefInfo = () => {
     modifier: 0,
   } as RollDefInfo
 }
+
+export const SuccessRules: RadioItem[] = [
+  { id: "", label: "None" },
+  { id: "pbta:standard", label: "Standard PBTA" },
+  { id: "pio3s:standard", label: "Pio 3S" },
+  { id: "pio3s:hard", label: "Pio 3S Hard" },
+  { id: "total:ueq", label: "Total under/equal" },
+  { id: "total:oeq", label: "Total over/equal" }
+]

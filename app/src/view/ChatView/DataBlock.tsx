@@ -5,8 +5,8 @@ import { Flex } from "~/component";
 type Props = {
     left?: any;
     right?: any;
-    leftBackground?: "secondary" | "none";
-    rightBackground?: "secondary" | "none";
+    leftBackground?: "secondary" | "none" | "accent";
+    rightBackground?: "secondary" | "none" | "accent";
 }
 
 export const DataBlock: Component<Props> = ({ left, right, leftBackground, rightBackground }) => {

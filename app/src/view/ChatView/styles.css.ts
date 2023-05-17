@@ -127,9 +127,6 @@ export const chatDatablockStyle = recipe({
     display: "flex",
     flexDirection: 'row',
     alignItems: "center",
-    borderColor: "accent",
-    borderStyle: "solid",
-    borderWidth: "thin",
     paddingY: "small",
     paddingX: "medium",
     color: "primary",
@@ -141,6 +138,7 @@ export const chatDatablockStyle = recipe({
   variants: {
     background: {
       secondary: sprinkles({ backgroundColor: "backgroundSecondary" }),
+      accent: sprinkles({ backgroundColor: "accent" }),
       none: sprinkles({ backgroundColor: "none" })
     },
     position: {

@@ -13,6 +13,7 @@ export const [rollComment, setRollComment] = createSignal("");
 export const [rolling, setRolling] = createSignal(false);
 export const [animating, setAnimating] = createSignal(false);
 export const [successRule, setSuccessRule] = createSignal<string | undefined>("");
+export const [successTarget, setSuccessTarget] = createSignal<number>(0);
 
 export const [roomUsers, setRoomUsers] = createSignal<Record<string, string[]>>(
   {}
@@ -35,3 +36,5 @@ export const [centClient, setCentClient] = createSignal<Centrifuge | undefined>(
 // Task queue
 export const [taskQueue, setTaskQueue] = createSignal<Queue | undefined>(undefined);
 export const [taskMutex, setTaskMutex] = createSignal<Mutex | undefined>(undefined);
+
+export const [chatViewTab, setChatViewTab] = createSignal("rolls");

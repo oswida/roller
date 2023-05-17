@@ -27,6 +27,7 @@ export const dialogHeaderStyle = style([
   }),
   {
     flex: 1,
+    height: "42px",
   },
 ]);
 
@@ -54,7 +55,10 @@ export const dialogContentStyle = style([
     gap: "medium",
     alignItems: "center",
     justifyContent: "center"
-  }),
+  }), {
+    marginTop: "0px",
+    marginBottom: "0px"
+  }
 ]);
 
 

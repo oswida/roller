@@ -2,6 +2,7 @@ import { Component, Show, createSignal } from "solid-js";
 import { chatRootStyle } from "./styles.css";
 import { RollsContent } from "./RollsContent";
 import { DefsContent } from "./DefsContent";
+import { chatViewTab } from "~/common";
 
 type Props = {
   chatRef: (e: any) => void;
@@ -10,16 +11,14 @@ type Props = {
 }
 
 export const ChatView: Component<Props> = ({ chatRef, csRef, adjustSize }) => {
-  const [activeTab, setActiveTab] = createSignal("rolls");
-
 
   return (
     <div class={chatRootStyle}>
-      <Show when={activeTab() == "rolls"}>
-        <RollsContent ref={chatRef} changeTab={setActiveTab} adjustSize={adjustSize} />
+      <Show when={chatViewTab() == "rolls"}>
+        <RollsContent ref={chatRef} adjustSize={adjustSize} />
       </Show>
-      <Show when={activeTab() == "cs"}>
-        <DefsContent ref={csRef} changeTab={setActiveTab} adjustSize={adjustSize} />
+      <Show when={chatViewTab() == "cs"}>
+        <DefsContent ref={csRef} adjustSize={adjustSize} />
       </Show>
     </div>
   );

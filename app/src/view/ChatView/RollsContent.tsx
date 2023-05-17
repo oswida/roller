@@ -1,6 +1,6 @@
 import { FaSolidFileImport, FaSolidFileExport, FaSolidTrash, FaSolidCircleInfo } from "solid-icons/fa"
 import { Show, For, createMemo, Component } from "solid-js"
-import { RefProps, RollInfo, appRooms, appSettings, currentRoom, exportData, importData, netPublish, netUpdateRoom, prettyToday, rollerRoomsKey, saveToStorage, topicRoomInfo } from "~/common"
+import { RollInfo, appRooms, appSettings, currentRoom, exportData, importData, netPublish, netUpdateRoom, prettyToday, rollerRoomsKey, saveToStorage, setChatViewTab, topicRoomInfo } from "~/common"
 import { Flex, Button, Text } from "~/component"
 import { ChatItem } from "./ChatItem"
 import { chatListStyle, defTabStyle } from "./styles.css"
@@ -8,11 +8,10 @@ import toast from "solid-toast"
 
 type Props = {
     ref: (e: any) => void;
-    changeTab: (value: string) => void;
     adjustSize: () => void;
 }
 
-export const RollsContent: Component<Props> = ({ ref, changeTab, adjustSize }) => {
+export const RollsContent: Component<Props> = ({ ref, adjustSize }) => {
     const items = createMemo(() => {
         const data = appRooms();
         const settings = appSettings();
@@ -51,7 +50,7 @@ export const RollsContent: Component<Props> = ({ ref, changeTab, adjustSize }) =
     };
 
     const ct = (val: string) => {
-        changeTab(val);
+        setChatViewTab(val);
         adjustSize();
     }
 

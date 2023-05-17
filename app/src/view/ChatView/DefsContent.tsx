@@ -1,20 +1,18 @@
 import { FaSolidPlus, FaSolidFileImport, FaSolidFileExport, FaSolidInfo, FaSolidTrash, FaSolidPen, FaSolidCircleInfo } from "solid-icons/fa";
 import { Component, For, Show, createMemo, createSignal } from "solid-js"
-import { Flex, Text, Button, Dialog, Input, Alert, RadioGroup, RadioItem } from "~/component";
+import { Flex, Text, Button, Dialog, Input, Alert, RadioGroup } from "~/component";
 import { defListStyle, defTabStyle } from "./styles.css";
-import { RollDefInfo, appDefs, emptyRollDefInfo, exportData, importData, prettyToday, rollerDefsKey, saveToStorage } from "~/common";
+import { RollDefInfo, SuccessRules, appDefs, emptyRollDefInfo, exportData, importData, prettyToday, rollerDefsKey, saveToStorage, setChatViewTab } from "~/common";
 import toast from "solid-toast";
 import { DefItem } from "./DefItem";
-import { buttonStyle } from "~/component/Button/styles.css";
 
 type Props = {
     ref: (e: any) => void;
-    changeTab: (value: string) => void;
     adjustSize: () => void;
 }
 
 
-export const DefsContent: Component<Props> = ({ ref, changeTab, adjustSize }) => {
+export const DefsContent: Component<Props> = ({ ref, adjustSize }) => {
     const [createDlgOpen, setCreateDlgOpen] = createSignal(false);
     const [editDlgOpen, setEditDlgOpen] = createSignal(false);
     const [delDlgOpen, setDelDlgOpen] = createSignal(false);
@@ -22,7 +20,7 @@ export const DefsContent: Component<Props> = ({ ref, changeTab, adjustSize }) =>
     const [editDef, setEditDef] = createSignal<RollDefInfo>(emptyRollDefInfo());
 
     const ct = (val: string) => {
-        changeTab(val);
+        setChatViewTab(val);
         adjustSize();
     }
 
@@ -50,14 +48,7 @@ export const DefsContent: Component<Props> = ({ ref, changeTab, adjustSize }) =>
         saveToStorage(rollerDefsKey, ns);
     }
 
-    const sRules: RadioItem[] = [
-        { id: "", label: "None" },
-        { id: "pbta:standard", label: "Standard PBTA" },
-        { id: "pio3s:standard", label: "Pio 3S" },
-        { id: "pio3s:hard", label: "Pio 3S Hard" },
-        { id: "total:ueq", label: "Total under/equal" },
-        { id: "total:oeq", label: "Total over/equal" }
-    ]
+
 
     const updateField = (info: RollDefInfo | undefined,
         field: "dice" | "modifier" | "successRule" | "name", value: string) => {
@@ -132,14 +123,14 @@ export const DefsContent: Component<Props> = ({ ref, changeTab, adjustSize }) =>
                                     onChange={(e) => updateField(selDef(), "name", e.target.value)} />
                                 <Flex direction="row" gap="large" >
                                     <Flex direction="column">
-                                        <Input label="Dice" style={{ width: "4em" }}
+                                        <Input label="Dice" style={{ width: "6em" }}
                                             onChange={(e) => updateField(selDef(), "dice", e.target.value)}
                                             value={selDef()?.dice} />
-                                        <Input label="Modifier" style={{ width: "4em" }}
+                                        <Input label="Modifier" style={{ width: "6em" }}
                                             onChange={(e) => updateField(selDef(), "modifier", e.target.value)}
                                             value={selDef()?.modifier} />
                                     </Flex>
-                                    <RadioGroup label="Success rule" items={sRules} variant="list"
+                                    <RadioGroup label="Success rule" items={SuccessRules} variant="list"
                                         selected={() => selDef()?.successRule}
                                         onChange={(e) => updateField(selDef(), "successRule", e)} />
                                 </Flex>
@@ -168,12 +159,12 @@ export const DefsContent: Component<Props> = ({ ref, changeTab, adjustSize }) =>
                             onChange={(e) => updateField(editDef(), "name", e.target.value)} />
                         <Flex direction="row" gap="large" >
                             <Flex direction="column">
-                                <Input label="Dice" style={{ width: "4em" }}
+                                <Input label="Dice" style={{ width: "6em" }}
                                     onChange={(e) => updateField(editDef(), "dice", e.target.value)} />
-                                <Input label="Modifier" style={{ width: "4em" }}
+                                <Input label="Modifier" style={{ width: "6em" }}
                                     onChange={(e) => updateField(editDef(), "modifier", e.target.value)} />
                             </Flex>
-                            <RadioGroup label="Success rule" items={sRules} variant="list" selected={() => ""}
+                            <RadioGroup label="Success rule" items={SuccessRules} variant="list" selected={() => ""}
                                 onChange={(e) => updateField(editDef(), "successRule", e)} />
                         </Flex>
                         <Flex gap="large" style={{ "margin-top": "10px" }}>
@@ -189,8 +180,8 @@ export const DefsContent: Component<Props> = ({ ref, changeTab, adjustSize }) =>
             <For each={items()}>{(it) =>
             (<DefItem item={it}
                 onClick={() => setSelDef(it)}
-                selected={selDef}
-                changeTab={changeTab} />)}</For>
+                selected={selDef} adjustSize={adjustSize} />)}
+            </For>
         </div>
     </>
 }

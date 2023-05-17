@@ -1,5 +1,5 @@
 import { For, Show, createMemo } from "solid-js";
-import { RollInfo, appSettings, roolSuccessInfo } from "~/common";
+import { RollInfo, appSettings, rollSuccessInfo } from "~/common";
 import { Flex, Text } from "~/component";
 import {
   chatItemCommentStyle,
@@ -31,8 +31,7 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
   });
 
   const succValue = createMemo(() => {
-    const r = roolSuccessInfo(item.result, item.successRule);
-    console.log("succ", r);
+    const r = rollSuccessInfo(item.result, item.successRule, item.successTarget);
     return r;
   });
 
@@ -54,9 +53,12 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
                 right={<div>{item.result.total}</div>} rightBackground="secondary" />
             </Show>
             <Show when={item.successRule && appSettings().showRollSuccess && succValue() !== ""}>
-              <DataBlock right={<Text colorSchema="accent"> {succValue()}</Text>} />
+              <DataBlock
+                rightBackground="accent"
+                leftBackground="accent"
+                left={<Text colorSchema="primary">🞋 {item.successTarget}</Text>}
+                right={<Text colorSchema="primary" title={item.successRule}> {succValue()}</Text>} />
             </Show>
-
           </Flex>
 
           <Flex gap="medium">
@@ -72,12 +74,6 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
             </For>
           </Flex>
 
-          {/* <Text colorSchema="secondary">{item.rollDice.join(", ")}</Text>
-          <Text colorSchema="secondary"> ⇒ </Text>
-          <div>{item.rollTotal} </div>
-          <Show when={item.rollDice.length <= 1}>
-            <div>{rolls()}</div>
-          </Show> */}
         </Flex>
 
         <Show when={item.comment !== undefined && item.comment !== ""}>

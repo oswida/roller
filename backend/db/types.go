@@ -25,15 +25,16 @@ type RollResult struct {
 }
 
 type RollInfo struct {
-	User         string `json:"user"`
-	UserColor    string `json:"userColor"`
-	Tstamp       string `json:"tstamp"`
-	Realtstamp   int    `json:"realtstamp"`
-	Result       string `json:"result"`
-	DiceColor    string `json:"diceColor"`
-	DiceMaterial string `json:"diceMaterial,omitempty"`
-	Comment      string `json:"comment,omitempty"`
-	SuccessRule  string `json:"successRule,omitempty"`
+	User          string `json:"user"`
+	UserColor     string `json:"userColor"`
+	Tstamp        string `json:"tstamp"`
+	Realtstamp    int    `json:"realtstamp"`
+	Result        string `json:"result"`
+	DiceColor     string `json:"diceColor"`
+	DiceMaterial  string `json:"diceMaterial,omitempty"`
+	Comment       string `json:"comment,omitempty"`
+	SuccessRule   string `json:"successRule,omitempty"`
+	SuccessTarget int    `json:"successTarget,omitempty"`
 }
 
 type RoomInfo struct {

@@ -13,7 +13,9 @@ import {
   setDiceBox,
   setRolling,
   setSuccessRule,
+  setSuccessTarget,
   successRule,
+  successTarget,
   topicRollInfo,
   updateRolls,
 } from "~/common";
@@ -58,7 +60,9 @@ export const RollView: Component<RefProps> = ({ ref }) => {
       if (animating()) { setRolling(false); return; }
       const info = createRollInfo(results, rollComment());
       info.successRule = successRule();
+      info.successTarget = successTarget();
       setSuccessRule("");
+      setSuccessTarget(0);
       updateRolls(info);
       netPublish(topicRollInfo, Host2NetRollInfo(info));
       setRolling(false);
