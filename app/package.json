@@ -35,7 +35,6 @@
     "dice-roller-parser": "^0.1.8",
     "immer": "^10.0.1",
     "mqtt": "^4.3.7",
-    "paho-mqtt": "^1.1.0",
     "queue": "^7.0.0",
     "solid-copy-to-clipboard": "^0.1.0",
     "solid-icons": "^1.0.4",

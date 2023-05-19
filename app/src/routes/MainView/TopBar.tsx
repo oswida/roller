@@ -1,5 +1,7 @@
+import { BsFilePerson } from "solid-icons/bs";
 import {
   FaSolidChalkboardUser,
+  FaSolidDiceD20,
   FaSolidPlug,
   FaSolidPlus,
   FaSolidUser,
@@ -16,19 +18,21 @@ import {
   diceMaterialSet,
   emptyRoomInfo,
   generateSerialKeys,
+  mainViewPanel,
   netConnectionStatus,
   netCreateRoom,
   rollerRoomsKey,
   rollerSettingsKey,
   saveToStorage,
+  setMainViewPanel,
   storageSize,
   taskQueue,
 } from "~/common";
 import { Button, Flex, Popover, Select, SelectItem, Text } from "~/component";
+import { RoomConnectView } from "~/view/SettingsView/RoomConnectView";
 import { SettingsView } from "../../view/SettingsView";
 import { RoomSettingsView } from "../../view/SettingsView/RoomSettingsView";
 import { topbarStyle } from "./styles.css";
-import { RoomConnectView } from "~/view/SettingsView/RoomConnectView";
 
 export const TopBar: Component<RefProps> = ({ ref }) => {
   const [roomSettingOpen, setRoomSettingsOpen] = createSignal(false);
@@ -40,21 +44,23 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
   });
 
   const colorList = createMemo(() => {
-    return diceColorSet.map(it => ({ id: it, label: it } as SelectItem));
+    return diceColorSet.map((it) => ({ id: it, label: it } as SelectItem));
   });
 
   const materialList = createMemo(() => {
-    return diceMaterialSet.map(it => ({ id: it, label: it } as SelectItem));
+    return diceMaterialSet.map((it) => ({ id: it, label: it } as SelectItem));
   });
 
   const currentDiceColor = createMemo(() => {
-    const r = colorList().filter(it => it.id == appSettings().diceColor);
+    const r = colorList().filter((it) => it.id == appSettings().diceColor);
     if (r.length > 0) return r[0];
     return undefined;
   });
 
   const currentDiceMaterial = createMemo(() => {
-    const r = materialList().filter(it => it.id == appSettings().diceMaterial);
+    const r = materialList().filter(
+      (it) => it.id == appSettings().diceMaterial
+    );
     if (r.length > 0) return r[0];
     return undefined;
   });
@@ -93,14 +99,18 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
   const selectedRoom = createMemo(() => {
     const room = currentRoom();
     if (!room) return undefined;
-    const list = Object.values(appRooms()).map((v) => ({ id: v.id, label: v.name } as SelectItem));
-    const rs = list.filter(r => (r.id == room.id));
+    const list = Object.values(appRooms()).map(
+      (v) => ({ id: v.id, label: v.name } as SelectItem)
+    );
+    const rs = list.filter((r) => r.id == room.id);
     if (rs.length > 0) return rs[0];
     return undefined;
   });
 
   const roomList = createMemo(() => {
-    return Object.values(appRooms()).map((v) => ({ id: v.id, label: v.name } as SelectItem));
+    return Object.values(appRooms()).map(
+      (v) => ({ id: v.id, label: v.name } as SelectItem)
+    );
   });
 
   const changeRoom = (item: SelectItem) => {
@@ -111,8 +121,6 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
     na.currentRoom = r[0].id;
     saveToStorage(rollerSettingsKey, na);
   };
-
-
 
   return (
     <div class={topbarStyle} ref={ref}>
@@ -166,6 +174,24 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
           <RoomConnectView onOpenChange={setRoomConnectOpen} />
         </Popover>
       </Flex>
+
+      <Flex gap="medium">
+        <Button
+          variant="icon"
+          toggled={mainViewPanel() == "dice"}
+          onClick={() => setMainViewPanel("dice")}
+        >
+          <FaSolidDiceD20 size={25} />
+        </Button>
+        <Button
+          variant="icon"
+          toggled={mainViewPanel() == "cs"}
+          onClick={() => setMainViewPanel("cs")}
+        >
+          <BsFilePerson size={25} />
+        </Button>
+      </Flex>
+
       <Flex gap="large" center>
         <Flex>
           <Text fontSize="smaller" colorSchema="secondary">

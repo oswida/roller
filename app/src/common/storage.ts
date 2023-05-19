@@ -1,11 +1,19 @@
 import { createLocalStorage } from "@solid-primitives/storage";
 import { setStorageSize } from "./state";
-import { AppSettings, RollDefInfo, RoomInfo, StorageItem, emptyAppSettings } from "./types";
+import {
+  AppSettings,
+  CsInfo,
+  RollDefInfo,
+  RoomInfo,
+  StorageItem,
+  emptyAppSettings,
+} from "./types";
 import { compressData, decompressData, generateSerialKeys } from "./util";
 
 export const rollerSettingsKey = "settings";
 export const rollerRoomsKey = "rooms";
 export const rollerDefsKey = "defs";
+export const rollerCsKey = "cs";
 
 export const [appStore, setAppStore, { remove, clear, toJSON }] =
   createLocalStorage({
@@ -21,6 +29,8 @@ export const [appStore, setAppStore, { remove, clear, toJSON }] =
           return decompressData(value) as Record<string, RoomInfo>;
         case "defs":
           return decompressData(value) as Record<string, RollDefInfo>;
+        case "cs":
+          return decompressData(value) as Record<string, CsInfo>;
         default:
           return decompressData(value) as string;
       }
@@ -68,6 +78,15 @@ export const appDefs = () => {
     setAppStore(rollerDefsKey, defs);
   }
   return defs;
+};
+
+export const appCs = () => {
+  let cs = appStore.cs as Record<string, CsInfo>;
+  if (!cs) {
+    cs = {};
+    setAppStore(rollerCsKey, cs);
+  }
+  return cs;
 };
 
 export const currentRoom = () => {

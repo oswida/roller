@@ -12,10 +12,21 @@ import {
 } from "./storage";
 import { spaceSize, sprinkles } from "./theme.css";
 import { NetRollInfo, NetRoomInfo, RollInfo, RoomInfo } from "./types";
-import { diceBox, setRollComment, setAnimating, rolling, setTaskQueue, taskQueue, setTaskMutex, taskMutex } from "./state";
+import {
+  diceBox,
+  setRollComment,
+  setAnimating,
+  rolling,
+  setTaskQueue,
+  taskQueue,
+  setTaskMutex,
+  taskMutex,
+} from "./state";
 import { rollNotationWithResults } from "./rollinfo";
 import Queue from "queue";
 import { Mutex } from "async-mutex";
+
+export const TOPBAR_HEIGHT = 50;
 
 export const createSpaceVariants = (name: string) => {
   const result: Record<string, any> = {};
@@ -92,7 +103,6 @@ export const prettyToday = () => {
     .replaceAll(",", "_")
     .replaceAll(" ", "_");
 };
-
 
 export const diceColorSet: string[] = [
   "acid",
@@ -183,30 +193,34 @@ export const generateSerialKeys = (length: number, separator: string) => {
     .substring(0, length + Math.round(length / 4) - 1);
 };
 
-
 export const Net2HostRollInfo = (info: NetRollInfo) => {
   return { ...info, result: decompressData64(info.result) } as RollInfo;
-}
+};
 
 export const Host2NetRollInfo = (info: RollInfo) => {
   return { ...info, result: compressData64(info.result) } as NetRollInfo;
-}
+};
 
 export const Net2HostRoomInfo = (room: NetRoomInfo) => {
-  return { ...room, rolls: room.rolls.map((r) => Net2HostRollInfo(r)) } as RoomInfo;
-}
+  return {
+    ...room,
+    rolls: room.rolls.map((r) => Net2HostRollInfo(r)),
+  } as RoomInfo;
+};
 
 export const Host2NetRoomInfo = (room: RoomInfo) => {
-  return { ...room, rolls: room.rolls.map((r) => Host2NetRollInfo(r)) } as NetRoomInfo;
-}
-
+  return {
+    ...room,
+    rolls: room.rolls.map((r) => Host2NetRollInfo(r)),
+  } as NetRoomInfo;
+};
 
 export const queueInit = () => {
   const q = new Queue({ autostart: true, concurrency: 1 });
   setTaskQueue(q);
   const mutex = new Mutex();
   setTaskMutex(mutex);
-}
+};
 
 export const enrollTask = (f: () => void) => {
   const q = taskQueue();
@@ -214,7 +228,7 @@ export const enrollTask = (f: () => void) => {
     console.error("Cannot find task queue");
     return;
   }
-  q.push(cb => {
+  q.push((cb) => {
     const mux = taskMutex();
     if (!mux) {
       console.error("cannot find mutex!");
@@ -224,4 +238,4 @@ export const enrollTask = (f: () => void) => {
     mux.runExclusive(f);
     if (cb) cb();
   });
-}
+};

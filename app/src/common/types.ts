@@ -97,7 +97,19 @@ export const emptyRoomInfo = (rid?: string) => {
   } as RoomInfo;
 };
 
-export type StorageItem = AppSettings | Record<string, RoomInfo> | Record<string, RollDefInfo> | string;
+export type CsInfo = {
+  id: string;
+  name: string;
+  template: string;
+  values: Record<string, any>;
+};
+
+export type StorageItem =
+  | AppSettings
+  | Record<string, RoomInfo>
+  | Record<string, RollDefInfo>
+  | Record<string, CsInfo>
+  | string;
 
 export type NetMessage = {
   sender: string;
@@ -117,7 +129,7 @@ export const topicRoomConnect = "room_connect";
 
 export type RefProps = {
   ref: any;
-}
+};
 
 export type RollDefInfo = {
   id: string;
@@ -126,7 +138,7 @@ export type RollDefInfo = {
   modifier: number;
   successRule: string;
   successTarget: string;
-}
+};
 
 export const emptyRollDefInfo = () => {
   return {
@@ -136,8 +148,8 @@ export const emptyRollDefInfo = () => {
     successRule: "",
     successTarget: "",
     modifier: 0,
-  } as RollDefInfo
-}
+  } as RollDefInfo;
+};
 
 export const SuccessRules: RadioItem[] = [
   { id: "", label: "None" },
@@ -145,5 +157,5 @@ export const SuccessRules: RadioItem[] = [
   { id: "pio3s:standard", label: "Pio 3S" },
   { id: "pio3s:hard", label: "Pio 3S Hard" },
   { id: "total:ueq", label: "Total under/equal" },
-  { id: "total:oeq", label: "Total over/equal" }
-]
+  { id: "total:oeq", label: "Total over/equal" },
+];

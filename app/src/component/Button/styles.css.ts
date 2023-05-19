@@ -67,12 +67,17 @@ export const buttonStyle = recipe({
         opacity: 0.5,
       },
       false: {
-        opacity: 1
-      }
-    }
+        opacity: 1,
+      },
+    },
+    toggled: {
+      true: sprinkles({ backgroundColor: "accent" }),
+      false: sprinkles({ backgroundColor: "background" }),
+    },
   },
   defaultVariants: {
     variant: "flat",
     disabled: false,
+    toggled: false,
   },
 });
