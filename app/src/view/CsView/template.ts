@@ -1,8 +1,9 @@
 import { fabric } from "fabric";
-import { CsInfo, CsTemplate, updateCs } from "~/common";
+import { CsCheckData, CsInfo, CsTemplate, updateCs } from "~/common";
 import { addAttrControl, addCheckControl, removeStdControls } from "./control";
 import { FaBrandsCcMastercard } from "solid-icons/fa";
 import { csTemplates } from "~/template";
+import { addDisableControl } from "./control/disable";
 
 
 
@@ -75,32 +76,53 @@ export const createField = (canvas: fabric.Canvas,
             })
             return txt;
         case "rect-check":
+            const val = info.values[fld.id];
+            let clr = info.values[fld.id].value == true ? (fld.stroke ? fld.stroke : tpl.fieldStroke) : "transparent";
+            if (val?.disabled) {
+                clr = "grey";
+            }
+
             const frc = new fabric.Rect({
                 left: fld.rect[0],
                 top: pageTop + fld.rect[1],
                 width: fld.rect[2],
                 height: fld.rect[3],
-                fill: info.values[fld.id] == true ? (fld.stroke ? fld.stroke : tpl.fieldStroke) : "transparent",
+                fill: clr,
                 backgroundColor: tpl.fieldColor,
-                data: info.values[fld.id],
+                data: {
+                    disabled: val ? val.disabled : false,
+                    value: val ? val.value : ""
+                } as CsCheckData,
                 ...COMMON_FIELD_SETTINGS
             });
             removeStdControls(frc);
             addCheckControl(canvas, frc, fld, info);
+            frc.setControlVisible("check", !val?.disabled);
             return frc;
         case "circle-check":
+            const val2 = info.values[fld.id];
+            let clr2 = val2?.value == true ? (fld.stroke ? fld.stroke : tpl.fieldStroke) : "transparent";
+            if (val2?.disabled) {
+                clr2 = "grey";
+            }
             const radius = fld.rect[2] / 2;
+
             const fcc = new fabric.Circle({
                 left: fld.rect[0],
                 top: pageTop + fld.rect[1],
                 radius: radius,
-                fill: info.values[fld.id] == true ? (fld.stroke ? fld.stroke : tpl.fieldStroke) : "transparent",
+                fill: clr2,
                 backgroundColor: tpl.fieldColor,
-                data: info.values[fld.id],
+                data: {
+                    disabled: val2 ? val2.disabled : false,
+                    value: val2 ? val2.value : ""
+                } as CsCheckData,
                 ...COMMON_FIELD_SETTINGS
             });
             removeStdControls(fcc);
             addCheckControl(canvas, fcc, fld, info);
+            addDisableControl(canvas, fcc, fld, info);
+            fcc.setControlVisible("check", !val2?.disabled);
             return fcc;
         default: return undefined;
     }

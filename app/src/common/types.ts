@@ -214,3 +214,8 @@ export type CsTemplate = {
   pages: CsPage[];
 }
 
+export type CsCheckData = {
+  value: boolean;
+  disabled: boolean;
+}
+

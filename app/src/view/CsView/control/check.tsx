@@ -10,8 +10,9 @@ export const addCheckControl = (canvas: fabric.Canvas, obj: fabric.Object, fld: 
     const tpl = csTemplates[info.template];
     if (!tpl) return;
     addControl("check", obj, 0.5, -0.5, -16, 16, () => {
-        obj.data = !obj.data;
-        if (obj.data) {
+        if (obj.data.disabled) return;
+        obj.data.value = !obj.data.value;
+        if (obj.data.value) {
             obj.set({
                 fill: fld.stroke ? fld.stroke : tpl.fieldStroke
             });
