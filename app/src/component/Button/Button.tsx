@@ -1,16 +1,13 @@
 import {
-  Component,
   ComponentProps,
-  JSX,
   ParentComponent,
-  ParentProps,
 } from "solid-js";
 import { Button as Btn } from "@kobalte/core";
 import { buttonStyle } from "./styles.css";
 
 type Props = {
   variant?: "ghost" | "flat" | "icon" | "bigicon" | "smallicon";
-  toggled?: boolean;
+  toggled?: () => boolean;
 };
 
 export const Button: ParentComponent<Props & ComponentProps<"button">> = ({
@@ -25,7 +22,7 @@ export const Button: ParentComponent<Props & ComponentProps<"button">> = ({
       class={buttonStyle({
         variant: variant,
         disabled: disabled ? disabled : false,
-        toggled: toggled,
+        toggled: toggled ? toggled() : undefined,
       })}
       {...rest}
       disabled={disabled}

@@ -5,11 +5,16 @@ import { ChatView } from "~/view/ChatView";
 import { DiceSelector } from "~/view/DiceSelector";
 import { RollView } from "~/view/RollView";
 
-export const RollPanel: Component = () => {
+type Props = {
+  visible: () => boolean;
+}
+
+export const RollPanel: Component<Props> = ({ visible }) => {
   let selRef: HTMLDivElement;
   let chatRef: HTMLDivElement | undefined;
   let csRef: HTMLDivElement | undefined;
   let rollRef: HTMLDivElement;
+
 
   const [rect, setRect] = createSignal({
     height: window.innerHeight,
@@ -41,7 +46,7 @@ export const RollPanel: Component = () => {
   });
 
   return (
-    <div>
+    <div style={{ visibility: visible() ? "visible" : "hidden" }}>
       <Flex>
         <Show when={!appSettings().rightLayout}>
           <ChatView

@@ -1,9 +1,8 @@
-import { RollDefInfo, appSettings, colorType, currentRoom, diceBox, rolling, setChatViewTab, setRolling, setSuccessRule, setSuccessTarget } from "~/common"
-import { defItemStyle, defModifierStyle } from "./styles.css"
+import { RollDefInfo, colorType, rollDef, setChatViewTab } from "~/common"
+import { defItemStyle } from "./styles.css"
 import { Component, ComponentProps, Show, createMemo, createSignal } from "solid-js";
 import { Flex, Text, Dialog, Button, Input } from "~/component";
 import toast from "solid-toast";
-import { FaSolidExclamation } from "solid-icons/fa";
 import { BiRegularTargetLock } from "solid-icons/bi";
 
 
@@ -28,31 +27,9 @@ export const DefItem: Component<Props & ComponentProps<"div">> = ({ item, select
     }
 
     const roll = async () => {
-        if (rolling() || !currentRoom() || currentRoom()?.id == "") return;
-        const db = diceBox();
-        if (!db) return;
-        setSuccessRule(item.successRule);
-        const st = Number.parseInt(item.successTarget);
-        if (Number.isNaN(st) && needsParam()) {
-            toast("Incorrect success target");
-            return;
-        }
-        setSuccessTarget(st);
-        setRolling(true);
-        const s = appSettings();
-        await db.updateConfig({
-            theme_colorset: s.diceColor,
-            theme_texture: s.diceMaterial,
-        });
-        const mod = item.modifier && item.modifier > 0 ? `+${item.modifier}` : `${item.modifier}`
-        const dice = item.modifier ? `${item.dice}${mod}` : item.dice;
-        try {
-            await db.roll(dice);
-        } catch (e) {
-            toast("Unexpected error during roll", { icon: <FaSolidExclamation /> })
-            setRolling(false);
-        }
         setChatViewTab("rolls");
+        const res = await rollDef(item, needsParam());
+        if (res) toast(JSON.stringify(res));
         adjustSize();
     }
 

@@ -63,8 +63,8 @@ export const pbtaRollSuccessInfo = (result: RollResult, rule: string) => {
     switch (rule) {
         case "standard":
             if (result.total < 7) return "Failure";
-            if (result.total >= 7 && result.total <= 9) return "Success w/price";
-            return "Full success";
+            if (result.total >= 7 && result.total <= 9) return "Mixed Success";
+            return "Advanced success";
     }
     return "";
 }

@@ -122,6 +122,8 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
     saveToStorage(rollerSettingsKey, na);
   };
 
+
+
   return (
     <div class={topbarStyle} ref={ref}>
       <Flex gap="medium" center>
@@ -178,14 +180,14 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
       <Flex gap="medium">
         <Button
           variant="icon"
-          toggled={mainViewPanel() == "dice"}
+          toggled={() => mainViewPanel() == "dice"}
           onClick={() => setMainViewPanel("dice")}
         >
           <FaSolidDiceD20 size={25} />
         </Button>
         <Button
           variant="icon"
-          toggled={mainViewPanel() == "cs"}
+          toggled={() => mainViewPanel() == "cs"}
           onClick={() => setMainViewPanel("cs")}
         >
           <BsFilePerson size={25} />

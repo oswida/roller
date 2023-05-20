@@ -29,12 +29,13 @@ export const MainView = () => {
   return (
     <div id="app" class={mainStyle} ref={(e) => (mainRef = e)}>
       <TopBar ref={(e: any) => (barRef = e)} />
-      <Show when={mainViewPanel() == "dice"}>
-        <RollPanel />
-      </Show>
       <Show when={mainViewPanel() == "cs"}>
         <CsPanel />
       </Show>
+      {/* <Show when={mainViewPanel() == "dice"}> */}
+      <RollPanel visible={() => mainViewPanel() == "dice"} />
+      {/* </Show> */}
+
     </div>
   );
 };

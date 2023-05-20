@@ -159,3 +159,47 @@ export const SuccessRules: RadioItem[] = [
   { id: "total:ueq", label: "Total under/equal" },
   { id: "total:oeq", label: "Total over/equal" },
 ];
+
+
+export type WhiteboardState = {
+  tool: string;
+  brush: string;
+  fill: string;
+  width: number;
+};
+
+export const initialWhiteboardState: WhiteboardState = {
+  tool: "select",
+  brush: "white",
+  fill: "transparent",
+  width: 0,
+};
+
+export type CsField = {
+  id: string;
+  name: string;
+  rect: [number, number, number, number];
+  type: "attr" | "rect-check";
+  roll?: {
+    type: "mod";
+    dice: string;
+    srule: string;
+  }
+}
+
+export type CsPage = {
+  img: string;
+  pos: number;
+  fields: CsField[];
+}
+
+export type CsTemplate = {
+  game: string;
+  name: string;
+  pageHeight: number;
+  pageWidth: number;
+  fieldColor: string;
+  fieldStroke: string;
+  fieldFontSize: number;
+  pages: CsPage[];
+}

@@ -3,6 +3,7 @@ import mqtt from "mqtt/dist/mqtt";
 import { Centrifuge } from "centrifuge";
 import Queue from "queue";
 import { Mutex } from "async-mutex";
+import { WhiteboardState, initialWhiteboardState } from "./types";
 
 export const [storageSize, setStorageSize] = createSignal(0);
 
@@ -46,3 +47,10 @@ export const [taskMutex, setTaskMutex] = createSignal<Mutex | undefined>(
 export const [chatViewTab, setChatViewTab] = createSignal("rolls");
 
 export const [mainViewPanel, setMainViewPanel] = createSignal("dice");
+
+
+// WhiteboardView
+export const [wbState, setWbState] = createSignal<WhiteboardState>(
+  initialWhiteboardState
+);
+export const [csCanvas, setCsCanvas] = createSignal<fabric.Canvas>();
