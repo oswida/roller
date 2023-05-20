@@ -8,7 +8,7 @@ import {
   StorageItem,
   emptyAppSettings,
 } from "./types";
-import { compressData, decompressData, generateSerialKeys } from "./util";
+import { compressData, decompressData } from "./util";
 
 export const rollerSettingsKey = "settings";
 export const rollerRoomsKey = "rooms";
@@ -97,3 +97,18 @@ export const currentRoom = () => {
   if (!rooms[settings.currentRoom]) return undefined;
   return rooms[settings.currentRoom];
 };
+
+
+// --- mutations
+
+export const updateCs = (item: CsInfo) => {
+  const newState = { ...appCs() };
+  newState[item.id] = item;
+  saveToStorage(rollerCsKey, newState);
+}
+
+export const deleteCs = (id: string) => {
+  const newState = { ...appCs() };
+  delete newState[id];
+  saveToStorage(rollerCsKey, newState);
+}

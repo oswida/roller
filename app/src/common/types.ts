@@ -1,7 +1,7 @@
 import { v4 as uuid } from "uuid";
 import { colorType } from "./theme.css";
 import { RollResult } from "./rollinfo";
-import { RadioItem } from "~/component";
+import { RadioItem, SelectItem } from "~/component";
 
 export type SelectOption = {
   label: string;
@@ -97,10 +97,16 @@ export const emptyRoomInfo = (rid?: string) => {
   } as RoomInfo;
 };
 
+export type csTemplateId = "pio3s-romancja" | "";
+
+export const csTemplateTypes: SelectItem[] = [
+  { id: "pio3s-romancja", label: "Pio3S: Romancja" }
+]
+
 export type CsInfo = {
   id: string;
   name: string;
-  template: string;
+  template: csTemplateId;
   values: Record<string, any>;
 };
 
@@ -179,12 +185,16 @@ export type CsField = {
   id: string;
   name: string;
   rect: [number, number, number, number];
-  type: "attr" | "rect-check";
+  type: "attr" | "rect-check" | "text" | "circle-check";
   roll?: {
-    type: "mod";
+    type: "mod" | "target";
     dice: string;
     srule: string;
-  }
+    comment?: string;
+  },
+  fontSize?: number;
+  stroke?: string,
+  textAlign?: "center" | "left" | "right",
 }
 
 export type CsPage = {
@@ -203,3 +213,4 @@ export type CsTemplate = {
   fieldFontSize: number;
   pages: CsPage[];
 }
+

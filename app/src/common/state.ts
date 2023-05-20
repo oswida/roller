@@ -3,7 +3,7 @@ import mqtt from "mqtt/dist/mqtt";
 import { Centrifuge } from "centrifuge";
 import Queue from "queue";
 import { Mutex } from "async-mutex";
-import { WhiteboardState, initialWhiteboardState } from "./types";
+import { CsInfo, WhiteboardState, initialWhiteboardState } from "./types";
 
 export const [storageSize, setStorageSize] = createSignal(0);
 
@@ -17,6 +17,7 @@ export const [successRule, setSuccessRule] = createSignal<string | undefined>(
   ""
 );
 export const [successTarget, setSuccessTarget] = createSignal<number>(0);
+
 
 export const [roomUsers, setRoomUsers] = createSignal<Record<string, string[]>>(
   {}
@@ -54,3 +55,5 @@ export const [wbState, setWbState] = createSignal<WhiteboardState>(
   initialWhiteboardState
 );
 export const [csCanvas, setCsCanvas] = createSignal<fabric.Canvas>();
+
+export const [currentCs, setCurrentCs] = createSignal<CsInfo>();

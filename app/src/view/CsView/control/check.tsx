@@ -1,22 +1,27 @@
-import { CsTemplate } from "~/common";
+import { CsField, CsInfo, CsTemplate, updateCs } from "~/common";
 import { addControl } from ".";
+import { csTemplates } from "~/template";
 
-export const checkIcon = `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path stroke= "orange" fill="orange" d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L369 209z"/></svg>`;
+export const checkIcon = `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path stroke="orange" fill="orange" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg>`;
 export var checkImg = document.createElement('img');
 checkImg.src = checkIcon;
 
-export const addCheckControl = (canvas: fabric.Canvas, obj: fabric.Object, tpl: CsTemplate) => {
+export const addCheckControl = (canvas: fabric.Canvas, obj: fabric.Object, fld: CsField, info: CsInfo) => {
+    const tpl = csTemplates[info.template];
+    if (!tpl) return;
     addControl("check", obj, 0.5, -0.5, -16, 16, () => {
         obj.data = !obj.data;
         if (obj.data) {
             obj.set({
-                fill: tpl.fieldStroke
+                fill: fld.stroke ? fld.stroke : tpl.fieldStroke
             });
         } else {
             obj.set({
                 fill: "transparent"
             })
         }
+        info.values[fld.id] = obj.data;
+        updateCs(info);
         canvas.requestRenderAll();
     }, checkImg);
 }

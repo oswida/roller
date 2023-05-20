@@ -1,7 +1,7 @@
 // import { RollResult } from "./rollinfo";
 
 import toast from "solid-toast";
-import { rolling, diceBox, setSuccessRule, setSuccessTarget, setRolling, setChatViewTab } from "./state";
+import { rolling, diceBox, setSuccessRule, setSuccessTarget, setRolling, setChatViewTab, rollComment, setRollComment } from "./state";
 import { currentRoom, appSettings } from "./storage";
 import { RollDefInfo } from "./types";
 
@@ -84,7 +84,7 @@ import { RollDefInfo } from "./types";
 
 
 
-export const rollDef = async (item: RollDefInfo, needsParam: boolean) => {
+export const rollDef = async (item: RollDefInfo, needsParam: boolean, comment?: string) => {
     if (rolling() || !currentRoom() || currentRoom()?.id == "") return undefined;
     const db = diceBox();
     if (!db) return undefined;
@@ -94,6 +94,9 @@ export const rollDef = async (item: RollDefInfo, needsParam: boolean) => {
         return "Incorrect success target";
     }
     setSuccessTarget(st);
+    if (comment) {
+        setRollComment(comment);
+    }
     setRolling(true);
     const s = appSettings();
     await db.updateConfig({

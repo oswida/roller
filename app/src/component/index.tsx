@@ -7,6 +7,5 @@ export * from "./Popover";
 export * from "./Select";
 export * from "./Text";
 export * from "./Switch";
-export * from "./TplRenderer";
 export * from "./RadioGroup";
 export * from "./Alert";

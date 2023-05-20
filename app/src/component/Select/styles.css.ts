@@ -42,6 +42,7 @@ export const selectListStyle = style([
   {
     boxShadow:
       "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+    zIndex: 50
   },
 ]);
 
@@ -78,3 +79,9 @@ export const selectItemStyle = style([
     },
   },
 ]);
+
+
+export const selectLabelStyle = style([sprinkles({
+  color: "secondary",
+  fontSize: "smaller"
+})]);

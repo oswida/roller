@@ -1,10 +1,8 @@
-import { Component, createEffect, createSignal } from "solid-js";
+import { Component, createEffect } from "solid-js";
 import { csViewRootStyle } from "./styles.css";
 import { fabric } from "fabric";
-import { initCanvas } from "./fabric";
 import { initEvents } from "./events";
 import { RefProps, csCanvas, setCsCanvas } from "~/common";
-import { createFromTemplate, templateMotwpl } from "./template";
 
 export const CsView: Component<RefProps> = ({ ref }) => {
 
@@ -18,8 +16,6 @@ export const CsView: Component<RefProps> = ({ ref }) => {
             preserveObjectStacking: true,
         });
         setCsCanvas(cnv);
-        createFromTemplate(templateMotwpl, cnv);
-
     });
 
     createEffect(() => {
