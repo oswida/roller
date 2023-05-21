@@ -1,7 +1,3 @@
-import { wbState } from "~/common";
-import { Accessor } from "solid-js";
-import { v4 as uuidv4 } from "uuid";
-// import { addControl, canvasChangeColors, canvasRemoveActive, paletteImg, xmarkImg } from "./controls";
 
 
 let isDragging = false;
@@ -29,28 +25,14 @@ export const initEvents = (canvas: () => fabric.Canvas | undefined) => {
         }
     });
 
-    cnv.on('mouse:dblclick', (opt) => {
-        const cnv = canvas();
-        if (!cnv) return;
-        var vpt = cnv.viewportTransform;
-        if (!vpt) return;
-        vpt[4] = 0;
-        vpt[5] = 0;
-        vpt[0] = 1.0;
-        vpt[3] = 1.0;
-        cnv.setViewportTransform(vpt);
-        opt.e.preventDefault();
-        opt.e.stopPropagation();
-    })
-
     cnv.on('mouse:down', function (opt) {
         const cnv = canvas();
         if (!cnv) return;
         var evt = opt.e;
         if (evt.shiftKey === true || opt.button == 3) {
             isDragging = true;
-            lastPosX = opt.absolutePointer ? opt.absolutePointer.x : 0;
-            lastPosY = opt.absolutePointer ? opt.absolutePointer.y : 0;
+            lastPosX = evt.clientX; //opt.absolutePointer ? opt.absolutePointer.x : 0;
+            lastPosY = evt.clientY; // opt.absolutePointer ? opt.absolutePointer.y : 0;
             cnv.selection = false;
         }
         // else {
@@ -155,11 +137,11 @@ export const initEvents = (canvas: () => fabric.Canvas | undefined) => {
             var e = opt.e;
             var vpt = cnv.viewportTransform;
             if (!vpt) return;
-            vpt[4] += opt.absolutePointer ? opt.absolutePointer.x - lastPosX : 0;
-            vpt[5] += opt.absolutePointer ? opt.absolutePointer.y - lastPosY : 0;
+            vpt[4] += e.clientX - lastPosX; //opt.absolutePointer ? opt.absolutePointer.x - lastPosX : 0;
+            vpt[5] += e.clientY - lastPosY; //opt.absolutePointer ? opt.absolutePointer.y - lastPosY : 0;
             cnv.requestRenderAll();
-            lastPosX = opt.absolutePointer ? opt.absolutePointer.x : 0;
-            lastPosY = opt.absolutePointer ? opt.absolutePointer.y : 0;
+            lastPosX = e.clientX; //opt.absolutePointer ? opt.absolutePointer.x : 0;
+            lastPosY = e.clientY; //opt.absolutePointer ? opt.absolutePointer.y : 0;
         }
         // else {
         //     if (isMouseDown) {

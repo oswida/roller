@@ -97,10 +97,11 @@ export const emptyRoomInfo = (rid?: string) => {
   } as RoomInfo;
 };
 
-export type csTemplateId = "pio3s-romancja" | "";
+export type csTemplateId = "pio3s-romancja" | "wzm-pl" | "";
 
 export const csTemplateTypes: SelectItem[] = [
-  { id: "pio3s-romancja", label: "Pio3S: Romancja" }
+  { id: "pio3s-romancja", label: "Pio3S: Romancja" },
+  { id: "wzm-pl", label: "Wyprawa za Mur: standard" }
 ]
 
 export type CsInfo = {
@@ -196,7 +197,8 @@ export type CsField = {
   rolls?: CsRoll[],
   fontSize?: number;
   stroke?: string,
-  textAlign?: "center" | "left" | "right",
+  textAlign?: "center" | "left" | "right";
+  info?: string;
 }
 
 export type CsPage = {

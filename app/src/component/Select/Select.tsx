@@ -22,10 +22,11 @@ type Props = {
   selected?: () => SelectItem | undefined;
   onChange: (value: SelectItem) => void;
   label?: string;
+  labelLeft?: boolean;
   modal?: boolean;
 };
 
-export const Select: Component<Props> = ({ options, selected, onChange, label, modal }) => {
+export const Select: Component<Props> = ({ options, selected, onChange, label, modal, labelLeft }) => {
   return (
     <Sel.Root
       modal={modal}
@@ -44,15 +45,15 @@ export const Select: Component<Props> = ({ options, selected, onChange, label, m
         </Sel.Item>
       )}
     >
-      <Flex direction="column" gap="small">
+      <Flex direction={labelLeft ? "row" : "column"} gap="small" center={labelLeft ? true : undefined}>
         <Show when={label}>
           <Sel.Label class={selectLabelStyle}>{label}</Sel.Label>
-          <Sel.Trigger class={selectTriggerStyle}>
-            <Sel.Value<SelectItem>>
-              {state => state.selectedOption() ? state.selectedOption().label : "---"}
-            </Sel.Value>
-          </Sel.Trigger>
         </Show>
+        <Sel.Trigger class={selectTriggerStyle}>
+          <Sel.Value<SelectItem>>
+            {state => state.selectedOption() ? state.selectedOption().label : "---"}
+          </Sel.Value>
+        </Sel.Trigger>
       </Flex>
 
       <Sel.Portal>

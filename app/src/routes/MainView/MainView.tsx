@@ -22,8 +22,8 @@ export const MainView = () => {
 
   createEffect(() => {
     if (netConnectionStatus())
-      toast("Connected to server", { icon: <FaSolidCircleInfo /> });
-    else toast("Disconnected from server", { icon: <FaSolidCircleInfo /> });
+      toast("Connected to server", { icon: <FaSolidCircleInfo />, position: "bottom-right" });
+    else toast("Disconnected from server", { icon: <FaSolidCircleInfo />, position: "bottom-right" });
   });
 
   return (

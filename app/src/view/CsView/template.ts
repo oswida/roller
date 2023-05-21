@@ -1,9 +1,9 @@
 import { fabric } from "fabric";
-import { CsCheckData, CsInfo, CsTemplate, updateCs } from "~/common";
+import { CsCheckData, CsInfo, updateCs } from "~/common";
 import { addRollControl, addCheckControl, removeStdControls } from "./control";
-import { FaBrandsCcMastercard } from "solid-icons/fa";
 import { csTemplates } from "~/template";
 import { addDisableControl } from "./control/disable";
+import { addInfoControl } from "./control/info";
 
 
 
@@ -18,14 +18,13 @@ export const createField = (canvas: fabric.Canvas,
     pageNo: number, fieldNo: number, info: CsInfo) => {
     const tpl = csTemplates[info.template];
     if (!tpl) return;
-    // const pageTop = (tpl.pages[pageNo].pos - 1) * tpl.pageHeight;
     const fld = tpl.pages[pageNo].fields[fieldNo];
     switch (fld.type) {
         case "attr":
             const av = info.values[fld.id];
             const f = new fabric.Textbox(av ? `${av}` : "", {
                 left: fld.rect[0],
-                top: fld.rect[1],//pageTop + fld.rect[1],
+                top: fld.rect[1],
                 width: fld.rect[2],
                 height: fld.rect[3],
                 stroke: tpl.fieldStroke,
@@ -46,13 +45,16 @@ export const createField = (canvas: fabric.Canvas,
                 });
                 info.values[fld.id] = f.text;
                 updateCs(info);
-            })
+            });
+            if (fld.info && fld.info.trim() !== "") {
+                addInfoControl(canvas, f, fld, info)
+            }
             return f;
         case "text":
             const tv = info.values[fld.id];
             const txt = new fabric.Textbox(tv ? tv : "", {
                 left: fld.rect[0],
-                top: fld.rect[1], //pageTop + fld.rect[1],
+                top: fld.rect[1],
                 width: fld.rect[2],
                 height: fld.rect[3],
                 stroke: tpl.fieldStroke,
@@ -84,7 +86,7 @@ export const createField = (canvas: fabric.Canvas,
 
             const frc = new fabric.Rect({
                 left: fld.rect[0],
-                top: fld.rect[1],//pageTop + fld.rect[1],
+                top: fld.rect[1],
                 width: fld.rect[2],
                 height: fld.rect[3],
                 fill: clr,
@@ -109,7 +111,7 @@ export const createField = (canvas: fabric.Canvas,
 
             const fcc = new fabric.Circle({
                 left: fld.rect[0],
-                top: fld.rect[1],//pageTop + fld.rect[1],
+                top: fld.rect[1],
                 radius: radius,
                 fill: clr2,
                 backgroundColor: tpl.fieldColor,
@@ -143,7 +145,7 @@ export const createFromTemplate = (canvas: fabric.Canvas, info: CsInfo, pidx: nu
 
     fabric.Image.fromURL(page.img, (img) => {
         img.set({
-            top: 0,//(page.pos - 1) * tpl.pageHeight,
+            top: 0,
             left: 0,
             hasControls: false,
             lockMovementX: true,

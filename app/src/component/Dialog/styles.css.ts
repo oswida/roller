@@ -23,7 +23,9 @@ export const dialogHeaderStyle = style([
     display: "flex",
     color: "primary",
     paddingY: "small",
-    paddingX: "medium"
+    paddingX: "medium",
+    borderTopLeftRadius: "small",
+    borderTopRightRadius: "small"
   }),
   {
     flex: 1,
@@ -54,7 +56,8 @@ export const dialogContentStyle = style([
     flexDirection: "column",
     gap: "medium",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    borderRadius: "small",
   }), {
     marginTop: "0px",
     marginBottom: "0px"

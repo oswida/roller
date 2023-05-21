@@ -196,18 +196,16 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
 
       <Flex gap="large" center>
         <Flex>
-          <Text fontSize="smaller" colorSchema="secondary">
-            Color set
-          </Text>
           <Select
+            label="Color set"
+            labelLeft
             options={colorList}
             selected={currentDiceColor}
             onChange={diceColorChange}
           ></Select>
-          <Text fontSize="smaller" colorSchema="secondary">
-            Material
-          </Text>
           <Select
+            label="Material"
+            labelLeft
             options={materialList}
             selected={currentDiceMaterial}
             onChange={diceMaterialChange}

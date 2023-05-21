@@ -105,18 +105,16 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
         cnv.setZoom((pane.clientHeight + 90) / ch);
     }
 
-    // const fitWidth = () => {
-    //     const cnv = csCanvas();
-    //     if (!cnv || !pane) return;
-    //     const cw = cnv.width;
-    //     if (!cw) return;
-    //    // cnv.setZoom((pane.clientWidth + 90) / ch);
-    // }
-
     const resetHeight = () => {
         const cnv = csCanvas();
         if (!cnv) return;
-        cnv.setZoom(1.0);
+        var vpt = cnv.viewportTransform;
+        if (!vpt) return;
+        vpt[4] = 0;
+        vpt[5] = 0;
+        vpt[0] = 1.0;
+        vpt[3] = 1.0;
+        cnv.setViewportTransform(vpt);
     }
 
     return <div class={csLeftPaneStyle}>
@@ -168,7 +166,7 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
                 )}
             </For>
         </div>
-        <Flex gap="medium">
+        <Flex gap="medium" style={{ "justify-content": "space-between" }}>
             <Flex>
                 <Button>
                     <TbArrowAutofitHeight onClick={fitHeight} />
@@ -176,9 +174,6 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
                 <Button onClick={resetHeight}>
                     <TbZoomReset />
                 </Button>
-                {/* <Button>
-                    <TbArrowAutofitWidth />
-                </Button> */}
             </Flex>
             <Show when={numOfPages() > 0}>
                 <Flex>
