@@ -275,9 +275,17 @@ export const templateWzmPL: CsTemplate = {
                 id: "sila",
                 rect: [259, 292, 49, 49],
                 name: "siła",
-                type: "text",
+                type: "attr",
                 fontSize: 42,
-                textAlign: "center"
+                textAlign: "center",
+                rolls: [{
+                    dice: "1d20",
+                    srule: "total:ueq",
+                    type: "target",
+                    comment: "Test Siły",
+                    hasInput: true,
+                    inputLabel: "Modyfikator rzutu"
+                }]
             },
             {
                 id: "sila_bonus",

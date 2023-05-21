@@ -183,10 +183,12 @@ export const initialWhiteboardState: WhiteboardState = {
 };
 
 export type CsRoll = {
-  type: "mod" | "target",
-  dice: string;
-  srule: string;
-  comment?: string;
+  type: "mod" | "target", // use field value as a modifier or roll target
+  dice: string; // dice notation
+  srule: string; // success rule
+  comment?: string; // roll comment
+  hasInput?: boolean; // if we should ask for input before roll
+  inputLabel?: string; // input label if we are asking
 }
 
 export type CsField = {

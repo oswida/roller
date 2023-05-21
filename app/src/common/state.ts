@@ -58,3 +58,8 @@ export const [csCanvas, setCsCanvas] = createSignal<fabric.Canvas>();
 
 export const [currentCs, setCurrentCs] = createSignal<CsInfo>();
 export const [currentCsPage, setCurrentCsPage] = createSignal(0);
+
+export const [csRollInputOpen, setCsRollInputOpen] = createSignal(false);
+export const [csRollInputTitle, setCsRollInputTitle] = createSignal("");
+export type CallbackFunc = (value: string) => void;
+export const [csRollInputCallback, setCsRollInputCallback] = createSignal<CallbackFunc>((value: string) => { });

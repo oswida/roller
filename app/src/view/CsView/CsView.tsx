@@ -1,10 +1,12 @@
-import { Component, createEffect } from "solid-js";
+import { Component, createEffect, createSignal } from "solid-js";
 import { csViewRootStyle } from "./styles.css";
 import { fabric } from "fabric";
 import { initEvents } from "./events";
-import { RefProps, csCanvas, setCsCanvas } from "~/common";
+import { RefProps, csCanvas, csRollInputCallback, csRollInputOpen, csRollInputTitle, setCsCanvas, setCsRollInputCallback, setCsRollInputOpen, setCsRollInputTitle } from "~/common";
+import { Button, Dialog, Flex, Input } from "~/component";
 
 export const CsView: Component<RefProps> = ({ ref }) => {
+    const [inputRollValue, setInputRollValue] = createSignal("");
 
     createEffect(() => {
         // window.removeEventListener("keypress", keySupport);
@@ -22,7 +24,24 @@ export const CsView: Component<RefProps> = ({ ref }) => {
         initEvents(csCanvas);
     });
 
+    const handleRollInput = () => {
+        setCsRollInputOpen(false);
+        const cb = csRollInputCallback();
+        if (!cb) return;
+        cb(inputRollValue());
+        setInputRollValue("");
+        setCsRollInputCallback((prev) => (() => { }));
+        setCsRollInputTitle("");
+    }
+
     return <div ref={(el) => (ref(el))} class={csViewRootStyle}>
         <canvas id="csCanvas" width={1920} height={1080} />
+        <Dialog open={csRollInputOpen} onOpenChange={setCsRollInputOpen} dialogTitle={csRollInputTitle}>
+            <Input onChange={(e) => setInputRollValue(e.target.value)} />
+            <Flex gap="large" style={{ "margin-top": "10px" }}>
+                <Button onClick={() => setCsRollInputOpen(false)}>Cancel</Button>
+                <Button onClick={handleRollInput}>Roll</Button>
+            </Flex>
+        </Dialog>
     </div>
 }

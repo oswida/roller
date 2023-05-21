@@ -120,6 +120,8 @@ export const chatItemHeaderStyle = recipe({
 
 export const chatItemCommentStyle = style({
   fontStyle: "italic",
+  borderTop: `1px dotted ${colorType.accent}`,
+  paddingTop: "5px"
 });
 
 export const chatDatablockStyle = recipe({
