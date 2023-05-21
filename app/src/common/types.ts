@@ -181,17 +181,19 @@ export const initialWhiteboardState: WhiteboardState = {
   width: 0,
 };
 
+export type CsRoll = {
+  type: "mod" | "target",
+  dice: string;
+  srule: string;
+  comment?: string;
+}
+
 export type CsField = {
   id: string;
   name: string;
   rect: [number, number, number, number];
   type: "attr" | "rect-check" | "text" | "circle-check";
-  roll?: {
-    type: "mod" | "target";
-    dice: string;
-    srule: string;
-    comment?: string;
-  },
+  rolls?: CsRoll[],
   fontSize?: number;
   stroke?: string,
   textAlign?: "center" | "left" | "right",

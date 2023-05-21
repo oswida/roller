@@ -1,10 +1,9 @@
 import { fabric } from "fabric";
-import { IoColorFill } from "solid-icons/io";
 
 
 
 function renderIcon(icon: any) {
-    return function renderIcon(ctx: any, left: any, top: any, styleOverride: any, fabricObject: fabric.Object) {
+    return function renderIcon(ctx: any, left: any, top: any, _styleOverride: any, fabricObject: fabric.Object) {
         var size = 24;
         ctx.save();
         ctx.translate(left, top);
@@ -13,6 +12,8 @@ function renderIcon(icon: any) {
         ctx.restore();
     }
 }
+
+export const CONTROL_ICON_SIZE = 32;
 
 export const addControl = (name: string,
     obj: fabric.Object,
@@ -27,13 +28,14 @@ export const addControl = (name: string,
         y: y,
         offsetY: ofx,
         offsetX: ofy,
-        sizeX: 24,
-        sizeY: 24,
+        sizeX: CONTROL_ICON_SIZE,
+        sizeY: CONTROL_ICON_SIZE,
         cursorStyle: 'pointer',
-        mouseUpHandler: (eventData: MouseEvent, transformData: fabric.Transform, x: number, y: number) => {
+        mouseUpHandler: (_eventData: MouseEvent, _transformData: fabric.Transform, _x: number, _y: number) => {
             mouseUp();
             return true;
         },
+
         render: renderIcon(icon),
     });
     obj.controls = newControls;
@@ -54,4 +56,4 @@ export const removeStdControls = (obj: fabric.Object) => {
 }
 
 export * from "./check";
-export * from "./attr";
+export * from "./roll";

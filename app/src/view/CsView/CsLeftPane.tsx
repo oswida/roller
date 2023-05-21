@@ -1,13 +1,15 @@
 import { Component, For, Show, createEffect, createMemo, createSignal } from "solid-js";
+import { TbArrowAutofitHeight, TbArrowAutofitWidth, TbZoomReset } from "solid-icons/tb"
 import { csLeftPaneStyle, csListStyle } from "./styles.css";
 import { Alert, Button, Dialog, Flex, Input, Select, SelectItem, Text } from "~/component";
-import { FaSolidCircleInfo, FaSolidFileExport, FaSolidFileImport, FaSolidPlus, FaSolidTrash } from "solid-icons/fa";
-import { CsInfo, appCs, csCanvas, csTemplateId, csTemplateTypes, currentCs, deleteCs, exportData, importData, prettyToday, rollerCsKey, saveToStorage, setCurrentCs, updateCs } from "~/common";
+import { FaSolidArrowLeft, FaSolidArrowRight, FaSolidCircleInfo, FaSolidFileExport, FaSolidFileImport, FaSolidPlus, FaSolidTrash } from "solid-icons/fa";
+import { CsInfo, appCs, csCanvas, csTemplateId, csTemplateTypes, currentCs, currentCsPage, deleteCs, exportData, importData, prettyToday, rollerCsKey, saveToStorage, setCurrentCs, setCurrentCsPage, updateCs } from "~/common";
 import { v4 as uuid } from "uuid";
 import toast from "solid-toast";
 import { CsItem } from "./CsItem";
 import { csTemplates } from "~/template";
 import { createFromTemplate } from "./template";
+import { Dynamic } from "solid-js/web";
 
 type Props = {
     ref: (e: any) => void;
@@ -20,6 +22,7 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
     const [delDialogOpen, setDelDialogOpen] = createSignal(false);
     const [selCsType, setSelCsType] = createSignal<csTemplateId>("");
     const [selCsName, setSelCsName] = createSignal("");
+    let pane: HTMLDivElement;
 
 
     const createCharsheet = () => {
@@ -68,12 +71,53 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
 
     createEffect(() => {
         const cs = currentCs();
+        const page = currentCsPage();
         const cnv = csCanvas();
         if (!cs || !cnv) return;
         const tpl = csTemplates[cs.template];
         if (!tpl) return;
-        createFromTemplate(cnv, cs);
+        createFromTemplate(cnv, cs, page);
     });
+
+    const changePage = (val: number) => {
+        const cs = currentCs();
+        if (!cs) return;
+        const tpl = csTemplates[cs.template];
+        if (!tpl) return;
+        const np = currentCsPage() + val;
+        if (np < 0 || np >= tpl.pages.length) return;
+        setCurrentCsPage(np);
+    }
+
+    const numOfPages = createMemo(() => {
+        const cs = currentCs();
+        if (!cs) return 0;
+        const tpl = csTemplates[cs.template];
+        if (!tpl) return 0;
+        return tpl.pages.length;
+    });
+
+    const fitHeight = () => {
+        const cnv = csCanvas();
+        if (!cnv || !pane) return;
+        const ch = cnv.height;
+        if (!ch) return;
+        cnv.setZoom((pane.clientHeight + 90) / ch);
+    }
+
+    // const fitWidth = () => {
+    //     const cnv = csCanvas();
+    //     if (!cnv || !pane) return;
+    //     const cw = cnv.width;
+    //     if (!cw) return;
+    //    // cnv.setZoom((pane.clientWidth + 90) / ch);
+    // }
+
+    const resetHeight = () => {
+        const cnv = csCanvas();
+        if (!cnv) return;
+        cnv.setZoom(1.0);
+    }
 
     return <div class={csLeftPaneStyle}>
         <Flex style={{ "justify-content": "space-between" }}>
@@ -115,7 +159,7 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
                 </Dialog>
             </Flex>
         </Flex>
-        <div class={csListStyle} ref={(e: any) => ref(e)}>
+        <div class={csListStyle} ref={(e: any) => { ref(e); pane = e; }}>
             <For each={items()}>
                 {(it) => (
                     <CsItem
@@ -124,6 +168,31 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
                 )}
             </For>
         </div>
+        <Flex gap="medium">
+            <Flex>
+                <Button>
+                    <TbArrowAutofitHeight onClick={fitHeight} />
+                </Button>
+                <Button onClick={resetHeight}>
+                    <TbZoomReset />
+                </Button>
+                {/* <Button>
+                    <TbArrowAutofitWidth />
+                </Button> */}
+            </Flex>
+            <Show when={numOfPages() > 0}>
+                <Flex>
+                    <Button onClick={() => changePage(-1)}>
+                        <FaSolidArrowLeft />
+                    </Button>
 
+                    <Dynamic component={Text}>{currentCsPage() + 1}/{numOfPages()}</Dynamic>
+
+                    <Button onClick={() => changePage(1)}>
+                        <FaSolidArrowRight />
+                    </Button>
+                </Flex>
+            </Show>
+        </Flex>
     </div>
 }

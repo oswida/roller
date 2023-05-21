@@ -57,3 +57,4 @@ export const [wbState, setWbState] = createSignal<WhiteboardState>(
 export const [csCanvas, setCsCanvas] = createSignal<fabric.Canvas>();
 
 export const [currentCs, setCurrentCs] = createSignal<CsInfo>();
+export const [currentCsPage, setCurrentCsPage] = createSignal(0);
