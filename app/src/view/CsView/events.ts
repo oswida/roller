@@ -1,3 +1,4 @@
+import { setCsCurrentZoom } from "~/common";
 
 
 let isDragging = false;
@@ -11,7 +12,7 @@ export const initEvents = (canvas: () => fabric.Canvas | undefined) => {
     if (!cnv) return;
 
     cnv.on('mouse:wheel', function (opt) {
-        if (opt.e.shiftKey) {
+        if (opt.e.shiftKey || opt.e.altKey) {
             const cnv = canvas();
             if (!cnv) return;
             var delta = opt.e.deltaY;
@@ -19,7 +20,8 @@ export const initEvents = (canvas: () => fabric.Canvas | undefined) => {
             zoom *= 0.999 ** delta;
             if (zoom > 20) zoom = 20;
             if (zoom < 0.01) zoom = 0.01;
-            cnv.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY } as fabric.Point, zoom);
+            cnv.setZoom(zoom);
+            //  cnv.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY } as fabric.Point, zoom);
             opt.e.preventDefault();
             opt.e.stopPropagation();
         }

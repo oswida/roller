@@ -4,8 +4,8 @@ import { CsTemplate } from "~/common";
 export const templateRomancja: CsTemplate = {
     game: "Romancja",
     name: "Romancja",
-    pageHeight: 794,
-    pageWidth: 1123,
+    pageHeight: 1123,
+    pageWidth: 794,
     fieldColor: "#fff",
     fieldStroke: "#000000",
     fieldFontSize: 33,

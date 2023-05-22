@@ -63,3 +63,5 @@ export const [csRollInputOpen, setCsRollInputOpen] = createSignal(false);
 export const [csRollInputTitle, setCsRollInputTitle] = createSignal("");
 export type CallbackFunc = (value: string) => void;
 export const [csRollInputCallback, setCsRollInputCallback] = createSignal<CallbackFunc>((value: string) => { });
+
+export const [csCurrentZoom, setCsCurrentZoom] = createSignal(1.0);

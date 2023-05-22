@@ -1,4 +1,4 @@
-import { CallbackFunc, CsInfo, CsRoll, CsTemplate, RollDefInfo, rollDef, setChatViewTab, setCsRollInputCallback, setCsRollInputOpen, setCsRollInputTitle, setMainViewPanel } from "~/common";
+import { CallbackFunc, CsInfo, CsRoll, CsTemplate, RollDefInfo, enrollTask, rollDef, setChatViewTab, setCsRollInputCallback, setCsRollInputOpen, setCsRollInputTitle, setMainViewPanel } from "~/common";
 import { addControl } from ".";
 
 export type RollColor = "darkorange" | "darkred" | "darkgreen" | "darkblue";
@@ -36,7 +36,7 @@ export const addRollControl = (obj: fabric.Object) => {
                     };
                     setMainViewPanel("dice");
                     setChatViewTab("rolls");
-                    rollDef(info, false, roll.comment);
+                    enrollTask(() => rollDef(info, false, roll.comment));
                     break;
                 case "target":
 
@@ -56,14 +56,14 @@ export const addRollControl = (obj: fabric.Object) => {
                             info2.modifier = m;
                             setMainViewPanel("dice");
                             setChatViewTab("rolls");
-                            rollDef(info2, false, roll.comment);
+                            enrollTask(() => rollDef(info2, false, roll.comment));
                         };
                         setCsRollInputCallback((prev) => cb);
                         setCsRollInputOpen(true);
                     } else {
                         setMainViewPanel("dice");
                         setChatViewTab("rolls");
-                        rollDef(info2, false, roll.comment);
+                        enrollTask(() => rollDef(info2, false, roll.comment));
                     }
 
                     break;

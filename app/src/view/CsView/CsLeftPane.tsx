@@ -1,9 +1,9 @@
-import { Component, For, Show, createEffect, createMemo, createSignal } from "solid-js";
+import { Component, For, Show, createEffect, createMemo, createSignal, onMount } from "solid-js";
 import { TbArrowAutofitHeight, TbZoomReset } from "solid-icons/tb"
 import { csLeftPaneStyle, csListStyle } from "./styles.css";
 import { Alert, Button, Dialog, Flex, Input, Select, SelectItem, Text } from "~/component";
 import { FaSolidArrowLeft, FaSolidArrowRight, FaSolidCircleInfo, FaSolidFileExport, FaSolidFileImport, FaSolidPlus, FaSolidShareNodes, FaSolidTrash } from "solid-icons/fa";
-import { CsInfo, appCs, appSettings, csCanvas, csTemplateId, csTemplateTypes, currentCs, currentCsPage, deleteCs, exportData, importData, prettyToday, rollerCsKey, saveToStorage, setCurrentCs, setCurrentCsPage, updateCs } from "~/common";
+import { CsInfo, appCs, appSettings, csCanvas, csCurrentZoom, csTemplateId, csTemplateTypes, currentCs, currentCsPage, deleteCs, exportData, importData, prettyToday, rollerCsKey, saveToStorage, setCsCurrentZoom, setCurrentCs, setCurrentCsPage, updateCs } from "~/common";
 import { v4 as uuid } from "uuid";
 import toast from "solid-toast";
 import { CsItem } from "./CsItem";
@@ -71,6 +71,17 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
         return Object.values(appCs()).sort((a, b) => a.name.localeCompare(b.name));
     });
 
+    const updateZoom = () => {
+        const cnv = csCanvas();
+        if (!cnv) return;
+        cnv.setZoom(csCurrentZoom());
+    }
+
+    onMount(() => {
+        updateZoom();
+    });
+
+
     createEffect(() => {
         const cs = currentCs();
         const page = currentCsPage();
@@ -79,16 +90,21 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
         const tpl = csTemplates[cs.template];
         if (!tpl) return;
         createFromTemplate(cnv, cs, page);
+        cnv.setZoom(csCurrentZoom());
+        if (page >= tpl.pages.length) setCurrentCsPage(0);
     });
 
     const changePage = (val: number) => {
         const cs = currentCs();
-        if (!cs) return;
+        const cnv = csCanvas();
+        if (!cs || !cnv) return;
         const tpl = csTemplates[cs.template];
         if (!tpl) return;
-        const np = currentCsPage() + val;
-        if (np < 0 || np >= tpl.pages.length) return;
+        let np = currentCsPage() + val;
+        if (np < 0) np = 0;
+        if (np >= tpl.pages.length) np = tpl.pages.length - 1;
         setCurrentCsPage(np);
+        // cnv.requestRenderAll();
     }
 
 
@@ -104,44 +120,39 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
     const fitHeight = () => {
         const cnv = csCanvas();
         const cs = currentCs();
-        if (!cnv || !pane || !cs) return;
+        if (!cnv || !pane || !cs) { console.log("cnv", cnv, pane, cs); return; }
         const tpl = csTemplates[cs.template];
         if (!tpl) return;
-        cnv.setZoom((pane.clientHeight + 90) / tpl.pageHeight);
-        cnv.requestRenderAll();
+        const zoom = Number.parseFloat((pane.clientHeight / tpl.pageHeight).toFixed(2));
+        var vpt = cnv.viewportTransform;
+        if (!vpt) return;
+        vpt[4] = 0;
+        vpt[5] = 0;
+        vpt[0] = zoom;
+        vpt[3] = zoom;
+        setCsCurrentZoom(zoom);
+        cnv.setViewportTransform(vpt);
     }
 
     const resetHeight = () => {
         const cs = currentCs();
         const cnv = csCanvas();
         if (!cnv || !cs) return;
-        const tpl = csTemplates[cs.template];
-        if (!tpl) return;
         var vpt = cnv.viewportTransform;
         if (!vpt) return;
         vpt[4] = 0;
         vpt[5] = 0;
         vpt[0] = 1.0;
         vpt[3] = 1.0;
-        cnv.setHeight(tpl.pageHeight);
+        setCsCurrentZoom(1.0);
         cnv.setViewportTransform(vpt);
-        cnv.requestRenderAll();
     }
 
     const shareCharsheet = () => {
 
     }
 
-    createEffect(() => {
-        const cs = currentCs();
-        const cnv = csCanvas();
-        if (!cs || !cnv) return;
-        const tpl = csTemplates[cs.template];
-        if (!tpl) return;
-        cnv.setHeight(tpl.pageHeight);
-    });
-
-    return <div class={csLeftPaneStyle}>
+    return <div class={csLeftPaneStyle} ref={(e) => pane = e}>
         <Flex style={{ "justify-content": "space-between" }}>
             <Text>Charsheets</Text>
 
@@ -189,7 +200,7 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
                 </Dialog>
             </Flex>
         </Flex>
-        <div class={csListStyle} ref={(e: any) => { ref(e); pane = e; }}>
+        <div class={csListStyle} ref={(e: any) => ref(e)}>
             <For each={items()}>
                 {(it) => (
                     <CsItem
@@ -200,12 +211,14 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
         </div>
         <Flex gap="medium" style={{ "justify-content": "space-between" }}>
             <Flex>
-                <Button title="Fit height">
-                    <TbArrowAutofitHeight onClick={fitHeight} />
-                </Button>
-                <Button onClick={resetHeight} title="Reset to original size">
-                    <TbZoomReset />
-                </Button>
+                <Show when={currentCs()}>
+                    <Button title="Fit height">
+                        <TbArrowAutofitHeight onClick={fitHeight} />
+                    </Button>
+                    <Button onClick={resetHeight} title="Reset to original size">
+                        <TbZoomReset />
+                    </Button>
+                </Show>
                 <Button title="Import definitions" onClick={importCs}>
                     <FaSolidFileImport />
                 </Button>
@@ -218,9 +231,9 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
                     <Button onClick={() => changePage(-1)} title="Previous page">
                         <FaSolidArrowLeft />
                     </Button>
-
-                    <Dynamic component={Text}>{currentCsPage() + 1}/{numOfPages()}</Dynamic>
-
+                    <Dynamic component={Text} fontSize="smaller" colorSchema="secondary">
+                        {currentCsPage() + 1}/{numOfPages()}
+                    </Dynamic>
                     <Button onClick={() => changePage(1)} title="Next page">
                         <FaSolidArrowRight />
                     </Button>

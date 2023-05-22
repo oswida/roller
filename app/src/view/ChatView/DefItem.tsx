@@ -1,4 +1,4 @@
-import { RollDefInfo, colorType, rollDef, setChatViewTab } from "~/common"
+import { RollDefInfo, colorType, enrollTask, rollDef, setChatViewTab } from "~/common"
 import { defItemStyle } from "./styles.css"
 import { Component, ComponentProps, Show, createEffect, createMemo, createSignal } from "solid-js";
 import { Flex, Text, Dialog, Button, Input } from "~/component";
@@ -71,11 +71,11 @@ export const DefItem: Component<Props & ComponentProps<"div">> = ({ item, select
                         value={item.successTarget}
                         onChange={(e) => item.successTarget = e.target.value}
                     />
-                    <Button onClick={rollWithValue}>Roll</Button>
+                    <Button onClick={() => enrollTask(rollWithValue)}>Roll</Button>
                 </Dialog>
             </Show>
             <Show when={!needsParam()}>
-                <Button style={{ "background-color": colorType.accent }} onClick={roll}>
+                <Button style={{ "background-color": colorType.accent }} onClick={() => enrollTask(roll)}>
                     <Text fontSize="bigger">{notation()}</Text>
                 </Button>
             </Show>
