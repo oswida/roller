@@ -21,3 +21,15 @@ type RoomListMessage struct {
 	Room   string   `json:"room"`
 	Data   []string `json:"data"`
 }
+
+type CsMessage struct {
+	Sender string    `json:"sender"`
+	Room   string    `json:"room"`
+	Data   db.CsInfo `json:"data"`
+}
+
+type CsListMessage struct {
+	Sender string   `json:"sender"`
+	Room   string   `json:"room"`
+	Data   []string `json:"data"`
+}

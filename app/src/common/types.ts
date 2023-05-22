@@ -101,14 +101,15 @@ export type csTemplateId = "pio3s-romancja" | "wzm-pl" | "";
 
 export const csTemplateTypes: SelectItem[] = [
   { id: "pio3s-romancja", label: "Pio3S: Romancja" },
-  { id: "wzm-pl", label: "Wyprawa za Mur: standard" }
-]
+  { id: "wzm-pl", label: "Wyprawa za Mur: standard" },
+];
 
 export type CsInfo = {
   id: string;
   name: string;
   template: csTemplateId;
   values: Record<string, any>;
+  stored?: boolean;
 };
 
 export type StorageItem =
@@ -167,7 +168,6 @@ export const SuccessRules: RadioItem[] = [
   { id: "total:oeq", label: "Total over/equal" },
 ];
 
-
 export type WhiteboardState = {
   tool: string;
   brush: string;
@@ -183,31 +183,31 @@ export const initialWhiteboardState: WhiteboardState = {
 };
 
 export type CsRoll = {
-  type: "mod" | "target", // use field value as a modifier or roll target
+  type: "mod" | "target"; // use field value as a modifier or roll target
   dice: string; // dice notation
   srule: string; // success rule
   comment?: string; // roll comment
   hasInput?: boolean; // if we should ask for input before roll
   inputLabel?: string; // input label if we are asking
-}
+};
 
 export type CsField = {
   id: string;
   name: string;
   rect: [number, number, number, number];
   type: "attr" | "rect-check" | "text" | "circle-check";
-  rolls?: CsRoll[],
+  rolls?: CsRoll[];
   fontSize?: number;
-  stroke?: string,
+  stroke?: string;
   textAlign?: "center" | "left" | "right";
   info?: string;
-}
+};
 
 export type CsPage = {
   img: string;
   pos: number;
   fields: CsField[];
-}
+};
 
 export type CsTemplate = {
   game: string;
@@ -218,10 +218,9 @@ export type CsTemplate = {
   fieldStroke: string;
   fieldFontSize: number;
   pages: CsPage[];
-}
+};
 
 export type CsCheckData = {
   value: boolean;
   disabled: boolean;
-}
-
+};

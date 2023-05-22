@@ -89,6 +89,12 @@ func (eng *RollerEngine) RPCCallback(dbase *badger.DB, e centrifuge.RPCEvent) ([
 		return eng.RpcRoomDelete(dbase, e)
 	case "room_list":
 		return eng.RpcRoomList(dbase, e)
+	case "cs_list":
+		return eng.RpcCsList(dbase, e)
+	case "cs_update":
+		return eng.RpcCsUpdate(dbase, e)
+	case "cs_delete":
+		return eng.RpcCsDelete(dbase, e)
 	}
 	return nil, nil
 }
