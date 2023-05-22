@@ -2,6 +2,7 @@ import { v4 as uuid } from "uuid";
 import { colorType } from "./theme.css";
 import { RollResult } from "./rollinfo";
 import { RadioItem, SelectItem } from "~/component";
+import { appSettings } from "./storage";
 
 export type SelectOption = {
   label: string;
@@ -106,11 +107,23 @@ export const csTemplateTypes: SelectItem[] = [
 
 export type CsInfo = {
   id: string;
+  owner: string;
   name: string;
   template: csTemplateId;
   values: Record<string, any>;
-  stored?: boolean;
+  shared?: boolean;
 };
+
+export const emptyCsInfo = () => {
+  return {
+    id: uuid(),
+    owner: appSettings().userIdent,
+    name: "charsheet",
+    template: "",
+    values: {},
+    shared: false
+  } as CsInfo;
+}
 
 export type StorageItem =
   | AppSettings

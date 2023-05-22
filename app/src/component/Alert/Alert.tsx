@@ -12,11 +12,12 @@ type Props = {
     open: () => boolean;
     label: string;
     trigger?: JSXElement;
+    triggerHint?: string;
 }
 
-export const Alert: ParentComponent<Props> = ({ open, onOpenChange, children, label, trigger }) => {
+export const Alert: ParentComponent<Props> = ({ open, onOpenChange, children, label, trigger, triggerHint }) => {
     return <AlertDialog.Root onOpenChange={onOpenChange} open={open()} >
-        <AlertDialog.Trigger class={buttonStyle({})}>
+        <AlertDialog.Trigger class={buttonStyle({})} title={triggerHint}>
             {trigger}
         </AlertDialog.Trigger>
         <AlertDialog.Portal>

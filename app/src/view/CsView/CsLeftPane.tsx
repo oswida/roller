@@ -1,9 +1,9 @@
 import { Component, For, Show, createEffect, createMemo, createSignal } from "solid-js";
-import { TbArrowAutofitHeight, TbArrowAutofitWidth, TbZoomReset } from "solid-icons/tb"
+import { TbArrowAutofitHeight, TbZoomReset } from "solid-icons/tb"
 import { csLeftPaneStyle, csListStyle } from "./styles.css";
 import { Alert, Button, Dialog, Flex, Input, Select, SelectItem, Text } from "~/component";
-import { FaSolidArrowLeft, FaSolidArrowRight, FaSolidCircleInfo, FaSolidFileExport, FaSolidFileImport, FaSolidPlus, FaSolidTrash } from "solid-icons/fa";
-import { CsInfo, appCs, csCanvas, csTemplateId, csTemplateTypes, currentCs, currentCsPage, deleteCs, exportData, importData, prettyToday, rollerCsKey, saveToStorage, setCurrentCs, setCurrentCsPage, updateCs } from "~/common";
+import { FaSolidArrowLeft, FaSolidArrowRight, FaSolidCircleInfo, FaSolidFileExport, FaSolidFileImport, FaSolidPlus, FaSolidShareNodes, FaSolidTrash } from "solid-icons/fa";
+import { CsInfo, appCs, appSettings, csCanvas, csTemplateId, csTemplateTypes, currentCs, currentCsPage, deleteCs, exportData, importData, prettyToday, rollerCsKey, saveToStorage, setCurrentCs, setCurrentCsPage, updateCs } from "~/common";
 import { v4 as uuid } from "uuid";
 import toast from "solid-toast";
 import { CsItem } from "./CsItem";
@@ -16,10 +16,10 @@ type Props = {
     adjustSize: () => void;
 }
 
-
 export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
     const [crDialogOpen, setCrDialogOpen] = createSignal(false);
     const [delDialogOpen, setDelDialogOpen] = createSignal(false);
+    const [shareDialogOpen, setShareDialogOpen] = createSignal(false);
     const [selCsType, setSelCsType] = createSignal<csTemplateId>("");
     const [selCsName, setSelCsName] = createSignal("");
     let pane: HTMLDivElement;
@@ -32,7 +32,9 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
             id: uuid(),
             name: selCsName(),
             template: selCsType(),
-            values: {}
+            values: {},
+            owner: appSettings().userIdent,
+            shared: false,
         };
         updateCs(info);
         adjustSize();
@@ -89,6 +91,8 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
         setCurrentCsPage(np);
     }
 
+
+
     const numOfPages = createMemo(() => {
         const cs = currentCs();
         if (!cs) return 0;
@@ -99,23 +103,43 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
 
     const fitHeight = () => {
         const cnv = csCanvas();
-        if (!cnv || !pane) return;
-        const ch = cnv.height;
-        if (!ch) return;
-        cnv.setZoom((pane.clientHeight + 90) / ch);
+        const cs = currentCs();
+        if (!cnv || !pane || !cs) return;
+        const tpl = csTemplates[cs.template];
+        if (!tpl) return;
+        cnv.setZoom((pane.clientHeight + 90) / tpl.pageHeight);
+        cnv.requestRenderAll();
     }
 
     const resetHeight = () => {
+        const cs = currentCs();
         const cnv = csCanvas();
-        if (!cnv) return;
+        if (!cnv || !cs) return;
+        const tpl = csTemplates[cs.template];
+        if (!tpl) return;
         var vpt = cnv.viewportTransform;
         if (!vpt) return;
         vpt[4] = 0;
         vpt[5] = 0;
         vpt[0] = 1.0;
         vpt[3] = 1.0;
+        cnv.setHeight(tpl.pageHeight);
         cnv.setViewportTransform(vpt);
+        cnv.requestRenderAll();
     }
+
+    const shareCharsheet = () => {
+
+    }
+
+    createEffect(() => {
+        const cs = currentCs();
+        const cnv = csCanvas();
+        if (!cs || !cnv) return;
+        const tpl = csTemplates[cs.template];
+        if (!tpl) return;
+        cnv.setHeight(tpl.pageHeight);
+    });
 
     return <div class={csLeftPaneStyle}>
         <Flex style={{ "justify-content": "space-between" }}>
@@ -127,7 +151,8 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
                         <Alert label="Delete charsheet"
                             open={delDialogOpen}
                             onOpenChange={setDelDialogOpen}
-                            trigger={<FaSolidTrash />}>
+                            trigger={<FaSolidTrash />}
+                            triggerHint="Delete selected charsheet">
                             <Text>Delete {currentCs()?.name} {"?"}</Text>
                             <Flex gap="large" style={{ "margin-top": "10px" }}>
                                 <Button onClick={() => setDelDialogOpen(false)}>Cancel</Button>
@@ -135,14 +160,21 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
                             </Flex>
                         </Alert>
                     </Flex>
+                    <Alert label="Share charsheet"
+                        open={shareDialogOpen}
+                        onOpenChange={setShareDialogOpen}
+                        trigger={<FaSolidShareNodes />}
+                        triggerHint="Share selected charsheet">
+                        <Text>Share {currentCs()?.name} {"?"}</Text>
+                        <Flex gap="large" style={{ "margin-top": "10px" }}>
+                            <Button onClick={() => setShareDialogOpen(false)}>Cancel</Button>
+                            <Button onClick={shareCharsheet}>Share</Button>
+                        </Flex>
+                    </Alert>
                 </Show>
-                <Button title="Import definitions" onClick={importCs}>
-                    <FaSolidFileImport />
-                </Button>
-                <Button title="Export definitions" onClick={exportCs}>
-                    <FaSolidFileExport />
-                </Button>
+
                 <Dialog trigger={<FaSolidPlus />}
+                    triggerHint="Create charsheet"
                     open={crDialogOpen} onOpenChange={setCrDialogOpen}
                     dialogTitle={() => "Create charsheet"}>
                     <Input label="Name" onChange={(e) => setSelCsName(e.target.value)} />
@@ -168,22 +200,28 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
         </div>
         <Flex gap="medium" style={{ "justify-content": "space-between" }}>
             <Flex>
-                <Button>
+                <Button title="Fit height">
                     <TbArrowAutofitHeight onClick={fitHeight} />
                 </Button>
-                <Button onClick={resetHeight}>
+                <Button onClick={resetHeight} title="Reset to original size">
                     <TbZoomReset />
+                </Button>
+                <Button title="Import definitions" onClick={importCs}>
+                    <FaSolidFileImport />
+                </Button>
+                <Button title="Export definitions" onClick={exportCs}>
+                    <FaSolidFileExport />
                 </Button>
             </Flex>
             <Show when={numOfPages() > 0}>
                 <Flex>
-                    <Button onClick={() => changePage(-1)}>
+                    <Button onClick={() => changePage(-1)} title="Previous page">
                         <FaSolidArrowLeft />
                     </Button>
 
                     <Dynamic component={Text}>{currentCsPage() + 1}/{numOfPages()}</Dynamic>
 
-                    <Button onClick={() => changePage(1)}>
+                    <Button onClick={() => changePage(1)} title="Next page">
                         <FaSolidArrowRight />
                     </Button>
                 </Flex>

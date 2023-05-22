@@ -1,4 +1,4 @@
-import { Component, createEffect, createSignal } from "solid-js";
+import { Component, Show, createEffect, createSignal } from "solid-js";
 import { csViewRootStyle } from "./styles.css";
 import { fabric } from "fabric";
 import { initEvents } from "./events";
@@ -36,12 +36,14 @@ export const CsView: Component<RefProps> = ({ ref }) => {
 
     return <div ref={(el) => (ref(el))} class={csViewRootStyle}>
         <canvas id="csCanvas" width={1920} height={1080} />
-        <Dialog open={csRollInputOpen} onOpenChange={setCsRollInputOpen} dialogTitle={csRollInputTitle}>
-            <Input onChange={(e) => setInputRollValue(e.target.value)} />
-            <Flex gap="large" style={{ "margin-top": "10px" }}>
-                <Button onClick={() => setCsRollInputOpen(false)}>Cancel</Button>
-                <Button onClick={handleRollInput}>Roll</Button>
-            </Flex>
-        </Dialog>
+        <Show when={csRollInputOpen()}>
+            <Dialog open={csRollInputOpen} onOpenChange={setCsRollInputOpen} dialogTitle={csRollInputTitle}>
+                <Input onChange={(e) => setInputRollValue(e.target.value)} />
+                <Flex gap="large" style={{ "margin-top": "10px" }}>
+                    <Button onClick={() => setCsRollInputOpen(false)}>Cancel</Button>
+                    <Button onClick={handleRollInput}>Roll</Button>
+                </Flex>
+            </Dialog>
+        </Show>
     </div>
 }

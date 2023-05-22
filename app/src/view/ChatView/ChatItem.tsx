@@ -50,8 +50,11 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
         <Flex gap="medium" direction="column">
           <Flex style={{ "justify-content": "space-between", flex: 1 }}>
             <Show when={appSettings().showRollTotal}>
-              <DataBlock left={<Text colorSchema="secondary">Total {modValue()}</Text>}
-                right={<div>{item.result.total}</div>} rightBackground="secondary" />
+              <DataBlock
+                left={<Text colorSchema="secondary">Total {modValue()}</Text>}
+                right={<div>{item.result.total}</div>}
+                leftBackground="secondary"
+                rightBackground="secondary" />
             </Show>
             <Show when={item.successRule && appSettings().showRollSuccess && succValue() !== ""}>
               <Show when={item.successTarget && item.successTarget !== 0}>

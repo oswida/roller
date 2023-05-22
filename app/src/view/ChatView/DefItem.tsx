@@ -1,6 +1,6 @@
 import { RollDefInfo, colorType, rollDef, setChatViewTab } from "~/common"
 import { defItemStyle } from "./styles.css"
-import { Component, ComponentProps, Show, createMemo, createSignal } from "solid-js";
+import { Component, ComponentProps, Show, createEffect, createMemo, createSignal } from "solid-js";
 import { Flex, Text, Dialog, Button, Input } from "~/component";
 import toast from "solid-toast";
 import { BiRegularTargetLock } from "solid-icons/bi";
@@ -14,6 +14,7 @@ type Props = {
 
 export const DefItem: Component<Props & ComponentProps<"div">> = ({ item, selected, adjustSize, ...rest }) => {
     const [valOpen, setValOpen] = createSignal(false);
+    let valRef: HTMLInputElement;
 
     const isSelected = createMemo(() => {
         const sel = selected();
@@ -28,9 +29,9 @@ export const DefItem: Component<Props & ComponentProps<"div">> = ({ item, select
 
     const roll = async () => {
         setChatViewTab("rolls");
+        adjustSize();
         const res = await rollDef(item, needsParam());
         if (res) toast(JSON.stringify(res));
-        adjustSize();
     }
 
     const notation = createMemo(() => {
@@ -46,6 +47,12 @@ export const DefItem: Component<Props & ComponentProps<"div">> = ({ item, select
         return true;
     });
 
+    createEffect(() => {
+        if (!valOpen() || !valRef) return;
+        document.getElementById("valInput")?.focus();
+        valRef.focus();
+    });
+
     return <div class={defItemStyle({ sel: isSelected() })} {...rest}>
         <Flex style={{ "justify-content": "space-between" }}>
             <Text fontSize="bigger">{item.name}</Text>
@@ -56,7 +63,11 @@ export const DefItem: Component<Props & ComponentProps<"div">> = ({ item, select
                     trigger={<Text fontSize="bigger">{notation()}</Text>}
                     triggerStyle={{ "background-color": colorType.accent }}
                     dialogTitle={() => "Target value"}>
-                    <Input style={{ width: "5em" }}
+                    <Input
+
+                        id="valInput"
+                        ref={(e) => valRef = e}
+                        style={{ width: "5em" }}
                         value={item.successTarget}
                         onChange={(e) => item.successTarget = e.target.value}
                     />

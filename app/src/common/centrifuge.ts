@@ -1,14 +1,17 @@
 import { Centrifuge, PublicationContext, PublishResult } from "centrifuge";
 import { centClient, setCentClient, setCentConnectionStatus } from "./state";
 import {
+  appCs,
   appRooms,
   appSettings,
   currentRoom,
+  rollerCsKey,
   rollerRoomsKey,
   saveToStorage,
 } from "./storage";
 import {
   CentMessage,
+  CsInfo,
   NetRollInfo,
   NetRoomInfo,
   RoomInfo,
@@ -196,6 +199,76 @@ export const centUpdateRoom = (room: RoomInfo) => {
   } as CentMessage;
   client
     .rpc("room_update", msg)
+    .then((result) => { })
+    .catch((err) => {
+      console.error(err);
+    });
+};
+
+
+export const centLoadCs = (roomId: string, ids?: string[]) => {
+  const client = centClient();
+  if (!client) {
+    return;
+  }
+  const msg = {
+    sender: appSettings().userIdent,
+    room: roomId,
+    data: ids ? ids : Object.values(appCs()).map((it) => it.id),
+  } as CentMessage;
+  client
+    .rpc("cs_list", msg)
+    .then((result) => {
+      const data = result.data as CsInfo[];
+      if (data) {
+        const newState = { ...appCs() };
+        data.forEach((r) => (newState[r.id] = r));
+
+        const receivedIds = data.map((r) => r.id);
+        const toCheck = ids ? ids : Object.values(appCs()).map((r) => r.id);
+        toCheck.forEach((id) => {
+          if (!receivedIds.includes(id)) delete newState[id]; // charsheet has been deleted
+        });
+        saveToStorage(rollerCsKey, newState);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
+
+export const centDeleteCs = (roomId: string, info: CsInfo) => {
+  const client = centClient();
+  if (!client) {
+    return;
+  }
+  const msg = {
+    sender: appSettings().userIdent,
+    room: roomId,
+    data: info,
+  } as CentMessage;
+  client
+    .rpc("cs_delete", msg)
+    .then((result) => {
+      centLoadCs(roomId);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
+
+export const centUpdateCs = (roomId: string, info: CsInfo) => {
+  const client = centClient();
+  if (!client) {
+    return;
+  }
+  const msg = {
+    sender: appSettings().userIdent,
+    room: roomId,
+    data: info,
+  } as CentMessage;
+  client
+    .rpc("cs_update", msg)
     .then((result) => { })
     .catch((err) => {
       console.error(err);

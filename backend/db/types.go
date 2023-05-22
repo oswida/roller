@@ -50,5 +50,5 @@ type CsInfo struct {
 	Name     string            `json:"name"`
 	Template string            `json:"template"`
 	Values   map[string]string `json:"values"`
-	Stored   bool              `json:"stored,omitempty"`
+	Shared   bool              `json:"shared,omitempty"`
 }

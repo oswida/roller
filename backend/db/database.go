@@ -46,6 +46,9 @@ func RoomGet(db *badger.DB, id string) (RoomInfo, error) {
 			return err
 		}
 		err = json.Unmarshal(val, &data)
+		if err != nil {
+			return err
+		}
 		return nil
 	})
 	return data, err
@@ -122,6 +125,9 @@ func CsGet(db *badger.DB, roomId string, id string) (CsInfo, error) {
 			return err
 		}
 		err = json.Unmarshal(val, &data)
+		if err != nil {
+			return err
+		}
 		return nil
 	})
 	return data, err
