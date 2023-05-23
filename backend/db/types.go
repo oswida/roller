@@ -52,3 +52,11 @@ type CsInfo struct {
 	Values   map[string]string `json:"values"`
 	Shared   bool              `json:"shared,omitempty"`
 }
+
+type BoardInfo struct {
+	Id      string            `json:"id"`
+	Name    string            `json:"name"`
+	Bkguri  string            `json:"bkguri"`
+	Objects map[string]string `json:"objects"`
+	Shared  bool              `json:"shared,omitempty"`
+}

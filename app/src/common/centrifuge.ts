@@ -70,7 +70,14 @@ const processCsInfo = (ctx: PublicationContext) => {
   const room = currentRoom();
   if (!room || data.room !== room.id) return;
   const info = data.data as CsInfo;
-  centLoadCs(room.id, [info.id]);
+  if (!info.shared && info.owner !== appSettings().userIdent) {
+    // sharing off
+    const ns = { ...appCs() };
+    delete ns[info.id];
+    saveToStorage(rollerCsKey, ns);
+  } else {
+    centLoadCs(room.id, [info.id]);
+  }
 };
 
 export const serverAddress = () => {

@@ -35,5 +35,10 @@ func (eng *RollerEngine) CsInfoPublishCallback(e centrifuge.PublishEvent) error 
 	if err != nil {
 		return err
 	}
-	return db.CsUpdate(eng.DB, data.Room, data.Data)
+	if data.Data.Shared {
+		return db.CsUpdate(eng.DB, data.Room, data.Data)
+	} else {
+		// delete if shared has been switched off
+		return db.CsDelete(eng.DB, data.Room, data.Data.Id)
+	}
 }
