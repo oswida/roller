@@ -1,5 +1,5 @@
 import { fabric } from "fabric";
-import { CsCheckData, CsInfo, updateCs } from "~/common";
+import { CsCheckData, CsInfo, netPublish, topicCsInfo, updateCs } from "~/common";
 import { addRollControl, addCheckControl, removeStdControls } from "./control";
 import { csTemplates } from "~/template";
 import { addDisableControl } from "./control/disable";
@@ -45,6 +45,7 @@ export const createField = (canvas: fabric.Canvas,
                 });
                 info.values[fld.id] = f.text;
                 updateCs(info);
+                if (info.shared) netPublish(topicCsInfo, info);
             });
             if (fld.info && fld.info.trim() !== "") {
                 addInfoControl(canvas, f, fld, info)
@@ -75,6 +76,7 @@ export const createField = (canvas: fabric.Canvas,
                 });
                 info.values[fld.id] = txt.text;
                 updateCs(info);
+                if (info.shared) netPublish(topicCsInfo, info);
             })
             return txt;
         case "rect-check":

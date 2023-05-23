@@ -121,9 +121,9 @@ export const emptyCsInfo = () => {
     name: "charsheet",
     template: "",
     values: {},
-    shared: false
+    shared: false,
   } as CsInfo;
-}
+};
 
 export type StorageItem =
   | AppSettings
@@ -147,6 +147,7 @@ export const topicRoomInfo = "room_info";
 export const topicRollInfo = "roll_info";
 export const topicRoomUpdateRequest = "room_update";
 export const topicRoomConnect = "room_connect";
+export const topicCsInfo = "cs_info";
 
 export type RefProps = {
   ref: any;

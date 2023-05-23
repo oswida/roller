@@ -21,6 +21,7 @@ import {
   mainViewPanel,
   netConnectionStatus,
   netCreateRoom,
+  netLoadCs,
   rollerRoomsKey,
   rollerSettingsKey,
   saveToStorage,
@@ -120,9 +121,8 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
     const na = { ...appSettings() };
     na.currentRoom = r[0].id;
     saveToStorage(rollerSettingsKey, na);
+    netLoadCs(na.currentRoom); // load shared charsheets
   };
-
-
 
   return (
     <div class={topbarStyle} ref={ref}>

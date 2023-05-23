@@ -15,11 +15,18 @@ import {
   NetRollInfo,
   NetRoomInfo,
   RoomInfo,
+  topicCsInfo,
   topicRollInfo,
   topicRoomInfo,
 } from "./types";
-import { Net2HostRollInfo, Net2HostRoomInfo, animateRemoteRoll, enrollTask, updateRolls } from "./util";
-import { Host2NetRoomInfo } from "./util";
+import {
+  Host2NetRoomInfo,
+  Net2HostRollInfo,
+  Net2HostRoomInfo,
+  animateRemoteRoll,
+  enrollTask,
+  updateRolls,
+} from "./util";
 
 export const centPack = (sender: string, payload: any) => {
   const room = currentRoom();
@@ -57,6 +64,15 @@ const processRoomInfo = (ctx: PublicationContext) => {
   centLoadRooms([info.id]);
 };
 
+const processCsInfo = (ctx: PublicationContext) => {
+  const data = ctx.data as CentMessage;
+  if (!data || data.sender == appSettings().userIdent) return;
+  const room = currentRoom();
+  if (!room || data.room !== room.id) return;
+  const info = data.data as CsInfo;
+  centLoadCs(room.id, [info.id]);
+};
+
 export const serverAddress = () => {
   // DEV version
   //const addr = "ws://localhost:5000/connection/websocket";
@@ -88,6 +104,11 @@ export const centConnect = () => {
       processRoomInfo(ctx);
     });
     sub2.subscribe();
+    const sub3 = centrifuge.newSubscription(topicCsInfo);
+    sub3.on("publication", (ctx) => {
+      processCsInfo(ctx);
+    });
+    sub3.subscribe();
   });
   centrifuge.on("disconnected", () => {
     setCentConnectionStatus(false);
@@ -199,12 +220,11 @@ export const centUpdateRoom = (room: RoomInfo) => {
   } as CentMessage;
   client
     .rpc("room_update", msg)
-    .then((result) => { })
+    .then((result) => {})
     .catch((err) => {
       console.error(err);
     });
 };
-
 
 export const centLoadCs = (roomId: string, ids?: string[]) => {
   const client = centClient();
@@ -269,7 +289,7 @@ export const centUpdateCs = (roomId: string, info: CsInfo) => {
   } as CentMessage;
   client
     .rpc("cs_update", msg)
-    .then((result) => { })
+    .then((result) => {})
     .catch((err) => {
       console.error(err);
     });

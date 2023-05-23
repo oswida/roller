@@ -25,3 +25,15 @@ func (eng *RollerEngine) RollPublishCallback(e centrifuge.PublishEvent) error {
 	room.Rolls = newRolls
 	return db.RoomUpdate(eng.DB, room.Id, room)
 }
+
+func (eng *RollerEngine) CsInfoPublishCallback(e centrifuge.PublishEvent) error {
+	eng.mux.Lock()
+	defer eng.mux.Unlock()
+
+	var data CsMessage
+	err := json.Unmarshal(e.Data, &data)
+	if err != nil {
+		return err
+	}
+	return db.CsUpdate(eng.DB, data.Room, data.Data)
+}

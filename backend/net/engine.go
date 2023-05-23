@@ -74,7 +74,12 @@ func (eng *RollerEngine) PublishCallback(e centrifuge.PublishEvent) {
 	case "roll_info":
 		err := eng.RollPublishCallback(e)
 		if err != nil {
-			eng.Log.Error("publish callback", zap.Error(err))
+			eng.Log.Error("roll publish callback", zap.Error(err))
+		}
+	case "cs_info":
+		err := eng.CsInfoPublishCallback(e)
+		if err != nil {
+			eng.Log.Error("csinfo publish callback", zap.Error(err))
 		}
 	}
 }
