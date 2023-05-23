@@ -1,13 +1,17 @@
-import { templateRomancja } from "./romancja"
-import { CsTemplate, csTemplateId } from "~/common"
-import { templateWzmPL } from "./wzmpl"
+import { CsTemplate } from "~/common";
+import { SelectItem } from "~/component";
+import { templateRomancja } from "./romancja";
+import { templateWzmPL } from "./wzmpl";
 
-export * from "./romancja"
+const tplList = [templateRomancja, templateWzmPL];
 
+export const csTemplates: Record<string, CsTemplate | undefined> = {
+  "": undefined,
+};
+tplList.forEach((it) => {
+  csTemplates[it.id] = it;
+});
 
-
-export const csTemplates: Record<csTemplateId, CsTemplate | undefined> = {
-    "pio3s-romancja": templateRomancja,
-    "wzm-pl": templateWzmPL,
-    "": undefined
-}
+export const csTemplateItems: SelectItem[] = tplList
+  .sort((a, b) => a.name.localeCompare(b.name))
+  .map((it) => ({ id: it.id, label: it.name } as SelectItem));

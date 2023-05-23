@@ -1,13 +1,9 @@
 import { v4 as uuid } from "uuid";
-import { colorType } from "./theme.css";
-import { RollResult } from "./rollinfo";
 import { RadioItem, SelectItem } from "~/component";
 import { appSettings } from "./storage";
+import { colorType } from "./theme.css";
 
-export type SelectOption = {
-  label: string;
-  value: string;
-};
+// Settings
 
 export type AppSettings = {
   userIdent: string;
@@ -35,8 +31,6 @@ export const emptyAppSettings = () => {
     userColor: colorType.primary,
     network: {
       type: "cent",
-      // credentials: decompressData64(mqttC),
-      // serverUri: decompressData64(mqttS),
       credentials: "",
       serverUri: "",
     },
@@ -45,6 +39,8 @@ export const emptyAppSettings = () => {
     diceMaterial: "none",
   } as AppSettings;
 };
+
+// Publish PDUs
 
 export type RollInfo = {
   user: string;
@@ -98,39 +94,7 @@ export const emptyRoomInfo = (rid?: string) => {
   } as RoomInfo;
 };
 
-export type csTemplateId = "pio3s-romancja" | "wzm-pl" | "";
-
-export const csTemplateTypes: SelectItem[] = [
-  { id: "pio3s-romancja", label: "Pio3S: Romancja" },
-  { id: "wzm-pl", label: "Wyprawa za Mur: standard" },
-];
-
-export type CsInfo = {
-  id: string;
-  owner: string;
-  name: string;
-  template: csTemplateId;
-  values: Record<string, any>;
-  shared?: boolean;
-};
-
-export const emptyCsInfo = () => {
-  return {
-    id: uuid(),
-    owner: appSettings().userIdent,
-    name: "charsheet",
-    template: "",
-    values: {},
-    shared: false,
-  } as CsInfo;
-};
-
-export type StorageItem =
-  | AppSettings
-  | Record<string, RoomInfo>
-  | Record<string, RollDefInfo>
-  | Record<string, CsInfo>
-  | string;
+// Network
 
 export type NetMessage = {
   sender: string;
@@ -149,9 +113,7 @@ export const topicRoomUpdateRequest = "room_update";
 export const topicRoomConnect = "room_connect";
 export const topicCsInfo = "cs_info";
 
-export type RefProps = {
-  ref: any;
-};
+// Roll definitions
 
 export type RollDefInfo = {
   id: string;
@@ -182,6 +144,8 @@ export const SuccessRules: RadioItem[] = [
   { id: "total:oeq", label: "Total over/equal" },
 ];
 
+// Whiteboard
+
 export type WhiteboardState = {
   tool: string;
   brush: string;
@@ -194,6 +158,28 @@ export const initialWhiteboardState: WhiteboardState = {
   brush: "white",
   fill: "transparent",
   width: 0,
+};
+
+// Charsheets
+
+export type CsInfo = {
+  id: string;
+  owner: string;
+  name: string;
+  template: string;
+  values: Record<string, any>;
+  shared?: boolean;
+};
+
+export const emptyCsInfo = () => {
+  return {
+    id: uuid(),
+    owner: appSettings().userIdent,
+    name: "charsheet",
+    template: "",
+    values: {},
+    shared: false,
+  } as CsInfo;
 };
 
 export type CsRoll = {
@@ -224,6 +210,7 @@ export type CsPage = {
 };
 
 export type CsTemplate = {
+  id: string;
   game: string;
   name: string;
   pageHeight: number;
@@ -237,4 +224,49 @@ export type CsTemplate = {
 export type CsCheckData = {
   value: boolean;
   disabled: boolean;
+};
+
+// Dice roll
+
+export type RollDetail = {
+  type: string; // "d6"
+  sides: number; // 6
+  id: number; // roll identifier in set, 0
+  value: number;
+  label: string; // "6"
+  reason: string; // "natural"
+};
+
+export type RollSet = {
+  num: number; // number of dice
+  type: string; // "d6"
+  sides: number; // 6
+  rolls: RollDetail[];
+  total: number;
+};
+
+export type RollResult = {
+  notation: string;
+  sets: RollSet[];
+  modifier: number;
+  total: number;
+};
+
+// Storage
+
+export type StorageItem =
+  | AppSettings
+  | Record<string, RoomInfo>
+  | Record<string, RollDefInfo>
+  | Record<string, CsInfo>
+  | string;
+
+// Misc
+export type SelectOption = {
+  label: string;
+  value: string;
+};
+
+export type RefProps = {
+  ref: any;
 };

@@ -27,16 +27,13 @@ import {
   appSettings,
   csCanvas,
   csCurrentZoom,
-  csTemplateId,
-  csTemplateTypes,
   currentCs,
   currentCsPage,
   currentRoom,
-  deleteCs,
+  deleteCsStorage,
   exportData,
   importData,
   netPublish,
-  netUpdateCs,
   prettyToday,
   rollerCsKey,
   saveToStorage,
@@ -44,7 +41,7 @@ import {
   setCurrentCs,
   setCurrentCsPage,
   topicCsInfo,
-  updateCs,
+  updateCsStorage,
 } from "~/common";
 import {
   Alert,
@@ -56,7 +53,7 @@ import {
   SelectItem,
   Text,
 } from "~/component";
-import { csTemplates } from "~/template";
+import { csTemplateItems, csTemplates } from "~/template";
 import { CsItem } from "./CsItem";
 import { csLeftPaneStyle, csListStyle } from "./styles.css";
 import { createFromTemplate } from "./template";
@@ -70,7 +67,7 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
   const [crDialogOpen, setCrDialogOpen] = createSignal(false);
   const [delDialogOpen, setDelDialogOpen] = createSignal(false);
   const [shareDialogOpen, setShareDialogOpen] = createSignal(false);
-  const [selCsType, setSelCsType] = createSignal<csTemplateId>("");
+  const [selCsType, setSelCsType] = createSignal("");
   const [selCsName, setSelCsName] = createSignal("");
   let pane: HTMLDivElement;
 
@@ -85,7 +82,7 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
       owner: appSettings().userIdent,
       shared: false,
     };
-    updateCs(info);
+    updateCsStorage(info);
     adjustSize();
     toast("New charsheet created");
   };
@@ -94,7 +91,7 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
     setDelDialogOpen(false);
     const cs = currentCs();
     if (!cs) return;
-    deleteCs(cs.id);
+    deleteCsStorage(cs.id);
     toast("Charsheet deleted");
   };
 
@@ -266,8 +263,8 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
             <Select
               modal={true}
               label="Type"
-              options={() => csTemplateTypes}
-              onChange={(e: SelectItem) => setSelCsType(e.id as csTemplateId)}
+              options={() => csTemplateItems}
+              onChange={(e: SelectItem) => setSelCsType(e.id)}
             />
             <Flex gap="large" style={{ "margin-top": "10px" }}>
               <Button onClick={() => setCrDialogOpen(false)}>Cancel</Button>

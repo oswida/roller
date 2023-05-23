@@ -98,17 +98,22 @@ export const currentRoom = () => {
   return rooms[settings.currentRoom];
 };
 
-
 // --- mutations
 
-export const updateCs = (item: CsInfo) => {
+export const updateRoomStorage = (item: RoomInfo) => {
+  const newState = { ...appRooms() };
+  newState[item.id] = item;
+  saveToStorage(rollerRoomsKey, newState);
+};
+
+export const updateCsStorage = (item: CsInfo) => {
   const newState = { ...appCs() };
   newState[item.id] = item;
   saveToStorage(rollerCsKey, newState);
-}
+};
 
-export const deleteCs = (id: string) => {
+export const deleteCsStorage = (id: string) => {
   const newState = { ...appCs() };
   delete newState[id];
   saveToStorage(rollerCsKey, newState);
-}
+};
