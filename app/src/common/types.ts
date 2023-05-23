@@ -1,5 +1,5 @@
 import { v4 as uuid } from "uuid";
-import { RadioItem, SelectItem } from "~/component";
+import { RadioItem } from "~/component";
 import { appSettings } from "./storage";
 import { colorType } from "./theme.css";
 
@@ -252,6 +252,27 @@ export type RollResult = {
   total: number;
 };
 
+// Boards
+export type BoardInfo = {
+  id: string;
+  owner: string;
+  name: string;
+  bkguri: string;
+  objects: Record<string, any>;
+  shared?: boolean;
+};
+
+export const emptyBoardInfo = () => {
+  return {
+    id: uuid(),
+    owner: appSettings().userIdent,
+    name: "",
+    bkguri: "",
+    objects: {},
+    shared: false,
+  } as BoardInfo;
+};
+
 // Storage
 
 export type StorageItem =
@@ -259,6 +280,7 @@ export type StorageItem =
   | Record<string, RoomInfo>
   | Record<string, RollDefInfo>
   | Record<string, CsInfo>
+  | Record<string, BoardInfo>
   | string;
 
 // Misc

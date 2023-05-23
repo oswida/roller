@@ -1,5 +1,9 @@
 package db
 
+type Identifable interface {
+	GetId() string
+}
+
 type RollDetail struct {
 	Type   string `json:"type"`
 	Sides  int    `json:"sides"`
@@ -48,15 +52,25 @@ type RoomInfo struct {
 type CsInfo struct {
 	Id       string            `json:"id"`
 	Name     string            `json:"name"`
+	Owner    string            `json:"owner"`
 	Template string            `json:"template"`
 	Values   map[string]string `json:"values"`
 	Shared   bool              `json:"shared,omitempty"`
 }
 
+func (info CsInfo) GetId() string {
+	return info.Id
+}
+
 type BoardInfo struct {
 	Id      string            `json:"id"`
 	Name    string            `json:"name"`
+	Owner   string            `json:"owner"`
 	Bkguri  string            `json:"bkguri"`
 	Objects map[string]string `json:"objects"`
 	Shared  bool              `json:"shared,omitempty"`
+}
+
+func (info BoardInfo) GetId() string {
+	return info.Id
 }

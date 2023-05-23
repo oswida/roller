@@ -16,7 +16,7 @@ type RoomMessage struct {
 	Data   db.RoomInfo `json:"data"`
 }
 
-type RoomListMessage struct {
+type ListMessage struct {
 	Sender string   `json:"sender"`
 	Room   string   `json:"room"`
 	Data   []string `json:"data"`
@@ -28,8 +28,8 @@ type CsMessage struct {
 	Data   db.CsInfo `json:"data"`
 }
 
-type CsListMessage struct {
-	Sender string   `json:"sender"`
-	Room   string   `json:"room"`
-	Data   []string `json:"data"`
+type BoardMessage struct {
+	Sender string       `json:"sender"`
+	Room   string       `json:"room"`
+	Data   db.BoardInfo `json:"data"`
 }

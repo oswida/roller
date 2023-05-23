@@ -79,7 +79,12 @@ func (eng *RollerEngine) PublishCallback(e centrifuge.PublishEvent) {
 	case "cs_info":
 		err := eng.CsInfoPublishCallback(e)
 		if err != nil {
-			eng.Log.Error("csinfo publish callback", zap.Error(err))
+			eng.Log.Error("cs info publish callback", zap.Error(err))
+		}
+	case "board_info":
+		err := eng.BoardInfoPublishCallback(e)
+		if err != nil {
+			eng.Log.Error("board info publish callback", zap.Error(err))
 		}
 	}
 }
@@ -100,6 +105,10 @@ func (eng *RollerEngine) RPCCallback(dbase *badger.DB, e centrifuge.RPCEvent) ([
 		return eng.RpcCsUpdate(dbase, e)
 	case "cs_delete":
 		return eng.RpcCsDelete(dbase, e)
+	case "board_list":
+		return eng.RpcBoardList(dbase, e)
+	case "board_delete":
+		return eng.RpcBoardDelete(dbase, e)
 	}
 	return nil, nil
 }

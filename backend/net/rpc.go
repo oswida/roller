@@ -60,7 +60,7 @@ func (eng *RollerEngine) RpcRoomList(dbase *badger.DB, e centrifuge.RPCEvent) ([
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
-	var data RoomListMessage
+	var data ListMessage
 	err := json.Unmarshal(e.Data, &data)
 	if err != nil {
 		return nil, err
@@ -85,7 +85,7 @@ func (eng *RollerEngine) RpcCsUpdate(dbase *badger.DB, e centrifuge.RPCEvent) ([
 	if err != nil {
 		return nil, err
 	}
-	err = db.CsUpdate(dbase, data.Room, data.Data)
+	err = db.RoomItemUpdate(dbase, data.Room, data.Data)
 	if err != nil {
 		return nil, err
 	}
@@ -103,19 +103,19 @@ func (eng *RollerEngine) RpcCsDelete(dbase *badger.DB, e centrifuge.RPCEvent) ([
 		return nil, err
 	}
 	eng.Log.Debug("Deleting charsheet", zap.String("id", data.Data.Id))
-	return []byte{}, db.CsDelete(dbase, data.Room, data.Data.Id)
+	return []byte{}, db.RoomItemDelete(dbase, data.Room, data.Data)
 }
 
 func (eng *RollerEngine) RpcCsList(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
-	var data CsListMessage
+	var data ListMessage
 	err := json.Unmarshal(e.Data, &data)
 	if err != nil {
 		return nil, err
 	}
-	list, err := db.CsList(dbase, data.Room, data.Data)
+	list, err := db.RoomItemList[db.CsInfo](dbase, data.Room, data.Data)
 	if err != nil {
 		return nil, err
 	}
@@ -124,4 +124,37 @@ func (eng *RollerEngine) RpcCsList(dbase *badger.DB, e centrifuge.RPCEvent) ([]b
 		return nil, err
 	}
 	return bytes, nil
+}
+
+func (eng *RollerEngine) RpcBoardList(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
+	eng.mux.Lock()
+	defer eng.mux.Unlock()
+
+	var data ListMessage
+	err := json.Unmarshal(e.Data, &data)
+	if err != nil {
+		return nil, err
+	}
+	list, err := db.RoomItemList[db.BoardInfo](dbase, data.Room, data.Data)
+	if err != nil {
+		return nil, err
+	}
+	bytes, err := json.Marshal(list)
+	if err != nil {
+		return nil, err
+	}
+	return bytes, nil
+}
+
+func (eng *RollerEngine) RpcBoardDelete(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
+	eng.mux.Lock()
+	defer eng.mux.Unlock()
+
+	var data BoardMessage
+	err := json.Unmarshal(e.Data, &data)
+	if err != nil {
+		return nil, err
+	}
+	eng.Log.Debug("Deleting board", zap.String("id", data.Data.Id))
+	return []byte{}, db.RoomItemDelete(dbase, data.Room, data.Data)
 }

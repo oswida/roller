@@ -36,9 +36,26 @@ func (eng *RollerEngine) CsInfoPublishCallback(e centrifuge.PublishEvent) error 
 		return err
 	}
 	if data.Data.Shared {
-		return db.CsUpdate(eng.DB, data.Room, data.Data)
+		return db.RoomItemUpdate(eng.DB, data.Room, data.Data)
 	} else {
 		// delete if shared has been switched off
-		return db.CsDelete(eng.DB, data.Room, data.Data.Id)
+		return db.RoomItemDelete(eng.DB, data.Room, data.Data)
+	}
+}
+
+func (eng *RollerEngine) BoardInfoPublishCallback(e centrifuge.PublishEvent) error {
+	eng.mux.Lock()
+	defer eng.mux.Unlock()
+
+	var data BoardMessage
+	err := json.Unmarshal(e.Data, &data)
+	if err != nil {
+		return err
+	}
+	if data.Data.Shared {
+		return db.RoomItemUpdate(eng.DB, data.Room, data.Data)
+	} else {
+		// delete if shared has been switched off
+		return db.RoomItemDelete(eng.DB, data.Room, data.Data)
 	}
 }

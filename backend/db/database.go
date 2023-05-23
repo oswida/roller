@@ -99,63 +99,42 @@ func RoomList(db *badger.DB, ids []string) ([]RoomInfo, error) {
 	return data, err
 }
 
-func CsUpdate(db *badger.DB, roomId string, data CsInfo) error {
+func RoomItemDelete[T Identifable](db *badger.DB, roomId string, item T) error {
 	return db.Update(func(txn *badger.Txn) error {
-		bytes, err := json.Marshal(data)
-		if err != nil {
-			return err
-		}
-		key := fmt.Sprintf("CS-%s-%s", roomId, data.Id)
-		return txn.Set([]byte(key), bytes)
-	})
-}
-
-func CsGet(db *badger.DB, roomId string, id string) (CsInfo, error) {
-	var data CsInfo
-	err := db.View(func(txn *badger.Txn) error {
-		key := fmt.Sprintf("CS-%s-%s", roomId, id)
-		item, err := txn.Get([]byte(key))
-		if err != nil {
-			return err
-		}
-
-		var val []byte
-		val, err = item.ValueCopy(val)
-		if err != nil {
-			return err
-		}
-		err = json.Unmarshal(val, &data)
-		if err != nil {
-			return err
-		}
-		return nil
-	})
-	return data, err
-}
-
-func CsDelete(db *badger.DB, roomId string, id string) error {
-	return db.Update(func(txn *badger.Txn) error {
-		key := fmt.Sprintf("CS-%s-%s", roomId, id)
+		key := fmt.Sprintf("%s-%s-%s", fmt.Sprintf("%T", item), roomId, item.GetId())
 		return txn.Delete([]byte(key))
 	})
 }
 
-func CsList(db *badger.DB, roomId string, ids []string) ([]CsInfo, error) {
-	data := []CsInfo{}
+func RoomItemUpdate[T Identifable](db *badger.DB, roomId string, item T) error {
+	return db.Update(func(txn *badger.Txn) error {
+		bytes, err := json.Marshal(item)
+		if err != nil {
+			return err
+		}
+		key := fmt.Sprintf("%s-%s-%s", fmt.Sprintf("%T", item), roomId, item.GetId())
+		fmt.Printf("updating room item with key %s\n", key)
+		return txn.Set([]byte(key), bytes)
+	})
+}
+
+func RoomItemList[T Identifable](db *badger.DB, roomId string, ids []string) ([]T, error) {
+	data := []T{}
 	err := db.View(func(txn *badger.Txn) error {
 		it := txn.NewIterator(badger.DefaultIteratorOptions)
 		defer it.Close()
-		prefix := []byte(fmt.Sprintf("CS-%s-", roomId))
+		var x T
+		prefix := []byte(fmt.Sprintf("%s-%s-", fmt.Sprintf("%T", x), roomId))
 		for it.Seek(prefix); it.ValidForPrefix(prefix); it.Next() {
 			item := it.Item()
 			err := item.Value(func(v []byte) error {
-				var cs CsInfo
-				err := json.Unmarshal(v, &cs)
+				var it T
+				err := json.Unmarshal(v, &it)
 				if err != nil {
 					return err
 				}
-				if len(ids) == 0 || contains(ids, cs.Id) {
-					data = append(data, cs)
+				if len(ids) == 0 || contains(ids, it.GetId()) {
+					data = append(data, it)
 				}
 				return nil
 			})
