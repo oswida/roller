@@ -1,5 +1,5 @@
 import { Centrifuge, PublicationContext, PublishResult } from "centrifuge";
-import { centClient, setCentClient, setCentConnectionStatus } from "./state";
+import { centClient, currentCs, setCentClient, setCentConnectionStatus, setCurrentCs } from "./state";
 import {
   appCs,
   appRooms,
@@ -70,11 +70,14 @@ const processCsInfo = (ctx: PublicationContext) => {
   const room = currentRoom();
   if (!room || data.room !== room.id) return;
   const info = data.data as CsInfo;
-  if (!info.shared && info.owner !== appSettings().userIdent) {
+  if (!info.shared) {
     // sharing off
-    const ns = { ...appCs() };
-    delete ns[info.id];
-    saveToStorage(rollerCsKey, ns);
+    if (info.owner !== appSettings().userIdent) {
+      const ns = { ...appCs() };
+      delete ns[info.id];
+      saveToStorage(rollerCsKey, ns);
+      if (currentCs()?.id == info.id) setCurrentCs(undefined);
+    }
   } else {
     centLoadCs(room.id, [info.id]);
   }
@@ -168,6 +171,10 @@ export const centLoadRooms = (ids?: string[]) => {
         });
 
         saveToStorage(rollerRoomsKey, newState);
+        const room = currentRoom();
+        if (room) {
+          centLoadCs(room.id);
+        }
       }
     })
     .catch((err) => {
@@ -227,7 +234,7 @@ export const centUpdateRoom = (room: RoomInfo) => {
   } as CentMessage;
   client
     .rpc("room_update", msg)
-    .then((result) => {})
+    .then((result) => { })
     .catch((err) => {
       console.error(err);
     });
@@ -254,9 +261,14 @@ export const centLoadCs = (roomId: string, ids?: string[]) => {
         const receivedIds = data.map((r) => r.id);
         const toCheck = ids ? ids : Object.values(appCs()).map((r) => r.id);
         toCheck.forEach((id) => {
-          if (!receivedIds.includes(id)) delete newState[id]; // charsheet has been deleted
+          if (!receivedIds.includes(id) && newState[id].shared && newState[id].owner !== appSettings().userIdent) {
+            delete newState[id]; // charsheet has been deleted
+          }
         });
         saveToStorage(rollerCsKey, newState);
+        if (ids?.length == 1 && ids[0] == currentCs()?.id) {
+          setCurrentCs(newState[ids[0]]);
+        }
       }
     })
     .catch((err) => {
@@ -296,7 +308,7 @@ export const centUpdateCs = (roomId: string, info: CsInfo) => {
   } as CentMessage;
   client
     .rpc("cs_update", msg)
-    .then((result) => {})
+    .then((result) => { })
     .catch((err) => {
       console.error(err);
     });

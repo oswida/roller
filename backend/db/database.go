@@ -113,7 +113,6 @@ func RoomItemUpdate[T Identifable](db *badger.DB, roomId string, item T) error {
 			return err
 		}
 		key := fmt.Sprintf("%s-%s-%s", fmt.Sprintf("%T", item), roomId, item.GetId())
-		fmt.Printf("updating room item with key %s\n", key)
 		return txn.Set([]byte(key), bytes)
 	})
 }

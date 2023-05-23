@@ -12,7 +12,9 @@ import { TbArrowAutofitHeight, TbZoomReset } from "solid-icons/tb";
 import {
   Component,
   For,
+  Match,
   Show,
+  Switch,
   createEffect,
   createMemo,
   createSignal,
@@ -135,7 +137,20 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
     const tpl = csTemplates[cs.template];
     if (!tpl) return;
     createFromTemplate(cnv, cs, page);
-    cnv.setZoom(csCurrentZoom());
+    if (appSettings().csAdjustHeight) {
+      const zoom = Number.parseFloat(
+        (pane.clientHeight / tpl.pageHeight).toFixed(2)
+      );
+      var vpt = cnv.viewportTransform;
+      if (!vpt) return;
+      vpt[4] = 0;
+      vpt[5] = 0;
+      vpt[0] = zoom;
+      vpt[3] = zoom;
+      setCsCurrentZoom(zoom);
+      cnv.setViewportTransform(vpt);
+    } else
+      cnv.setZoom(csCurrentZoom());
     if (page >= tpl.pages.length) setCurrentCsPage(0);
   });
 
@@ -163,7 +178,6 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
     const cnv = csCanvas();
     const cs = currentCs();
     if (!cnv || !pane || !cs) {
-      console.log("cnv", cnv, pane, cs);
       return;
     }
     const tpl = csTemplates[cs.template];
@@ -196,12 +210,18 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
   };
 
   const shareCharsheet = () => {
+    setShareDialogOpen(false);
     const cs = currentCs();
     const room = currentRoom();
     if (!cs || !room) return;
-    cs.shared = true;
+    if (!cs.shared) { // can be undefined
+      cs.shared = true;
+    } else {
+      cs.shared = false;
+    }
+    updateCsStorage(cs);
     netPublish(topicCsInfo, cs);
-    toast("Charsheet shared");
+    toast("Charsheet share toggled");
   };
 
   return (
@@ -212,41 +232,55 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
         <Flex>
           <Show when={currentCs()}>
             <Flex style={{ "margin-right": "10px" }}>
+              <Show when={currentCs()?.owner == appSettings().userIdent}>
+                <Alert
+                  label="Delete charsheet"
+                  open={delDialogOpen}
+                  onOpenChange={setDelDialogOpen}
+                  trigger={<FaSolidTrash />}
+                  triggerHint="Delete selected charsheet"
+                >
+                  <Text>
+                    Delete {currentCs()?.name} {"?"}
+                  </Text>
+                  <Flex gap="large" style={{ "margin-top": "10px" }}>
+                    <Button onClick={() => setDelDialogOpen(false)}>
+                      Cancel
+                    </Button>
+                    <Button onClick={deleteCharsheet}>Delete</Button>
+                  </Flex>
+                </Alert>
+              </Show>
+            </Flex>
+            <Show when={currentCs()?.owner == appSettings().userIdent}>
               <Alert
-                label="Delete charsheet"
-                open={delDialogOpen}
-                onOpenChange={setDelDialogOpen}
-                trigger={<FaSolidTrash />}
-                triggerHint="Delete selected charsheet"
+                label="Share charsheet"
+                open={shareDialogOpen}
+                onOpenChange={setShareDialogOpen}
+                trigger={<FaSolidShareNodes />}
+                triggerHint="Share selected charsheet"
               >
-                <Text>
-                  Delete {currentCs()?.name} {"?"}
-                </Text>
+                <Switch>
+                  <Match when={currentCs()?.shared}>
+                    <Text>
+                      Stop sharing {currentCs()?.name} {"?"}
+                    </Text>
+                  </Match>
+                  <Match when={!currentCs()?.shared}>
+                    <Text>
+                      Share {currentCs()?.name} {"?"}
+                    </Text>
+                  </Match>
+                </Switch>
+
                 <Flex gap="large" style={{ "margin-top": "10px" }}>
-                  <Button onClick={() => setDelDialogOpen(false)}>
+                  <Button onClick={() => setShareDialogOpen(false)}>
                     Cancel
                   </Button>
-                  <Button onClick={deleteCharsheet}>Delete</Button>
+                  <Button onClick={shareCharsheet}>Accept</Button>
                 </Flex>
               </Alert>
-            </Flex>
-            <Alert
-              label="Share charsheet"
-              open={shareDialogOpen}
-              onOpenChange={setShareDialogOpen}
-              trigger={<FaSolidShareNodes />}
-              triggerHint="Share selected charsheet"
-            >
-              <Text>
-                Share {currentCs()?.name} {"?"}
-              </Text>
-              <Flex gap="large" style={{ "margin-top": "10px" }}>
-                <Button onClick={() => setShareDialogOpen(false)}>
-                  Cancel
-                </Button>
-                <Button onClick={shareCharsheet}>Share</Button>
-              </Flex>
-            </Alert>
+            </Show>
           </Show>
 
           <Dialog

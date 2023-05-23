@@ -22,6 +22,7 @@ export type AppSettings = {
   showRollSuccess?: boolean;
   showRollTotal?: boolean;
   smallerDice?: boolean;
+  csAdjustHeight?: boolean;
 };
 
 export const emptyAppSettings = () => {

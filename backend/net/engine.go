@@ -30,7 +30,7 @@ func NewRollerEngine(dbase *badger.DB, log *zap.Logger) (*RollerEngine, error) {
 
 	node.OnConnect(func(client *centrifuge.Client) {
 
-		result.Log.Info("client connected")
+		//result.Log.Info("client connected")
 
 		client.OnSubscribe(func(e centrifuge.SubscribeEvent, cb centrifuge.SubscribeCallback) {
 			// result.Log.Info("client subscribed", zap.String("channel", e.Channel))
@@ -55,7 +55,7 @@ func NewRollerEngine(dbase *badger.DB, log *zap.Logger) (*RollerEngine, error) {
 		})
 
 		client.OnDisconnect(func(e centrifuge.DisconnectEvent) {
-			result.Log.Info("client disconnected", zap.String("reason", e.Reason), zap.String("err", e.String()))
+			//result.Log.Info("client disconnected", zap.String("reason", e.Reason), zap.String("err", e.String()))
 		})
 	})
 

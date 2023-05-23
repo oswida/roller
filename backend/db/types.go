@@ -50,12 +50,12 @@ type RoomInfo struct {
 }
 
 type CsInfo struct {
-	Id       string            `json:"id"`
-	Name     string            `json:"name"`
-	Owner    string            `json:"owner"`
-	Template string            `json:"template"`
-	Values   map[string]string `json:"values"`
-	Shared   bool              `json:"shared,omitempty"`
+	Id       string         `json:"id"`
+	Name     string         `json:"name"`
+	Owner    string         `json:"owner"`
+	Template string         `json:"template"`
+	Values   map[string]any `json:"values"`
+	Shared   bool           `json:"shared,omitempty"`
 }
 
 func (info CsInfo) GetId() string {

@@ -38,6 +38,12 @@ export const SettingsView: Component<Props> = ({ onOpenChange }) => {
     return rl;
   });
 
+  const csAdjustHeight = createMemo(() => {
+    const rl = appSettings().csAdjustHeight;
+    if (!rl) return false;
+    return rl;
+  });
+
   const smallerDice = createMemo(() => {
     const rl = appSettings().smallerDice;
     if (!rl) return false;
@@ -62,6 +68,11 @@ export const SettingsView: Component<Props> = ({ onOpenChange }) => {
 
   const setSmalldice = (value: boolean) => {
     const newState = { ...appSettings(), smallerDice: value };
+    saveToStorage(rollerSettingsKey, newState);
+  };
+
+  const setCsAdjustHeight = (value: boolean) => {
+    const newState = { ...appSettings(), csAdjustHeight: value };
     saveToStorage(rollerSettingsKey, newState);
   };
 
@@ -96,6 +107,13 @@ export const SettingsView: Component<Props> = ({ onOpenChange }) => {
           label="Show roll success"
           checked={success}
           setChecked={setSuccess}
+        />
+      </Flex>
+      <Flex style={{ "justify-content": "space-between" }}>
+        <Switch
+          label="Adjust charsheet to height"
+          checked={csAdjustHeight}
+          setChecked={setCsAdjustHeight}
         />
       </Flex>
       <CopyToClipboard

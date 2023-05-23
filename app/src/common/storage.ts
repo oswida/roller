@@ -128,6 +128,7 @@ export const updateRoomStorage = (item: RoomInfo) => {
 export const updateCsStorage = (item: CsInfo) => {
   const newState = { ...appCs() };
   newState[item.id] = item;
+  console.log("updating cs storage with", newState);
   saveToStorage(rollerCsKey, newState);
 };
 
