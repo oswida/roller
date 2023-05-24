@@ -86,6 +86,9 @@ export const createField = (
         updateCsStorage(info);
         if (info.shared) netPublish(topicCsInfo, info);
       });
+      if (fld.info && fld.info.trim() !== "") {
+        addInfoControl(canvas, txt, fld, info);
+      }
       return txt;
     case "rect-check":
       const val = info.values[fld.id];

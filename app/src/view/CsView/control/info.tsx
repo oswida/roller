@@ -1,4 +1,10 @@
-import { CsField, CsInfo } from "~/common";
+import {
+  CsField,
+  CsInfo,
+  setCsInfoContent,
+  setCsInfoLabel,
+  setCsInfoOpen,
+} from "~/common";
 import { csTemplates } from "~/template";
 import { addControl } from ".";
 
@@ -12,6 +18,7 @@ export const addInfoControl = (
   fld: CsField,
   info: CsInfo
 ) => {
+  if (!fld.info) return;
   const tpl = csTemplates[info.template];
   if (!tpl) return;
   addControl(
@@ -22,7 +29,10 @@ export const addInfoControl = (
     16,
     16,
     () => {
-      canvas.requestRenderAll();
+      if (!fld.info) return;
+      setCsInfoLabel(fld.name);
+      setCsInfoContent(fld.info);
+      setCsInfoOpen(true);
     },
     infoImg
   );
