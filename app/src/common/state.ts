@@ -3,7 +3,7 @@ import { Centrifuge } from "centrifuge";
 import mqtt from "mqtt/dist/mqtt";
 import Queue from "queue";
 import { createSignal } from "solid-js";
-import { CsInfo, WhiteboardState, initialWhiteboardState } from "./types";
+import { BoardInfo, CsInfo, WhiteboardState, initialWhiteboardState } from "./types";
 
 export const [storageSize, setStorageSize] = createSignal(0);
 
@@ -58,8 +58,13 @@ export const [csRollInputOpen, setCsRollInputOpen] = createSignal(false);
 export const [csRollInputTitle, setCsRollInputTitle] = createSignal("");
 export type CallbackFunc = (value: string) => void;
 export const [csRollInputCallback, setCsRollInputCallback] =
-  createSignal<CallbackFunc>((value: string) => {});
+  createSignal<CallbackFunc>((value: string) => { });
 export const [csCurrentZoom, setCsCurrentZoom] = createSignal(1.0);
 export const [csInfoOpen, setCsInfoOpen] = createSignal(false);
 export const [csInfoLabel, setCsInfoLabel] = createSignal("");
 export const [csInfoContent, setCsInfoContent] = createSignal("");
+
+// Boards
+export const [boardCanvas, setBoardCanvas] = createSignal<fabric.Canvas>();
+export const [currentBoard, setCurrentBoard] = createSignal<BoardInfo>();
+export const [boardLoaded, setBoardLoaded] = createSignal(false);

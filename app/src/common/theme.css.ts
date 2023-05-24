@@ -108,3 +108,6 @@ const colorProperties = defineProperties({
 export const sprinkles = createSprinkles(themeProperties, colorProperties);
 
 export type Sprinkles = Parameters<typeof sprinkles>[0];
+
+export const drawColors = ["#ffffff", "#D82011", "#D87a11", "#F9df2d", "#5ff92d", "#2df9e0",
+  "#2da0f9", "#5f2df9", "#F92dee", "#000000", "transparent"]

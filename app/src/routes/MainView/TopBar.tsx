@@ -1,4 +1,5 @@
-import { BsFilePerson } from "solid-icons/bs";
+import { BsPersonFill } from "solid-icons/bs";
+import { BiRegularChalkboard } from "solid-icons/bi";
 import {
   FaSolidChalkboardUser,
   FaSolidDiceD20,
@@ -190,7 +191,14 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
           toggled={() => mainViewPanel() == "cs"}
           onClick={() => setMainViewPanel("cs")}
         >
-          <BsFilePerson size={25} />
+          <BsPersonFill size={25} />
+        </Button>
+        <Button
+          variant="icon"
+          toggled={() => mainViewPanel() == "board"}
+          onClick={() => setMainViewPanel("board")}
+        >
+          <BiRegularChalkboard size={25} />
         </Button>
       </Flex>
 

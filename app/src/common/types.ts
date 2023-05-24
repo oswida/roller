@@ -149,16 +149,16 @@ export const SuccessRules: RadioItem[] = [
 
 export type WhiteboardState = {
   tool: string;
-  brush: string;
+  stroke: string;
   fill: string;
   width: number;
 };
 
 export const initialWhiteboardState: WhiteboardState = {
   tool: "select",
-  brush: "white",
+  stroke: "#ffffff",
   fill: "transparent",
-  width: 0,
+  width: 1,
 };
 
 // Charsheets
@@ -259,7 +259,7 @@ export type BoardInfo = {
   owner: string;
   name: string;
   bkguri: string;
-  objects: Record<string, any>;
+  objects: string;
   shared?: boolean;
 };
 
@@ -269,7 +269,7 @@ export const emptyBoardInfo = () => {
     owner: appSettings().userIdent,
     name: "",
     bkguri: "",
-    objects: {},
+    objects: "",
     shared: false,
   } as BoardInfo;
 };
