@@ -4,16 +4,18 @@ import {
   centCreateRoom,
   centDeleteRoom,
   centDisconnect,
+  centLoadBoard,
   centLoadCs,
   centLoadRooms,
   centPublish,
+  centUpdateBoard,
   centUpdateCs,
   centUpdateRoom,
 } from "./centrifuge";
 import { mqttConnect, mqttDisconnect, mqttPublish } from "./mqtt";
 import { centConnectionStatus, mqttConnectionStatus } from "./state";
 import { appSettings } from "./storage";
-import { CsInfo, RoomInfo } from "./types";
+import { BoardInfo, CsInfo, RoomInfo } from "./types";
 
 export const netInit = () => {
   if (!netConnectionStatus()) netConnect();
@@ -124,6 +126,26 @@ export const netLoadCs = (roomId: string) => {
   switch (appSettings().network.type) {
     case "cent":
       centLoadCs(roomId);
+      break;
+    default:
+      break;
+  }
+};
+
+export const netUpdateBoard = (roomId: string, info: BoardInfo) => {
+  switch (appSettings().network.type) {
+    case "cent":
+      centUpdateBoard(roomId, info);
+      break;
+    default:
+      break;
+  }
+};
+
+export const netLoadBoard = (roomId: string) => {
+  switch (appSettings().network.type) {
+    case "cent":
+      centLoadBoard(roomId);
       break;
     default:
       break;

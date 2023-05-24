@@ -113,6 +113,7 @@ export const topicRollInfo = "roll_info";
 export const topicRoomUpdateRequest = "room_update";
 export const topicRoomConnect = "room_connect";
 export const topicCsInfo = "cs_info";
+export const topicBoardInfo = "board_info";
 
 // Roll definitions
 

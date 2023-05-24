@@ -17,9 +17,11 @@ export const rollerDefsKey = "defs";
 export const rollerCsKey = "cs";
 export const rollerBoardKey = "board";
 
+const STORE_PREFIX = "roller2";
+
 export const [appStore, setAppStore, { remove, clear, toJSON }] =
   createLocalStorage({
-    prefix: "roller2",
+    prefix: STORE_PREFIX,
     serializer: (value: StorageItem, key: string) => {
       return compressData(value);
     },
@@ -56,7 +58,7 @@ export const updateStoreSize = () => {
     rollerDefsKey,
   ];
   keys.forEach((k) => {
-    const data = localStorage.getItem(`roller.${k}`);
+    const data = localStorage.getItem(`${STORE_PREFIX}.${k}`);
     size += data ? data.length : 0;
   });
   setStorageSize(size);
@@ -128,7 +130,6 @@ export const updateRoomStorage = (item: RoomInfo) => {
 export const updateCsStorage = (item: CsInfo) => {
   const newState = { ...appCs() };
   newState[item.id] = item;
-  console.log("updating cs storage with", newState);
   saveToStorage(rollerCsKey, newState);
 };
 

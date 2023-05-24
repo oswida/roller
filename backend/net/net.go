@@ -33,3 +33,10 @@ type BoardMessage struct {
 	Room   string       `json:"room"`
 	Data   db.BoardInfo `json:"data"`
 }
+
+type ObjectMessage struct {
+	Sender string         `json:"sender"`
+	Room   string         `json:"room"`
+	Data   db.BoardObject `json:"data"`
+	Delete bool           `json:"delete"`
+}

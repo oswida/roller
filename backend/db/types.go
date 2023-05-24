@@ -63,14 +63,24 @@ func (info CsInfo) GetId() string {
 }
 
 type BoardInfo struct {
-	Id      string            `json:"id"`
-	Name    string            `json:"name"`
-	Owner   string            `json:"owner"`
-	Bkguri  string            `json:"bkguri"`
-	Objects map[string]string `json:"objects"`
-	Shared  bool              `json:"shared,omitempty"`
+	Id     string `json:"id"`
+	Name   string `json:"name"`
+	Owner  string `json:"owner"`
+	Bkguri string `json:"bkguri"`
+	Shared bool   `json:"shared,omitempty"`
 }
 
 func (info BoardInfo) GetId() string {
+	return info.Id
+}
+
+type BoardObject struct {
+	Id      string `json:"id"`
+	BoardId string `json:"board"`
+	Owner   string `json:"owner"`
+	Data    string `json:"data"`
+}
+
+func (info BoardObject) GetId() string {
 	return info.Id
 }

@@ -1,4 +1,4 @@
-import { appBoards, boardCanvas, boardLoaded, currentBoard, updateBoardStorage, wbState } from "~/common";
+import { appBoards, boardCanvas, boardLoaded, compressData, currentBoard, netPublish, topicBoardInfo, updateBoardStorage, wbState } from "~/common";
 import { v4 as uuidv4 } from "uuid";
 import { fabric } from "fabric";
 import { addControl, canvasChangeColors, canvasRemoveActive, paletteImg, xmarkImg } from "./control";
@@ -20,12 +20,19 @@ export const commonCanvasObjectProps = {
 }
 
 export const saveBoard = () => {
-    if (!boardLoaded()) return;
+    if (!boardLoaded()) {
+        return;
+    }
     const cnv = boardCanvas();
     const board = currentBoard();
-    if (!cnv || !board) return;
-    board.objects = JSON.stringify(cnv.toJSON());
+    if (!cnv || !board) {
+        console.error("no canvas or board", cnv, board);
+        return;
+    }
+    board.objects = compressData(cnv.toJSON());
+    console.log("storing board", board.objects.length);
     updateBoardStorage(board);
+    netPublish(topicBoardInfo, board);
     // TODO: publish ?
 }
 
@@ -282,11 +289,13 @@ export const initEvents = (canvas: () => fabric.Canvas | undefined) => {
 
     // Object was added to board
     cnv.on("object:added", (opt) => {
+
         if (!boardLoaded() && opt.target) {
             addControl("del", opt.target, 0.5, -0.5, -16, 16,
                 () => { canvasRemoveActive(); }, xmarkImg);
             addControl("color", opt.target, -0.5, -0.5, -16, -16,
                 () => { canvasChangeColors(); }, paletteImg);
+
             return;
         }
         if (opt.target && opt.target.type === "path") {

@@ -1,7 +1,7 @@
 import { Component, For, Match, Show, Switch, createMemo, createSignal } from "solid-js";
 import { boardLeftPaneStyle, boardListStyle } from "./styles.css";
 import { Alert, Button, Dialog, Flex, Input, Popover, Text } from "~/component";
-import { appBoards, appSettings, currentBoard, deleteBoardStorage, emptyBoardInfo, setBoardLoaded, setCurrentBoard, updateBoardStorage, wbState } from "~/common";
+import { appBoards, appSettings, currentBoard, deleteBoardStorage, emptyBoardInfo, netPublish, setBoardLoaded, setCurrentBoard, topicBoardInfo, updateBoardStorage, wbState } from "~/common";
 import { FaSolidBrush, FaSolidFileExport, FaSolidFileImport, FaSolidFill, FaSolidPalette, FaSolidPen, FaSolidPlus, FaSolidShapes, FaSolidShareNodes, FaSolidToolbox, FaSolidTrash } from "solid-icons/fa";
 import { BoardItem } from "./BoardItem";
 import toast from "solid-toast";
@@ -38,7 +38,7 @@ export const BoardLeftPane: Component<Props> = ({ ref, adjustSize }) => {
     if (!board) return;
     board.shared = !board.shared;
     updateBoardStorage(board);
-    //TODO: publish
+    netPublish(topicBoardInfo, board);
   }
 
   const createBoard = () => {

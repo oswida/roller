@@ -22,6 +22,7 @@ import {
   mainViewPanel,
   netConnectionStatus,
   netCreateRoom,
+  netLoadBoard,
   netLoadCs,
   rollerRoomsKey,
   rollerSettingsKey,
@@ -123,6 +124,7 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
     na.currentRoom = r[0].id;
     saveToStorage(rollerSettingsKey, na);
     netLoadCs(na.currentRoom); // load shared charsheets
+    netLoadBoard(na.currentRoom); // load shared boards
   };
 
   return (

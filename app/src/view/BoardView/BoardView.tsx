@@ -1,5 +1,5 @@
 import { Component, createEffect } from "solid-js";
-import { RefProps, boardCanvas, boardLoaded, currentBoard, setBoardCanvas, setBoardLoaded, wbState } from "~/common";
+import { RefProps, boardCanvas, boardLoaded, currentBoard, decompressData, setBoardCanvas, setBoardLoaded, wbState } from "~/common";
 import { boardViewRootStyle } from "./styles.css";
 import { fabric } from "fabric";
 import { initEvents } from "./events";
@@ -20,6 +20,7 @@ export const BoardView: Component<RefProps> = ({ ref }) => {
   });
 
   createEffect(() => {
+    if (!boardCanvas()) return;
     initEvents(boardCanvas);
   });
 
@@ -43,9 +44,13 @@ export const BoardView: Component<RefProps> = ({ ref }) => {
     cnv.clear();
 
     const obj = board.objects;
-    if (!obj) return;
+    if (!obj) {
+      setBoardLoaded(true);
+      return;
+    }
     try {
-      const data = JSON.parse(board.objects);
+      const data = decompressData(board.objects);
+      if (!data) return;
       cnv.loadFromJSON(data, () => {
         setBoardLoaded(true);
         console.log("loaded")

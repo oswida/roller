@@ -59,3 +59,19 @@ func (eng *RollerEngine) BoardInfoPublishCallback(e centrifuge.PublishEvent) err
 		return db.RoomItemDelete(eng.DB, data.Room, data.Data)
 	}
 }
+
+func (eng *RollerEngine) ObjectInfoPublishCallback(e centrifuge.PublishEvent) error {
+	eng.mux.Lock()
+	defer eng.mux.Unlock()
+
+	var data ObjectMessage
+	err := json.Unmarshal(e.Data, &data)
+	if err != nil {
+		return err
+	}
+	if !data.Delete {
+		return db.RoomItemUpdate(eng.DB, data.Room, data.Data)
+	} else {
+		return db.RoomItemDelete(eng.DB, data.Room, data.Data)
+	}
+}
