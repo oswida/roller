@@ -38,6 +38,7 @@ export const emptyAppSettings = () => {
     currentRoom: "",
     diceColor: "white",
     diceMaterial: "none",
+    csAdjustHeight: true,
   } as AppSettings;
 };
 

@@ -2,8 +2,9 @@ import { CsTemplate } from "~/common";
 import { SelectItem } from "~/component";
 import { templateRomancja } from "./romancja";
 import { templateWzmPL } from "./wzmpl";
+import { templateCyberPL } from "./cyberpl";
 
-const tplList = [templateRomancja, templateWzmPL];
+const tplList = [templateRomancja, templateWzmPL, templateCyberPL];
 
 export const csTemplates: Record<string, CsTemplate | undefined> = {
   "": undefined,

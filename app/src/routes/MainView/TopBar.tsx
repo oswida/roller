@@ -195,13 +195,13 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
         >
           <BsPersonFill size={25} />
         </Button>
-        <Button
+        {/* <Button
           variant="icon"
           toggled={() => mainViewPanel() == "board"}
           onClick={() => setMainViewPanel("board")}
         >
           <BiRegularChalkboard size={25} />
-        </Button>
+        </Button> */}
       </Flex>
 
       <Flex gap="large" center>

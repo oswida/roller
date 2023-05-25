@@ -2,7 +2,6 @@ package net
 
 import (
 	"errors"
-	"fmt"
 	"sync"
 
 	"github.com/centrifugal/centrifuge"
@@ -71,7 +70,6 @@ func (eng *RollerEngine) Run() error {
 }
 
 func (eng *RollerEngine) PublishCallback(e centrifuge.PublishEvent) {
-	fmt.Printf("publish %s\n", e.Channel)
 	switch e.Channel {
 	case "roll_info":
 		err := eng.RollPublishCallback(e)

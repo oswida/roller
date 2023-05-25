@@ -2,7 +2,7 @@ import { FaSolidCircleInfo } from "solid-icons/fa";
 import { Show, createEffect } from "solid-js";
 import toast from "solid-toast";
 import { mainViewPanel, netConnectionStatus } from "~/common";
-import { BoardPanel } from "../BoardPanel";
+// import { BoardPanel } from "../BoardPanel";
 import { CsPanel } from "../CsPanel";
 import { RollPanel } from "../RollPanel";
 import { TopBar } from "./TopBar";
@@ -31,9 +31,9 @@ export const MainView = () => {
       <Show when={mainViewPanel() == "cs"}>
         <CsPanel />
       </Show>
-      <Show when={mainViewPanel() == "board"}>
+      {/* <Show when={mainViewPanel() == "board"}>
         <BoardPanel />
-      </Show>
+      </Show> */}
       <RollPanel visible={() => mainViewPanel() == "dice"} />
     </div>
   );

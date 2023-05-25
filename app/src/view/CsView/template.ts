@@ -2,6 +2,7 @@ import { fabric } from "fabric";
 import {
   CsCheckData,
   CsInfo,
+  appSettings,
   netPublish,
   topicCsInfo,
   updateCsStorage,
@@ -45,18 +46,20 @@ export const createField = (
       });
       f.bringToFront();
       removeStdControls(f);
-      addRollControl(f);
-      f.on("editing:exited", () => {
-        f.set({
-          width: fld.rect[2],
-          height: fld.rect[3],
+      if (info.owner == appSettings().userIdent) { // only owner
+        addRollControl(f);
+        f.on("editing:exited", () => {
+          f.set({
+            width: fld.rect[2],
+            height: fld.rect[3],
+          });
+          info.values[fld.id] = f.text;
+          updateCsStorage(info);
+          if (info.shared) netPublish(topicCsInfo, info);
         });
-        info.values[fld.id] = f.text;
-        updateCsStorage(info);
-        if (info.shared) netPublish(topicCsInfo, info);
-      });
-      if (fld.info && fld.info.trim() !== "") {
-        addInfoControl(canvas, f, fld, info);
+        if (fld.info && fld.info.trim() !== "") {
+          addInfoControl(canvas, f, fld, info);
+        }
       }
       return f;
     case "text":
@@ -68,7 +71,7 @@ export const createField = (
         height: fld.rect[3],
         stroke: tpl.fieldStroke,
         backgroundColor: tpl.fieldColor,
-        editable: true,
+        editable: info.owner == appSettings().userIdent,
         fontSize: fld.fontSize ? fld.fontSize : tpl.fieldFontSize,
 
         textAlign: fld.textAlign ? fld.textAlign : "center",
@@ -77,17 +80,19 @@ export const createField = (
       });
       txt.bringToFront();
       removeStdControls(txt);
-      txt.on("editing:exited", () => {
-        txt.set({
-          width: fld.rect[2],
-          height: fld.rect[3],
+      if (info.owner == appSettings().userIdent) {
+        txt.on("editing:exited", () => {
+          txt.set({
+            width: fld.rect[2],
+            height: fld.rect[3],
+          });
+          info.values[fld.id] = txt.text;
+          updateCsStorage(info);
+          if (info.shared) netPublish(topicCsInfo, info);
         });
-        info.values[fld.id] = txt.text;
-        updateCsStorage(info);
-        if (info.shared) netPublish(topicCsInfo, info);
-      });
-      if (fld.info && fld.info.trim() !== "") {
-        addInfoControl(canvas, txt, fld, info);
+        if (fld.info && fld.info.trim() !== "") {
+          addInfoControl(canvas, txt, fld, info);
+        }
       }
       return txt;
     case "rect-check":
@@ -116,7 +121,9 @@ export const createField = (
         ...COMMON_FIELD_SETTINGS,
       });
       removeStdControls(frc);
-      addCheckControl(canvas, frc, fld, info);
+      if (info.owner == appSettings().userIdent) {
+        addCheckControl(canvas, frc, fld, info);
+      }
       frc.setControlVisible("check", !val?.disabled);
       return frc;
     case "circle-check":
@@ -131,7 +138,6 @@ export const createField = (
         clr2 = "grey";
       }
       const radius = fld.rect[2] / 2;
-
       const fcc = new fabric.Circle({
         left: fld.rect[0],
         top: fld.rect[1],
@@ -145,8 +151,10 @@ export const createField = (
         ...COMMON_FIELD_SETTINGS,
       });
       removeStdControls(fcc);
-      addCheckControl(canvas, fcc, fld, info);
-      addDisableControl(canvas, fcc, fld, info);
+      if (info.owner == appSettings().userIdent) {
+        addCheckControl(canvas, fcc, fld, info);
+        addDisableControl(canvas, fcc, fld, info);
+      }
       fcc.setControlVisible("check", !val2?.disabled);
       return fcc;
     default:
