@@ -85,7 +85,6 @@ func (eng *RollerEngine) RpcCsDelete(dbase *badger.DB, e centrifuge.RPCEvent) ([
 	if err != nil {
 		return nil, err
 	}
-	eng.Log.Debug("Deleting charsheet", zap.String("id", data.Data.Id))
 	return []byte{}, db.RoomItemDelete(dbase, data.Room, data.Data)
 }
 
@@ -127,4 +126,16 @@ func (eng *RollerEngine) RpcRollList(dbase *badger.DB, e centrifuge.RPCEvent) ([
 		return nil, err
 	}
 	return bytes, nil
+}
+
+func (eng *RollerEngine) RpcRollClear(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
+	eng.mux.Lock()
+	defer eng.mux.Unlock()
+
+	var data ListMessage
+	err := json.Unmarshal(e.Data, &data)
+	if err != nil {
+		return nil, err
+	}
+	return []byte{}, db.RoomItemClear[db.RollInfo](dbase, data.Room)
 }

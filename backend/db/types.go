@@ -6,6 +6,7 @@ type Identifable interface {
 
 type RollInfo struct {
 	Id            string `json:"id"`
+	UserId        string `json:"userId"`
 	User          string `json:"user"`
 	UserColor     string `json:"userColor"`
 	Tstamp        string `json:"tstamp"`

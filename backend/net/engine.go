@@ -100,6 +100,8 @@ func (eng *RollerEngine) RPCCallback(dbase *badger.DB, e centrifuge.RPCEvent) ([
 		return eng.RpcCsDelete(dbase, e)
 	case "roll_list":
 		return eng.RpcRollList(dbase, e)
+	case "roll_clear":
+		return eng.RpcRollClear(dbase, e)
 	}
 	return nil, nil
 }

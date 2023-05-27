@@ -1,3 +1,4 @@
+import { privateRoll } from "./state";
 import { appSettings } from "./storage";
 import { RollDetail, RollInfo, RollResult, RollSet } from "./types";
 import { prettyToday } from "./util";
@@ -12,6 +13,7 @@ export const createRollInfo = (result: any, comment?: string) => {
   });
   return {
     id: uuid(),
+    userId: appSettings().userIdent,
     user: appSettings().userName,
     userColor: appSettings().userColor,
     result: result,
@@ -20,8 +22,8 @@ export const createRollInfo = (result: any, comment?: string) => {
     tstamp: prettyToday(),
     comment: comment,
     realtstamp: Date.now(),
-    private: false,
-    revealed: true,
+    private: privateRoll(),
+    revealed: privateRoll() ? false : true,
   } as RollInfo;
 };
 

@@ -1,6 +1,6 @@
-import { For, Show, createMemo } from "solid-js";
-import { RollInfo, appSettings, rollSuccessInfo } from "~/common";
-import { Flex, Text } from "~/component";
+import { For, Show, createMemo, createSignal } from "solid-js";
+import { Host2NetRollInfo, RollInfo, appRolls, appSettings, netPublish, rollSuccessInfo, setAppRolls, topicRollInfo } from "~/common";
+import { Alert, Button, Flex, Text } from "~/component";
 import {
   chatItemCommentStyle,
   chatItemContentStyle,
@@ -9,8 +9,10 @@ import {
 } from "./styles.css";
 import { DataBlock } from "./DataBlock";
 import { BiRegularTargetLock } from "solid-icons/bi"
+import { FaSolidEyeSlash } from "solid-icons/fa";
 
 export const ChatItem = ({ item }: { item: RollInfo }) => {
+  const [revOpen, setRevOpen] = createSignal(false);
 
   const itemHour = createMemo(() => {
     const parts = item.tstamp.split("__");
@@ -18,10 +20,10 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
     return item.tstamp;
   });
 
-  const oldTime = 5 * 60 * 1000;
+  const oldTime = 15 * 60 * 1000;
 
-  const isOld = createMemo(() => {
-    return Date.now() - item.realtstamp > oldTime;
+  const myPrivate = createMemo(() => {
+    return item.private && item.userId == appSettings().userIdent && !item.revealed;
   });
 
 
@@ -36,11 +38,19 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
     return r;
   });
 
+  const reveal = () => {
+    setRevOpen(false);
+    const newItem = { ...item };
+    newItem.revealed = true;
+    netPublish(topicRollInfo, Host2NetRollInfo(newItem));
+    setAppRolls((prev) => ({ ...prev, [item.id]: newItem }));
+  }
+
   return (
     <Flex
       gap="none"
       direction="column"
-      class={chatItemRootStyle({ old: isOld() })}
+      class={chatItemRootStyle({})}
     >
       <div class={chatItemHeaderStyle({})}>
         <div>{item.user}</div>
@@ -94,9 +104,24 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
 
         </Flex>
 
-        <Show when={item.comment !== undefined && item.comment !== ""}>
-          <div class={chatItemCommentStyle}>{item.comment}</div>
-        </Show>
+        <Flex style={{ "justify-content": "flex-end", "align-items": "center" }}>
+          <Show when={item.comment !== undefined && item.comment !== ""}>
+            <div class={chatItemCommentStyle}>{item.comment}</div>
+          </Show>
+          <Show when={myPrivate()} >
+            <Alert
+              label="Reveal" trigger={<FaSolidEyeSlash />}
+              open={revOpen} onOpenChange={setRevOpen}>
+              <Text>Reveal {item.result.notation} roll?</Text>
+              <Flex gap="large">
+                <Button onClick={() => setRevOpen(false)}>Cancel</Button>
+                <Button onClick={reveal}>Accept</Button>
+              </Flex>
+            </Alert>
+
+          </Show>
+        </Flex>
+
       </div>
     </Flex>
   );

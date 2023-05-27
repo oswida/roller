@@ -2,12 +2,14 @@ import { FaSolidTrash } from "solid-icons/fa"
 import { Show, For, createMemo, Component } from "solid-js"
 import {
     appRolls, appRooms, appSettings, currentRoom,
-
+    netClearRolls,
+    setAppRolls,
     setChatViewTab
 } from "~/common"
 import { Flex, Button, Text } from "~/component"
 import { ChatItem } from "./ChatItem"
 import { chatListStyle, defTabStyle } from "./styles.css"
+import toast from "solid-toast"
 
 type Props = {
     ref: (e: any) => void;
@@ -20,18 +22,21 @@ export const RollsContent: Component<Props> = ({ ref, adjustSize }) => {
         const settings = appSettings();
         if (!data || settings.currentRoom === "" || !data[settings.currentRoom])
             return [];
-        return Object.values(appRolls()).sort((a, b) => b.realtstamp - a.realtstamp);
+        return Object.values(appRolls()).sort((a, b) => b.realtstamp - a.realtstamp).filter(it => {
+            if (it.private && !it.revealed && it.userId !== appSettings().userIdent) {
+                return false;
+            }
+            return true;
+        });
     });
 
     const clearRolls = () => {
-        //TODO: clear
-        // const data = { ...appRooms() };
-        // if (appSettings().currentRoom == "") return;
-
-        // toast("Rolls cleared", { icon: <FaSolidCircleInfo /> });
-        // netUpdateRoom(data[appSettings().currentRoom]);
+        const room = currentRoom();
+        if (!room) return;
+        setAppRolls({});
+        netClearRolls(room.id);
+        toast("Rolls cleared", { position: "bottom-right" });
     };
-
 
     const ct = (val: string) => {
         setChatViewTab(val);
@@ -49,12 +54,6 @@ export const RollsContent: Component<Props> = ({ ref, adjustSize }) => {
 
             <Show when={appSettings().userIdent == currentRoom()?.owner}>
                 <Flex>
-                    {/* <Button title="Import rolls" onClick={importRolls}>
-                        <FaSolidFileImport />
-                    </Button>
-                    <Button title="Export rolls" onClick={exportRolls}>
-                        <FaSolidFileExport />
-                    </Button> */}
                     <Button title="Clear rolls" onClick={clearRolls}>
                         <FaSolidTrash />
                     </Button>

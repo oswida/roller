@@ -145,3 +145,21 @@ func RoomItemList[T Identifable](db *badger.DB, roomId string, ids []string) ([]
 	})
 	return data, err
 }
+
+func RoomItemClear[T Identifable](db *badger.DB, roomId string) error {
+	err := db.Update(func(txn *badger.Txn) error {
+		it := txn.NewIterator(badger.DefaultIteratorOptions)
+		defer it.Close()
+		var x T
+		prefix := []byte(fmt.Sprintf("%s-%s-", fmt.Sprintf("%T", x), roomId))
+		for it.Seek(prefix); it.ValidForPrefix(prefix); it.Next() {
+			key := it.Item().Key()
+			err := txn.Delete(key)
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+	return err
+}

@@ -5,7 +5,6 @@ export const buttonStyle = recipe({
   base: [
     sprinkles({
       backgroundColor: "background",
-      color: "primary",
       paddingX: "medium",
       paddingY: "small",
       display: "flex",
@@ -74,10 +73,16 @@ export const buttonStyle = recipe({
       true: sprinkles({ backgroundColor: "accent" }),
       false: sprinkles({ backgroundColor: "background" }),
     },
+    colorSchema: {
+      "primary": sprinkles({ color: "primary" }),
+      "secondary": sprinkles({ color: "secondary" }),
+      "accent": sprinkles({ color: "accent" }),
+    }
   },
   defaultVariants: {
     variant: "flat",
     disabled: false,
     toggled: false,
+    colorSchema: "primary"
   },
 });

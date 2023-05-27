@@ -46,6 +46,7 @@ export const emptyAppSettings = () => {
 
 export type RollInfo = {
   id: string;
+  userId: string;
   user: string;
   userColor: string;
   tstamp: string;
@@ -62,6 +63,7 @@ export type RollInfo = {
 
 export type NetRollInfo = {
   id: string;
+  userId: string;
   user: string;
   userColor: string;
   tstamp: string;

@@ -1,4 +1,4 @@
-import { Component, Show } from "solid-js";
+import { Component, Match, Show, Switch } from "solid-js";
 import {
   RefProps,
   animating,
@@ -7,8 +7,10 @@ import {
   diceBox,
   dicePool,
   enrollTask,
+  privateRoll,
   rolling,
   setDicePool,
+  setPrivateRoll,
   setRollComment,
   setRolling,
 } from "~/common";
@@ -16,7 +18,7 @@ import { Flex, Input, Text } from "~/component";
 import { Button } from "~/component/Button";
 import { diceSelectorStyle } from "./styles.css";
 import { IoReload } from "solid-icons/io";
-import { FaSolidDice, FaSolidHourglass } from "solid-icons/fa";
+import { FaSolidDice, FaSolidEyeSlash, FaSolidHourglass } from "solid-icons/fa";
 import { AiOutlineClear } from "solid-icons/ai";
 import { DicePanel } from "./DicePanel";
 import { Dynamic } from "solid-js/web";
@@ -77,10 +79,25 @@ export const DiceSelector: Component<RefProps> = ({ ref }) => {
 
       <Flex center>
         <Show when={!rolling()}>
-          <Button variant="ghost" onClick={() => enrollTask(roll)}>
-            <FaSolidDice />
-            <Text>Roll</Text>
-          </Button>
+
+          <Switch>
+            <Match when={privateRoll()}>
+              <Button variant="ghost"
+                colorSchema="secondary"
+                onClick={() => enrollTask(roll)}>
+                <FaSolidEyeSlash />
+                <Text colorSchema="secondary">Roll</Text>
+              </Button>
+            </Match>
+            <Match when={!privateRoll()}>
+              <Button variant="ghost"
+                onClick={() => enrollTask(roll)}>
+                <FaSolidDice />
+                <Text>Roll</Text>
+              </Button>
+            </Match>
+          </Switch>
+
 
           <Input
             tooltip="Comment"
@@ -88,6 +105,12 @@ export const DiceSelector: Component<RefProps> = ({ ref }) => {
             ref={(e) => (inputRef = e)}
             onInput={(e) => updateComment(e)}
           />
+
+          <Button title="Toggle private roll"
+            toggled={privateRoll}
+            onClick={() => setPrivateRoll(!privateRoll())} >
+            <FaSolidEyeSlash />
+          </Button>
         </Show>
         <Show when={rolling()}>
           <Button variant="ghost" >
@@ -118,6 +141,6 @@ export const DiceSelector: Component<RefProps> = ({ ref }) => {
           </Button>
         </Flex>
       </Show>
-    </div>
+    </div >
   );
 };

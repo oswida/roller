@@ -17,7 +17,7 @@ func (eng *RollerEngine) RollPublishCallback(e centrifuge.PublishEvent) error {
 	if err != nil {
 		return err
 	}
-	data.Data.Realtstamp = int(time.Now().Unix())
+	data.Data.Realtstamp = int(time.Now().UnixMilli())
 	return db.RoomItemUpdate(eng.DB, data.Room, data.Data)
 }
 

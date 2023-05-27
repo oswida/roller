@@ -13,7 +13,6 @@ import {
   CentMessage,
   CsInfo,
   NetRollInfo,
-  RollInfo,
   RoomInfo,
   topicCsInfo,
   topicRollInfo,
@@ -319,6 +318,26 @@ export const centLoadRolls = (roomId: string) => {
         data.forEach((r) => (newState[r.id] = Net2HostRollInfo(r)));
         setAppRolls(newState);
       }
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
+
+export const centClearRolls = (roomId: string) => {
+  const client = centClient();
+  if (!client) {
+    return;
+  }
+  const msg = {
+    sender: appSettings().userIdent,
+    room: roomId,
+    data: [],
+  } as CentMessage;
+  client
+    .rpc("roll_clear", msg)
+    .then((result) => {
+      centLoadRolls(roomId);
     })
     .catch((err) => {
       console.error(err);

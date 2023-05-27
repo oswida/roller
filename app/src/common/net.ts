@@ -1,5 +1,6 @@
 import { createMemo } from "solid-js";
 import {
+  centClearRolls,
   centConnect,
   centDeleteRoom,
   centDisconnect,
@@ -115,6 +116,16 @@ export const netLoadRolls = (roomId: string) => {
   switch (appSettings().network.type) {
     case "cent":
       centLoadRolls(roomId);
+      break;
+    default:
+      break;
+  }
+};
+
+export const netClearRolls = (roomId: string) => {
+  switch (appSettings().network.type) {
+    case "cent":
+      centClearRolls(roomId);
       break;
     default:
       break;
