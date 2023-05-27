@@ -1,35 +1,28 @@
 import { Centrifuge, PublicationContext, PublishResult } from "centrifuge";
-import { centClient, currentBoard, currentCs, setCentClient, setCentConnectionStatus, setCurrentBoard, setCurrentCs } from "./state";
+import { appRolls, centClient, currentCs, setAppRolls, setCentClient, setCentConnectionStatus, setCurrentCs, updateRolls } from "./state";
 import {
-  appBoards,
   appCs,
   appRooms,
   appSettings,
   currentRoom,
-  rollerBoardKey,
   rollerCsKey,
   rollerRoomsKey,
   saveToStorage,
 } from "./storage";
 import {
-  BoardInfo,
   CentMessage,
   CsInfo,
   NetRollInfo,
-  NetRoomInfo,
+  RollInfo,
   RoomInfo,
-  topicBoardInfo,
   topicCsInfo,
   topicRollInfo,
   topicRoomInfo,
 } from "./types";
 import {
-  Host2NetRoomInfo,
   Net2HostRollInfo,
-  Net2HostRoomInfo,
   animateRemoteRoll,
   enrollTask,
-  updateRolls,
 } from "./util";
 
 export const centPack = (sender: string, payload: any) => {
@@ -56,6 +49,7 @@ const processRollInfo = (ctx: PublicationContext) => {
   )
     return;
   const info = Net2HostRollInfo(data.data as NetRollInfo);
+  console.log("updating roll", info);
   updateRolls(info);
   animateRemoteRoll(info);
 };
@@ -84,25 +78,6 @@ const processCsInfo = (ctx: PublicationContext) => {
     }
   } else {
     centLoadCs(room.id, [info.id]);
-  }
-};
-
-const processBoardInfo = (ctx: PublicationContext) => {
-  const data = ctx.data as CentMessage;
-  if (!data || data.sender == appSettings().userIdent) return;
-  const room = currentRoom();
-  if (!room || data.room !== room.id) return;
-  const info = data.data as BoardInfo;
-  if (!info.shared) {
-    // sharing off
-    if (info.owner !== appSettings().userIdent) {
-      const ns = { ...appBoards() };
-      delete ns[info.id];
-      saveToStorage(rollerBoardKey, ns);
-      if (currentBoard()?.id == info.id) setCurrentBoard(undefined);
-    }
-  } else {
-    centLoadBoard(room.id, [info.id]);
   }
 };
 
@@ -139,18 +114,18 @@ export const centConnect = () => {
     sub2.subscribe();
     const sub3 = centrifuge.newSubscription(topicCsInfo);
     sub3.on("publication", (ctx) => {
-      processCsInfo(ctx);
+      enrollTask(() => processCsInfo(ctx));
+      ;
     });
     sub3.subscribe();
-    const sub4 = centrifuge.newSubscription(topicBoardInfo);
-    sub4.on("publication", (ctx) => {
-      processBoardInfo(ctx);
-    });
-    sub4.subscribe();
   });
   centrifuge.on("disconnected", () => {
     setCentConnectionStatus(false);
   });
+  centrifuge.on("error", (err: any) => {
+    console.error("centrifuge error", err);
+  });
+
   centrifuge.connect();
 };
 
@@ -187,10 +162,10 @@ export const centLoadRooms = (ids?: string[]) => {
   client
     .rpc("room_list", msg)
     .then((result) => {
-      const data = result.data as NetRoomInfo[];
+      const data = result.data as RoomInfo[];
       if (data) {
         const newState = { ...appRooms() };
-        data.forEach((r) => (newState[r.id] = Net2HostRoomInfo(r)));
+        data.forEach((r) => (newState[r.id] = r));
 
         const receivedIds = data.map((r) => r.id);
         const toCheck = ids ? ids : Object.values(appRooms()).map((r) => r.id);
@@ -210,25 +185,6 @@ export const centLoadRooms = (ids?: string[]) => {
     });
 };
 
-export const centCreateRoom = (room: RoomInfo) => {
-  const client = centClient();
-  if (!client) {
-    return;
-  }
-  const msg = {
-    sender: appSettings().userIdent,
-    room: room.id,
-    data: Host2NetRoomInfo(room),
-  } as CentMessage;
-  client
-    .rpc("room_create", msg)
-    .then((result) => {
-      centLoadRooms();
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-};
 
 export const centDeleteRoom = (room: RoomInfo) => {
   const client = centClient();
@@ -238,7 +194,7 @@ export const centDeleteRoom = (room: RoomInfo) => {
   const msg = {
     sender: appSettings().userIdent,
     room: room.id,
-    data: Host2NetRoomInfo(room),
+    data: room,
   } as CentMessage;
   client
     .rpc("room_delete", msg)
@@ -258,7 +214,7 @@ export const centUpdateRoom = (room: RoomInfo) => {
   const msg = {
     sender: appSettings().userIdent,
     room: room.id,
-    data: Host2NetRoomInfo(room),
+    data: room,
   } as CentMessage;
   client
     .rpc("room_update", msg)
@@ -342,25 +298,9 @@ export const centUpdateCs = (roomId: string, info: CsInfo) => {
     });
 };
 
-export const centUpdateBoard = (roomId: string, info: BoardInfo) => {
-  const client = centClient();
-  if (!client) {
-    return;
-  }
-  const msg = {
-    sender: appSettings().userIdent,
-    room: roomId,
-    data: info,
-  } as CentMessage;
-  client
-    .rpc("board_update", msg)
-    .then((result) => { })
-    .catch((err) => {
-      console.error(err);
-    });
-};
 
-export const centDeleteBoard = (roomId: string, info: BoardInfo) => {
+
+export const centLoadRolls = (roomId: string) => {
   const client = centClient();
   if (!client) {
     return;
@@ -368,48 +308,16 @@ export const centDeleteBoard = (roomId: string, info: BoardInfo) => {
   const msg = {
     sender: appSettings().userIdent,
     room: roomId,
-    data: info,
+    data: [],
   } as CentMessage;
   client
-    .rpc("board_delete", msg)
+    .rpc("roll_list", msg)
     .then((result) => {
-      centLoadCs(roomId);
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-};
-
-
-export const centLoadBoard = (roomId: string, ids?: string[]) => {
-  const client = centClient();
-  if (!client) {
-    return;
-  }
-  const msg = {
-    sender: appSettings().userIdent,
-    room: roomId,
-    data: ids ? ids : Object.values(appBoards()).map((it) => it.id),
-  } as CentMessage;
-  client
-    .rpc("board_list", msg)
-    .then((result) => {
-      const data = result.data as BoardInfo[];
+      const data = result.data as NetRollInfo[];
       if (data) {
-        const newState = { ...appBoards() };
-        data.forEach((r) => (newState[r.id] = r));
-
-        const receivedIds = data.map((r) => r.id);
-        const toCheck = ids ? ids : Object.values(appBoards()).map((r) => r.id);
-        toCheck.forEach((id) => {
-          if (!receivedIds.includes(id) && newState[id].shared && newState[id].owner !== appSettings().userIdent) {
-            delete newState[id]; // board has been deleted
-          }
-        });
-        saveToStorage(rollerBoardKey, newState);
-        if (ids?.length == 1 && ids[0] == currentBoard()?.id) {
-          setCurrentBoard(newState[ids[0]]);
-        }
+        const newState = { ...appRolls() };
+        data.forEach((r) => (newState[r.id] = Net2HostRollInfo(r)));
+        setAppRolls(newState);
       }
     })
     .catch((err) => {

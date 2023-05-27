@@ -1,8 +1,7 @@
 import { FaSolidCircleInfo } from "solid-icons/fa";
 import { Show, createEffect } from "solid-js";
 import toast from "solid-toast";
-import { mainViewPanel, netConnectionStatus } from "~/common";
-// import { BoardPanel } from "../BoardPanel";
+import { currentRoom, mainViewPanel, netConnectionStatus, netLoadCs, netLoadRolls } from "~/common";
 import { CsPanel } from "../CsPanel";
 import { RollPanel } from "../RollPanel";
 import { TopBar } from "./TopBar";
@@ -13,16 +12,13 @@ export const MainView = () => {
   let barRef: HTMLDivElement;
 
   createEffect(() => {
-    if (netConnectionStatus())
-      toast("Connected to server", {
-        icon: <FaSolidCircleInfo />,
-        position: "bottom-right",
-      });
-    else
-      toast("Disconnected from server", {
-        icon: <FaSolidCircleInfo />,
-        position: "bottom-right",
-      });
+    document.addEventListener('visibilitychange', function (ev) {
+      let state = document.visibilityState;
+      const room = currentRoom();
+      if (!room) return;
+      if (state === "visible")
+        netLoadRolls(room.id);
+    });
   });
 
   return (
@@ -31,9 +27,6 @@ export const MainView = () => {
       <Show when={mainViewPanel() == "cs"}>
         <CsPanel />
       </Show>
-      {/* <Show when={mainViewPanel() == "board"}>
-        <BoardPanel />
-      </Show> */}
       <RollPanel visible={() => mainViewPanel() == "dice"} />
     </div>
   );

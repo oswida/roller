@@ -4,49 +4,31 @@ type Identifable interface {
 	GetId() string
 }
 
-type RollDetail struct {
-	Type   string `json:"type"`
-	Sides  int    `json:"sides"`
-	Id     int    `json:"id"`
-	Value  int    `json:"value"`
-	Label  string `json:"label"`
-	Reason string `json:"reason"`
-}
-
-type RollSet struct {
-	Num   int          `json:"num"`
-	Type  string       `json:"type"`
-	Sides int          `json:"sides"`
-	Rolls []RollDetail `json:"rolls"`
-	Total int          `json:"total"`
-}
-
-type RollResult struct {
-	Notation string    `json:"notation"`
-	Sets     []RollSet `json:"sets"`
-	Modifier int       `json:"modifier"`
-	Total    int       `json:"total"`
-}
-
 type RollInfo struct {
+	Id            string `json:"id"`
 	User          string `json:"user"`
 	UserColor     string `json:"userColor"`
 	Tstamp        string `json:"tstamp"`
-	Realtstamp    int    `json:"realtstamp"`
+	Realtstamp    int    `json:"realtstamp,omitempty"`
 	Result        string `json:"result"`
 	DiceColor     string `json:"diceColor"`
 	DiceMaterial  string `json:"diceMaterial,omitempty"`
 	Comment       string `json:"comment,omitempty"`
 	SuccessRule   string `json:"successRule,omitempty"`
 	SuccessTarget int    `json:"successTarget,omitempty"`
+	Private       bool   `json:"private,omitempty"`
+	Revealed      bool   `json:"revealed,omitempty"`
+}
+
+func (info RollInfo) GetId() string {
+	return info.Id
 }
 
 type RoomInfo struct {
-	Id     string     `json:"id"`
-	Name   string     `json:"name"`
-	Owner  string     `json:"owner"`
-	Bkguri string     `json:"bkguri"`
-	Rolls  []RollInfo `json:"rolls"`
+	Id     string `json:"id"`
+	Name   string `json:"name"`
+	Owner  string `json:"owner"`
+	Bkguri string `json:"bkguri"`
 }
 
 type CsInfo struct {

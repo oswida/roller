@@ -9,23 +9,6 @@ import (
 	"go.uber.org/zap"
 )
 
-func (eng *RollerEngine) RpcRoomCreate(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
-	eng.mux.Lock()
-	defer eng.mux.Unlock()
-
-	var data RoomMessage
-	err := json.Unmarshal(e.Data, &data)
-	if err != nil {
-		return nil, err
-	}
-	err = db.RoomUpdate(dbase, data.Data.Id, data.Data)
-	if err != nil {
-		return nil, err
-	}
-	eng.Log.Debug("Creating room", zap.String("id", data.Data.Id))
-	return []byte{}, nil
-}
-
 func (eng *RollerEngine) RpcRoomUpdate(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
@@ -126,7 +109,7 @@ func (eng *RollerEngine) RpcCsList(dbase *badger.DB, e centrifuge.RPCEvent) ([]b
 	return bytes, nil
 }
 
-func (eng *RollerEngine) RpcBoardList(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
+func (eng *RollerEngine) RpcRollList(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
@@ -135,7 +118,7 @@ func (eng *RollerEngine) RpcBoardList(dbase *badger.DB, e centrifuge.RPCEvent) (
 	if err != nil {
 		return nil, err
 	}
-	list, err := db.RoomItemList[db.BoardInfo](dbase, data.Room, data.Data)
+	list, err := db.RoomItemList[db.RollInfo](dbase, data.Room, data.Data)
 	if err != nil {
 		return nil, err
 	}
@@ -144,17 +127,4 @@ func (eng *RollerEngine) RpcBoardList(dbase *badger.DB, e centrifuge.RPCEvent) (
 		return nil, err
 	}
 	return bytes, nil
-}
-
-func (eng *RollerEngine) RpcBoardDelete(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
-	eng.mux.Lock()
-	defer eng.mux.Unlock()
-
-	var data BoardMessage
-	err := json.Unmarshal(e.Data, &data)
-	if err != nil {
-		return nil, err
-	}
-	eng.Log.Debug("Deleting board", zap.String("id", data.Data.Id))
-	return []byte{}, db.RoomItemDelete(dbase, data.Room, data.Data)
 }

@@ -1,21 +1,18 @@
 import { createMemo } from "solid-js";
 import {
   centConnect,
-  centCreateRoom,
   centDeleteRoom,
   centDisconnect,
-  centLoadBoard,
   centLoadCs,
+  centLoadRolls,
   centLoadRooms,
   centPublish,
-  centUpdateBoard,
   centUpdateCs,
   centUpdateRoom,
 } from "./centrifuge";
-import { mqttConnect, mqttDisconnect, mqttPublish } from "./mqtt";
-import { centConnectionStatus, mqttConnectionStatus } from "./state";
+import { centConnectionStatus } from "./state";
 import { appSettings } from "./storage";
-import { BoardInfo, CsInfo, RoomInfo } from "./types";
+import { CsInfo, RoomInfo } from "./types";
 
 export const netInit = () => {
   if (!netConnectionStatus()) netConnect();
@@ -23,9 +20,6 @@ export const netInit = () => {
 
 export const netConnect = () => {
   switch (appSettings().network.type) {
-    case "mqtt":
-      mqttConnect();
-      break;
     case "cent":
       centConnect();
       break;
@@ -37,9 +31,6 @@ export const netConnect = () => {
 
 export const netDisconnect = () => {
   switch (appSettings().network.type) {
-    case "mqtt":
-      mqttDisconnect();
-      break;
     case "cent":
       centDisconnect();
       break;
@@ -51,8 +42,6 @@ export const netDisconnect = () => {
 
 export const netPublish = (topic: string, payload: any) => {
   switch (appSettings().network.type) {
-    case "mqtt":
-      return mqttPublish(topic, payload);
     case "cent":
       return centPublish(topic, payload);
     default:
@@ -63,8 +52,6 @@ export const netPublish = (topic: string, payload: any) => {
 
 export const netConnectionStatus = createMemo(() => {
   switch (appSettings().network.type) {
-    case "mqtt":
-      return mqttConnectionStatus();
     case "cent":
       return centConnectionStatus();
     default:
@@ -72,15 +59,7 @@ export const netConnectionStatus = createMemo(() => {
   }
 });
 
-export const netCreateRoom = (room: RoomInfo) => {
-  switch (appSettings().network.type) {
-    case "cent":
-      centCreateRoom(room);
-      break;
-    default:
-      break;
-  }
-};
+
 
 export const netDeleteRoom = (room: RoomInfo) => {
   switch (appSettings().network.type) {
@@ -132,20 +111,10 @@ export const netLoadCs = (roomId: string) => {
   }
 };
 
-export const netUpdateBoard = (roomId: string, info: BoardInfo) => {
+export const netLoadRolls = (roomId: string) => {
   switch (appSettings().network.type) {
     case "cent":
-      centUpdateBoard(roomId, info);
-      break;
-    default:
-      break;
-  }
-};
-
-export const netLoadBoard = (roomId: string) => {
-  switch (appSettings().network.type) {
-    case "cent":
-      centLoadBoard(roomId);
+      centLoadRolls(roomId);
       break;
     default:
       break;

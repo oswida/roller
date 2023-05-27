@@ -45,6 +45,7 @@ export const emptyAppSettings = () => {
 // Publish PDUs
 
 export type RollInfo = {
+  id: string;
   user: string;
   userColor: string;
   tstamp: string;
@@ -55,9 +56,12 @@ export type RollInfo = {
   comment?: string;
   successRule?: string;
   successTarget?: number;
+  private?: boolean;
+  revealed?: boolean;
 };
 
 export type NetRollInfo = {
+  id: string;
   user: string;
   userColor: string;
   tstamp: string;
@@ -68,6 +72,8 @@ export type NetRollInfo = {
   comment?: string;
   successRule?: string;
   successTarget?: number;
+  private?: boolean;
+  revealed?: boolean;
 };
 
 export type RoomInfo = {
@@ -75,15 +81,6 @@ export type RoomInfo = {
   name: string;
   owner: string;
   bkguri?: string;
-  rolls: RollInfo[];
-};
-
-export type NetRoomInfo = {
-  id: string;
-  name: string;
-  owner: string;
-  bkguri?: string;
-  rolls: NetRollInfo[];
 };
 
 export const emptyRoomInfo = (rid?: string) => {
@@ -111,10 +108,8 @@ export type CentMessage = {
 
 export const topicRoomInfo = "room_info";
 export const topicRollInfo = "roll_info";
-export const topicRoomUpdateRequest = "room_update";
-export const topicRoomConnect = "room_connect";
+export const topicRollUpdate = "roll_update";
 export const topicCsInfo = "cs_info";
-export const topicBoardInfo = "board_info";
 
 // Roll definitions
 

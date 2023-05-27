@@ -81,18 +81,11 @@ func (eng *RollerEngine) PublishCallback(e centrifuge.PublishEvent) {
 		if err != nil {
 			eng.Log.Error("cs info publish callback", zap.Error(err))
 		}
-	case "board_info":
-		err := eng.BoardInfoPublishCallback(e)
-		if err != nil {
-			eng.Log.Error("board info publish callback", zap.Error(err))
-		}
 	}
 }
 
 func (eng *RollerEngine) RPCCallback(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
 	switch e.Method {
-	case "room_create":
-		return eng.RpcRoomCreate(dbase, e)
 	case "room_update":
 		return eng.RpcRoomUpdate(dbase, e)
 	case "room_delete":
@@ -105,10 +98,8 @@ func (eng *RollerEngine) RPCCallback(dbase *badger.DB, e centrifuge.RPCEvent) ([
 		return eng.RpcCsUpdate(dbase, e)
 	case "cs_delete":
 		return eng.RpcCsDelete(dbase, e)
-	case "board_list":
-		return eng.RpcBoardList(dbase, e)
-	case "board_delete":
-		return eng.RpcBoardDelete(dbase, e)
+	case "roll_list":
+		return eng.RpcRollList(dbase, e)
 	}
 	return nil, nil
 }

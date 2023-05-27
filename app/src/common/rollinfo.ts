@@ -1,6 +1,7 @@
 import { appSettings } from "./storage";
 import { RollDetail, RollInfo, RollResult, RollSet } from "./types";
 import { prettyToday } from "./util";
+import { v4 as uuid } from "uuid";
 
 export const createRollInfo = (result: any, comment?: string) => {
   const r: Record<string, number[]> = {};
@@ -10,6 +11,7 @@ export const createRollInfo = (result: any, comment?: string) => {
     r[id] = set.rolls.map((r: any) => r.value);
   });
   return {
+    id: uuid(),
     user: appSettings().userName,
     userColor: appSettings().userColor,
     result: result,
@@ -18,6 +20,8 @@ export const createRollInfo = (result: any, comment?: string) => {
     tstamp: prettyToday(),
     comment: comment,
     realtstamp: Date.now(),
+    private: false,
+    revealed: true,
   } as RollInfo;
 };
 

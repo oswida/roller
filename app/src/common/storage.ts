@@ -2,7 +2,6 @@ import { createLocalStorage } from "@solid-primitives/storage";
 import { setStorageSize } from "./state";
 import {
   AppSettings,
-  BoardInfo,
   CsInfo,
   RollDefInfo,
   RoomInfo,
@@ -15,9 +14,8 @@ export const rollerSettingsKey = "settings";
 export const rollerRoomsKey = "rooms";
 export const rollerDefsKey = "defs";
 export const rollerCsKey = "cs";
-export const rollerBoardKey = "board";
 
-const STORE_PREFIX = "roller2";
+const STORE_PREFIX = "roller3";
 
 export const [appStore, setAppStore, { remove, clear, toJSON }] =
   createLocalStorage({
@@ -35,8 +33,6 @@ export const [appStore, setAppStore, { remove, clear, toJSON }] =
           return decompressData(value) as Record<string, RollDefInfo>;
         case "cs":
           return decompressData(value) as Record<string, CsInfo>;
-        case "board":
-          return decompressData(value) as Record<string, BoardInfo>;
         default:
           return decompressData(value) as string;
       }
@@ -53,7 +49,6 @@ export const updateStoreSize = () => {
   const keys = [
     rollerSettingsKey,
     rollerRoomsKey,
-    rollerBoardKey,
     rollerCsKey,
     rollerDefsKey,
   ];
@@ -101,15 +96,6 @@ export const appCs = () => {
   return cs;
 };
 
-export const appBoards = () => {
-  let board = appStore.board as Record<string, BoardInfo>;
-  if (!board) {
-    board = {};
-    setAppStore(rollerBoardKey, board);
-  }
-  return board;
-};
-
 export const currentRoom = () => {
   const settings = appSettings();
   if (!settings) return undefined;
@@ -139,14 +125,3 @@ export const deleteCsStorage = (id: string) => {
   saveToStorage(rollerCsKey, newState);
 };
 
-export const updateBoardStorage = (item: BoardInfo) => {
-  const newState = { ...appBoards() };
-  newState[item.id] = item;
-  saveToStorage(rollerBoardKey, newState);
-};
-
-export const deleteBoardStorage = (id: string) => {
-  const newState = { ...appBoards() };
-  delete newState[id];
-  saveToStorage(rollerBoardKey, newState);
-};

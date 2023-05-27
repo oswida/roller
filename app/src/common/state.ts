@@ -1,9 +1,8 @@
 import { Mutex } from "async-mutex";
 import { Centrifuge } from "centrifuge";
-import mqtt from "mqtt/dist/mqtt";
 import Queue from "queue";
 import { createSignal } from "solid-js";
-import { BoardInfo, CsInfo, WhiteboardState, initialWhiteboardState } from "./types";
+import { BoardInfo, CsInfo, RollInfo, WhiteboardState, initialWhiteboardState } from "./types";
 
 export const [storageSize, setStorageSize] = createSignal(0);
 
@@ -18,13 +17,13 @@ export const [successRule, setSuccessRule] = createSignal<string | undefined>(
   ""
 );
 export const [successTarget, setSuccessTarget] = createSignal<number>(0);
+export const [appRolls, setAppRolls] = createSignal<Record<string, RollInfo>>({});
 
-// Mqtt
-export const [mqttConnectionStatus, setMqttConnectionStatus] =
-  createSignal(false);
-export const [mqttClient, setMqttClient] = createSignal<
-  mqtt.MqttClient | undefined
->(undefined);
+export const updateRolls = (info: RollInfo) => {
+  const newState = { ...appRolls() };
+  newState[info.id] = info;
+  setAppRolls(newState);
+}
 
 // Centrifuge
 export const [centConnectionStatus, setCentConnectionStatus] =
@@ -45,10 +44,6 @@ export const [taskMutex, setTaskMutex] = createSignal<Mutex | undefined>(
 export const [chatViewTab, setChatViewTab] = createSignal("rolls");
 export const [mainViewPanel, setMainViewPanel] = createSignal("dice");
 
-// WhiteboardView
-export const [wbState, setWbState] = createSignal<WhiteboardState>(
-  initialWhiteboardState
-);
 
 // Charsheets
 export const [csCanvas, setCsCanvas] = createSignal<fabric.Canvas>();
@@ -63,8 +58,3 @@ export const [csCurrentZoom, setCsCurrentZoom] = createSignal(1.0);
 export const [csInfoOpen, setCsInfoOpen] = createSignal(false);
 export const [csInfoLabel, setCsInfoLabel] = createSignal("");
 export const [csInfoContent, setCsInfoContent] = createSignal("");
-
-// Boards
-export const [boardCanvas, setBoardCanvas] = createSignal<fabric.Canvas>();
-export const [currentBoard, setCurrentBoard] = createSignal<BoardInfo>();
-export const [boardLoaded, setBoardLoaded] = createSignal(false);

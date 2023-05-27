@@ -1,4 +1,4 @@
-import { Component, Show, createSignal } from "solid-js";
+import { Component, Show } from "solid-js";
 import { chatRootStyle } from "./styles.css";
 import { RollsContent } from "./RollsContent";
 import { DefsContent } from "./DefsContent";

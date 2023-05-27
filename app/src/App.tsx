@@ -1,5 +1,5 @@
 import { Route, Routes } from "@solidjs/router";
-import { Component } from "solid-js";
+import { Component, createEffect } from "solid-js";
 import { Toaster } from "solid-toast";
 import { appStyle } from "./App.css";
 import { MainView } from "./routes/MainView";

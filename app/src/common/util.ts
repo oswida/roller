@@ -5,16 +5,12 @@ import {
   decompressFromBase64,
 } from "@eonasdan/lz-string";
 import {
-  appRooms,
   appSettings,
-  rollerRoomsKey,
-  saveToStorage,
 } from "./storage";
 import { spaceSize, sprinkles } from "./theme.css";
-import { NetRollInfo, NetRoomInfo, RollInfo, RoomInfo } from "./types";
+import { NetRollInfo, RollInfo } from "./types";
 import {
   diceBox,
-  setRollComment,
   setAnimating,
   rolling,
   setTaskQueue,
@@ -151,18 +147,6 @@ export const diceMaterialSet = [
   "wood",
 ];
 
-export const updateRolls = (info: RollInfo) => {
-  const data = { ...appRooms() };
-  const settings = appSettings();
-  if (settings.currentRoom === "") return;
-  data[settings.currentRoom].rolls = [
-    info,
-    ...data[settings.currentRoom].rolls,
-  ];
-  setRollComment("");
-  saveToStorage(rollerRoomsKey, data);
-};
-
 export const animateRemoteRoll = async (info: RollInfo) => {
   if (rolling()) return;
   setAnimating(true);
@@ -199,20 +183,6 @@ export const Net2HostRollInfo = (info: NetRollInfo) => {
 
 export const Host2NetRollInfo = (info: RollInfo) => {
   return { ...info, result: compressData64(info.result) } as NetRollInfo;
-};
-
-export const Net2HostRoomInfo = (room: NetRoomInfo) => {
-  return {
-    ...room,
-    rolls: room.rolls.map((r) => Net2HostRollInfo(r)),
-  } as RoomInfo;
-};
-
-export const Host2NetRoomInfo = (room: RoomInfo) => {
-  return {
-    ...room,
-    rolls: room.rolls.map((r) => Host2NetRollInfo(r)),
-  } as NetRoomInfo;
 };
 
 export const queueInit = () => {

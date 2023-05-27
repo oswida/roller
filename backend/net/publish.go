@@ -3,6 +3,7 @@ package net
 import (
 	"encoding/json"
 	"roller/db"
+	"time"
 
 	"github.com/centrifugal/centrifuge"
 )
@@ -16,14 +17,8 @@ func (eng *RollerEngine) RollPublishCallback(e centrifuge.PublishEvent) error {
 	if err != nil {
 		return err
 	}
-	room, err := db.RoomGet(eng.DB, data.Room)
-	if err != nil {
-		return err
-	}
-	newRolls := []db.RollInfo{data.Data}
-	newRolls = append(newRolls, room.Rolls...)
-	room.Rolls = newRolls
-	return db.RoomUpdate(eng.DB, room.Id, room)
+	data.Data.Realtstamp = int(time.Now().Unix())
+	return db.RoomItemUpdate(eng.DB, data.Room, data.Data)
 }
 
 func (eng *RollerEngine) CsInfoPublishCallback(e centrifuge.PublishEvent) error {
