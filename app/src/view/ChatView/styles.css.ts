@@ -12,8 +12,8 @@ export const chatRootStyle = style([
     gap: "small",
   }),
   {
-    minWidth: "340px",
-    maxWidth: "340px",
+    minWidth: "300px",
+    maxWidth: "300px",
   },
 ]);
 
@@ -34,7 +34,6 @@ export const chatListStyle = style([
 
 export const chatItemRootStyle = recipe({
   base: {
-    border: `solid 1px ${colorType.secondary}`,
     borderRadius: "5px",
     selectors: {
       "&:hover": {
@@ -51,7 +50,19 @@ export const chatItemRootStyle = recipe({
         opacity: 1,
       },
     },
+    private: {
+      false: {
+        border: `solid 1px ${colorType.secondary}`,
+      },
+      true: {
+        border: `solid 1px ${colorType.accent}`,
+      }
+    }
   },
+  defaultVariants: {
+    old: false,
+    private: false
+  }
 });
 
 export const chatItemContentStyle = recipe({
@@ -102,9 +113,6 @@ export const chatItemHeaderStyle = recipe({
       borderTopLeftRadius: "small",
       borderTopRightRadius: "small",
     }),
-    {
-      borderBottom: `solid 1px ${colorType.secondary}`,
-    },
   ],
   variants: {
     old: {
@@ -115,7 +123,19 @@ export const chatItemHeaderStyle = recipe({
         opacity: 1,
       },
     },
+    private: {
+      false: {
+        borderBottom: `solid 1px ${colorType.secondary}`,
+      },
+      true: {
+        borderBottom: `solid 1px ${colorType.accent}`,
+      }
+    }
   },
+  defaultVariants: {
+    old: false,
+    private: false
+  }
 });
 
 export const chatItemCommentStyle = style({
@@ -124,44 +144,6 @@ export const chatItemCommentStyle = style({
   paddingTop: "5px",
   flex: 1,
 });
-
-export const chatDatablockStyle = recipe({
-  base: [sprinkles({
-    display: "flex",
-    flexDirection: 'row',
-    alignItems: "center",
-    paddingY: "small",
-    paddingX: "medium",
-    color: "primary",
-
-  }), {
-    width: "auto",
-    minWidth: "3em"
-  }],
-  variants: {
-    background: {
-      secondary: sprinkles({ backgroundColor: "backgroundSecondary" }),
-      accent: sprinkles({ backgroundColor: "accent" }),
-      none: sprinkles({ backgroundColor: "none" })
-    },
-    position: {
-      left: sprinkles({
-        borderBottomLeftRadius: "medium",
-        borderTopLeftRadius: 'medium',
-        justifyContent: "flex-start",
-      }),
-      right: sprinkles({
-        borderBottomRightRadius: "medium",
-        borderTopRightRadius: 'medium',
-        justifyContent: "flex-end",
-      })
-    }
-  },
-  defaultVariants: {
-    background: "none",
-    position: 'left'
-  }
-})
 
 
 export const defListStyle = style([

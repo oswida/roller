@@ -1,11 +1,12 @@
 import DiceBox from "@3d-dice/dice-box-threejs";
-import { Component, JSX, createEffect, createMemo } from "solid-js";
+import { Component, JSX, Match, Switch, createEffect, createMemo, on } from "solid-js";
 import {
   Host2NetRollInfo,
   RefProps,
   animating,
   appSettings,
   createRollInfo,
+  csPanelVisible,
   currentRoom,
   diceBox,
   netPublish,
@@ -36,17 +37,25 @@ const diceConfig = {
   gravity_multiplier: 400,
   light_intensity: 0.8,
   baseScale: 100,
-  strength: 1, // toss strength of dice
+  strength: 2, // toss strength of dice
   onRollComplete: () => { },
 };
 
 export const RollView: Component<RefProps> = ({ ref }) => {
 
-  createEffect(() => {
+  createEffect(on(csPanelVisible, () => {
+    if (diceBox()) {
+      diceBox().clearDice();
+    }
+    setDiceBox(undefined);
+  }));
+
+  createEffect(on(diceBox, () => {
     if (diceBox() !== undefined) {
       return;
     }
-    const Box = new DiceBox("#table", { ...diceConfig, baseScale: appSettings().smallerDice ? 70 : 100 });
+    console.log("creating dice box");
+    const Box = new DiceBox("#dice-table", { ...diceConfig, baseScale: appSettings().smallerDice ? 75 : 95 });
     setDiceBox(Box);
     Box.initialize().then(() => {
       const s = appSettings();
@@ -67,7 +76,7 @@ export const RollView: Component<RefProps> = ({ ref }) => {
       netPublish(topicRollInfo, Host2NetRollInfo(info));
       setRolling(false);
     };
-  });
+  }));
 
   createEffect(async () => {
     const box = diceBox();
@@ -91,11 +100,24 @@ export const RollView: Component<RefProps> = ({ ref }) => {
   });
 
   return (
-    <div
-      class={rollViewStyle}
-      id="table"
-      ref={ref}
-      style={bkg()}
-    ></div>
+    <Switch>
+      <Match when={csPanelVisible()}>
+        <div
+          class={rollViewStyle({ expanded: false })}
+          id="dice-table"
+          ref={ref}
+          style={bkg()}
+        ></div>
+      </Match>
+      <Match when={!csPanelVisible()}>
+        <div
+          class={rollViewStyle({ expanded: true })}
+          id="dice-table"
+          ref={ref}
+          style={bkg()}
+        ></div>
+      </Match>
+    </Switch>
+
   );
 };

@@ -1,13 +1,13 @@
 import { For, Show, createMemo, createSignal } from "solid-js";
-import { Host2NetRollInfo, RollInfo, appRolls, appSettings, netPublish, rollSuccessInfo, setAppRolls, topicRollInfo } from "~/common";
-import { Alert, Button, Flex, Text } from "~/component";
+import { Host2NetRollInfo, RollInfo, appRolls, appSettings, colorType, netPublish, rollSuccessInfo, setAppRolls, topicRollInfo } from "~/common";
+import { Alert, Button, DataBlock, Flex, Text } from "~/component";
 import {
   chatItemCommentStyle,
   chatItemContentStyle,
   chatItemHeaderStyle,
   chatItemRootStyle,
 } from "./styles.css";
-import { DataBlock } from "./DataBlock";
+
 import { BiRegularTargetLock } from "solid-icons/bi"
 import { FaSolidEyeSlash } from "solid-icons/fa";
 
@@ -50,9 +50,9 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
     <Flex
       gap="none"
       direction="column"
-      class={chatItemRootStyle({})}
+      class={chatItemRootStyle({ private: item.private && !item.revealed })}
     >
-      <div class={chatItemHeaderStyle({})}>
+      <div class={chatItemHeaderStyle({ private: item.private && !item.revealed })}>
         <div>{item.user}</div>
         <Flex title={item.tstamp}>{itemHour()}</Flex>
       </div>
@@ -110,7 +110,9 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
           </Show>
           <Show when={myPrivate()} >
             <Alert
-              label="Reveal" trigger={<FaSolidEyeSlash />}
+              label="Reveal"
+              trigger={<FaSolidEyeSlash color={colorType.secondary} />}
+              triggerHint="Reveal private roll"
               open={revOpen} onOpenChange={setRevOpen}>
               <Text>Reveal {item.result.notation} roll?</Text>
               <Flex gap="large">
@@ -118,7 +120,6 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
                 <Button onClick={reveal}>Accept</Button>
               </Flex>
             </Alert>
-
           </Show>
         </Flex>
 

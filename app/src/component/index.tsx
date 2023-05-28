@@ -9,3 +9,5 @@ export * from "./Text";
 export * from "./Switch";
 export * from "./RadioGroup";
 export * from "./Alert";
+export * from "./Accordion";
+export * from "./DataBlock";

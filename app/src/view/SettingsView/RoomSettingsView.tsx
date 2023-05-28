@@ -15,6 +15,7 @@ import {
   rollerRoomsKey,
   rollerSettingsKey,
   saveToStorage,
+  setAppRolls,
   topicRoomInfo,
 } from "~/common";
 import {
@@ -80,6 +81,7 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
     saveToStorage(rollerSettingsKey, ns);
     onOpenChange(false);
     netDeleteRoom(room);
+    setAppRolls({});
   };
 
   const roomId = createMemo(() => {

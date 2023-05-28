@@ -3,7 +3,10 @@ import { recipe } from "@vanilla-extract/recipes";
 import { colorType, sprinkles } from "~/common";
 
 export const csViewRootStyle = style([sprinkles({
-    backgroundColor: "backgroundSecondary",
+    display: "flex",
+    flexDirection: "column",
+    backgroundColor: "background",
+    color: "primary",
 }), {
     overflow: "auto"
 }]);

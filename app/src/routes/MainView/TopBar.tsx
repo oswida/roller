@@ -1,4 +1,4 @@
-import { BsPersonFill } from "solid-icons/bs";
+import { BsPersonBadge, BsPersonFill } from "solid-icons/bs";
 import { BiRegularChalkboard } from "solid-icons/bi";
 import {
   FaSolidChalkboardUser,
@@ -8,12 +8,13 @@ import {
   FaSolidUser,
 } from "solid-icons/fa";
 import { TbPlugConnected } from "solid-icons/tb";
-import { Component, Show, createMemo, createSignal } from "solid-js";
+import { Component, Show, createEffect, createMemo, createSignal, on } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import {
   RefProps,
   appRooms,
   appSettings,
+  csPanelVisible,
   currentRoom,
   diceColorSet,
   diceMaterialSet,
@@ -27,6 +28,8 @@ import {
   rollerRoomsKey,
   rollerSettingsKey,
   saveToStorage,
+  setAppRolls,
+  setCsPanelVisible,
   setMainViewPanel,
   storageSize,
   taskQueue,
@@ -123,10 +126,14 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
     const na = { ...appSettings() };
     na.currentRoom = r[0].id;
     saveToStorage(rollerSettingsKey, na);
-    netLoadRolls(na.currentRoom); // load stored rolls
-    netLoadCs(na.currentRoom); // load shared charsheets
-
   };
+
+  createEffect(on(currentRoom, () => {
+    const room = currentRoom();
+    if (!room) return;
+    netLoadRolls(room.id); // load stored rolls
+    netLoadCs(room.id); // load shared charsheets
+  }));
 
   return (
     <div class={topbarStyle} ref={ref}>
@@ -182,27 +189,21 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
       </Flex>
 
       <Flex gap="medium">
-        <Button
+        {/* <Button
           variant="icon"
           toggled={() => mainViewPanel() == "dice"}
           onClick={() => setMainViewPanel("dice")}
         >
           <FaSolidDiceD20 size={25} />
-        </Button>
+        </Button> */}
         <Button
           variant="icon"
-          toggled={() => mainViewPanel() == "cs"}
-          onClick={() => setMainViewPanel("cs")}
+          toggled={csPanelVisible}
+          onClick={() => setCsPanelVisible(!csPanelVisible())}
         >
-          <BsPersonFill size={25} />
+          <BsPersonBadge size={25} />
         </Button>
-        {/* <Button
-          variant="icon"
-          toggled={() => mainViewPanel() == "board"}
-          onClick={() => setMainViewPanel("board")}
-        >
-          <BiRegularChalkboard size={25} />
-        </Button> */}
+
       </Flex>
 
       <Flex gap="large" center>

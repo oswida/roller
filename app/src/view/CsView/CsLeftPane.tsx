@@ -137,20 +137,20 @@ export const CsLeftPane: Component<Props> = ({ ref, adjustSize }) => {
     const tpl = csTemplates[cs.template];
     if (!tpl) return;
     createFromTemplate(cnv, cs, page);
-    if (appSettings().csAdjustHeight) {
-      const zoom = Number.parseFloat(
-        (pane.clientHeight / tpl.pageHeight).toFixed(2)
-      );
-      var vpt = cnv.viewportTransform;
-      if (!vpt) return;
-      vpt[4] = 0;
-      vpt[5] = 0;
-      vpt[0] = zoom;
-      vpt[3] = zoom;
-      setCsCurrentZoom(zoom);
-      cnv.setViewportTransform(vpt);
-    } else
-      cnv.setZoom(csCurrentZoom());
+    // if (appSettings().csAdjustHeight) {
+    //   const zoom = Number.parseFloat(
+    //     (pane.clientHeight / tpl.pageHeight).toFixed(2)
+    //   );
+    //   var vpt = cnv.viewportTransform;
+    //   if (!vpt) return;
+    //   vpt[4] = 0;
+    //   vpt[5] = 0;
+    //   vpt[0] = zoom;
+    //   vpt[3] = zoom;
+    //   setCsCurrentZoom(zoom);
+    //   cnv.setViewportTransform(vpt);
+    // } else
+    cnv.setZoom(csCurrentZoom());
     if (page >= tpl.pages.length) setCurrentCsPage(0);
   });
 

@@ -13,6 +13,7 @@ import {
   CentMessage,
   CsInfo,
   NetRollInfo,
+  RollInfo,
   RoomInfo,
   topicCsInfo,
   topicRollInfo,
@@ -314,7 +315,7 @@ export const centLoadRolls = (roomId: string) => {
     .then((result) => {
       const data = result.data as NetRollInfo[];
       if (data) {
-        const newState = { ...appRolls() };
+        const newState: Record<string, RollInfo> = {};
         data.forEach((r) => (newState[r.id] = Net2HostRollInfo(r)));
         setAppRolls(newState);
       }

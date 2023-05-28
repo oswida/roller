@@ -11,10 +11,8 @@ const App: Component = () => {
     <div class={appStyle}>
       <Routes>
         <Route path="/" component={MainView} />
-
       </Routes>
       <Toaster />
-      <InputDialog />
     </div>
   );
 };

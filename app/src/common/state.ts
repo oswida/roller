@@ -2,7 +2,7 @@ import { Mutex } from "async-mutex";
 import { Centrifuge } from "centrifuge";
 import Queue from "queue";
 import { createSignal } from "solid-js";
-import { BoardInfo, CsInfo, RollInfo, WhiteboardState, initialWhiteboardState } from "./types";
+import { CsInfo, RollInfo } from "./types";
 
 export const [storageSize, setStorageSize] = createSignal(0);
 
@@ -24,7 +24,6 @@ export const updateRolls = (info: RollInfo) => {
   newState[info.id] = info;
   setAppRolls(newState);
 }
-
 export const [privateRoll, setPrivateRoll] = createSignal(false);
 
 // Centrifuge
@@ -45,18 +44,32 @@ export const [taskMutex, setTaskMutex] = createSignal<Mutex | undefined>(
 // Tab states
 export const [chatViewTab, setChatViewTab] = createSignal("rolls");
 export const [mainViewPanel, setMainViewPanel] = createSignal("dice");
+export const [csPanelVisible, setCsPanelVisible] = createSignal(false);
 
 
 // Charsheets
+export type CallbackFunc = (value: string) => void;
 export const [csCanvas, setCsCanvas] = createSignal<fabric.Canvas>();
 export const [currentCs, setCurrentCs] = createSignal<CsInfo>();
 export const [currentCsPage, setCurrentCsPage] = createSignal(0);
 export const [csRollInputOpen, setCsRollInputOpen] = createSignal(false);
 export const [csRollInputTitle, setCsRollInputTitle] = createSignal("");
-export type CallbackFunc = (value: string) => void;
 export const [csRollInputCallback, setCsRollInputCallback] =
   createSignal<CallbackFunc>((value: string) => { });
 export const [csCurrentZoom, setCsCurrentZoom] = createSignal(1.0);
 export const [csInfoOpen, setCsInfoOpen] = createSignal(false);
 export const [csInfoLabel, setCsInfoLabel] = createSignal("");
 export const [csInfoContent, setCsInfoContent] = createSignal("");
+
+export const [csGlobalInputOpen, setCsGlobalInputOpen] = createSignal(false);
+export type CsGlobalInputParamsType = {
+  title: string;
+  value: string;
+  callback: (value: string) => void;
+}
+export const [csGlobalInputParams, setCsGlobalInputParams] =
+  createSignal<CsGlobalInputParamsType>({
+    title: "",
+    value: "",
+    callback: () => { }
+  });

@@ -22,7 +22,6 @@ export type AppSettings = {
   showRollSuccess?: boolean;
   showRollTotal?: boolean;
   smallerDice?: boolean;
-  csAdjustHeight?: boolean;
 };
 
 export const emptyAppSettings = () => {
@@ -225,6 +224,37 @@ export type CsCheckData = {
   value: boolean;
   disabled: boolean;
 };
+
+// New templates
+
+export type CharTemplateItemRoll = {
+  notation: string;
+  successRule?: string;
+  valType: "modifier" | "target";
+  comment?: string;
+  iconColor?: string;
+}
+
+export type CharTemplateItem = {
+  id: string;
+  name: string;
+  itype: "text" | "attr" | "check" | "resource";
+  text?: string;
+  limit?: number;
+  rolls?: CharTemplateItemRoll[];
+}
+
+export type CharTemplateSection = {
+  title: string;
+  items: CharTemplateItem[];
+}
+
+export type CharTemplate = {
+  id: string;
+  game: string;
+  name: string;
+  sections: CharTemplateSection[];
+}
 
 // Dice roll
 
