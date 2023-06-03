@@ -1,5 +1,5 @@
 import { style } from "@vanilla-extract/css";
-import { sprinkles } from "~/common";
+import { colorType, sprinkles } from "~/common";
 
 export const csViewerRootStyle = style([sprinkles({
     backgroundColor: "backgroundSecondary",
@@ -12,3 +12,16 @@ export const csViewerRootStyle = style([sprinkles({
 export const csTplIconStyle = style({
     cursor: "pointer"
 })
+
+
+export const csTplAttrValueStyle = style([sprinkles({
+    padding: "small",
+    borderRadius: "small"
+}), {
+    cursor: "pointer",
+    selectors: {
+        "&:hover": {
+            backgroundColor: colorType.backgroundSecondary
+        }
+    }
+}])

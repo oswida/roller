@@ -30,3 +30,9 @@ export const appStyle = style([
     overflow: "hidden",
   },
 ]);
+
+
+globalStyle("button>svg", {
+  fill: "currentcolor",
+  stroke: "currentcolor",
+});

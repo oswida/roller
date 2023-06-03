@@ -117,7 +117,7 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
           eventTrigger="onClick"
         >
           <div class={buttonStyle({ variant: "ghost" })} title="Copy room id">
-            <FaSolidShareNodes />
+            <FaSolidShareNodes style={{ fill: "currentcolor" }} />
             <Text>Copy room ID </Text>
           </div>
         </CopyToClipboard>
@@ -128,7 +128,7 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
             open={delConfirmOpen}
             trigger={
               <Flex gap="medium" center>
-                <FaSolidTrash />
+                <FaSolidTrash style={{ fill: "currentcolor" }} />
                 <Text colorSchema="danger">Delete room</Text>
               </Flex>
             }>

@@ -773,21 +773,21 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@kobalte/core@^0.9.3":
-  version "0.9.3"
-  resolved "https://registry.yarnpkg.com/@kobalte/core/-/core-0.9.3.tgz#e7d08dbda57e61f319dd26b559f1ee23425fc1b1"
-  integrity sha512-xk6+46pkV8vU/ss8P4hoNl85YIkyenSd3xjrvJggMVKlWdR0Z0u1IPq68/uu4QMksTjhCfASwodtUVyinl0z7Q==
+"@kobalte/core@^0.9.6":
+  version "0.9.6"
+  resolved "https://registry.yarnpkg.com/@kobalte/core/-/core-0.9.6.tgz#6b77ff3455c68b907349f7ca7cad918c760895e4"
+  integrity sha512-nuo3+ncZHC2Fl531DdliLE/kRcmdMf2FflSTVqM0FqqgilbzIbdJCFXJddkZj4KtML9F4rHRiPq5reSXMMrFLg==
   dependencies:
     "@floating-ui/dom" "^1.2.6"
     "@internationalized/date" "^3.2.0"
     "@internationalized/message" "^3.1.0"
     "@internationalized/number" "^3.2.0"
-    "@kobalte/utils" "^0.7.1"
+    "@kobalte/utils" "^0.7.2"
 
-"@kobalte/utils@^0.7.1":
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/@kobalte/utils/-/utils-0.7.1.tgz#458140a6a5d20650f650a81cf502985b2cd4749f"
-  integrity sha512-5B5MvtBdg6NrLqAylBkmOzb16pAq8FXwxUQCbX/A3RlwMYc2ekA1NSgJt2WvPWr+MLvqc9y8MjwwXW/zczx3pA==
+"@kobalte/utils@^0.7.2":
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/@kobalte/utils/-/utils-0.7.2.tgz#0621ff4d3a255c99c0dc9b4a014633978edc7ee6"
+  integrity sha512-ZdINbHemz+jnixJ63VFi9wUEHEMAsP7iDGEADciKdSKrK4bDuccDw5th1O+5/PykfHqFwSI++JhhUpOd+iZ5jg==
   dependencies:
     "@solid-primitives/event-listener" "^2.2.10"
     "@solid-primitives/keyed" "^1.2.0"
@@ -914,17 +914,22 @@
   dependencies:
     "@solid-primitives/utils" "^6.0.0"
 
-"@solid-primitives/storage@^1.3.9":
-  version "1.3.9"
-  resolved "https://registry.yarnpkg.com/@solid-primitives/storage/-/storage-1.3.9.tgz#3c03666a0ec04089d9b6c11a6c6b0627e3fac56d"
-  integrity sha512-ysJSIycmToQD8Hpt4jpIlh7U8EuYdpQwkamppng3g93E5f6RZVPCzYmRZ+ckRN2cNLFpAuTEqZx7OBRh3PBWFQ==
+"@solid-primitives/storage@^1.3.11":
+  version "1.3.11"
+  resolved "https://registry.yarnpkg.com/@solid-primitives/storage/-/storage-1.3.11.tgz#2d273f3ab9e76e8819459fd9f0fccce8b09ebedb"
+  integrity sha512-PpQWR3TaTxHIJFbI9ZssYTM4Aa67g1vJIgps4TPhcXzHqqomrPAIveFC2FG7SDQoi9YQia8FVBjigELziJpfIg==
   dependencies:
-    "@solid-primitives/utils" "^6.0.0"
+    "@solid-primitives/utils" "^6.2.0"
 
 "@solid-primitives/utils@^6.0.0", "@solid-primitives/utils@^6.1.0":
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/@solid-primitives/utils/-/utils-6.1.0.tgz#4814debe3add6092226a0443cdd252747c2070d9"
   integrity sha512-uTikKFrq33UO+MnKt2WzZr9WYbQe5YX58ytGkL+29DL6o0pZs1wrICbd4ymzSm8azqzMcQqEQOL3HLWjuv9tLw==
+
+"@solid-primitives/utils@^6.2.0":
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@solid-primitives/utils/-/utils-6.2.0.tgz#7d092eaed9eef8fb77f9fe3d7a717e5ed330d1cf"
+  integrity sha512-T62WlLwKkbmicsw/xpwMQyv9MmZRSaVyutXfS5icc9v0cb8qGMUxRxr5LVvZHYQCZ9DEFboZB0r711xsbVBbeA==
 
 "@solidjs/router@^0.8.2":
   version "0.8.2"
@@ -995,11 +1000,6 @@
   version "20.2.1"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-20.2.1.tgz#de559d4b33be9a808fd43372ccee822c70f39704"
   integrity sha512-DqJociPbZP1lbZ5SQPk4oag6W7AyaGMO6gSfRwq3PWl4PXTwJpRQJhDq4W0kzrg3w6tJ1SwlvGZ5uKFHY13LIg==
-
-"@types/paho-mqtt@^1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@types/paho-mqtt/-/paho-mqtt-1.0.6.tgz#e296c4c7f38e5ef0774ca539ef082a12d5111706"
-  integrity sha512-d6CXsdv2fEruyZLe5DUtgGsF8ROp0358OrEmVgqtFxO/kiCvP9KhYen9N6ReKBkMdR/d0parLQq6DMn2qe6d9Q==
 
 "@types/uuid@^9.0.1":
   version "9.0.1"
@@ -2205,15 +2205,15 @@ solid-copy-to-clipboard@^0.1.0:
   dependencies:
     copy-to-clipboard "^3.3.1"
 
-solid-icons@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/solid-icons/-/solid-icons-1.0.4.tgz#13eb122fe927110e2463c96d226492fb837a9802"
-  integrity sha512-gJTp4in3+OYCs9WvDkSLt4Los2unR3Uoder8wjh15GsfP20xiNOLfPTJllXmn+fI8+k3x7bRYtLGIgWd9fUQug==
+solid-icons@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/solid-icons/-/solid-icons-1.0.7.tgz#134ad295b02d10de602ac9316e7fc4d8f7b50979"
+  integrity sha512-r9xW0VJUJemdY+AUEz9vV+QQ13Rah51Gn1w8K89WaGnOtTTmFQ4QaKAJi7J9Q+RQpxPS6cW1/fMnSaLiYJi8AA==
 
-solid-js@^1.7.3:
-  version "1.7.3"
-  resolved "https://registry.yarnpkg.com/solid-js/-/solid-js-1.7.3.tgz#3e2e2ce7f2415336f5c96668f9524ad51f6a718b"
-  integrity sha512-4hwaF/zV/xbNeBBIYDyu3dcReOZBECbO//mrra6GqOrKy4Soyo+fnKjpZSa0nODm6j1aL0iQRh/7ofYowH+jzw==
+solid-js@^1.7.6:
+  version "1.7.6"
+  resolved "https://registry.yarnpkg.com/solid-js/-/solid-js-1.7.6.tgz#5e3389c87cbc3256b76e82402b3052ded6648482"
+  integrity sha512-DXVOTjUh/bIAhE0fIqu3ezGLyQaez7v8EOw3uPLIi87DmLjg+hsuCAgKyNIZ+o4jUetOk3ZORccvJmE1yZUk8g==
   dependencies:
     csstype "^3.1.0"
     seroval "^0.5.0"
@@ -2413,7 +2413,7 @@ vite-node@^0.28.5:
     source-map-support "^0.5.21"
     vite "^3.0.0 || ^4.0.0"
 
-vite-plugin-solid@^2.5.0:
+vite-plugin-solid@^2.7.0:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/vite-plugin-solid/-/vite-plugin-solid-2.7.0.tgz#44de91335f30dfddd7f5f59a7019020860fcba2e"
   integrity sha512-avp/Jl5zOp/Itfo67xtDB2O61U7idviaIp4mLsjhCa13PjKNasz+IID0jYTyqUp9SFx6/PmBr6v4KgDppqompg==

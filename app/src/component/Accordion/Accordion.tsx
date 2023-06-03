@@ -18,17 +18,21 @@ type Props = {
 
 export const Accordion: Component<Props> = ({ children, collapsible, multiple }) => {
 
-    return <Ac.Root class={accordionRootStyle} collapsible={collapsible} multiple={multiple}>
+    return <Ac.Root
+        class={accordionRootStyle}
+        collapsible={collapsible}
+        multiple={multiple}
+        defaultValue={children.map(it => it.id)}>
         <For each={children}>
             {(it) => (
-                <Ac.Item value={it.id}>
-                    <Ac.Header class={accordionHeaderStyle}>
+                <Ac.Item value={it.id} >
+                    <Ac.Header class={accordionHeaderStyle} >
                         {it.title}
                         <Ac.Trigger class={accordionTriggerStyle}>
                             <FaSolidChevronDown />
                         </Ac.Trigger>
                     </Ac.Header>
-                    <Ac.Content class={accordionContentStyle}>
+                    <Ac.Content class={accordionContentStyle} >
                         {it.content}
                     </Ac.Content>
                 </Ac.Item>

@@ -12,8 +12,8 @@ export const chatRootStyle = style([
     gap: "small",
   }),
   {
-    minWidth: "300px",
-    maxWidth: "300px",
+    minWidth: "340px",
+    maxWidth: "340px",
   },
 ]);
 

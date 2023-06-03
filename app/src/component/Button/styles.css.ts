@@ -26,6 +26,7 @@ export const buttonStyle = recipe({
         "&:hover": {
           backgroundColor: colorType.backgroundSecondary,
         },
+
       },
     },
   ],

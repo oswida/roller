@@ -1,12 +1,12 @@
-import { Component, Show, createMemo, createSignal } from "solid-js";
-import { RefProps, csGlobalInputOpen, csGlobalInputParams, currentCs, setCsGlobalInputOpen, setCsGlobalInputParams } from "~/common";
-import { Accordion, AccordionOption, Button, Dialog, Flex, Input, Text } from "~/component";
+import { Component, Show, createMemo } from "solid-js";
+import { RefProps, currentCs } from "~/common";
+import { Accordion, AccordionOption } from "~/component";
 import { charTemplates } from "~/template";
 import { csViewerRootStyle } from "./styles.css";
 import { CsSection } from "./CsSection";
 
 export const CsViewer: Component<RefProps> = ({ ref }) => {
-    const [giValue, setGiValue] = createSignal("");
+    // const [giValue, setGiValue] = createSignal("");
 
     const tpl = createMemo(() => {
         const cs = currentCs();
@@ -25,11 +25,11 @@ export const CsViewer: Component<RefProps> = ({ ref }) => {
         } as AccordionOption));
     });
 
-    const acceptGlobalInput = () => {
-        setCsGlobalInputOpen(false);
-        csGlobalInputParams().callback(giValue());
-        setCsGlobalInputParams((prev) => ({ ...prev, callback: () => { }, title: "", value: "" }))
-    }
+    // const acceptGlobalInput = () => {
+    //     setCsGlobalInputOpen(false);
+    //     csGlobalInputParams().callback(giValue());
+    //     setCsGlobalInputParams((prev) => ({ ...prev, callback: () => { }, title: "", value: "" }))
+    // }
 
     return <div class={csViewerRootStyle} ref={(e) => ref(e)}>
         <Show when={currentCs() && tpl()}>
@@ -37,7 +37,7 @@ export const CsViewer: Component<RefProps> = ({ ref }) => {
                 {items()}
             </Accordion>
         </Show>
-        <Show when={csGlobalInputOpen()}>
+        {/* <Show when={csGlobalInputOpen()}>
             <Dialog
                 dialogTitle={() => csGlobalInputParams().title}
                 modal={true}
@@ -52,6 +52,6 @@ export const CsViewer: Component<RefProps> = ({ ref }) => {
                     <Button onClick={acceptGlobalInput}>Accept</Button>
                 </Flex>
             </Dialog>
-        </Show>
+        </Show> */}
     </div>
 }

@@ -38,11 +38,11 @@ export const SettingsView: Component<Props> = ({ onOpenChange }) => {
     return rl;
   });
 
-  const csAdjustHeight = createMemo(() => {
-    const rl = appSettings().csAdjustHeight;
-    if (!rl) return false;
-    return rl;
-  });
+  // const csAdjustHeight = createMemo(() => {
+  //   const rl = appSettings().csAdjustHeight;
+  //   if (!rl) return false;
+  //   return rl;
+  // });
 
   const smallerDice = createMemo(() => {
     const rl = appSettings().smallerDice;
@@ -109,13 +109,13 @@ export const SettingsView: Component<Props> = ({ onOpenChange }) => {
           setChecked={setSuccess}
         />
       </Flex>
-      <Flex style={{ "justify-content": "space-between" }}>
+      {/* <Flex style={{ "justify-content": "space-between" }}>
         <Switch
           label="Adjust charsheet to height"
           checked={csAdjustHeight}
           setChecked={setCsAdjustHeight}
         />
-      </Flex>
+      </Flex> */}
       <CopyToClipboard
         text={appSettings().userIdent}
         onCopy={() => {
@@ -124,8 +124,8 @@ export const SettingsView: Component<Props> = ({ onOpenChange }) => {
         }}
         eventTrigger="onClick"
       >
-        <div class={buttonStyle({ variant: "ghost" })} title="Copy room id">
-          <FaSolidShareNodes />
+        <div class={buttonStyle({ variant: "ghost" })} title="Copy user id">
+          <FaSolidShareNodes style={{ fill: "currentcolor" }} />
           <Text>Copy user ID </Text>
         </div>
       </CopyToClipboard>

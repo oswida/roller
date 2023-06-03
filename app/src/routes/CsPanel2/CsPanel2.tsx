@@ -11,7 +11,7 @@ import { CsViewer } from "~/component/CsViewer";
 
 export const CsPanel2: Component = () => {
     let listRef: HTMLDivElement;
-    const [selCs, setSelCs] = createSignal<SelectItem | undefined>(undefined);
+    // const [selCs, setSelCs] = createSignal<SelectItem | undefined>(undefined);
     const [crDialogOpen, setCrDialogOpen] = createSignal(false);
     const [delDialogOpen, setDelDialogOpen] = createSignal(false);
     const [shareDialogOpen, setShareDialogOpen] = createSignal(false);
@@ -59,17 +59,21 @@ export const CsPanel2: Component = () => {
         // adjustSize();
         const flt = items().filter(it => it.id == info.id);
         if (flt.length > 0) {
-            setSelCs(flt[0]);
             setCurrentCs(appCs()[flt[0].id]);
         }
         toast("New charsheet created");
     };
 
     const csChange = (item: SelectItem) => {
-        setSelCs(item);
         if (item)
             setCurrentCs(appCs()[item.id]);
     }
+
+    const selectedCs = createMemo(() => {
+        const f = items().filter(it => it.id === currentCs()?.id);
+        if (f.length <= 0) return undefined;
+        return f[0];
+    });
 
     const deleteCharsheet = () => {
         setDelDialogOpen(false);
@@ -101,7 +105,7 @@ export const CsPanel2: Component = () => {
                 <Dynamic
                     component={Select}
                     labelLeft
-                    selected={selCs}
+                    selected={selectedCs}
                     label="Char: "
                     options={items}
                     onChange={csChange} />

@@ -2,8 +2,12 @@ import { BsPersonBadge, BsPersonFill } from "solid-icons/bs";
 import { BiRegularChalkboard } from "solid-icons/bi";
 import {
   FaSolidChalkboardUser,
+  FaSolidClapperboard,
   FaSolidDiceD20,
+  FaSolidMicrophoneLines,
+  FaSolidNetworkWired,
   FaSolidPlug,
+  FaSolidPlugCircleBolt,
   FaSolidPlus,
   FaSolidUser,
 } from "solid-icons/fa";
@@ -178,7 +182,7 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
         </Button>
         <Popover
           trigger={
-            <TbPlugConnected style={{ height: "1.5em", width: "1.5em" }} />
+            <FaSolidPlug style={{ height: "1.5em", width: "1.5em" }} />
           }
           title="Connect to room"
           open={roomConnectOpen}
@@ -225,7 +229,7 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
         </Flex>
         <Show when={netConnectionStatus()}>
           <Dynamic component={"div"} title={currentRoom()?.id}>
-            <FaSolidPlug />
+            <FaSolidNetworkWired style={{ fill: "currentcolor" }} />
           </Dynamic>
         </Show>
         <Text colorSchema="secondary" fontSize="small">

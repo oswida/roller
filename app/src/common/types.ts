@@ -233,6 +233,8 @@ export type CharTemplateItemRoll = {
   valType: "modifier" | "target";
   comment?: string;
   iconColor?: string;
+  hasInput?: boolean;
+  inputLabel?: string;
 }
 
 export type CharTemplateItem = {
