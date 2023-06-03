@@ -22,7 +22,7 @@ export const CsPanel2: Component = () => {
         if (!listRef) {
             return;
         }
-        listRef.style.height = `calc(100vh - ${TOPBAR_HEIGHT + 110}px)`;
+        listRef.style.height = `calc(100vh - ${TOPBAR_HEIGHT + 90}px)`;
     };
 
     const handler = (event: Event) => {
@@ -99,7 +99,7 @@ export const CsPanel2: Component = () => {
     };
 
 
-    return <div ref={(e) => listRef = e} class={csPanelRootStyle}>
+    return <div class={csPanelRootStyle}>
         <Flex direction="column">
             <Flex gap="small" style={{ "justify-content": "space-between" }}>
                 <Dynamic
@@ -165,28 +165,30 @@ export const CsPanel2: Component = () => {
 
                 </Show>
 
-                <Dialog
-                    trigger={<FaSolidPlus />}
-                    triggerHint="Create charsheet"
-                    open={crDialogOpen}
-                    onOpenChange={setCrDialogOpen}
-                    dialogTitle={() => "Create charsheet"}
-                >
-                    <Input
-                        label="Name"
-                        onChange={(e) => setSelCsName(e.target.value)}
-                    />
-                    <Select
-                        modal={true}
-                        label="Type"
-                        options={() => charTemplateItems}
-                        onChange={(e: SelectItem) => setSelCsType(e.id)}
-                    />
-                    <Flex gap="large" style={{ "margin-top": "10px" }}>
-                        <Button onClick={() => setCrDialogOpen(false)}>Cancel</Button>
-                        <Button onClick={createCharsheet}>Create</Button>
-                    </Flex>
-                </Dialog>
+                <Show when={crDialogOpen}>
+                    <Dialog
+                        trigger={<FaSolidPlus />}
+                        triggerHint="Create charsheet"
+                        open={crDialogOpen}
+                        onOpenChange={setCrDialogOpen}
+                        dialogTitle={() => "Create charsheet"}
+                    >
+                        <Input
+                            label="Name"
+                            onChange={(e) => setSelCsName(e.target.value)}
+                        />
+                        <Select
+                            modal={true}
+                            label="Type"
+                            options={() => charTemplateItems}
+                            onChange={(e: SelectItem) => setSelCsType(e.id)}
+                        />
+                        <Flex gap="large" style={{ "margin-top": "10px" }}>
+                            <Button onClick={() => setCrDialogOpen(false)}>Cancel</Button>
+                            <Button onClick={createCharsheet}>Create</Button>
+                        </Flex>
+                    </Dialog>
+                </Show>
             </Flex>
         </Flex>
     </div>;

@@ -49,7 +49,6 @@ const processRollInfo = (ctx: PublicationContext) => {
   )
     return;
   const info = Net2HostRollInfo(data.data as NetRollInfo);
-  console.log("updating roll", info);
   updateRolls(info);
   animateRemoteRoll(info);
 };
@@ -96,7 +95,12 @@ export const serverAddress = () => {
 export const centConnect = () => {
   const s = appSettings();
   if (!appSettings) return;
-  const centrifuge = new Centrifuge(serverAddress());
+  const centrifuge = new Centrifuge(serverAddress(), {
+    name: appSettings().userName,
+    maxReconnectDelay: 60000,
+    minReconnectDelay: 60000,
+    maxServerPingDelay: 5 * 60000
+  });
   if (!centrifuge) return;
   centrifuge.on("connected", function (ctx) {
     setCentClient(centrifuge);
@@ -125,7 +129,9 @@ export const centConnect = () => {
   centrifuge.on("error", (err: any) => {
     console.error("centrifuge error", err);
   });
-
+  centrifuge.on("connecting", () => {
+    console.log("connecting");
+  });
   centrifuge.connect();
 };
 

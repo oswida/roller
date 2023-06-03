@@ -1,5 +1,5 @@
 import { For, Show, createMemo, createSignal } from "solid-js";
-import { Host2NetRollInfo, RollInfo, appRolls, appSettings, colorType, netPublish, rollSuccessInfo, setAppRolls, topicRollInfo } from "~/common";
+import { Host2NetRollInfo, RollInfo, appSettings, colorType, netPublish, rollSuccessInfo, setAppRolls, topicRollInfo } from "~/common";
 import { Alert, Button, DataBlock, Flex, Text } from "~/component";
 import {
   chatItemCommentStyle,

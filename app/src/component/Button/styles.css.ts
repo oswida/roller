@@ -39,6 +39,7 @@ export const buttonStyle = recipe({
       ghost: {
         border: "solid 1px",
         height: "35px",
+        backgroundColor: "transparent"
       },
       underline: {
         border: "none",

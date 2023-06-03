@@ -54,7 +54,6 @@ export const RollView: Component<RefProps> = ({ ref }) => {
     if (diceBox() !== undefined) {
       return;
     }
-    console.log("creating dice box");
     const Box = new DiceBox("#dice-table",
       { ...diceConfig, baseScale: appSettings().smallerDice ? 75 : 95 });
     setDiceBox(Box);

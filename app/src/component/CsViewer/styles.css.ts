@@ -1,4 +1,5 @@
 import { style } from "@vanilla-extract/css";
+import { recipe } from "@vanilla-extract/recipes";
 import { colorType, sprinkles } from "~/common";
 
 export const csViewerRootStyle = style([sprinkles({
@@ -6,12 +7,26 @@ export const csViewerRootStyle = style([sprinkles({
     padding: "small",
 }), {
     overflow: "auto",
+    userSelect: "none"
 }])
 
 
-export const csTplIconStyle = style({
-    cursor: "pointer"
-})
+export const csTplIconStyle = style([sprinkles({
+    padding: "small",
+    borderRadius: "small",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+}), {
+    cursor: "pointer",
+    width: "32px",
+    height: "32px",
+    selectors: {
+        "&:hover": {
+            backgroundColor: colorType.accent
+        }
+    }
+}])
 
 
 export const csTplAttrValueStyle = style([sprinkles({
@@ -25,3 +40,14 @@ export const csTplAttrValueStyle = style([sprinkles({
         }
     }
 }])
+
+export const tplResourceItemStyle = recipe({
+    base: [sprinkles({
+        padding: "small",
+        borderRadius: "circle"
+    }), {
+        width: "1em",
+        height: "1em",
+    }]
+})
+

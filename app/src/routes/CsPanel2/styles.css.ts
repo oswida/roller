@@ -11,6 +11,7 @@ export const csPanelRootStyle = style([sprinkles({
 }), {
     minWidth: "300px",
     width: "300px",
+    height: "calc(100vh - 50px)"
 }])
 
 

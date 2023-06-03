@@ -30,10 +30,13 @@ func NewRollerEngine(dbase *badger.DB, log *zap.Logger) (*RollerEngine, error) {
 
 	node.OnConnect(func(client *centrifuge.Client) {
 
-		//result.Log.Info("client connected")
+		client.OnPresence(func(e centrifuge.PresenceEvent, cb centrifuge.PresenceCallback) {
+			p, err := node.Presence(e.Channel)
+			cb(centrifuge.PresenceReply{
+				Result: &p}, err)
+		})
 
 		client.OnSubscribe(func(e centrifuge.SubscribeEvent, cb centrifuge.SubscribeCallback) {
-			// result.Log.Info("client subscribed", zap.String("channel", e.Channel))
 			cb(centrifuge.SubscribeReply{}, nil)
 		})
 

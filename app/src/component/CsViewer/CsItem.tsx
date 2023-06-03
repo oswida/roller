@@ -3,12 +3,11 @@ import { CharTemplateItem, colorType, currentCs, setCurrentCs, updateCsStorage }
 import { Flex } from "../Flex";
 import { Text } from "../Text";
 import { DataBlock } from "../DataBlock";
-import { FaSolidCheck, FaSolidDice, FaSolidPen, FaSolidXmark } from "solid-icons/fa";
-import { csTplAttrValueStyle, csTplIconStyle } from "./styles.css";
-import { Dynamic } from "solid-js/web";
+import { FaSolidCheck, FaSolidDice, FaSolidMinus, FaSolidPlus, FaSolidXmark } from "solid-icons/fa";
+import { csTplAttrValueStyle, csTplIconStyle, tplResourceItemStyle } from "./styles.css";
 import { Input } from "../Input";
-import { Button } from "../Button";
 import { actionRoll } from "./actions";
+import { Button } from "../Button";
 
 
 
@@ -22,8 +21,16 @@ export const CsItem: Component<Props> = ({ item }) => {
 
     const value = createMemo(() => {
         const info = currentCs();
-        if (!info) return;
+        if (!info || !info.values[item.id]) return "--";
         return info.values[item.id];
+    });
+
+    const numValue = createMemo(() => {
+        const info = currentCs();
+        if (!info || !info.values[item.id]) return 0;
+        const num = Number.parseInt(info.values[item.id]);
+        if (Number.isNaN(num)) return 0;
+        return num;
     });
 
     const applyValue = () => {
@@ -47,12 +54,28 @@ export const CsItem: Component<Props> = ({ item }) => {
         setItemEdit(true);
     }
 
+    const incNumValue = (up: boolean) => {
+        const info = currentCs();
+        if (!info) {
+            return;
+        }
+        let v = numValue();
+        if (up) v += 1; else v -= 1;
+        if (v < 0) v = 0;
+        if (v > (item.limit ? item.limit : 1)) v = item.limit ? item.limit : 1;
+        info.values[item.id] = v;
+        updateCsStorage(info);
+        setCurrentCs(undefined);
+        setCurrentCs({ ...info });
+    }
+
     return <Switch>
         <Match when={item.itype === "attr"}>
             <Flex gap="medium" style={{ "align-items": "center" }}>
                 <Show when={!itemEdit()}>
                     <Flex style={{ "justify-content": "space-between", "align-items": "center", flex: 1 }}>
                         <DataBlock
+                            width="50%"
                             left={<Text>{item.name}</Text>}
                             leftBackground="accent"
                             rightFunc={() =>
@@ -66,9 +89,12 @@ export const CsItem: Component<Props> = ({ item }) => {
                             <Flex>
                                 <For each={item.rolls}>
                                     {(r) => (
-                                        <Button title={r.comment} onClick={() => actionRoll(r, value())} >
+                                        <div
+                                            title={r.comment}
+                                            onClick={() => actionRoll(r, value())}
+                                            class={csTplIconStyle}>
                                             <FaSolidDice style={{ fill: r.iconColor }} />
-                                        </Button>)}
+                                        </div>)}
                                 </For>
                             </Flex>
                         </Show>
@@ -93,6 +119,33 @@ export const CsItem: Component<Props> = ({ item }) => {
 
                 </Show>
 
+            </Flex>
+        </Match>
+
+        <Match when={item.itype === "resource"}>
+            <Flex direction="column" gap="small">
+                <Text fontSize="smaller">{item.name}</Text>
+                <Flex gap="small" style={{ "align-items": "center" }}>
+                    <div class={csTplIconStyle} onClick={() => incNumValue(false)}>
+                        <FaSolidMinus style={{ fill: "currentcolor" }} />
+                    </div>
+                    <For each={new Array(item.limit).fill(" ")}>{(it, idx) => (
+                        <>
+                            <Show when={idx() < numValue()}>
+                                <div class={tplResourceItemStyle({})}
+                                    style={{ "background-color": item.color }}>{" "}</div>
+                            </Show>
+                            <Show when={idx() >= numValue()}>
+                                <div class={tplResourceItemStyle({})}
+                                    style={{ "border": `solid 1px ${item.color}` }}>{" "}</div>
+                            </Show>
+                        </>
+                    )}
+                    </For>
+                    <div class={csTplIconStyle} onClick={() => incNumValue(true)}>
+                        <FaSolidPlus style={{ fill: "currentcolor" }} />
+                    </div>
+                </Flex>
             </Flex>
         </Match>
     </Switch>

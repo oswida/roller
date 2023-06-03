@@ -244,6 +244,7 @@ export type CharTemplateItem = {
   text?: string;
   limit?: number;
   rolls?: CharTemplateItemRoll[];
+  color?: string;
 }
 
 export type CharTemplateSection = {
