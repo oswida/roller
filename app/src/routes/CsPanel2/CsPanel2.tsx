@@ -1,17 +1,17 @@
 import { Component, Match, Show, Switch, createMemo, createSignal, onCleanup, onMount } from "solid-js";
-import { CsInfo, TOPBAR_HEIGHT, appCs, appSettings, currentCs, currentRoom, deleteCsStorage, netPublish, setCurrentCs, topicCsInfo, updateCsStorage } from "~/common";
+import { CsInfo, TOPBAR_HEIGHT, appCs, appSettings, currentCs, currentRoom, deleteCsStorage, netPublish, setCsExpanded, setCurrentCs, topicCsInfo, updateCsStorage } from "~/common";
 import { csPanelRootStyle } from "./styles.css";
 import { Alert, Button, Dialog, Flex, Input, Select, SelectItem, Text } from "~/component";
-import { FaSolidPlus, FaSolidShareNodes, FaSolidTrash } from "solid-icons/fa";
-import { charTemplateItems, csTemplateItems } from "~/template";
+import { FaSolidExpand, FaSolidPlus, FaSolidShareNodes, FaSolidTrash } from "solid-icons/fa";
+import { charTemplateItems, charTemplates } from "~/template";
 import toast from "solid-toast";
 import { v4 as uuid } from "uuid";
 import { Dynamic } from "solid-js/web";
 import { CsViewer } from "~/component/CsViewer";
+import { BsArrowsCollapse, BsArrowsExpand } from "solid-icons/bs";
 
 export const CsPanel2: Component = () => {
     let listRef: HTMLDivElement;
-    // const [selCs, setSelCs] = createSignal<SelectItem | undefined>(undefined);
     const [crDialogOpen, setCrDialogOpen] = createSignal(false);
     const [delDialogOpen, setDelDialogOpen] = createSignal(false);
     const [shareDialogOpen, setShareDialogOpen] = createSignal(false);
@@ -65,8 +65,10 @@ export const CsPanel2: Component = () => {
     };
 
     const csChange = (item: SelectItem) => {
-        if (item)
+        if (item) {
+            setCurrentCs(undefined);
             setCurrentCs(appCs()[item.id]);
+        }
     }
 
     const selectedCs = createMemo(() => {
@@ -98,6 +100,14 @@ export const CsPanel2: Component = () => {
         toast("Charsheet share toggled");
     };
 
+    const expandAll = () => {
+        const info = currentCs();
+        if (!info) return;
+        const tpl = charTemplates[info.template];
+        if (!tpl) return;
+        setCsExpanded(tpl.sections.map(it => it.title));
+    }
+
 
     return <div class={csPanelRootStyle}>
         <Flex direction="column">
@@ -111,7 +121,7 @@ export const CsPanel2: Component = () => {
                     onChange={csChange} />
             </Flex>
             <CsViewer ref={(e: any) => listRef = e} />
-            <Flex gap="small">
+            <Flex gap="small" style={{ "justify-content": "space-between" }}>
                 <Show when={currentCs()}>
                     <Show when={currentCs()?.owner == appSettings().userIdent}>
                         <Alert
@@ -162,33 +172,39 @@ export const CsPanel2: Component = () => {
                             </Flex>
                         </Alert>
                     </Show>
-
                 </Show>
 
-                <Show when={crDialogOpen}>
-                    <Dialog
-                        trigger={<FaSolidPlus />}
-                        triggerHint="Create charsheet"
-                        open={crDialogOpen}
-                        onOpenChange={setCrDialogOpen}
-                        dialogTitle={() => "Create charsheet"}
-                    >
-                        <Input
-                            label="Name"
-                            onChange={(e) => setSelCsName(e.target.value)}
-                        />
-                        <Select
-                            modal={true}
-                            label="Type"
-                            options={() => charTemplateItems}
-                            onChange={(e: SelectItem) => setSelCsType(e.id)}
-                        />
-                        <Flex gap="large" style={{ "margin-top": "10px" }}>
-                            <Button onClick={() => setCrDialogOpen(false)}>Cancel</Button>
-                            <Button onClick={createCharsheet}>Create</Button>
-                        </Flex>
-                    </Dialog>
-                </Show>
+                <Dialog
+                    trigger={<FaSolidPlus />}
+                    triggerHint="Create charsheet"
+                    open={crDialogOpen}
+                    onOpenChange={setCrDialogOpen}
+                    dialogTitle={() => "Create charsheet"}
+                >
+                    <Input
+                        label="Name"
+                        onChange={(e) => setSelCsName(e.target.value)}
+                    />
+                    <Select
+                        modal={true}
+                        label="Type"
+                        options={() => charTemplateItems}
+                        onChange={(e: SelectItem) => setSelCsType(e.id)}
+                    />
+                    <Flex gap="large" style={{ "margin-top": "10px" }}>
+                        <Button onClick={() => setCrDialogOpen(false)}>Cancel</Button>
+                        <Button onClick={createCharsheet}>Create</Button>
+                    </Flex>
+                </Dialog>
+
+                <Flex>
+                    <Button title="Expand all" onClick={expandAll}>
+                        <BsArrowsExpand />
+                    </Button>
+                    <Button title="Collapse all" onClick={() => setCsExpanded([])}>
+                        <BsArrowsCollapse />
+                    </Button>
+                </Flex>
             </Flex>
         </Flex>
     </div>;

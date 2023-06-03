@@ -240,11 +240,13 @@ export type CharTemplateItemRoll = {
 export type CharTemplateItem = {
   id: string;
   name: string;
-  itype: "text" | "attr" | "check" | "resource";
+  itype: "text" | "attr" | "check" | "resource" | "state_resource" | "state_resource_square" | "resource_square";
   text?: string;
   limit?: number;
   rolls?: CharTemplateItemRoll[];
   color?: string;
+  hint?: string;
+  labels?: string[];
 }
 
 export type CharTemplateSection = {

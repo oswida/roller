@@ -12,10 +12,10 @@ export const rollViewStyle = recipe({
   variants: {
     expanded: {
       false: {
-        width: "calc(100vw - 650px)"
+        width: "calc(100vw - 670px)"
       },
       true: {
-        width: "calc(100vw - 350px)"
+        width: "calc(100vw - 370px)"
       }
     }
   }

@@ -73,7 +73,7 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
                   leftBackground="accent"
                   left={
                     <Flex center>
-                      <BiRegularTargetLock />{" "}
+                      <BiRegularTargetLock fill="currentcolor" />{" "}
                       <Text colorSchema="primary">{item.successTarget}</Text>
                     </Flex>
                   }

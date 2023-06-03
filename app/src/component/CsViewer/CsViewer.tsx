@@ -1,12 +1,11 @@
-import { Component, Show, createMemo } from "solid-js";
-import { RefProps, currentCs } from "~/common";
+import { Component, Show, createMemo, onMount } from "solid-js";
+import { RefProps, csExpanded, currentCs, setCsExpanded } from "~/common";
 import { Accordion, AccordionOption } from "~/component";
 import { charTemplates } from "~/template";
 import { csViewerRootStyle } from "./styles.css";
 import { CsSection } from "./CsSection";
 
 export const CsViewer: Component<RefProps> = ({ ref }) => {
-    // const [giValue, setGiValue] = createSignal("");
 
     const tpl = createMemo(() => {
         const cs = currentCs();
@@ -18,40 +17,20 @@ export const CsViewer: Component<RefProps> = ({ ref }) => {
         const t = tpl();
         const cs = currentCs();
         if (!t || !cs) return [];
-        return t.sections.map((it) => ({
+        const items = t.sections.map((it) => ({
             id: it.title,
             title: it.title,
             content: <CsSection item={it} />
         } as AccordionOption));
+        setCsExpanded(items.map(it => it.id));
+        return items;
     });
-
-    // const acceptGlobalInput = () => {
-    //     setCsGlobalInputOpen(false);
-    //     csGlobalInputParams().callback(giValue());
-    //     setCsGlobalInputParams((prev) => ({ ...prev, callback: () => { }, title: "", value: "" }))
-    // }
 
     return <div class={csViewerRootStyle} ref={(e) => ref(e)}>
         <Show when={currentCs() && tpl()}>
-            <Accordion collapsible multiple>
+            <Accordion collapsible multiple colorSchema="accent" value={csExpanded} onChange={setCsExpanded}>
                 {items()}
             </Accordion>
         </Show>
-        {/* <Show when={csGlobalInputOpen()}>
-            <Dialog
-                dialogTitle={() => csGlobalInputParams().title}
-                modal={true}
-                open={csGlobalInputOpen}
-                onOpenChange={setCsGlobalInputOpen}
-            >
-                <Input
-                    value={csGlobalInputParams().value}
-                    onChange={(e) => setGiValue(e.target.value)} />
-                <Flex style={{ "margin-top": "15px" }} gap="large" center>
-                    <Button onClick={() => setCsGlobalInputOpen(false)}>Cancel</Button>
-                    <Button onClick={acceptGlobalInput}>Accept</Button>
-                </Flex>
-            </Dialog>
-        </Show> */}
     </div>
 }

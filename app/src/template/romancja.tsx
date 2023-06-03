@@ -1,5 +1,4 @@
 import { CharTemplate, CharTemplateItem } from "~/common";
-import { v4 as uuid } from "uuid";
 
 const genAttrs = () => {
     const a = ["Siła", "Walka", "Ruch", "Urok", "Rozum", "Duch"];
@@ -65,6 +64,21 @@ export const csTplRomancja: CharTemplate = {
                     itype: "resource",
                     limit: 5,
                     color: "#deba30"
+                }
+            ]
+        },
+        {
+            title: "Notatki",
+            items: [
+                {
+                    id: "talenty_ekwipunek",
+                    itype: "text",
+                    name: "Talenty i ekwipunek",
+                },
+                {
+                    id: "rozne",
+                    itype: "text",
+                    name: "Różne",
                 }
             ]
         }

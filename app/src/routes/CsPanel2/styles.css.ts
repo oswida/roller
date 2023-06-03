@@ -9,8 +9,8 @@ export const csPanelRootStyle = style([sprinkles({
     borderStyle: "solid",
     borderWidth: "thin"
 }), {
-    minWidth: "300px",
-    width: "300px",
+    minWidth: "320px",
+    width: "320px",
     height: "calc(100vh - 50px)"
 }])
 

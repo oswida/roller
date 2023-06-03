@@ -23,5 +23,6 @@ export const inputFieldStyle = style([
   {
     borderWidth: 1,
     borderStyle: "solid",
+    flex: 1
   },
 ]);

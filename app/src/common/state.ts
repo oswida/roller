@@ -60,6 +60,7 @@ export const [csCurrentZoom, setCsCurrentZoom] = createSignal(1.0);
 export const [csInfoOpen, setCsInfoOpen] = createSignal(false);
 export const [csInfoLabel, setCsInfoLabel] = createSignal("");
 export const [csInfoContent, setCsInfoContent] = createSignal("");
+export const [csExpanded, setCsExpanded] = createSignal<string[]>([]);
 
 export const [csGlobalInputOpen, setCsGlobalInputOpen] = createSignal(false);
 export type CsGlobalInputParamsType = {

@@ -1,4 +1,4 @@
-import { CharTemplateSection, CsInfo } from "~/common";
+import { CharTemplateSection } from "~/common";
 import { Flex } from "../Flex";
 import { CsItem } from "./CsItem";
 import { Component, For } from "solid-js";

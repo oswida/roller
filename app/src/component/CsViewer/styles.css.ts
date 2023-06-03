@@ -44,10 +44,16 @@ export const csTplAttrValueStyle = style([sprinkles({
 export const tplResourceItemStyle = recipe({
     base: [sprinkles({
         padding: "small",
-        borderRadius: "circle"
     }), {
         width: "1em",
         height: "1em",
-    }]
+    }], variants: {
+        shape: {
+            circle: sprinkles({ borderRadius: "circle" }),
+            square: sprinkles({ borderRadius: "none" }),
+        }
+    }, defaultVariants: {
+        shape: "circle"
+    }
 })
 
