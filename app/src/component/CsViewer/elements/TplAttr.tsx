@@ -70,7 +70,7 @@ export const TplAttr: Component<Props> = ({ item }) => {
                                         title={r.comment}
                                         onClick={() => actionRoll(r, value())}
                                         class={csTplIconStyle}>
-                                        <FaSolidDice style={{ fill: r.iconColor }} />
+                                        <FaSolidDice style={{ fill: r.iconColor ? r.iconColor : "currentcolor" }} />
                                     </div>)}
                             </For>
                         </Flex>

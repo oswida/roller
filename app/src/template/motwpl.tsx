@@ -21,7 +21,6 @@ const genAttrs = () => {
                 notation: "2d6",
                 successRule: "pbta:standard",
                 comment: `+${it.toUpperCase()}`,
-                iconColor: "darkorange",
             },
         ]
     } as CharTemplateItem));

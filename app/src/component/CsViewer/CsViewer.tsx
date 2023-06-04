@@ -22,7 +22,6 @@ export const CsViewer: Component<RefProps> = ({ ref }) => {
             title: it.title,
             content: <CsSection item={it} />
         } as AccordionOption));
-        setCsExpanded(items.map(it => it.id));
         return items;
     });
 

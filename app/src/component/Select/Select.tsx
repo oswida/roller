@@ -40,7 +40,7 @@ export const Select: Component<Props> = ({ options, selected, onChange, label, m
         <Sel.Item item={props.item} class={selectItemStyle}>
           <Sel.ItemLabel>{props.item.rawValue.label}</Sel.ItemLabel>
           <Sel.ItemIndicator>
-            <FaSolidCircleCheck />
+            <FaSolidCircleCheck style={{ fill: "currentcolor" }} />
           </Sel.ItemIndicator>
         </Sel.Item>
       )}

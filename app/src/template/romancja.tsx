@@ -12,7 +12,7 @@ const genAttrs = () => {
                 notation: "2d10",
                 successRule: "pio3s:standard",
                 comment: `${it}: standard`,
-                iconColor: "orange"
+                // iconColor: "orange"
             },
             {
                 valType: "target",
