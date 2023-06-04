@@ -3,6 +3,7 @@ import { Centrifuge } from "centrifuge";
 import Queue from "queue";
 import { createSignal } from "solid-js";
 import { CsInfo, RollInfo } from "./types";
+import { fabric } from "fabric";
 
 export const [storageSize, setStorageSize] = createSignal(0);
 
@@ -61,16 +62,23 @@ export const [csInfoOpen, setCsInfoOpen] = createSignal(false);
 export const [csInfoLabel, setCsInfoLabel] = createSignal("");
 export const [csInfoContent, setCsInfoContent] = createSignal("");
 export const [csExpanded, setCsExpanded] = createSignal<string[]>([]);
+export const [csOpenSections, setCsOpenSections] = createSignal<Record<string, string[]>>({});
 
-export const [csGlobalInputOpen, setCsGlobalInputOpen] = createSignal(false);
-export type CsGlobalInputParamsType = {
-  title: string;
-  value: string;
-  callback: (value: string) => void;
+export const updateCsOpenSections = (info: CsInfo, sections: string[]) => {
+  const newState = { ...csOpenSections() };
+  newState[info.id] = sections;
+  setCsOpenSections(newState);
 }
-export const [csGlobalInputParams, setCsGlobalInputParams] =
-  createSignal<CsGlobalInputParamsType>({
-    title: "",
-    value: "",
-    callback: () => { }
-  });
+
+// export const [csGlobalInputOpen, setCsGlobalInputOpen] = createSignal(false);
+// export type CsGlobalInputParamsType = {
+//   title: string;
+//   value: string;
+//   callback: (value: string) => void;
+// }
+// export const [csGlobalInputParams, setCsGlobalInputParams] =
+//   createSignal<CsGlobalInputParamsType>({
+//     title: "",
+//     value: "",
+//     callback: () => { }
+//   });

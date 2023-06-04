@@ -168,7 +168,6 @@ export type CsInfo = {
   template: string;
   values: Record<string, any>;
   shared?: boolean;
-  openSections?: string[];
 };
 
 export const emptyCsInfo = () => {

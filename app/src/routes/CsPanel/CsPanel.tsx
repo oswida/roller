@@ -1,5 +1,5 @@
 import { Component, Match, Show, Switch, createMemo, createSignal, onCleanup, onMount } from "solid-js";
-import { CsInfo, TOPBAR_HEIGHT, appCs, appSettings, csExpanded, currentCs, currentRoom, deleteCsStorage, exportData, importData, netPublish, setCsExpanded, setCurrentCs, topicCsInfo, updateCsStorage } from "~/common";
+import { CsInfo, TOPBAR_HEIGHT, appCs, appSettings, csExpanded, csOpenSections, currentCs, currentRoom, deleteCsStorage, exportData, importData, netPublish, setCsExpanded, setCurrentCs, topicCsInfo, updateCsStorage } from "~/common";
 import { csPanelRootStyle } from "./styles.css";
 import { Alert, Button, Dialog, Flex, Input, Select, SelectItem, Text } from "~/component";
 import { FaSolidFileExport, FaSolidFileImport, FaSolidPlus, FaSolidShareNodes, FaSolidTrash } from "solid-icons/fa";
@@ -72,8 +72,9 @@ export const CsPanel: Component = () => {
             setCurrentCs(cs);
             const tpl = charTemplates[cs.template];
             if (!tpl) return;
-            if (cs.openSections)
-                setCsExpanded(cs.openSections)
+            const openSections = csOpenSections()[cs.id];
+            if (openSections)
+                setCsExpanded(openSections)
             else
                 setCsExpanded(tpl.sections.map(it => it.title));
         }
