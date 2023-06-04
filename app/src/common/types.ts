@@ -168,6 +168,7 @@ export type CsInfo = {
   template: string;
   values: Record<string, any>;
   shared?: boolean;
+  openSections?: string[];
 };
 
 export const emptyCsInfo = () => {
@@ -195,7 +196,7 @@ export type CharTemplateItemRoll = {
 
 type CharTemplateItemType = "text" | "attr" | "check" |
   "resource" | "state_resource" | "state_resource_square" |
-  "resource_square" | "attr_max";
+  "resource_square" | "attr_max" | "label";
 
 export type CharTemplateItem = {
   id: string;

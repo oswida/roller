@@ -27,6 +27,7 @@ export const TplResource: Component<Props> = ({ item, state, square }) => {
             return;
         }
         let v = numValue();
+        console.log("v", v);
         if (up) v += 1; else v -= 1;
         if (v < 0) v = 0;
         if (v > (item.limit ? item.limit : 1)) v = item.limit ? item.limit : 1;
@@ -62,11 +63,11 @@ export const TplResource: Component<Props> = ({ item, state, square }) => {
                 <>
                     <Show when={idx() < numValue()}>
                         <div class={tplResourceItemStyle({ shape: square ? "square" : "circle" })}
-                            style={{ "background-color": item.color }}>{" "}</div>
+                            style={{ "background-color": item.color ? item.color : "currentcolor" }}>{" "}</div>
                     </Show>
                     <Show when={idx() >= numValue()}>
                         <div class={tplResourceItemStyle({ shape: square ? "square" : "circle" })}
-                            style={{ "border": `solid 1px ${item.color}` }}>{" "}</div>
+                            style={{ "border": `solid 1px ${item.color ? item.color : "currentcolor"}` }}>{" "}</div>
                     </Show>
                 </>
             )}

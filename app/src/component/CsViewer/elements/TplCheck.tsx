@@ -28,7 +28,7 @@ export const TplCheck: Component<Props> = ({ item }) => {
         }
         updateCsStorage(info);
         setCurrentCs(undefined);
-        setCurrentCs({ ...info });
+        setCurrentCs(info);
         netPublish(topicCsInfo, info);
     }
 

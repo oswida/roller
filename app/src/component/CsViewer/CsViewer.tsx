@@ -1,5 +1,5 @@
 import { Component, Show, createMemo, onMount } from "solid-js";
-import { RefProps, csExpanded, currentCs, setCsExpanded } from "~/common";
+import { RefProps, csExpanded, currentCs, setCsExpanded, updateCsStorage } from "~/common";
 import { Accordion, AccordionOption } from "~/component";
 import { charTemplates } from "~/template";
 import { csViewerRootStyle } from "./styles.css";
@@ -25,6 +25,14 @@ export const CsViewer: Component<RefProps> = ({ ref }) => {
         return items;
     });
 
+    const sectionChange = (value: string[]) => {
+        setCsExpanded(value);
+        const info = currentCs();
+        if (!info) return;
+        info.openSections = value;
+        updateCsStorage(info);
+    }
+
     return <div class={csViewerRootStyle} ref={(e) => ref(e)}>
         <Show when={currentCs() && tpl()}>
             <Accordion
@@ -33,7 +41,7 @@ export const CsViewer: Component<RefProps> = ({ ref }) => {
                 colorSchema="accent"
                 backgroundSchema="ghost"
                 value={csExpanded}
-                onChange={setCsExpanded}>
+                onChange={sectionChange}>
                 {items()}
             </Accordion>
         </Show>

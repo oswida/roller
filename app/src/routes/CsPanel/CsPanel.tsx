@@ -66,13 +66,17 @@ export const CsPanel: Component = () => {
     };
 
     const csChange = (item: SelectItem) => {
+        console.log("cs change");
         if (item) {
             setCurrentCs(undefined);
             const cs = appCs()[item.id];
             setCurrentCs(cs);
             const tpl = charTemplates[cs.template];
             if (!tpl) return;
-            setCsExpanded(tpl.sections.map(it => it.title));
+            if (cs.openSections)
+                setCsExpanded(cs.openSections)
+            else
+                setCsExpanded(tpl.sections.map(it => it.title));
         }
     }
 

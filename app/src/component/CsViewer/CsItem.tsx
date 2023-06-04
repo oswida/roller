@@ -5,6 +5,7 @@ import { TplAttr } from "./elements/TplAttr";
 import { TplText } from "./elements/TplText";
 import { TplCheck } from "./elements/TplCheck";
 import { TplAttrMax } from "./elements/TplAttrMax";
+import { TplLabel } from "./elements/TplLabel";
 
 type Props = {
     item: CharTemplateItem;
@@ -43,6 +44,10 @@ export const CsItem: Component<Props> = ({ item }) => {
 
         <Match when={item.itype === "check"}>
             <TplCheck item={item} />
+        </Match>
+
+        <Match when={item.itype === "label"}>
+            <TplLabel item={item} />
         </Match>
     </Switch>
 }
