@@ -1,6 +1,6 @@
 import { FaSolidXmark, FaSolidFloppyDisk, FaSolidPen } from "solid-icons/fa";
 import { Component, Show, createMemo, createSignal } from "solid-js";
-import { CharTemplateItem, currentCs, setCurrentCs, updateCsStorage } from "~/common";
+import { CharTemplateItem, currentCs, isCsOwner, netPublish, setCurrentCs, topicCsInfo, updateCsStorage } from "~/common";
 import { Flex } from "../../Flex";
 import { Text } from "../../Text";
 import { InputArea } from "../../Input";
@@ -36,6 +36,7 @@ export const TplText: Component<Props> = ({ item }) => {
         setEditVal("");
         setCurrentCs(undefined);
         setCurrentCs({ ...info });
+        netPublish(topicCsInfo, info);
     }
 
     return <>
@@ -61,19 +62,21 @@ export const TplText: Component<Props> = ({ item }) => {
                 <InputArea
                     onChange={(e: any) => setEditVal(e.target.value)}
                     value={value()}
-                    style={{ "min-height": "10em", "font-size": "medium", width: "250px" }} />
+                    style={{ "min-height": "10em", "font-size": "medium", width: "280px" }} />
             </Flex>
         </Show>
         <Show when={!itemEdit()}>
             <Flex direction="column" gap="small" >
                 <Flex style={{ "align-items": "center", "justify-content": "space-between" }}>
                     <Text fontSize="smaller" colorSchema="secondary">{item.name}</Text>
-                    <div
-                        onClick={() => setItemEdit(true)}
-                        title="Edit"
-                        class={csTplIconStyle}>
-                        <FaSolidPen style={{ fill: "currentcolor" }} />
-                    </div>
+                    <Show when={isCsOwner(currentCs())}>
+                        <div
+                            onClick={() => setItemEdit(true)}
+                            title="Edit"
+                            class={csTplIconStyle}>
+                            <FaSolidPen style={{ fill: "currentcolor" }} />
+                        </div>
+                    </Show>
                 </Flex>
                 <Text>{value()}</Text>
             </Flex>

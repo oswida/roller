@@ -8,7 +8,7 @@ type Props = {
 }
 
 export const CsSection: Component<Props> = ({ item }) => {
-    return <Flex direction="column" gap="small">
+    return <Flex direction="column" gap="medium">
         <For each={item.items}>
             {(it) => (<CsItem item={it} />)}
         </For>

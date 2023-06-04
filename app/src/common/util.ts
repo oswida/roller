@@ -8,7 +8,7 @@ import {
   appSettings,
 } from "./storage";
 import { spaceSize, sprinkles } from "./theme.css";
-import { NetRollInfo, RollInfo } from "./types";
+import { CsInfo, NetRollInfo, RollInfo } from "./types";
 import {
   diceBox,
   setAnimating,
@@ -209,3 +209,8 @@ export const enrollTask = (f: () => void) => {
     if (cb) cb();
   });
 };
+
+export const isCsOwner = (cs: CsInfo | undefined) => {
+  if (!cs) return false;
+  return appSettings().userIdent === cs.owner;
+}

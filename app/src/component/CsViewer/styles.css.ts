@@ -4,7 +4,6 @@ import { colorType, sprinkles } from "~/common";
 
 export const csViewerRootStyle = style([sprinkles({
     backgroundColor: "backgroundSecondary",
-    padding: "small",
 }), {
     overflow: "auto",
     userSelect: "none"
@@ -47,6 +46,7 @@ export const tplResourceItemStyle = recipe({
     }), {
         width: "1em",
         height: "1em",
+        cursor: "pointer",
     }], variants: {
         shape: {
             circle: sprinkles({ borderRadius: "circle" }),

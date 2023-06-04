@@ -3,7 +3,7 @@ import { csPanelVisible, currentRoom, netLoadRolls } from "~/common";
 import { RollPanel } from "../RollPanel";
 import { TopBar } from "./TopBar";
 import { mainStyle } from "./styles.css";
-import { CsPanel2 } from "../CsPanel2";
+import { CsPanel } from "../CsPanel";
 import { Flex } from "~/component";
 
 export const MainView = () => {
@@ -23,14 +23,10 @@ export const MainView = () => {
   return (
     <div id="app" class={mainStyle} ref={(e) => (mainRef = e)}>
       <TopBar ref={(e: any) => (barRef = e)} />
-      {/* <Show when={mainViewPanel() == "cs"}>
-        <CsPanel />
-      </Show> */}
-      {/* <RollPanel visible={() => mainViewPanel() == "dice"} /> */}
       <Flex style={{ width: "100vw" }}>
         <RollPanel visible={() => true} />
         <Show when={csPanelVisible()}>
-          <CsPanel2 />
+          <CsPanel />
         </Show>
       </Flex>
     </div>

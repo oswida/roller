@@ -81,6 +81,7 @@ export const chatItemContentStyle = recipe({
     {
       overflowY: "auto",
       cursor: "pointer",
+      userSelect: "none",
       selectors: {
         "&:hover": {
           opacity: 1,
@@ -112,7 +113,9 @@ export const chatItemHeaderStyle = recipe({
       paddingX: "medium",
       borderTopLeftRadius: "small",
       borderTopRightRadius: "small",
-    }),
+    }), {
+      userSelect: "none",
+    }
   ],
   variants: {
     old: {

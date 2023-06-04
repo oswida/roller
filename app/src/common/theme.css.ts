@@ -20,6 +20,7 @@ export type spaceType =
 export const colorType = {
   background: "#080014", //"#2E0003",  ,
   backgroundSecondary: "#21293B", //"#60251D", // "#21293B",
+  backgroundGhost: "#08001455",
   accent: "#93502D", // "#335064",
   primary: "#fff",
   secondary: "#E2BA51", //"#91D3C2",

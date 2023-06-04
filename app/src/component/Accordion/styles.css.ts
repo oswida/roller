@@ -39,18 +39,28 @@ export const accordionHeaderStyle = recipe({
             justifyContent: "space-between",
             alignItems: "center",
             fontSize: "bigger",
-            paddingX: "small"
-        }), { flex: 1 }
+            padding: "small",
+
+        }), { flex: 1, marginTop: 0, marginBottom: 2 }
     ],
     variants: {
         colorSchema: {
             "primary": sprinkles({ color: "primary" }),
             "secondary": sprinkles({ color: "secondary" }),
             "accent": sprinkles({ color: "accent" })
+        },
+        backgroundSchema: {
+            "background": sprinkles({ backgroundColor: "background" }),
+            "ghost": sprinkles({ backgroundColor: "backgroundGhost" }),
+            "secondary": sprinkles({ backgroundColor: "backgroundSecondary" }),
+            "transparent": {
+                backgroundColor: "transparent"
+            }
         }
     },
     defaultVariants: {
-        colorSchema: "secondary"
+        colorSchema: "secondary",
+        backgroundSchema: "transparent"
     }
 });
 

@@ -99,7 +99,7 @@ export const centConnect = () => {
     name: appSettings().userName,
     maxReconnectDelay: 60000,
     minReconnectDelay: 60000,
-    maxServerPingDelay: 5 * 60000
+    maxServerPingDelay: 10000
   });
   if (!centrifuge) return;
   centrifuge.on("connected", function (ctx) {
@@ -257,6 +257,7 @@ export const centLoadCs = (roomId: string, ids?: string[]) => {
         });
         saveToStorage(rollerCsKey, newState);
         if (ids?.length == 1 && ids[0] == currentCs()?.id) {
+          setCurrentCs(undefined);
           setCurrentCs(newState[ids[0]]);
         }
       }

@@ -19,6 +19,7 @@ export const buttonStyle = recipe({
       appearance: "none",
       display: "inline-flex",
       width: "auto",
+      userSelect: "none",
       outline: "none",
       lineHeight: 0,
       transition: "250ms background-color",

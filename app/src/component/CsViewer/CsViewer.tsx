@@ -28,7 +28,13 @@ export const CsViewer: Component<RefProps> = ({ ref }) => {
 
     return <div class={csViewerRootStyle} ref={(e) => ref(e)}>
         <Show when={currentCs() && tpl()}>
-            <Accordion collapsible multiple colorSchema="accent" value={csExpanded} onChange={setCsExpanded}>
+            <Accordion
+                collapsible
+                multiple
+                colorSchema="accent"
+                backgroundSchema="ghost"
+                value={csExpanded}
+                onChange={setCsExpanded}>
                 {items()}
             </Accordion>
         </Show>

@@ -1,6 +1,6 @@
 import { FaSolidDice, FaSolidXmark, FaSolidCheck, FaSolidCircleInfo } from "solid-icons/fa";
 import { Component, For, Show, createMemo, createSignal } from "solid-js";
-import { CharTemplateItem, colorType, currentCs, setCurrentCs, updateCsStorage } from "~/common";
+import { CharTemplateItem, colorType, currentCs, isCsOwner, netPublish, setCurrentCs, topicCsInfo, updateCsStorage } from "~/common";
 import { DataBlock } from "../../DataBlock";
 import { Flex } from "../../Flex";
 import { Text } from "../../Text";
@@ -37,6 +37,12 @@ export const TplAttr: Component<Props> = ({ item }) => {
         setEditVal("");
         setCurrentCs(undefined);
         setCurrentCs({ ...info });
+        netPublish(topicCsInfo, info);
+    }
+
+    const startEdit = () => {
+        if (!isCsOwner(currentCs())) return;
+        setItemEdit(true);
     }
 
     return <Flex gap="medium" style={{ "align-items": "center" }}>
@@ -50,13 +56,13 @@ export const TplAttr: Component<Props> = ({ item }) => {
                     rightFunc={() =>
                         <Text fontSize="bigger"
                             class={csTplAttrValueStyle}
-                            onClick={() => setItemEdit(true)}>
+                            onClick={startEdit}>
                             {value()}
                         </Text>}
                     rightBackground="accent" />
 
                 <Flex gap="medium">
-                    <Show when={item.rolls && item.rolls.length > 0}>
+                    <Show when={item.rolls && item.rolls.length > 0 && isCsOwner(currentCs())}>
                         <Flex>
                             <For each={item.rolls}>
                                 {(r) => (

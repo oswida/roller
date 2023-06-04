@@ -1,6 +1,6 @@
 import { FaSolidCircleInfo, FaSolidInfo, FaSolidMinus, FaSolidPlus } from "solid-icons/fa";
 import { Component, For, Show, createMemo } from "solid-js";
-import { CharTemplateItem, colorType, currentCs, setCurrentCs, updateCsStorage } from "~/common";
+import { CharTemplateItem, colorType, currentCs, isCsOwner, netPublish, setCurrentCs, topicCsInfo, updateCsStorage } from "~/common";
 import { Flex } from "../../Flex";
 import { Text } from "../../Text";
 import { csTplIconStyle, tplResourceItemStyle } from "../styles.css";
@@ -34,6 +34,7 @@ export const TplResource: Component<Props> = ({ item, state, square }) => {
         updateCsStorage(info);
         setCurrentCs(undefined);
         setCurrentCs({ ...info });
+        netPublish(topicCsInfo, info);
     }
 
 
@@ -51,9 +52,11 @@ export const TplResource: Component<Props> = ({ item, state, square }) => {
                 <Show when={state && item.labels && item.labels[0]}>
                     <Text fontSize="smaller">{item.labels ? item.labels[0] : ""}</Text>
                 </Show>
-                <div class={csTplIconStyle} onClick={() => incNumValue(false)}>
-                    <FaSolidMinus style={{ fill: "currentcolor" }} />
-                </div>
+                <Show when={isCsOwner(currentCs())}>
+                    <div class={csTplIconStyle} onClick={() => incNumValue(false)}>
+                        <FaSolidMinus style={{ fill: "currentcolor" }} />
+                    </div>
+                </Show>
             </Flex>
             <For each={new Array(item.limit).fill(" ")}>{(it, idx) => (
                 <>
@@ -72,9 +75,11 @@ export const TplResource: Component<Props> = ({ item, state, square }) => {
                 <Show when={state && item.labels && item.labels.length > 1}>
                     <Text fontSize="smaller">{item.labels ? item.labels[1] : ""}</Text>
                 </Show>
-                <div class={csTplIconStyle} onClick={() => incNumValue(true)}>
-                    <FaSolidPlus style={{ fill: "currentcolor" }} />
-                </div>
+                <Show when={isCsOwner(currentCs())}>
+                    <div class={csTplIconStyle} onClick={() => incNumValue(true)}>
+                        <FaSolidPlus style={{ fill: "currentcolor" }} />
+                    </div>
+                </Show>
             </Flex>
         </Flex>
     </Flex>

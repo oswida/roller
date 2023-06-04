@@ -15,11 +15,14 @@ type Props = {
     collapsible?: boolean;
     multiple?: boolean;
     colorSchema?: "primary" | "secondary" | "accent";
+    backgroundSchema?: "ghost" | "secondary" | "transparent";
     value?: () => string[];
     onChange?: (value: string[]) => void;
 }
 
-export const Accordion: Component<Props> = ({ children, collapsible, multiple, colorSchema, value, onChange }) => {
+export const Accordion: Component<Props> = ({
+    children, collapsible, multiple,
+    colorSchema, value, onChange, backgroundSchema }) => {
 
     return <Ac.Root
         onChange={onChange}
@@ -30,7 +33,7 @@ export const Accordion: Component<Props> = ({ children, collapsible, multiple, c
         <For each={children}>
             {(it) => (
                 <Ac.Item value={it.id} >
-                    <Ac.Header class={accordionHeaderStyle({ colorSchema: colorSchema })} >
+                    <Ac.Header class={accordionHeaderStyle({ colorSchema: colorSchema, backgroundSchema })} >
                         {it.title}
                         <Ac.Trigger class={accordionTriggerStyle}>
                             <FaSolidChevronDown />
