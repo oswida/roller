@@ -2,3 +2,4 @@ data/
 frontend/
 roller.log
 roller
+*.zip

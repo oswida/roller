@@ -129,9 +129,6 @@ export const centConnect = () => {
   centrifuge.on("error", (err: any) => {
     console.error("centrifuge error", err);
   });
-  centrifuge.on("connecting", () => {
-    console.log("connecting");
-  });
   centrifuge.connect();
 };
 

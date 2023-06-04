@@ -66,7 +66,6 @@ export const CsPanel: Component = () => {
     };
 
     const csChange = (item: SelectItem) => {
-        console.log("cs change");
         if (item) {
             setCurrentCs(undefined);
             const cs = appCs()[item.id];

@@ -27,7 +27,6 @@ export const TplResource: Component<Props> = ({ item, state, square }) => {
             return;
         }
         let v = numValue();
-        console.log("v", v);
         if (up) v += 1; else v -= 1;
         if (v < 0) v = 0;
         if (v > (item.limit ? item.limit : 1)) v = item.limit ? item.limit : 1;
