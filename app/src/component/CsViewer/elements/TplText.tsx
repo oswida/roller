@@ -1,4 +1,4 @@
-import { FaSolidXmark, FaSolidFloppyDisk, FaSolidPen } from "solid-icons/fa";
+import { FaSolidXmark, FaSolidFloppyDisk, FaSolidPen, FaSolidLock } from "solid-icons/fa";
 import { Component, Show, createMemo, createSignal } from "solid-js";
 import { CharTemplateItem, currentCs, isCsOwner, netPublish, setCurrentCs, topicCsInfo, updateCsStorage } from "~/common";
 import { Flex } from "../../Flex";
@@ -70,12 +70,14 @@ export const TplText: Component<Props> = ({ item }) => {
                 <Flex style={{ "align-items": "center", "justify-content": "space-between" }}>
                     <Text fontSize="smaller" colorSchema="secondary">{item.name}</Text>
                     <Show when={isCsOwner(currentCs())}>
-                        <div
-                            onClick={() => setItemEdit(true)}
-                            title="Edit"
-                            class={csTplIconStyle}>
-                            <FaSolidPen style={{ fill: "currentcolor" }} />
-                        </div>
+                        <Flex>
+                            <div
+                                onClick={() => setItemEdit(true)}
+                                title="Edit"
+                                class={csTplIconStyle}>
+                                <FaSolidPen style={{ fill: "currentcolor" }} />
+                            </div>
+                        </Flex>
                     </Show>
                 </Flex>
                 <Text>{value()}</Text>

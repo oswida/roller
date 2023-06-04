@@ -1,9 +1,10 @@
-import { CharTemplate, CsTemplate } from "~/common";
+import { CharTemplate } from "~/common";
 import { SelectItem } from "~/component";
 import { csTplRomancja } from "./romancja";
 import { csTplMotwPl_Spiskolog } from "./motwpl";
+import { csTplCairnPl } from "./cairnpl";
 
-const newTplList = [csTplRomancja, csTplMotwPl_Spiskolog];
+const newTplList = [csTplRomancja, csTplMotwPl_Spiskolog, csTplCairnPl];
 
 export const charTemplates: Record<string, CharTemplate | undefined> = {
   "": undefined,

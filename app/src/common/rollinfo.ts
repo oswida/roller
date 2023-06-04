@@ -98,6 +98,30 @@ export const totalRollSuccessInfo = (
   return "";
 };
 
+
+export const cairnRollSuccessInfo = (
+  result: RollResult,
+  rule: string,
+  level?: number
+) => {
+  if (!level) return "";
+  const rolls: RollDetail[] = [];
+  result.sets.map((set) => {
+    rolls.push(...set.rolls);
+  });
+  const sorted = rolls.sort((a, b) => a.value - b.value);
+  switch (rule) {
+    case "standard": {
+      if (sorted[0].value <= level) return "Success";
+      return "Failure";
+    }
+    case "hard":
+      if (sorted[1].value <= level) return "Success";
+      return "Failure";
+  }
+  return "";
+};
+
 export const rollSuccessInfo = (
   result: RollResult,
   rule: string | undefined,
@@ -111,6 +135,9 @@ export const rollSuccessInfo = (
       return pbtaRollSuccessInfo(result, parts[1]);
     case "pio3s":
       return pioRollSuccessInfo(result, parts[1], level);
+    case "cairn":
+      return cairnRollSuccessInfo(result, parts[1], level);
+      return
     case "total":
       return totalRollSuccessInfo(result, parts[1], level);
     default:

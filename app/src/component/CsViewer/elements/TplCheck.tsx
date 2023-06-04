@@ -36,7 +36,7 @@ export const TplCheck: Component<Props> = ({ item }) => {
         <Show when={checked()}>
             <Flex gap="medium" style={{ "align-items": "center" }}>
                 <div class={tplResourceItemStyle({ shape: "square" })}
-                    style={{ "background-color": item.color }}
+                    style={{ "background-color": item.color ? item.color : "currentcolor" }}
                     onClick={toggle}>{" "}</div>
                 <Text>{item.text}</Text>
                 <Show when={item.hint && item.hint !== ""}>
@@ -50,7 +50,7 @@ export const TplCheck: Component<Props> = ({ item }) => {
         <Show when={!checked()}>
             <Flex gap="medium" style={{ "align-items": "center" }}>
                 <div class={tplResourceItemStyle({ shape: "square" })}
-                    style={{ "border": `solid 1px ${item.color}` }}
+                    style={{ "border": `solid 1px ${item.color ? item.color : "currentcolor"}` }}
                     onClick={toggle}>{" "}</div>
                 <Text>{item.text}</Text>
                 <Show when={item.hint && item.hint !== ""}>

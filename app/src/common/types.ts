@@ -181,50 +181,6 @@ export const emptyCsInfo = () => {
   } as CsInfo;
 };
 
-export type CsRoll = {
-  type: "mod" | "target"; // use field value as a modifier or roll target
-  dice: string; // dice notation
-  srule: string; // success rule
-  comment?: string; // roll comment
-  hasInput?: boolean; // if we should ask for input before roll
-  inputLabel?: string; // input label if we are asking
-};
-
-export type CsField = {
-  id: string;
-  name: string;
-  rect: [number, number, number, number];
-  type: "attr" | "rect-check" | "text" | "circle-check";
-  rolls?: CsRoll[];
-  fontSize?: number;
-  stroke?: string;
-  textAlign?: "center" | "left" | "right";
-  info?: string;
-};
-
-export type CsPage = {
-  img: string;
-  pos: number;
-  fields: CsField[];
-};
-
-export type CsTemplate = {
-  id: string;
-  game: string;
-  name: string;
-  pageHeight: number;
-  pageWidth: number;
-  fieldColor: string;
-  fieldStroke: string;
-  fieldFontSize: number;
-  pages: CsPage[];
-};
-
-export type CsCheckData = {
-  value: boolean;
-  disabled: boolean;
-};
-
 // New templates
 
 export type CharTemplateItemRoll = {
@@ -237,10 +193,14 @@ export type CharTemplateItemRoll = {
   inputLabel?: string;
 }
 
+type CharTemplateItemType = "text" | "attr" | "check" |
+  "resource" | "state_resource" | "state_resource_square" |
+  "resource_square" | "attr_max";
+
 export type CharTemplateItem = {
   id: string;
   name: string;
-  itype: "text" | "attr" | "check" | "resource" | "state_resource" | "state_resource_square" | "resource_square";
+  itype: CharTemplateItemType;
   text?: string;
   limit?: number;
   rolls?: CharTemplateItemRoll[];

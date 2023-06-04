@@ -4,6 +4,7 @@ import { TplResource } from "./elements/TplResource";
 import { TplAttr } from "./elements/TplAttr";
 import { TplText } from "./elements/TplText";
 import { TplCheck } from "./elements/TplCheck";
+import { TplAttrMax } from "./elements/TplAttrMax";
 
 type Props = {
     item: CharTemplateItem;
@@ -14,6 +15,10 @@ export const CsItem: Component<Props> = ({ item }) => {
     return <Switch>
         <Match when={item.itype === "attr"}>
             <TplAttr item={item} />
+        </Match>
+
+        <Match when={item.itype === "attr_max"}>
+            <TplAttrMax item={item} />
         </Match>
 
         <Match when={item.itype === "resource"}>
