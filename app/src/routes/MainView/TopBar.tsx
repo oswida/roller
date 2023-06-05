@@ -18,6 +18,7 @@ import {
   RefProps,
   appRooms,
   appSettings,
+  connectedUsers,
   csPanelVisible,
   currentRoom,
   diceColorSet,
@@ -228,16 +229,16 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
           ></Select>
         </Flex>
         <Show when={netConnectionStatus()}>
-          <Dynamic component={"div"} title={currentRoom()?.id}>
+          <Dynamic component={"div"} title={Object.values(connectedUsers()).join("\n")}>
             <FaSolidNetworkWired style={{ fill: "currentcolor" }} />
           </Dynamic>
         </Show>
         <Text colorSchema="secondary" fontSize="small">
           {(storageSize() / 1000).toFixed(2)} kB
         </Text>
-        <Dynamic component={Text} colorSchema="secondary" fontSize="small">
+        {/* <Dynamic component={Text} colorSchema="secondary" fontSize="small">
           PR: {pendingRolls()}
-        </Dynamic>
+        </Dynamic> */}
       </Flex>
     </div>
   );

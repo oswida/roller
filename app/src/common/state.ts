@@ -70,15 +70,5 @@ export const updateCsOpenSections = (info: CsInfo, sections: string[]) => {
   setCsOpenSections(newState);
 }
 
-// export const [csGlobalInputOpen, setCsGlobalInputOpen] = createSignal(false);
-// export type CsGlobalInputParamsType = {
-//   title: string;
-//   value: string;
-//   callback: (value: string) => void;
-// }
-// export const [csGlobalInputParams, setCsGlobalInputParams] =
-//   createSignal<CsGlobalInputParamsType>({
-//     title: "",
-//     value: "",
-//     callback: () => { }
-//   });
+
+export const [connectedUsers, setConnectedUsers] = createSignal<Record<string, string>>({});

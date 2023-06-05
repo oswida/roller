@@ -1,6 +1,7 @@
 package net
 
 import (
+	"context"
 	"errors"
 	"sync"
 
@@ -28,8 +29,13 @@ func NewRollerEngine(dbase *badger.DB, log *zap.Logger) (*RollerEngine, error) {
 		Log:  log,
 	}
 
-	node.OnConnect(func(client *centrifuge.Client) {
+	node.OnConnecting(func(ctx context.Context, ce centrifuge.ConnectEvent) (centrifuge.ConnectReply, error) {
+		return centrifuge.ConnectReply{
+			Credentials: &centrifuge.Credentials{UserID: ce.Name, Info: ce.Data},
+		}, nil
+	})
 
+	node.OnConnect(func(client *centrifuge.Client) {
 		client.OnPresence(func(e centrifuge.PresenceEvent, cb centrifuge.PresenceCallback) {
 			p, err := node.Presence(e.Channel)
 			cb(centrifuge.PresenceReply{
@@ -37,7 +43,14 @@ func NewRollerEngine(dbase *badger.DB, log *zap.Logger) (*RollerEngine, error) {
 		})
 
 		client.OnSubscribe(func(e centrifuge.SubscribeEvent, cb centrifuge.SubscribeCallback) {
-			cb(centrifuge.SubscribeReply{}, nil)
+			cb(centrifuge.SubscribeReply{
+				Options: centrifuge.SubscribeOptions{
+					EmitPresence:   true,
+					EmitJoinLeave:  true,
+					PushJoinLeave:  true,
+					EnableRecovery: true,
+				},
+			}, nil)
 		})
 
 		client.OnPublish(func(e centrifuge.PublishEvent, cb centrifuge.PublishCallback) {

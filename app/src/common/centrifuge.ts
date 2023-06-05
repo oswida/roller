@@ -1,5 +1,5 @@
 import { Centrifuge, PublicationContext, PublishResult } from "centrifuge";
-import { appRolls, centClient, currentCs, setAppRolls, setCentClient, setCentConnectionStatus, setCurrentCs, updateRolls } from "./state";
+import { appRolls, centClient, connectedUsers, currentCs, setAppRolls, setCentClient, setCentConnectionStatus, setConnectedUsers, setCurrentCs, updateRolls } from "./state";
 import {
   appCs,
   appRooms,
@@ -109,6 +109,7 @@ export const centConnect = () => {
   if (!appSettings) return;
   const centrifuge = new Centrifuge(serverAddress(), {
     name: appSettings().userName,
+    data: appSettings().userIdent,
     maxReconnectDelay: 60000,
     minReconnectDelay: 60000,
     maxServerPingDelay: 10000
@@ -127,6 +128,14 @@ export const centConnect = () => {
     sub2.on("publication", (ctx) => {
       processRoomInfo(ctx);
     });
+    sub2.on("join", (ctx: any) => {
+      setConnectedUsers((prev) => ({ ...prev, [ctx.info.connInfo]: ctx.info.user }));
+    });
+    sub2.on("leave", (ctx: any) => {
+      const ns = { ...connectedUsers() };
+      delete ns[ctx.info.connInfo];
+      setConnectedUsers(ns);
+    })
     sub2.subscribe();
     const sub3 = centrifuge.newSubscription(topicCsInfo);
     sub3.on("publication", (ctx) => {
