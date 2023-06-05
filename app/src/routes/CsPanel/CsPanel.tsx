@@ -1,5 +1,5 @@
 import { Component, Match, Show, Switch, createMemo, createSignal, onCleanup, onMount } from "solid-js";
-import { CsInfo, TOPBAR_HEIGHT, appCs, appSettings, csExpanded, csOpenSections, currentCs, currentRoom, deleteCsStorage, exportData, importData, netPublish, setCsExpanded, setCurrentCs, topicCsInfo, updateCsStorage } from "~/common";
+import { CsInfo, TOPBAR_HEIGHT, appCs, appSettings, csExpanded, csOpenSections, currentCs, currentRoom, deleteCsStorage, exportData, importData, netPublish, netTopic, setCsExpanded, setCurrentCs, topicCsInfo, updateCsStorage } from "~/common";
 import { csPanelRootStyle } from "./styles.css";
 import { Alert, Button, Dialog, Flex, Input, Select, SelectItem, Text } from "~/component";
 import { FaSolidFileExport, FaSolidFileImport, FaSolidPlus, FaSolidShareNodes, FaSolidTrash } from "solid-icons/fa";
@@ -57,7 +57,6 @@ export const CsPanel: Component = () => {
             shared: false,
         };
         updateCsStorage(info);
-        // adjustSize();
         const flt = items().filter(it => it.id == info.id);
         if (flt.length > 0) {
             setCurrentCs(undefined);
@@ -107,7 +106,7 @@ export const CsPanel: Component = () => {
             cs.shared = false;
         }
         updateCsStorage(cs);
-        netPublish(topicCsInfo, cs);
+        netPublish(netTopic(topicCsInfo), cs);
         toast("Charsheet share toggled");
     };
 

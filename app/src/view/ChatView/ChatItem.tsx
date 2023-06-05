@@ -1,5 +1,5 @@
 import { For, Show, createMemo, createSignal } from "solid-js";
-import { Host2NetRollInfo, RollInfo, appSettings, colorType, netPublish, rollSuccessInfo, setAppRolls, topicRollInfo } from "~/common";
+import { Host2NetRollInfo, RollInfo, appSettings, colorType, netPublish, netTopic, rollSuccessInfo, setAppRolls, topicRollInfo } from "~/common";
 import { Alert, Button, DataBlock, Flex, Text } from "~/component";
 import {
   chatItemCommentStyle,
@@ -42,7 +42,7 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
     setRevOpen(false);
     const newItem = { ...item };
     newItem.revealed = true;
-    netPublish(topicRollInfo, Host2NetRollInfo(newItem));
+    netPublish(netTopic(topicRollInfo), Host2NetRollInfo(newItem));
     setAppRolls((prev) => ({ ...prev, [item.id]: newItem }));
   }
 

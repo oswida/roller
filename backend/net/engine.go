@@ -3,6 +3,7 @@ package net
 import (
 	"context"
 	"errors"
+	"strings"
 	"sync"
 
 	"github.com/centrifugal/centrifuge"
@@ -86,17 +87,19 @@ func (eng *RollerEngine) Run() error {
 }
 
 func (eng *RollerEngine) PublishCallback(e centrifuge.PublishEvent) {
-	switch e.Channel {
-	case "roll_info":
+	if strings.HasPrefix(e.Channel, "roll_info") {
 		err := eng.RollPublishCallback(e)
 		if err != nil {
 			eng.Log.Error("roll publish callback", zap.Error(err))
 		}
-	case "cs_info":
+		return
+	}
+	if strings.HasPrefix(e.Channel, "cs_info") {
 		err := eng.CsInfoPublishCallback(e)
 		if err != nil {
 			eng.Log.Error("cs info publish callback", zap.Error(err))
 		}
+		return
 	}
 }
 

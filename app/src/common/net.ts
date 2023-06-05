@@ -11,8 +11,8 @@ import {
   centUpdateCs,
   centUpdateRoom,
 } from "./centrifuge";
-import { centConnectionStatus } from "./state";
-import { appSettings } from "./storage";
+import { centConnectionStatus, currentCs } from "./state";
+import { appSettings, currentRoom } from "./storage";
 import { CsInfo, RoomInfo } from "./types";
 
 export const netInit = () => {
@@ -131,3 +131,4 @@ export const netClearRolls = (roomId: string) => {
       break;
   }
 };
+

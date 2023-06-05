@@ -1,6 +1,6 @@
 import { FaSolidCircleInfo, FaSolidInfo, FaSolidMinus, FaSolidPlus } from "solid-icons/fa";
 import { Component, For, Show, createMemo } from "solid-js";
-import { CharTemplateItem, colorType, currentCs, isCsOwner, netPublish, setCurrentCs, topicCsInfo, updateCsStorage } from "~/common";
+import { CharTemplateItem, colorType, currentCs, isCsOwner, netPublish, netTopic, setCurrentCs, topicCsInfo, updateCsStorage } from "~/common";
 import { Flex } from "../../Flex";
 import { Text } from "../../Text";
 import { csTplIconStyle, tplResourceItemStyle } from "../styles.css";
@@ -34,7 +34,7 @@ export const TplResource: Component<Props> = ({ item, state, square }) => {
         updateCsStorage(info);
         setCurrentCs(undefined);
         setCurrentCs({ ...info });
-        netPublish(topicCsInfo, info);
+        netPublish(netTopic(topicCsInfo), info);
     }
 
 

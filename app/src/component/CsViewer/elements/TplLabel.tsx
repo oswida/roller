@@ -1,10 +1,8 @@
-import { FaSolidXmark, FaSolidFloppyDisk, FaSolidPen, FaSolidLock, FaSolidCircleInfo } from "solid-icons/fa";
-import { Component, Show, createMemo, createSignal } from "solid-js";
-import { CharTemplateItem, colorType, currentCs, isCsOwner, netPublish, setCurrentCs, topicCsInfo, updateCsStorage } from "~/common";
+import { FaSolidCircleInfo } from "solid-icons/fa";
+import { Component, Show } from "solid-js";
+import { CharTemplateItem, colorType } from "~/common";
 import { Flex } from "../../Flex";
 import { Text } from "../../Text";
-import { InputArea } from "../../Input";
-import { csTplIconStyle } from "../styles.css";
 
 type Props = {
     item: CharTemplateItem;

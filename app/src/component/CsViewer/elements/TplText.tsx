@@ -1,6 +1,6 @@
 import { FaSolidXmark, FaSolidFloppyDisk, FaSolidPen, FaSolidLock } from "solid-icons/fa";
 import { Component, Show, createMemo, createSignal } from "solid-js";
-import { CharTemplateItem, currentCs, isCsOwner, netPublish, setCurrentCs, topicCsInfo, updateCsStorage } from "~/common";
+import { CharTemplateItem, currentCs, isCsOwner, netPublish, netTopic, setCurrentCs, topicCsInfo, updateCsStorage } from "~/common";
 import { Flex } from "../../Flex";
 import { Text } from "../../Text";
 import { InputArea } from "../../Input";
@@ -36,7 +36,7 @@ export const TplText: Component<Props> = ({ item }) => {
         setEditVal("");
         setCurrentCs(undefined);
         setCurrentCs({ ...info });
-        netPublish(topicCsInfo, info);
+        netPublish(netTopic(topicCsInfo), info);
     }
 
     return <>

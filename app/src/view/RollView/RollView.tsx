@@ -10,6 +10,7 @@ import {
   currentRoom,
   diceBox,
   netPublish,
+  netTopic,
   rollComment,
   setDiceBox,
   setRolling,
@@ -75,7 +76,7 @@ export const RollView: Component<RefProps> = ({ ref }) => {
       updateRolls(info);
       setRolling(false);
       if (!info.private)
-        netPublish(topicRollInfo, Host2NetRollInfo(info));
+        netPublish(netTopic(topicRollInfo), Host2NetRollInfo(info));
     };
   }));
 

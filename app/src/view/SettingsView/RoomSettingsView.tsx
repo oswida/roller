@@ -12,6 +12,7 @@ import {
   appRooms,
   appSettings,
   currentRoom,
+  netTopic,
   rollerRoomsKey,
   rollerSettingsKey,
   saveToStorage,
@@ -42,7 +43,7 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
     saveToStorage(rollerRoomsKey, data);
     netUpdateRoom(data[appSettings().currentRoom]);
     if (isOwner)
-      netPublish(topicRoomInfo, data[appSettings().currentRoom]);
+      netPublish(netTopic(topicRoomInfo), data[appSettings().currentRoom]);
   };
 
   const passOwnership = () => {

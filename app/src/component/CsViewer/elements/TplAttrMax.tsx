@@ -1,6 +1,6 @@
 import { FaSolidDice, FaSolidXmark, FaSolidCheck, FaSolidCircleInfo } from "solid-icons/fa";
 import { Component, For, Show, createMemo, createSignal } from "solid-js";
-import { CharTemplateItem, colorType, currentCs, isCsOwner, netPublish, setCurrentCs, topicCsInfo, updateCsStorage } from "~/common";
+import { CharTemplateItem, colorType, currentCs, isCsOwner, netPublish, netTopic, setCurrentCs, topicCsInfo, updateCsStorage } from "~/common";
 import { DataBlock } from "../../DataBlock";
 import { Flex } from "../../Flex";
 import { Text } from "../../Text";
@@ -44,7 +44,7 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
         setEditValMax("");
         setCurrentCs(undefined);
         setCurrentCs({ ...info });
-        netPublish(topicCsInfo, info);
+        netPublish(netTopic(topicCsInfo), info);
     }
 
     const startEdit = () => {
@@ -84,7 +84,7 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
                                 {(r) => (
                                     <div
                                         title={r.comment}
-                                        onClick={() => actionRoll(r, value()[0])}
+                                        onClick={() => actionRoll(currentCs()?.name, r, value()[0])}
                                         class={csTplIconStyle}>
                                         <FaSolidDice
                                             style={{ fill: r.iconColor ? r.iconColor : "currentcolor" }} />

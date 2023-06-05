@@ -1,5 +1,5 @@
 import { Component, Show, createMemo } from "solid-js";
-import { CharTemplateItem, colorType, currentCs, isCsOwner, netPublish, setCurrentCs, topicCsInfo, updateCsStorage } from "~/common";
+import { CharTemplateItem, colorType, currentCs, isCsOwner, netPublish, netTopic, setCurrentCs, topicCsInfo, updateCsStorage } from "~/common";
 import { tplResourceItemStyle } from "../styles.css";
 import { Flex } from "../../Flex";
 import { Text } from "../../Text";
@@ -29,7 +29,7 @@ export const TplCheck: Component<Props> = ({ item }) => {
         updateCsStorage(info);
         setCurrentCs(undefined);
         setCurrentCs(info);
-        netPublish(topicCsInfo, info);
+        netPublish(netTopic(topicCsInfo), info);
     }
 
     return <>

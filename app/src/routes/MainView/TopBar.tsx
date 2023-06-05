@@ -32,6 +32,7 @@ import { RoomConnectView } from "~/view/SettingsView/RoomConnectView";
 import { SettingsView } from "../../view/SettingsView";
 import { RoomSettingsView } from "../../view/SettingsView/RoomSettingsView";
 import { topbarItemStyle, topbarStyle } from "./styles.css";
+import { activateRoomSubscriptions } from "~/common/centrifuge";
 
 export const TopBar: Component<RefProps> = ({ ref }) => {
   const [roomSettingOpen, setRoomSettingsOpen] = createSignal(false);
@@ -84,6 +85,7 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
   createEffect(on(currentRoom, () => {
     const room = currentRoom();
     if (!room) return;
+    activateRoomSubscriptions();
     netLoadRolls(room.id); // load stored rolls
     netLoadCs(room.id); // load shared charsheets
   }));

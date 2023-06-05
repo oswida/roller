@@ -24,7 +24,9 @@ import {
   Net2HostRollInfo,
   animateRemoteRoll,
   enrollTask,
+  netTopic,
 } from "./util";
+
 
 export const centPack = (sender: string, payload: any) => {
   const room = currentRoom();
@@ -104,6 +106,49 @@ export const serverAddress = () => {
   return addr;
 };
 
+export const activateRoomSubscriptions = () => {
+  const client = centClient();
+  if (!client) return;
+  Object.values(client.subscriptions()).forEach((sub) => {
+    if (sub.channel.startsWith(topicRollInfo)
+      || sub.channel.startsWith(topicCsInfo)
+      || sub.channel.startsWith(topicRollUpdate)) {
+      sub.unsubscribe();
+      sub.removeAllListeners();
+      client.removeSubscription(sub);
+    }
+  });
+  const sub = client.newSubscription(netTopic(topicRollInfo));
+  sub.on("publication", (ctx) => {
+    enrollTask(() => processRollInfo(ctx));
+  });
+  sub.on("join", (ctx: any) => {
+    setConnectedUsers((prev) => ({ ...prev, [ctx.info.connInfo]: ctx.info.user }));
+  });
+  sub.on("leave", (ctx: any) => {
+    const ns = { ...connectedUsers() };
+    delete ns[ctx.info.connInfo];
+    setConnectedUsers(ns);
+  });
+  sub.subscribe();
+  sub.presence().then((data: any) => {
+    const ns: Record<string, string> = {};
+    Object.values(data.clients).forEach((it: any) => { ns[it.connInfo] = it.user });
+    setConnectedUsers(ns);
+  })
+  const sub3 = client.newSubscription(netTopic(topicCsInfo));
+  sub3.on("publication", (ctx) => {
+    enrollTask(() => processCsInfo(ctx));
+    ;
+  });
+  sub3.subscribe();
+  const sub4 = client.newSubscription(netTopic(topicRollUpdate));
+  sub4.on("publication", (ctx) => {
+    enrollTask(() => processRollUpdate(ctx));
+  });
+  sub4.subscribe();
+}
+
 export const centConnect = () => {
   const s = appSettings();
   if (!appSettings) return;
@@ -119,35 +164,11 @@ export const centConnect = () => {
     setCentClient(centrifuge);
     setCentConnectionStatus(true);
     centLoadRooms();
-    const sub = centrifuge.newSubscription(topicRollInfo);
+    const sub = centrifuge.newSubscription(topicRoomInfo);
     sub.on("publication", (ctx) => {
-      enrollTask(() => processRollInfo(ctx));
-    });
-    sub.subscribe();
-    const sub2 = centrifuge.newSubscription(topicRoomInfo);
-    sub2.on("publication", (ctx) => {
       processRoomInfo(ctx);
     });
-    sub2.on("join", (ctx: any) => {
-      setConnectedUsers((prev) => ({ ...prev, [ctx.info.connInfo]: ctx.info.user }));
-    });
-    sub2.on("leave", (ctx: any) => {
-      const ns = { ...connectedUsers() };
-      delete ns[ctx.info.connInfo];
-      setConnectedUsers(ns);
-    })
-    sub2.subscribe();
-    const sub3 = centrifuge.newSubscription(topicCsInfo);
-    sub3.on("publication", (ctx) => {
-      enrollTask(() => processCsInfo(ctx));
-      ;
-    });
-    sub3.subscribe();
-    const sub4 = centrifuge.newSubscription(topicRollUpdate);
-    sub4.on("publication", (ctx) => {
-      enrollTask(() => processRollUpdate(ctx));
-    });
-    sub4.subscribe();
+    sub.subscribe();
   });
   centrifuge.on("disconnected", () => {
     setCentConnectionStatus(false);
@@ -157,6 +178,8 @@ export const centConnect = () => {
   });
   centrifuge.connect();
 };
+
+
 
 export const centDisconnect = () => {
   const cl = centClient();

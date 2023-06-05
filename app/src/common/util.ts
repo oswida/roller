@@ -5,7 +5,7 @@ import {
   decompressFromBase64,
 } from "@eonasdan/lz-string";
 import {
-  appSettings,
+  appSettings, currentRoom,
 } from "./storage";
 import { spaceSize, sprinkles } from "./theme.css";
 import { CsInfo, NetRollInfo, RollInfo } from "./types";
@@ -213,4 +213,11 @@ export const enrollTask = (f: () => void) => {
 export const isCsOwner = (cs: CsInfo | undefined) => {
   if (!cs) return false;
   return appSettings().userIdent === cs.owner;
+}
+
+
+export const netTopic = (name: string) => {
+  const room = currentRoom();
+  if (!room) return "";
+  return `${name}_${room.id}`;
 }

@@ -1,11 +1,12 @@
 import { FaSolidMessage, FaSolidTrash } from "solid-icons/fa"
-import { Show, For, createMemo, Component, createSignal } from "solid-js"
+import { Show, For, createMemo, Component, createSignal, createEffect } from "solid-js"
 import {
     Host2NetRollInfo,
     RollInfo,
     appRolls, appRooms, appSettings, currentRoom,
     netClearRolls,
     netPublish,
+    netTopic,
     prettyToday,
     setAppRolls,
     setChatViewTab,
@@ -47,7 +48,7 @@ export const RollsContent: Component<Props> = ({ ref, adjustSize }) => {
         if (!room) return;
         setAppRolls({});
         netClearRolls(room.id);
-        netPublish(topicRollUpdate, "");
+        netPublish(netTopic(topicRollUpdate), "");
         toast("Rolls cleared", { position: "bottom-right" });
     };
 
@@ -74,7 +75,7 @@ export const RollsContent: Component<Props> = ({ ref, adjustSize }) => {
                 private: false,
                 revealed: true,
             } as RollInfo;
-            netPublish(topicRollInfo, Host2NetRollInfo(info));
+            netPublish(netTopic(topicRollInfo), Host2NetRollInfo(info));
             updateRolls(info);
             msgInput.value = "";
         }
@@ -91,11 +92,19 @@ export const RollsContent: Component<Props> = ({ ref, adjustSize }) => {
 
             <Flex>
                 <Popover
+                    modal={true}
                     trigger={<FaSolidMessage />}
                     title="Send chat message"
                     onOpenChange={setCmOpen}
                     open={cmOpen}>
-                    <Input onKeyPress={sendChatMessage} value="" ref={(e) => msgInput = e} />
+
+                    <Input
+                        tabIndex={0}
+                        onKeyPress={sendChatMessage}
+                        style={{ width: "20em" }}
+                        value=""
+                        ref={(e) => msgInput = e}
+                    />
                 </Popover>
                 <Show when={appSettings().userIdent == currentRoom()?.owner}>
                     <Flex>

@@ -1,6 +1,6 @@
-import { CallbackFunc, CharTemplateItemRoll, CsRoll, RollDefInfo, enrollTask, rollDef, setChatViewTab, setCsRollInputCallback, setCsRollInputOpen, setCsRollInputTitle } from "~/common";
+import { CallbackFunc, CharTemplateItemRoll, RollDefInfo, enrollTask, rollDef, setChatViewTab, setCsRollInputCallback, setCsRollInputOpen, setCsRollInputTitle } from "~/common";
 
-export const actionRoll = (roll: CharTemplateItemRoll, value: string) => {
+export const actionRoll = (tplName: string | undefined, roll: CharTemplateItemRoll, value: string) => {
     const num = Number.parseInt(value.trim());
     if (Number.isNaN(num)) return;
     switch (roll.valType) {
@@ -14,7 +14,7 @@ export const actionRoll = (roll: CharTemplateItemRoll, value: string) => {
                 successTarget: "",
             };
             setChatViewTab("rolls");
-            enrollTask(() => rollDef(info, false, roll.comment));
+            enrollTask(() => rollDef(info, false, `${roll.comment} (${tplName})`));
             break;
         case "target":
             const info2: RollDefInfo = {
@@ -31,13 +31,13 @@ export const actionRoll = (roll: CharTemplateItemRoll, value: string) => {
                     const m = Number.parseInt(value);
                     info2.modifier = m;
                     setChatViewTab("rolls");
-                    enrollTask(() => rollDef(info2, false, roll.comment));
+                    enrollTask(() => rollDef(info2, false, `${roll.comment} (${tplName})`));
                 };
                 setCsRollInputCallback((prev) => cb);
                 setCsRollInputOpen(true);
             } else {
                 setChatViewTab("rolls");
-                enrollTask(() => rollDef(info2, false, roll.comment));
+                enrollTask(() => rollDef(info2, false, `${roll.comment} (${tplName})`));
             }
             break;
     }
