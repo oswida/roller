@@ -1,18 +1,23 @@
-import { FaSolidTrash } from "solid-icons/fa"
-import { Show, For, createMemo, Component } from "solid-js"
+import { FaSolidMessage, FaSolidTrash } from "solid-icons/fa"
+import { Show, For, createMemo, Component, createSignal } from "solid-js"
 import {
+    Host2NetRollInfo,
+    RollInfo,
     appRolls, appRooms, appSettings, currentRoom,
     netClearRolls,
     netPublish,
+    prettyToday,
     setAppRolls,
     setChatViewTab,
     topicRollInfo,
-    topicRollUpdate
+    topicRollUpdate,
+    updateRolls
 } from "~/common"
-import { Flex, Button, Text } from "~/component"
+import { Flex, Button, Text, Popover, Input } from "~/component"
 import { ChatItem } from "./ChatItem"
 import { chatListStyle, defTabStyle } from "./styles.css"
-import toast from "solid-toast"
+import toast from "solid-toast";
+import { v4 as uuid } from "uuid";
 
 type Props = {
     ref: (e: any) => void;
@@ -20,6 +25,10 @@ type Props = {
 }
 
 export const RollsContent: Component<Props> = ({ ref, adjustSize }) => {
+
+    const [cmOpen, setCmOpen] = createSignal(false);
+    let msgInput: HTMLInputElement;
+
     const items = createMemo(() => {
         const data = appRooms();
         const settings = appSettings();
@@ -47,6 +56,30 @@ export const RollsContent: Component<Props> = ({ ref, adjustSize }) => {
         adjustSize();
     }
 
+    const sendChatMessage = (e: any) => {
+        if (!msgInput) return;
+        if (e.code == "Enter" || e.key == "Enter") {
+            setCmOpen(false);
+            const info = {
+                id: uuid(),
+                userId: appSettings().userIdent,
+                user: appSettings().userName,
+                userColor: appSettings().userColor,
+                result: {},
+                diceColor: appSettings().diceColor,
+                diceMaterial: appSettings().diceMaterial,
+                tstamp: prettyToday(),
+                comment: msgInput.value,
+                realtstamp: Date.now(),
+                private: false,
+                revealed: true,
+            } as RollInfo;
+            netPublish(topicRollInfo, Host2NetRollInfo(info));
+            updateRolls(info);
+            msgInput.value = "";
+        }
+    }
+
     return <>
         <Flex gap="medium" style={{ "justify-content": "space-between" }}>
             <Flex style={{ "min-height": "35px" }}>
@@ -56,13 +89,22 @@ export const RollsContent: Component<Props> = ({ ref, adjustSize }) => {
                 </div>
             </Flex>
 
-            <Show when={appSettings().userIdent == currentRoom()?.owner}>
-                <Flex>
-                    <Button title="Clear rolls" onClick={clearRolls}>
-                        <FaSolidTrash />
-                    </Button>
-                </Flex>
-            </Show>
+            <Flex>
+                <Popover
+                    trigger={<FaSolidMessage />}
+                    title="Send chat message"
+                    onOpenChange={setCmOpen}
+                    open={cmOpen}>
+                    <Input onKeyPress={sendChatMessage} value="" ref={(e) => msgInput = e} />
+                </Popover>
+                <Show when={appSettings().userIdent == currentRoom()?.owner}>
+                    <Flex>
+                        <Button title="Clear rolls" onClick={clearRolls}>
+                            <FaSolidTrash />
+                        </Button>
+                    </Flex>
+                </Show>
+            </Flex>
         </Flex>
         <div class={chatListStyle} ref={(e: any) => ref(e)}>
             <For each={items()}>

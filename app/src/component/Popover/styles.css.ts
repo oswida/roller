@@ -5,10 +5,10 @@ export const popoverTriggerStyle = style([
   sprinkles({
     display: "inline-flex",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "center",
     borderRadius: "small",
     paddingX: "small",
-    paddingY: "medium",
+    paddingY: "small",
     fontSize: "standard",
     backgroundColor: "background",
     borderColor: "backgroundSecondary",
@@ -19,6 +19,7 @@ export const popoverTriggerStyle = style([
   {
     lineHeight: 1,
     height: "35px",
+    width: "35px",
     outline: "none",
     transition: "border-color 250ms, color 250ms",
     cursor: "pointer",

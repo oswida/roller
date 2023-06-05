@@ -56,74 +56,83 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
         <div>{item.user}</div>
         <Flex title={item.tstamp}>{itemHour()}</Flex>
       </div>
-      <div class={chatItemContentStyle({})}>
-        <Flex gap="medium" direction="column">
-          <Flex style={{ "justify-content": "space-between", flex: 1 }}>
-            <Show when={appSettings().showRollTotal}>
-              <DataBlock
-                left={<Text colorSchema="secondary">Total {modValue()}</Text>}
-                right={<div>{item.result.total}</div>}
-                leftBackground="secondary"
-                rightBackground="secondary" />
-            </Show>
-            <Show when={item.successRule && appSettings().showRollSuccess && succValue() !== ""}>
-              <Show when={item.successTarget && item.successTarget !== 0}>
-                <DataBlock
-                  rightBackground="accent"
-                  leftBackground="accent"
-                  left={
-                    <Flex center>
-                      <BiRegularTargetLock fill="currentcolor" />{" "}
-                      <Text colorSchema="primary">{item.successTarget}</Text>
-                    </Flex>
-                  }
-                  right={<Text colorSchema="primary" title={item.successRule}> {succValue()}</Text>} />
-              </Show>
-              <Show when={!item.successTarget || item.successTarget == 0}>
-                <DataBlock
-                  rightBackground="accent"
-                  leftBackground="accent"
-                  right={<Text colorSchema="primary" title={item.successRule}> {succValue()}</Text>} />
-              </Show>
 
-            </Show>
+      <Show when={!item.result.sets}>
+        <div class={chatItemContentStyle({ old: true })}>
+          {item.comment}
+        </div>
+      </Show>
+
+      <Show when={item.result.sets}>
+        <div class={chatItemContentStyle({})}>
+          <Flex gap="medium" direction="column">
+            <Flex style={{ "justify-content": "space-between", flex: 1 }}>
+              <Show when={appSettings().showRollTotal && item.result.total}>
+                <DataBlock
+                  left={<Text colorSchema="secondary">Total {modValue()}</Text>}
+                  right={<div>{item.result.total}</div>}
+                  leftBackground="secondary"
+                  rightBackground="secondary" />
+              </Show>
+              <Show when={item.successRule && appSettings().showRollSuccess && succValue() !== ""}>
+                <Show when={item.successTarget && item.successTarget !== 0}>
+                  <DataBlock
+                    rightBackground="accent"
+                    leftBackground="accent"
+                    left={
+                      <Flex center>
+                        <BiRegularTargetLock fill="currentcolor" />{" "}
+                        <Text colorSchema="primary">{item.successTarget}</Text>
+                      </Flex>
+                    }
+                    right={<Text colorSchema="primary" title={item.successRule}> {succValue()}</Text>} />
+                </Show>
+                <Show when={!item.successTarget || item.successTarget == 0}>
+                  <DataBlock
+                    rightBackground="accent"
+                    leftBackground="accent"
+                    right={<Text colorSchema="primary" title={item.successRule}> {succValue()}</Text>} />
+                </Show>
+
+              </Show>
+            </Flex>
+
+            <Flex gap="medium">
+              <For each={item.result.sets}>
+                {(set) => (
+                  <Flex>
+                    <Text colorSchema="secondary">{`${set.num}${set.type}: `}</Text>
+                    <DataBlock right={set.rolls.map((r) => (
+                      r.value
+                    )).join(", ")} />
+                  </Flex>
+                )}
+              </For>
+            </Flex>
+
           </Flex>
 
-          <Flex gap="medium">
-            <For each={item.result.sets}>
-              {(set) => (
-                <Flex>
-                  <Text colorSchema="secondary">{`${set.num}${set.type}: `}</Text>
-                  <DataBlock right={set.rolls.map((r) => (
-                    r.value
-                  )).join(", ")} />
+          <Flex style={{ "justify-content": "flex-end", "align-items": "center" }}>
+            <Show when={item.comment !== undefined && item.comment !== ""}>
+              <div class={chatItemCommentStyle}>{item.comment}</div>
+            </Show>
+            <Show when={myPrivate()} >
+              <Alert
+                label="Reveal"
+                trigger={<FaSolidEyeSlash color={colorType.secondary} />}
+                triggerHint="Reveal private roll"
+                open={revOpen} onOpenChange={setRevOpen}>
+                <Text>Reveal {item.result.notation} roll?</Text>
+                <Flex gap="large">
+                  <Button onClick={() => setRevOpen(false)}>Cancel</Button>
+                  <Button onClick={reveal}>Accept</Button>
                 </Flex>
-              )}
-            </For>
+              </Alert>
+            </Show>
           </Flex>
+        </div>
+      </Show>
 
-        </Flex>
-
-        <Flex style={{ "justify-content": "flex-end", "align-items": "center" }}>
-          <Show when={item.comment !== undefined && item.comment !== ""}>
-            <div class={chatItemCommentStyle}>{item.comment}</div>
-          </Show>
-          <Show when={myPrivate()} >
-            <Alert
-              label="Reveal"
-              trigger={<FaSolidEyeSlash color={colorType.secondary} />}
-              triggerHint="Reveal private roll"
-              open={revOpen} onOpenChange={setRevOpen}>
-              <Text>Reveal {item.result.notation} roll?</Text>
-              <Flex gap="large">
-                <Button onClick={() => setRevOpen(false)}>Cancel</Button>
-                <Button onClick={reveal}>Accept</Button>
-              </Flex>
-            </Alert>
-          </Show>
-        </Flex>
-
-      </div>
     </Flex>
   );
 };
