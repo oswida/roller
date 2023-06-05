@@ -73,8 +73,9 @@ export const RollView: Component<RefProps> = ({ ref }) => {
       setSuccessRule("");
       setSuccessTarget(0);
       updateRolls(info);
-      netPublish(topicRollInfo, Host2NetRollInfo(info));
       setRolling(false);
+      if (!info.private)
+        netPublish(topicRollInfo, Host2NetRollInfo(info));
     };
   }));
 

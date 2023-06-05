@@ -17,6 +17,7 @@ import {
   RoomInfo,
   topicCsInfo,
   topicRollInfo,
+  topicRollUpdate,
   topicRoomInfo,
 } from "./types";
 import {
@@ -38,6 +39,17 @@ export const centPack = (sender: string, payload: any) => {
 
 export const centUnpack = (payload: any) => {
   return payload as CentMessage;
+};
+
+const processRollUpdate = (ctx: PublicationContext) => {
+  const data = ctx.data as CentMessage;
+  if (
+    !data ||
+    data.sender == appSettings().userIdent ||
+    data.room !== currentRoom()?.id
+  )
+    return;
+  centLoadRolls(data.room);
 };
 
 const processRollInfo = (ctx: PublicationContext) => {
@@ -122,6 +134,11 @@ export const centConnect = () => {
       ;
     });
     sub3.subscribe();
+    const sub4 = centrifuge.newSubscription(topicRollUpdate);
+    sub4.on("publication", (ctx) => {
+      enrollTask(() => processRollUpdate(ctx));
+    });
+    sub4.subscribe();
   });
   centrifuge.on("disconnected", () => {
     setCentConnectionStatus(false);

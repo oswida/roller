@@ -3,8 +3,11 @@ import { Show, For, createMemo, Component } from "solid-js"
 import {
     appRolls, appRooms, appSettings, currentRoom,
     netClearRolls,
+    netPublish,
     setAppRolls,
-    setChatViewTab
+    setChatViewTab,
+    topicRollInfo,
+    topicRollUpdate
 } from "~/common"
 import { Flex, Button, Text } from "~/component"
 import { ChatItem } from "./ChatItem"
@@ -35,6 +38,7 @@ export const RollsContent: Component<Props> = ({ ref, adjustSize }) => {
         if (!room) return;
         setAppRolls({});
         netClearRolls(room.id);
+        netPublish(topicRollUpdate, "");
         toast("Rolls cleared", { position: "bottom-right" });
     };
 
