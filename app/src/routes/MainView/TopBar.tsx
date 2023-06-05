@@ -1,17 +1,11 @@
-import { BsPersonBadge, BsPersonFill } from "solid-icons/bs";
-import { BiRegularChalkboard } from "solid-icons/bi";
+import { BsPersonBadge } from "solid-icons/bs";
 import {
   FaSolidChalkboardUser,
-  FaSolidClapperboard,
-  FaSolidDiceD20,
-  FaSolidMicrophoneLines,
   FaSolidNetworkWired,
   FaSolidPlug,
-  FaSolidPlugCircleBolt,
   FaSolidPlus,
   FaSolidUser,
 } from "solid-icons/fa";
-import { TbPlugConnected } from "solid-icons/tb";
 import { Component, Show, createEffect, createMemo, createSignal, on } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import {
@@ -21,11 +15,8 @@ import {
   connectedUsers,
   csPanelVisible,
   currentRoom,
-  diceColorSet,
-  diceMaterialSet,
   emptyRoomInfo,
   generateSerialKeys,
-  mainViewPanel,
   netConnectionStatus,
   netLoadCs,
   netLoadRolls,
@@ -33,17 +24,14 @@ import {
   rollerRoomsKey,
   rollerSettingsKey,
   saveToStorage,
-  setAppRolls,
   setCsPanelVisible,
-  setMainViewPanel,
   storageSize,
-  taskQueue,
 } from "~/common";
 import { Button, Flex, Popover, Select, SelectItem, Text } from "~/component";
 import { RoomConnectView } from "~/view/SettingsView/RoomConnectView";
 import { SettingsView } from "../../view/SettingsView";
 import { RoomSettingsView } from "../../view/SettingsView/RoomSettingsView";
-import { topbarStyle } from "./styles.css";
+import { topbarItemStyle, topbarStyle } from "./styles.css";
 
 export const TopBar: Component<RefProps> = ({ ref }) => {
   const [roomSettingOpen, setRoomSettingsOpen] = createSignal(false);
@@ -52,46 +40,6 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
 
   const username = createMemo(() => {
     return appSettings().userName;
-  });
-
-  const colorList = createMemo(() => {
-    return diceColorSet.map((it) => ({ id: it, label: it } as SelectItem));
-  });
-
-  const materialList = createMemo(() => {
-    return diceMaterialSet.map((it) => ({ id: it, label: it } as SelectItem));
-  });
-
-  const currentDiceColor = createMemo(() => {
-    const r = colorList().filter((it) => it.id == appSettings().diceColor);
-    if (r.length > 0) return r[0];
-    return undefined;
-  });
-
-  const currentDiceMaterial = createMemo(() => {
-    const r = materialList().filter(
-      (it) => it.id == appSettings().diceMaterial
-    );
-    if (r.length > 0) return r[0];
-    return undefined;
-  });
-
-  const diceColorChange = (value: SelectItem) => {
-    const data = { ...appSettings() };
-    data.diceColor = value.id;
-    saveToStorage(rollerSettingsKey, data);
-  };
-
-  const diceMaterialChange = (value: SelectItem) => {
-    const data = { ...appSettings() };
-    data.diceMaterial = value.id;
-    saveToStorage(rollerSettingsKey, data);
-  };
-
-  const pendingRolls = createMemo(() => {
-    const q = taskQueue();
-    if (!q) return 0;
-    return q.length;
   });
 
   const createRoom = () => {
@@ -142,92 +90,78 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
 
   return (
     <div class={topbarStyle} ref={ref}>
-      <Flex gap="medium" center>
-        <Popover
-          trigger={<FaSolidUser style={{ height: "1.5em", width: "1.5em" }} />}
-          title="User settings"
-          open={userSettingOpen}
-          onOpenChange={setUserSettingsOpen}
-        >
-          <SettingsView onOpenChange={setUserSettingsOpen} />
-        </Popover>
-        <Dynamic component={"Text"}>{username()}</Dynamic>
-        <Show when={roomList().length > 0}>
+      <Flex gap="large">
+        <Flex class={topbarItemStyle}>
+          <Popover
+            modal={true}
+            trigger={<FaSolidUser style={{ height: "1.5em", width: "1.5em" }} />}
+            title="User settings"
+            open={userSettingOpen}
+            onOpenChange={setUserSettingsOpen}
+          >
+            <SettingsView onOpenChange={setUserSettingsOpen} />
+          </Popover>
+          <Dynamic component={"Text"}>{username()}</Dynamic>
+        </Flex>
+
+        <Flex class={topbarItemStyle}>
+          <Show when={roomList().length > 0}>
+            <Popover
+              trigger={
+                <FaSolidChalkboardUser
+                  style={{ height: "1.5em", width: "1.5em" }}
+                />
+              }
+              title="Rooms"
+              open={roomSettingOpen}
+              onOpenChange={setRoomSettingsOpen}
+            >
+              <RoomSettingsView onOpenChange={setRoomSettingsOpen} />
+            </Popover>
+            <Dynamic
+              component={Select}
+              options={roomList}
+              selected={selectedRoom}
+              onChange={changeRoom}
+            />
+          </Show>
+          <Show when={roomList().length <= 0}>
+            <FaSolidChalkboardUser
+              title="Rooms"
+              style={{ height: "1.5em", width: "1.5em" }}
+            />
+          </Show>
+          <Button variant="icon" title="Create room" onClick={createRoom}>
+            <FaSolidPlus />
+          </Button>
           <Popover
             trigger={
-              <FaSolidChalkboardUser
-                style={{ height: "1.5em", width: "1.5em" }}
-              />
+              <FaSolidPlug style={{ height: "1.5em", width: "1.5em" }} />
             }
-            title="Rooms"
-            open={roomSettingOpen}
-            onOpenChange={setRoomSettingsOpen}
+            title="Connect to room"
+            open={roomConnectOpen}
+            onOpenChange={setRoomConnectOpen}
           >
-            <RoomSettingsView onOpenChange={setRoomSettingsOpen} />
+            <RoomConnectView onOpenChange={setRoomConnectOpen} />
           </Popover>
-          <Dynamic
-            component={Select}
-            options={roomList}
-            selected={selectedRoom}
-            onChange={changeRoom}
-          />
-        </Show>
-        <Show when={roomList().length <= 0}>
-          <FaSolidChalkboardUser
-            title="Rooms"
-            style={{ height: "1.5em", width: "1.5em" }}
-          />
-        </Show>
-        <Button variant="icon" title="Create room" onClick={createRoom}>
-          <FaSolidPlus />
-        </Button>
-        <Popover
-          trigger={
-            <FaSolidPlug style={{ height: "1.5em", width: "1.5em" }} />
-          }
-          title="Connect to room"
-          open={roomConnectOpen}
-          onOpenChange={setRoomConnectOpen}
-        >
-          <RoomConnectView onOpenChange={setRoomConnectOpen} />
-        </Popover>
-      </Flex>
+        </Flex>
 
-      <Flex gap="medium">
-        {/* <Button
-          variant="icon"
-          toggled={() => mainViewPanel() == "dice"}
-          onClick={() => setMainViewPanel("dice")}
-        >
-          <FaSolidDiceD20 size={25} />
-        </Button> */}
-        <Button
-          variant="icon"
-          toggled={csPanelVisible}
-          onClick={() => setCsPanelVisible(!csPanelVisible())}
-        >
-          <BsPersonBadge size={25} />
-        </Button>
+        <Flex gap="medium" class={topbarItemStyle}>
+          <Button
+            variant="icon"
+            toggled={csPanelVisible}
+            onClick={() => setCsPanelVisible(!csPanelVisible())}
+          >
+            <BsPersonBadge size={25} />
+          </Button>
+          <Text>Charsheets</Text>
+        </Flex>
 
       </Flex>
+
+
 
       <Flex gap="large" center>
-        <Flex>
-          <Select
-            label="Color set"
-            labelLeft
-            options={colorList}
-            selected={currentDiceColor}
-            onChange={diceColorChange}
-          ></Select>
-          <Select
-            label="Material"
-            labelLeft
-            options={materialList}
-            selected={currentDiceMaterial}
-            onChange={diceMaterialChange}
-          ></Select>
-        </Flex>
         <Show when={netConnectionStatus()}>
           <Dynamic component={"div"} title={Object.values(connectedUsers()).join("\n")}>
             <FaSolidNetworkWired style={{ fill: "currentcolor" }} />
@@ -236,9 +170,6 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
         <Text colorSchema="secondary" fontSize="small">
           {(storageSize() / 1000).toFixed(2)} kB
         </Text>
-        {/* <Dynamic component={Text} colorSchema="secondary" fontSize="small">
-          PR: {pendingRolls()}
-        </Dynamic> */}
       </Flex>
     </div>
   );

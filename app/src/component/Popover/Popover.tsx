@@ -14,6 +14,7 @@ type Props = {
   trigger: any;
   open?: () => boolean;
   onOpenChange?: (value: boolean) => void;
+  modal?: boolean;
 };
 
 export const Popover: ParentComponent<Props> = ({
@@ -22,9 +23,10 @@ export const Popover: ParentComponent<Props> = ({
   trigger,
   open,
   onOpenChange,
+  modal,
 }) => {
   return (
-    <Pop.Root open={open ? open() : undefined} onOpenChange={onOpenChange}>
+    <Pop.Root open={open ? open() : undefined} onOpenChange={onOpenChange} modal={modal}>
       <Pop.Trigger class={popoverTriggerStyle} title={title}>
         {trigger}
       </Pop.Trigger>

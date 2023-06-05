@@ -2,8 +2,8 @@ import { CopyToClipboard } from "solid-copy-to-clipboard";
 import { FaSolidCircleInfo, FaSolidShareNodes } from "solid-icons/fa";
 import { Component, createMemo } from "solid-js";
 import toast from "solid-toast";
-import { appSettings, rollerSettingsKey, saveToStorage } from "~/common";
-import { Flex, Input, Switch, Text } from "~/component";
+import { appSettings, diceColorSet, diceMaterialSet, rollerSettingsKey, saveToStorage } from "~/common";
+import { Flex, Input, Select, SelectItem, Switch, Text } from "~/component";
 import { buttonStyle } from "~/component/Button/styles.css";
 
 type Props = {
@@ -38,11 +38,39 @@ export const SettingsView: Component<Props> = ({ onOpenChange }) => {
     return rl;
   });
 
-  // const csAdjustHeight = createMemo(() => {
-  //   const rl = appSettings().csAdjustHeight;
-  //   if (!rl) return false;
-  //   return rl;
-  // });
+  const colorList = createMemo(() => {
+    return diceColorSet.map((it) => ({ id: it, label: it } as SelectItem));
+  });
+
+  const materialList = createMemo(() => {
+    return diceMaterialSet.map((it) => ({ id: it, label: it } as SelectItem));
+  });
+
+  const currentDiceColor = createMemo(() => {
+    const r = colorList().filter((it) => it.id == appSettings().diceColor);
+    if (r.length > 0) return r[0];
+    return undefined;
+  });
+
+  const currentDiceMaterial = createMemo(() => {
+    const r = materialList().filter(
+      (it) => it.id == appSettings().diceMaterial
+    );
+    if (r.length > 0) return r[0];
+    return undefined;
+  });
+
+  const diceColorChange = (value: SelectItem) => {
+    const data = { ...appSettings() };
+    data.diceColor = value.id;
+    saveToStorage(rollerSettingsKey, data);
+  };
+
+  const diceMaterialChange = (value: SelectItem) => {
+    const data = { ...appSettings() };
+    data.diceMaterial = value.id;
+    saveToStorage(rollerSettingsKey, data);
+  };
 
   const smallerDice = createMemo(() => {
     const rl = appSettings().smallerDice;
@@ -71,20 +99,30 @@ export const SettingsView: Component<Props> = ({ onOpenChange }) => {
     saveToStorage(rollerSettingsKey, newState);
   };
 
-  const setCsAdjustHeight = (value: boolean) => {
-    const newState = { ...appSettings(), csAdjustHeight: value };
-    saveToStorage(rollerSettingsKey, newState);
-  };
-
 
   return (
     <Flex direction="column" gap="medium">
-      <Input
-        label="User name"
-        title="User name"
-        value={appSettings().userName}
-        onChange={(e) => updateName(e.target.value)}
-      />
+      <Flex style={{ "justify-content": "space-between", "align-items": "end" }}>
+        <Input
+          label="User name"
+          title="User name"
+          value={appSettings().userName}
+          onChange={(e) => updateName(e.target.value)}
+        />
+        <CopyToClipboard
+          text={appSettings().userIdent}
+          onCopy={() => {
+            toast("User ID copied to clipboard", { icon: <FaSolidCircleInfo /> });
+            onOpenChange(false);
+          }}
+          eventTrigger="onClick"
+        >
+          <div class={buttonStyle({ variant: "ghost" })} title="Copy user id">
+            <FaSolidShareNodes style={{ fill: "currentcolor" }} />
+            <Text>Copy user ID </Text>
+          </div>
+        </CopyToClipboard>
+      </Flex>
       <Flex style={{ "justify-content": "space-between" }}>
         <Switch
           label="Chat on right"
@@ -109,26 +147,24 @@ export const SettingsView: Component<Props> = ({ onOpenChange }) => {
           setChecked={setSuccess}
         />
       </Flex>
-      {/* <Flex style={{ "justify-content": "space-between" }}>
-        <Switch
-          label="Adjust charsheet to height"
-          checked={csAdjustHeight}
-          setChecked={setCsAdjustHeight}
+      <Flex style={{ "justify-content": "space-evenly" }}>
+        <Select
+          modal={true}
+          label="Dice color"
+          labelLeft
+          options={colorList}
+          selected={currentDiceColor}
+          onChange={diceColorChange}
         />
-      </Flex> */}
-      <CopyToClipboard
-        text={appSettings().userIdent}
-        onCopy={() => {
-          toast("User ID copied to clipboard", { icon: <FaSolidCircleInfo /> });
-          onOpenChange(false);
-        }}
-        eventTrigger="onClick"
-      >
-        <div class={buttonStyle({ variant: "ghost" })} title="Copy user id">
-          <FaSolidShareNodes style={{ fill: "currentcolor" }} />
-          <Text>Copy user ID </Text>
-        </div>
-      </CopyToClipboard>
+        <Select
+          label="Dice material"
+          labelLeft
+          options={materialList}
+          selected={currentDiceMaterial}
+          onChange={diceMaterialChange}
+        />
+      </Flex>
+
     </Flex>
   );
 };
