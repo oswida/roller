@@ -92,7 +92,6 @@ export const TplAttr: Component<Props> = ({ item }) => {
                 leftBackground="accent"
                 right={<Input
                     value={value()}
-
                     style={{ width: "3em", "text-align": "center", "user-select": "all" }}
                     onChange={(e: any) => setEditVal(e.target.value)} />}
                 rightBackground="accent" />

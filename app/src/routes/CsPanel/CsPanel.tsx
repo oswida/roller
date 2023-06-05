@@ -60,6 +60,7 @@ export const CsPanel: Component = () => {
         // adjustSize();
         const flt = items().filter(it => it.id == info.id);
         if (flt.length > 0) {
+            setCurrentCs(undefined);
             setCurrentCs(appCs()[flt[0].id]);
         }
         toast("New charsheet created");
