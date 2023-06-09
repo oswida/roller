@@ -11,8 +11,10 @@ import {
   updateCsStorage,
 } from "~/common";
 import { themeColor } from "~/common/theme.css";
+import { charTemplates } from "~/template";
 import { Flex } from "../../Flex";
 import { Text } from "../../Text";
+import { actionCompute } from "../actions";
 import { csTplIconStyle, tplResourceItemStyle } from "../styles.css";
 
 type Props = {
@@ -41,6 +43,12 @@ export const TplResource: Component<Props> = ({ item, state, square }) => {
     if (v < 0) v = 0;
     if (v > (item.limit ? item.limit : 1)) v = item.limit ? item.limit : 1;
     info.values[item.id] = v;
+    const tpl = charTemplates[info.template];
+    if (tpl?.computeDeps && tpl?.computeDeps[item.id]) {
+      const v = actionCompute(item.id, info);
+      info.values = { ...info.values, ...v };
+    }
+
     updateCsStorage(info);
     setCurrentCs(undefined);
     setCurrentCs({ ...info });

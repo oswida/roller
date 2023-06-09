@@ -4,7 +4,14 @@ import {
   FaSolidDice,
   FaSolidXmark,
 } from "solid-icons/fa";
-import { Component, For, Show, createMemo, createSignal } from "solid-js";
+import {
+  Component,
+  For,
+  Show,
+  createEffect,
+  createMemo,
+  createSignal,
+} from "solid-js";
 import {
   CharTemplateItem,
   centPublish,
@@ -16,11 +23,12 @@ import {
   updateCsStorage,
 } from "~/common";
 import { themeColor } from "~/common/theme.css";
+import { charTemplates } from "~/template";
 import { DataBlock } from "../../DataBlock";
 import { Flex } from "../../Flex";
 import { Input } from "../../Input";
 import { Text } from "../../Text";
-import { actionRoll } from "../actions";
+import { actionCompute, actionRoll } from "../actions";
 import { csTplAttrValueStyle, csTplIconStyle } from "../styles.css";
 
 type Props = {
@@ -54,6 +62,12 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
     if (vMax.trim() === "") vMax = values[1];
 
     info.values[item.id] = [v, vMax];
+    const tpl = charTemplates[info.template];
+    if (tpl?.computeDeps && tpl?.computeDeps[item.id]) {
+      const v = actionCompute(item.id, info);
+      info.values = { ...info.values, ...v };
+    }
+
     updateCsStorage(info);
     setEditVal("");
     setEditValMax("");
@@ -66,6 +80,11 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
     if (!isCsOwner(currentCs())) return;
     setItemEdit(true);
   };
+
+  createEffect(() => {
+    if (!itemEdit()) return;
+    document.getElementById(item.id)?.focus();
+  });
 
   return (
     <Flex gap="medium" style={{ "align-items": "center" }}>
@@ -148,6 +167,8 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
             <Flex>
               <Input
                 value={value()[0]}
+                id={item.id}
+                onFocus={(e) => e.target.select()}
                 style={{
                   width: "3em",
                   "text-align": "center",

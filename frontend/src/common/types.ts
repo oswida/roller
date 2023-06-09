@@ -157,18 +157,20 @@ type CharTemplateItemType =
   | "state_resource_square"
   | "resource_square"
   | "attr_max"
-  | "label";
+  | "label"
+  | "computed";
 
 export type CharTemplateItem = {
-  id: string;
-  name: string;
-  itype: CharTemplateItemType;
+  id: string; // item unique id
+  name: string; // item name
+  itype: CharTemplateItemType; // control type
   text?: string;
-  limit?: number;
-  rolls?: CharTemplateItemRoll[];
+  limit?: number; // limit for resource controls and text lines
+  rolls?: CharTemplateItemRoll[]; // rolls to perform, creates roll icons
   color?: string;
   hint?: string;
   labels?: string[];
+  compute?: (item: CharTemplateItem, values: Record<string, any>) => string; // function for 'computed' type
 };
 
 export type CharTemplateSection = {
@@ -181,6 +183,7 @@ export type CharTemplate = {
   game: string;
   name: string;
   sections: CharTemplateSection[];
+  computeDeps?: Record<string, string[]>;
 };
 
 // Dice roll

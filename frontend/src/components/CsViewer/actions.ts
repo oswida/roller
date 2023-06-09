@@ -1,6 +1,7 @@
 import {
   CallbackFunc,
   CharTemplateItemRoll,
+  CsInfo,
   RollDefInfo,
   enrollTask,
   rollDef,
@@ -9,6 +10,7 @@ import {
   setCsRollInputOpen,
   setCsRollInputTitle,
 } from "~/common";
+import { charTemplates } from "~/template";
 
 export const actionRoll = (
   tplName: string | undefined,
@@ -57,4 +59,22 @@ export const actionRoll = (
       }
       break;
   }
+};
+
+export const actionCompute = (changedId: string, cs: CsInfo) => {
+  const tpl = charTemplates[cs.template];
+  const result: Record<string, any> = {};
+  if (!tpl || !tpl.computeDeps) return {};
+  const list = tpl.computeDeps[changedId];
+  if (!list || list.length === 0) return {};
+  list.forEach((it) => {
+    const items = tpl.sections
+      .flatMap((s) => s.items)
+      .filter((tt) => tt.id === it);
+    if (items.length > 0 && items[0].compute) {
+      const r = items[0].compute(items[0], cs.values);
+      result[items[0].id] = r;
+    }
+  });
+  return result;
 };

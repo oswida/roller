@@ -1,5 +1,11 @@
 import { FaSolidFloppyDisk, FaSolidPen, FaSolidXmark } from "solid-icons/fa";
-import { Component, Show, createMemo, createSignal } from "solid-js";
+import {
+  Component,
+  Show,
+  createEffect,
+  createMemo,
+  createSignal,
+} from "solid-js";
 import {
   CharTemplateItem,
   centPublish,
@@ -11,7 +17,7 @@ import {
   updateCsStorage,
 } from "~/common";
 import { Flex } from "../../Flex";
-import { InputArea } from "../../Input";
+import { Input, InputArea } from "../../Input";
 import { Text } from "../../Text";
 import { csTplIconStyle } from "../styles.css";
 
@@ -47,6 +53,11 @@ export const TplText: Component<Props> = ({ item }) => {
     centPublish(netTopic(topicCsInfo), info);
   };
 
+  createEffect(() => {
+    if (!itemEdit()) return;
+    document.getElementById(item.id)?.focus();
+  });
+
   return (
     <>
       <Show when={itemEdit()}>
@@ -73,15 +84,30 @@ export const TplText: Component<Props> = ({ item }) => {
               </div>
             </Flex>
           </Flex>
-          <InputArea
-            onChange={(e: any) => setEditVal(e.target.value)}
-            value={value()}
-            style={{
-              "min-height": "10em",
-              "font-size": "medium",
-              width: "280px",
-            }}
-          />
+          <Show when={item.limit && item.limit == 1}>
+            <Input
+              id={item.id}
+              onFocus={(e) => e.target.select()}
+              onChange={(e: any) => setEditVal(e.target.value)}
+              value={value()}
+              style={{
+                width: "280px",
+              }}
+            />
+          </Show>
+          <Show when={!item.limit || item.limit != 1}>
+            <InputArea
+              id={item.id}
+              onFocus={(e) => e.target.select()}
+              onChange={(e: any) => setEditVal(e.target.value)}
+              value={value()}
+              style={{
+                "min-height": "10em",
+                "font-size": "medium",
+                width: "280px",
+              }}
+            />
+          </Show>
         </Flex>
       </Show>
       <Show when={!itemEdit()}>
