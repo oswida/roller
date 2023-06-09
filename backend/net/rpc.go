@@ -2,14 +2,13 @@ package net
 
 import (
 	"encoding/json"
-	"roller/db"
+	"rpgroll/db"
 
 	"github.com/centrifugal/centrifuge"
-	badger "github.com/dgraph-io/badger/v4"
 	"go.uber.org/zap"
 )
 
-func (eng *RollerEngine) RpcRoomUpdate(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
+func (eng *Engine) RpcRoomUpdate(e centrifuge.RPCEvent) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
@@ -18,7 +17,7 @@ func (eng *RollerEngine) RpcRoomUpdate(dbase *badger.DB, e centrifuge.RPCEvent) 
 	if err != nil {
 		return nil, err
 	}
-	err = db.RoomUpdate(dbase, data.Data.Id, data.Data)
+	err = eng.Db.RoomUpdate(data.Data)
 	if err != nil {
 		return nil, err
 	}
@@ -26,7 +25,7 @@ func (eng *RollerEngine) RpcRoomUpdate(dbase *badger.DB, e centrifuge.RPCEvent) 
 	return []byte{}, nil
 }
 
-func (eng *RollerEngine) RpcRoomDelete(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
+func (eng *Engine) RpcRoomDelete(e centrifuge.RPCEvent) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
@@ -36,10 +35,10 @@ func (eng *RollerEngine) RpcRoomDelete(dbase *badger.DB, e centrifuge.RPCEvent) 
 		return nil, err
 	}
 	eng.Log.Debug("Deleting room", zap.String("id", data.Data.Id))
-	return []byte{}, db.RoomDelete(dbase, data.Room)
+	return []byte{}, eng.Db.RoomDelete(data.Room)
 }
 
-func (eng *RollerEngine) RpcRoomList(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
+func (eng *Engine) RpcRoomList(e centrifuge.RPCEvent) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
@@ -48,7 +47,7 @@ func (eng *RollerEngine) RpcRoomList(dbase *badger.DB, e centrifuge.RPCEvent) ([
 	if err != nil {
 		return nil, err
 	}
-	list, err := db.RoomList(dbase, data.Data)
+	list, err := eng.Db.RoomList(data.Data)
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +58,7 @@ func (eng *RollerEngine) RpcRoomList(dbase *badger.DB, e centrifuge.RPCEvent) ([
 	return bytes, nil
 }
 
-func (eng *RollerEngine) RpcCsUpdate(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
+func (eng *Engine) RpcCsUpdate(e centrifuge.RPCEvent) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
@@ -68,7 +67,7 @@ func (eng *RollerEngine) RpcCsUpdate(dbase *badger.DB, e centrifuge.RPCEvent) ([
 	if err != nil {
 		return nil, err
 	}
-	err = db.RoomItemUpdate(dbase, data.Room, data.Data)
+	err = eng.Db.ItemUpdate(db.ItemPrefixCs, data.Sender, data.Data)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +75,7 @@ func (eng *RollerEngine) RpcCsUpdate(dbase *badger.DB, e centrifuge.RPCEvent) ([
 	return []byte{}, nil
 }
 
-func (eng *RollerEngine) RpcCsDelete(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
+func (eng *Engine) RpcCsDelete(e centrifuge.RPCEvent) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
@@ -85,10 +84,10 @@ func (eng *RollerEngine) RpcCsDelete(dbase *badger.DB, e centrifuge.RPCEvent) ([
 	if err != nil {
 		return nil, err
 	}
-	return []byte{}, db.RoomItemDelete(dbase, data.Room, data.Data)
+	return []byte{}, eng.Db.ItemDelete(db.ItemPrefixCs, data.Sender, data.Data)
 }
 
-func (eng *RollerEngine) RpcCsList(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
+func (eng *Engine) RpcCsList(e centrifuge.RPCEvent) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
@@ -97,7 +96,8 @@ func (eng *RollerEngine) RpcCsList(dbase *badger.DB, e centrifuge.RPCEvent) ([]b
 	if err != nil {
 		return nil, err
 	}
-	list, err := db.RoomItemList[db.CsInfo](dbase, data.Room, data.Data)
+	var charsheet db.CsInfo
+	list, err := eng.Db.ItemList(db.ItemPrefixCs, data.Sender, data.Data, charsheet)
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +108,7 @@ func (eng *RollerEngine) RpcCsList(dbase *badger.DB, e centrifuge.RPCEvent) ([]b
 	return bytes, nil
 }
 
-func (eng *RollerEngine) RpcRollList(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
+func (eng *Engine) RpcRollList(e centrifuge.RPCEvent) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
@@ -117,7 +117,8 @@ func (eng *RollerEngine) RpcRollList(dbase *badger.DB, e centrifuge.RPCEvent) ([
 	if err != nil {
 		return nil, err
 	}
-	list, err := db.RoomItemList[db.RollInfo](dbase, data.Room, data.Data)
+	var roll db.RollInfo
+	list, err := eng.Db.ItemList(db.ItemPrefixRoll, data.Room, data.Data, roll)
 	if err != nil {
 		return nil, err
 	}
@@ -128,7 +129,7 @@ func (eng *RollerEngine) RpcRollList(dbase *badger.DB, e centrifuge.RPCEvent) ([
 	return bytes, nil
 }
 
-func (eng *RollerEngine) RpcRollClear(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
+func (eng *Engine) RpcRollClear(e centrifuge.RPCEvent) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
@@ -137,5 +138,5 @@ func (eng *RollerEngine) RpcRollClear(dbase *badger.DB, e centrifuge.RPCEvent) (
 	if err != nil {
 		return nil, err
 	}
-	return []byte{}, db.RoomItemClear[db.RollInfo](dbase, data.Room)
+	return []byte{}, eng.Db.ItemClear(db.ItemPrefixRoll, data.Room)
 }

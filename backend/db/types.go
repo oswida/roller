@@ -1,7 +1,10 @@
 package db
 
-type Identifable interface {
+import "encoding/json"
+
+type Item interface {
 	GetId() string
+	Unmarshal(data []byte) (Item, error)
 }
 
 type RollInfo struct {
@@ -25,6 +28,12 @@ func (info RollInfo) GetId() string {
 	return info.Id
 }
 
+func (info RollInfo) Unmarshal(data []byte) (Item, error) {
+	var r RollInfo
+	err := json.Unmarshal(data, &r)
+	return r, err
+}
+
 type RoomInfo struct {
 	Id     string `json:"id"`
 	Name   string `json:"name"`
@@ -45,25 +54,13 @@ func (info CsInfo) GetId() string {
 	return info.Id
 }
 
-type BoardInfo struct {
-	Id     string `json:"id"`
-	Name   string `json:"name"`
-	Owner  string `json:"owner"`
-	Bkguri string `json:"bkguri"`
-	Shared bool   `json:"shared,omitempty"`
+func (info CsInfo) Unmarshal(data []byte) (Item, error) {
+	var r CsInfo
+	err := json.Unmarshal(data, &r)
+	return r, err
 }
 
-func (info BoardInfo) GetId() string {
-	return info.Id
-}
-
-type BoardObject struct {
-	Id      string `json:"id"`
-	BoardId string `json:"board"`
-	Owner   string `json:"owner"`
-	Data    string `json:"data"`
-}
-
-func (info BoardObject) GetId() string {
-	return info.Id
-}
+const (
+	ItemPrefixCs   = "cs"
+	ItemPrefixRoll = "roll"
+)

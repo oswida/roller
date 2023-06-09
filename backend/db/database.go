@@ -3,39 +3,56 @@ package db
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 
 	badger "github.com/dgraph-io/badger/v4"
 )
 
-func InitDatabase() (*badger.DB, error) {
+type DB struct {
+	Db *badger.DB
+}
+
+func NewDatabase() (*DB, error) {
 	opts := badger.DefaultOptions("data")
 	db, err := badger.Open(opts)
 	if err != nil {
 		return nil, err
 	}
-	return db, nil
+	return &DB{
+		Db: db,
+	}, nil
 }
 
-func CloseDatabase(db *badger.DB) {
-	log.Println("Closing database")
-	db.Close()
+func (d *DB) Close() {
+	d.Db.Close()
 }
 
-func RoomUpdate(db *badger.DB, id string, data RoomInfo) error {
-	return db.Update(func(txn *badger.Txn) error {
+func roomKey(id string) []byte {
+	return []byte(id)
+}
+
+func contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
+}
+
+func (d *DB) RoomUpdate(data RoomInfo) error {
+	return d.Db.Update(func(txn *badger.Txn) error {
 		bytes, err := json.Marshal(data)
 		if err != nil {
 			return err
 		}
-		return txn.Set([]byte(id), bytes)
+		return txn.Set(roomKey(data.Id), bytes)
 	})
 }
 
-func RoomGet(db *badger.DB, id string) (RoomInfo, error) {
+func (d *DB) RoomGet(id string) (RoomInfo, error) {
 	var data RoomInfo
-	err := db.View(func(txn *badger.Txn) error {
-		item, err := txn.Get([]byte(id))
+	err := d.Db.View(func(txn *badger.Txn) error {
+		item, err := txn.Get(roomKey(id))
 		if err != nil {
 			return err
 		}
@@ -54,24 +71,15 @@ func RoomGet(db *badger.DB, id string) (RoomInfo, error) {
 	return data, err
 }
 
-func RoomDelete(db *badger.DB, id string) error {
-	return db.Update(func(txn *badger.Txn) error {
-		return txn.Delete([]byte(id))
+func (d *DB) RoomDelete(id string) error {
+	return d.Db.Update(func(txn *badger.Txn) error {
+		return txn.Delete(roomKey(id))
 	})
 }
 
-func contains(s []string, e string) bool {
-	for _, a := range s {
-		if a == e {
-			return true
-		}
-	}
-	return false
-}
-
-func RoomList(db *badger.DB, ids []string) ([]RoomInfo, error) {
+func (d *DB) RoomList(ids []string) ([]RoomInfo, error) {
 	data := []RoomInfo{}
-	err := db.View(func(txn *badger.Txn) error {
+	err := d.Db.View(func(txn *badger.Txn) error {
 		opts := badger.DefaultIteratorOptions
 		opts.PrefetchSize = 10
 		it := txn.NewIterator(opts)
@@ -99,41 +107,38 @@ func RoomList(db *badger.DB, ids []string) ([]RoomInfo, error) {
 	return data, err
 }
 
-func RoomItemDelete[T Identifable](db *badger.DB, roomId string, item T) error {
-	return db.Update(func(txn *badger.Txn) error {
-		key := fmt.Sprintf("%s-%s-%s", fmt.Sprintf("%T", item), roomId, item.GetId())
+func (d *DB) ItemDelete(itemPrefix string, containerId string, item Item) error {
+	return d.Db.Update(func(txn *badger.Txn) error {
+		key := fmt.Sprintf("%s-%s-%s", itemPrefix, containerId, item.GetId())
 		return txn.Delete([]byte(key))
 	})
 }
 
-func RoomItemUpdate[T Identifable](db *badger.DB, roomId string, item T) error {
-	return db.Update(func(txn *badger.Txn) error {
+func (d *DB) ItemUpdate(itemPrefix string, containerId string, item Item) error {
+	return d.Db.Update(func(txn *badger.Txn) error {
 		bytes, err := json.Marshal(item)
 		if err != nil {
 			return err
 		}
-		key := fmt.Sprintf("%s-%s-%s", fmt.Sprintf("%T", item), roomId, item.GetId())
+		key := fmt.Sprintf("%s-%s-%s", itemPrefix, containerId, item.GetId())
 		return txn.Set([]byte(key), bytes)
 	})
 }
-
-func RoomItemList[T Identifable](db *badger.DB, roomId string, ids []string) ([]T, error) {
-	data := []T{}
-	err := db.View(func(txn *badger.Txn) error {
+func (d *DB) ItemList(itemPrefix string, containerId string, ids []string, item Item) ([]Item, error) {
+	data := []Item{}
+	err := d.Db.View(func(txn *badger.Txn) error {
 		it := txn.NewIterator(badger.DefaultIteratorOptions)
 		defer it.Close()
-		var x T
-		prefix := []byte(fmt.Sprintf("%s-%s-", fmt.Sprintf("%T", x), roomId))
+		prefix := []byte(fmt.Sprintf("%s-%s-", itemPrefix, containerId))
 		for it.Seek(prefix); it.ValidForPrefix(prefix); it.Next() {
-			item := it.Item()
-			err := item.Value(func(v []byte) error {
-				var it T
-				err := json.Unmarshal(v, &it)
+			it := it.Item()
+			err := it.Value(func(v []byte) error {
+				result, err := item.Unmarshal(v)
 				if err != nil {
 					return err
 				}
-				if len(ids) == 0 || contains(ids, it.GetId()) {
-					data = append(data, it)
+				if len(ids) == 0 || contains(ids, item.GetId()) {
+					data = append(data, result)
 				}
 				return nil
 			})
@@ -146,12 +151,11 @@ func RoomItemList[T Identifable](db *badger.DB, roomId string, ids []string) ([]
 	return data, err
 }
 
-func RoomItemClear[T Identifable](db *badger.DB, roomId string) error {
-	err := db.Update(func(txn *badger.Txn) error {
+func (d *DB) ItemClear(itemPrefix string, containerId string) error {
+	err := d.Db.Update(func(txn *badger.Txn) error {
 		it := txn.NewIterator(badger.DefaultIteratorOptions)
 		defer it.Close()
-		var x T
-		prefix := []byte(fmt.Sprintf("%s-%s-", fmt.Sprintf("%T", x), roomId))
+		prefix := []byte(fmt.Sprintf("%s-%s-", itemPrefix, containerId))
 		for it.Seek(prefix); it.ValidForPrefix(prefix); it.Next() {
 			key := it.Item().Key()
 			err := txn.Delete(key)

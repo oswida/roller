@@ -3,29 +3,29 @@ package net
 import (
 	"context"
 	"errors"
+	"rpgroll/db"
 	"strings"
 	"sync"
 
 	"github.com/centrifugal/centrifuge"
-	badger "github.com/dgraph-io/badger/v4"
 	"go.uber.org/zap"
 )
 
-type RollerEngine struct {
-	DB   *badger.DB
+type Engine struct {
+	Db   *db.DB
 	Node *centrifuge.Node
 	Log  *zap.Logger
 
 	mux sync.Mutex
 }
 
-func NewRollerEngine(dbase *badger.DB, log *zap.Logger) (*RollerEngine, error) {
+func NewEngine(dbase *db.DB, log *zap.Logger) (*Engine, error) {
 	node, err := centrifuge.New(centrifuge.Config{})
 	if err != nil {
 		return nil, err
 	}
-	result := &RollerEngine{
-		DB:   dbase,
+	result := &Engine{
+		Db:   dbase,
 		Node: node,
 		Log:  log,
 	}
@@ -64,7 +64,7 @@ func NewRollerEngine(dbase *badger.DB, log *zap.Logger) (*RollerEngine, error) {
 		})
 
 		client.OnRPC(func(e centrifuge.RPCEvent, cb centrifuge.RPCCallback) {
-			r, err := result.RPCCallback(dbase, e)
+			r, err := result.RPCCallback(e)
 			if err != nil {
 				result.Log.Error("rpc error", zap.Error(err))
 			}
@@ -72,21 +72,21 @@ func NewRollerEngine(dbase *badger.DB, log *zap.Logger) (*RollerEngine, error) {
 		})
 
 		client.OnDisconnect(func(e centrifuge.DisconnectEvent) {
-			//result.Log.Info("client disconnected", zap.String("reason", e.Reason), zap.String("err", e.String()))
+
 		})
 	})
 
 	return result, nil
 }
 
-func (eng *RollerEngine) Run() error {
+func (eng *Engine) Run() error {
 	if eng.Node == nil {
 		return errors.New("centrifuge node not initialized")
 	}
 	return eng.Node.Run()
 }
 
-func (eng *RollerEngine) PublishCallback(e centrifuge.PublishEvent) {
+func (eng *Engine) PublishCallback(e centrifuge.PublishEvent) {
 	if strings.HasPrefix(e.Channel, "roll_info") {
 		err := eng.RollPublishCallback(e)
 		if err != nil {
@@ -103,24 +103,24 @@ func (eng *RollerEngine) PublishCallback(e centrifuge.PublishEvent) {
 	}
 }
 
-func (eng *RollerEngine) RPCCallback(dbase *badger.DB, e centrifuge.RPCEvent) ([]byte, error) {
+func (eng *Engine) RPCCallback(e centrifuge.RPCEvent) ([]byte, error) {
 	switch e.Method {
 	case "room_update":
-		return eng.RpcRoomUpdate(dbase, e)
+		return eng.RpcRoomUpdate(e)
 	case "room_delete":
-		return eng.RpcRoomDelete(dbase, e)
+		return eng.RpcRoomDelete(e)
 	case "room_list":
-		return eng.RpcRoomList(dbase, e)
+		return eng.RpcRoomList(e)
 	case "cs_list":
-		return eng.RpcCsList(dbase, e)
+		return eng.RpcCsList(e)
 	case "cs_update":
-		return eng.RpcCsUpdate(dbase, e)
+		return eng.RpcCsUpdate(e)
 	case "cs_delete":
-		return eng.RpcCsDelete(dbase, e)
+		return eng.RpcCsDelete(e)
 	case "roll_list":
-		return eng.RpcRollList(dbase, e)
+		return eng.RpcRollList(e)
 	case "roll_clear":
-		return eng.RpcRollClear(dbase, e)
+		return eng.RpcRollClear(e)
 	}
 	return nil, nil
 }
