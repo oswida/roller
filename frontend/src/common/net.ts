@@ -437,6 +437,24 @@ export const centClearRolls = (roomId: string) => {
     });
 };
 
+export const centUpdateRoll = (roomId: string, info: NetRollInfo) => {
+  const client = centClient();
+  if (!client) {
+    return;
+  }
+  const msg = {
+    sender: appSettings().userIdent,
+    room: roomId,
+    data: info,
+  } as CentMessage;
+  client
+    .rpc("roll_update", msg)
+    .then((result) => {})
+    .catch((err) => {
+      console.error(err);
+    });
+};
+
 export const netInit = () => {
   if (!centConnectionStatus()) centConnect();
 };

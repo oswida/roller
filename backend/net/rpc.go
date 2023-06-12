@@ -3,6 +3,7 @@ package net
 import (
 	"encoding/json"
 	"rpgroll/db"
+	"time"
 
 	"github.com/centrifugal/centrifuge"
 	"go.uber.org/zap"
@@ -106,6 +107,19 @@ func (eng *Engine) RpcCsList(e centrifuge.RPCEvent) ([]byte, error) {
 		return nil, err
 	}
 	return bytes, nil
+}
+
+func (eng *Engine) RpcRollUpdate(e centrifuge.RPCEvent) ([]byte, error) {
+	eng.mux.Lock()
+	defer eng.mux.Unlock()
+
+	var data RollMessage
+	err := json.Unmarshal(e.Data, &data)
+	if err != nil {
+		return nil, err
+	}
+	data.Data.Realtstamp = int(time.Now().UnixMilli())
+	return nil, eng.Db.ItemUpdate(db.ItemPrefixRoll, data.Room, data.Data)
 }
 
 func (eng *Engine) RpcRollList(e centrifuge.RPCEvent) ([]byte, error) {

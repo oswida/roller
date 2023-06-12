@@ -119,6 +119,8 @@ func (eng *Engine) RPCCallback(e centrifuge.RPCEvent) ([]byte, error) {
 		return eng.RpcCsDelete(e)
 	case "roll_list":
 		return eng.RpcRollList(e)
+	case "roll_update":
+		return eng.RpcRollUpdate(e)
 	case "roll_clear":
 		return eng.RpcRollClear(e)
 	}

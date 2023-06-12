@@ -14,6 +14,7 @@ import {
   animating,
   appSettings,
   centPublish,
+  centUpdateRoll,
   createRollInfo,
   csPanelVisible,
   currentRoom,
@@ -90,8 +91,13 @@ export const RollView: Component<RefProps> = ({ ref }) => {
         setSuccessTarget(0);
         updateRolls(info);
         setRolling(false);
-        if (!info.private)
+        if (!info.private) {
           centPublish(netTopic(topicRollInfo), Host2NetRollInfo(info));
+        } else {
+          const room = currentRoom();
+          if (!room) return;
+          centUpdateRoll(room.id, Host2NetRollInfo(info));
+        }
       };
     })
   );
