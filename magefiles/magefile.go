@@ -24,7 +24,7 @@ func Build() error {
 	}
 	back()
 
-	if err := cp.Copy("frontend/dist", "backend/fnd"); err != nil {
+	if err := cp.Copy("frontend/dist/public", "backend/fnd"); err != nil {
 		return err
 	}
 

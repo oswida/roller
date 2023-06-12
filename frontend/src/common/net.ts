@@ -121,9 +121,11 @@ export const activateRoomSubscriptions = () => {
   if (!client) return;
 
   Object.values(client.subscriptions()).forEach((sub) => {
-    sub.unsubscribe();
-    sub.removeAllListeners();
-    client.removeSubscription(sub);
+    if (sub.channel !== topicRoomInfo) {
+      sub.removeAllListeners();
+      sub.unsubscribe();
+      client.removeSubscription(sub);
+    }
   });
   setConnectedUsers({});
 
@@ -165,6 +167,7 @@ export const activateRoomSubscriptions = () => {
 export const centConnect = () => {
   const s = appSettings();
   if (!appSettings) return;
+
   const centrifuge = new Centrifuge(serverAddress(), {
     name: appSettings().userName,
     data: appSettings().userIdent,
@@ -173,15 +176,27 @@ export const centConnect = () => {
     maxServerPingDelay: 10000,
   });
   if (!centrifuge) return;
+  centrifuge.on("connecting", function (ctx) {
+    console.log("connecting to server", Date.now());
+  });
   centrifuge.on("connected", function (ctx) {
     setCentClient(centrifuge);
     setCentConnectionStatus(true);
     centLoadRooms();
-    const sub = centrifuge.newSubscription(topicRoomInfo);
-    sub.on("publication", (ctx) => {
-      processRoomInfo(ctx);
-    });
-    sub.subscribe();
+    const exists = centrifuge.getSubscription(topicRoomInfo);
+    if (!exists) {
+      const sub = centrifuge.newSubscription(topicRoomInfo);
+      sub.on("publication", (ctx) => {
+        processRoomInfo(ctx);
+      });
+      sub.subscribe();
+    } else {
+      console.log(
+        "subscripton to ",
+        topicRoomInfo,
+        " already present, skipping."
+      );
+    }
   });
   centrifuge.on("disconnected", () => {
     console.log("disconnected", Date.now());
@@ -190,6 +205,7 @@ export const centConnect = () => {
   });
   centrifuge.on("error", (err: any) => {
     console.error("centrifuge error", err, Date.now());
+    centDisconnect(); // disconnect on any error, should reconnect.
   });
   centrifuge.connect();
 };
@@ -205,6 +221,7 @@ export const centDisconnect = () => {
   cl.disconnect();
   setCentConnectionStatus(false);
   setConnectedUsers({});
+  setCentClient(undefined);
 };
 
 export const centPublish = (topic: string, payload: any) => {
@@ -217,7 +234,9 @@ export const centPublish = (topic: string, payload: any) => {
     .then((result: PublishResult) => {
       // Message sent
     })
-    .catch((err) => console.error(err));
+    .catch((err) => {
+      console.error("publish error", err);
+    });
 };
 
 export const centLoadRooms = (ids?: string[]) => {

@@ -1,5 +1,12 @@
 import { FaSolidMessage, FaSolidTrash } from "solid-icons/fa";
-import { Show, For, createMemo, Component, createSignal } from "solid-js";
+import {
+  Show,
+  For,
+  createMemo,
+  Component,
+  createSignal,
+  createEffect,
+} from "solid-js";
 import {
   Host2NetRollInfo,
   RollInfo,
@@ -89,6 +96,12 @@ export const RollsContent: Component<Props> = ({ ref, adjustSize }) => {
     }
   };
 
+  createEffect(() => {
+    if (cmOpen()) {
+      document.getElementById("chatMessage")?.focus();
+    }
+  });
+
   return (
     <>
       <Flex gap="medium" style={{ "justify-content": "space-between" }}>
@@ -110,6 +123,7 @@ export const RollsContent: Component<Props> = ({ ref, adjustSize }) => {
             open={cmOpen}
           >
             <Input
+              id="chatMessage"
               tabIndex={0}
               onKeyPress={sendChatMessage}
               style={{ width: "20em" }}
