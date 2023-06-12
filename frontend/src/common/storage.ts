@@ -15,7 +15,7 @@ export const rollerRoomsKey = "rooms";
 export const rollerDefsKey = "defs";
 export const rollerCsKey = "cs";
 
-const STORE_PREFIX = "rpgroll";
+const STORE_PREFIX = "roller3";
 
 export const [appStore, setAppStore, { remove, clear, toJSON }] =
   createLocalStorage({

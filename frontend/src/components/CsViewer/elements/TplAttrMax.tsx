@@ -86,6 +86,12 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
     document.getElementById(item.id)?.focus();
   });
 
+  const keyPress = (e: any) => {
+    if (e.code == "Enter" || e.key == "Enter") {
+      applyValue();
+    }
+  }
+
   return (
     <Flex gap="medium" style={{ "align-items": "center" }}>
       <Show when={!itemEdit()}>
@@ -169,6 +175,7 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
                 value={value()[0]}
                 id={item.id}
                 onFocus={(e) => e.target.select()}
+                onKeyPress={keyPress}
                 style={{
                   width: "3em",
                   "text-align": "center",

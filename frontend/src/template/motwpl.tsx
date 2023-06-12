@@ -26,6 +26,120 @@ const genAttrs = () => {
     } as CharTemplateItem));
 }
 
+const genBasicMoves = () => {
+    return [
+        {
+            id: "badaj_tajemnice",
+            name: "Badaj tajemnicę",
+            itype: "label",
+            text: "Badaj tajemnicę",
+            hint: "Gdy Badasz jakąś tajemnicę, rzuć +Spryt.\nPrzy 10+ zatrzymaj 2, a przy 7‒9 zatrzymaj 1.\nWydanie jednego zatrzymania pozwala zadać Strażnikowi jedno z następujących pytań: \n• Co tu się stało?\n• Co to za stworzenie?\n• Co ono może zrobić?\n• Co może je zranić?\n• Gdzie poszło?\n• Co chciało zrobić?\n• Co tu jest ukryte?\nPrzy porażce ujawniasz jakąś informację Potworowi lub temu, z kim rozmawiasz. Strażnik może zadać ci jakieś pytania i musisz na nie odpowiedzieć.",
+            rolls: [
+                {
+                    valType: "modifier",
+                    valField: "spryt",
+                    notation: "2d6",
+                    successRule: "pbta:standard",
+                    comment: `+SPRYT [Badaj tajemnicę]`,
+                },
+            ]
+        },
+        {
+            id: "chron_kogos",
+            name: "Chroń kogoś",
+            itype: "label",
+            text: "Chroń kogoś",
+            hint: "Gdy Chronisz inną postać przed obrażeniami, rzuć +Hart.\nPrzy dowolnym sukcesie (wyniku 7 lub więcej) chronisz ją, ale dostajesz część lub wszystkie obrażenia, które miała dostać.\nPrzy 10+ wybierz dodatkowo:\n• otrzymujesz mniej obrażeń (-1 obrażenie);\n• całe nadchodzące zagrożenie skupia się teraz na tobie;\n• zadajesz wrogowi obrażenia;\n• powstrzymujesz wroga.\nPrzy porażce tylko wszystko pogarszasz.",
+            rolls: [
+                {
+                    valType: "modifier",
+                    valField: "hart",
+                    notation: "2d6",
+                    successRule: "pbta:standard",
+                    comment: `+HART [Chroń kogoś]`,
+                },
+            ]
+        },
+        {
+            id: "daj_wycisk",
+            name: "Daj wycisk",
+            itype: "label",
+            text: "Daj wycisk",
+            hint: "Gdy walczysz i Dajesz komuś wycisk, rzuć +Hart.\nPrzy dowolnym sukcesie (wyniku 7 lub więcej) ty i twój przeciwnik zadajecie sobie nawzajem obrażenia. Liczba tych obrażeń wynika z ustalonych elementów opowieści. To zazwyczaj znaczy, że zadajesz przeciwnikowi obrażenia swojej broni, a przeciwnik tobie obrażenia swojego ataku. Możesz przyjąć siedem obrażeń, potem umierasz.\nPrzy 10+ wybierz dodatkowo jedną z opcji:\n• uzyskujesz przewagę – dostajesz jednorazowe +1 lub dajesz je innemu Łowcy;\n• zadajesz wielkie obrażenia (+1 obrażeń);\n• otrzymujesz mniejsze obrażenia (-1 obrażeń).\n• przeciwnik trafia tam, gdzie chcesz, żeby był.\nPrzy porażce to tobie dają wycisk. Otrzymujesz obrażenia lub zostajesz złapany, ale nie zadajesz żadnych obrażeń.",
+            rolls: [
+                {
+                    valType: "modifier",
+                    valField: "hart",
+                    notation: "2d6",
+                    successRule: "pbta:standard",
+                    comment: `+HART [Daj wycisk]`,
+                },
+            ]
+        },
+        {
+            id: "dzialaj_pod_presja",
+            name: "Działaj pod presją",
+            itype: "label",
+            text: "Działaj pod presją",
+            hint: "Gdy działasz pod presją, rzuć +Spokój. Efekty mogą być następujące:\n• przy 10+ robisz to, co chciałeś;\n• przy 7‒9 Strażnik ma dla ciebie gorszy rezultat, trudny wybór lub cenę za sukces;\n• przy porażce wszystko się sypie.",
+            rolls: [
+                {
+                    valType: "modifier",
+                    valField: "spokój",
+                    notation: "2d6",
+                    successRule: "pbta:standard",
+                    comment: `+SPOKÓJ [Działaj pod presją]`,
+                },
+            ]
+        }, {
+            id: "manipuluj_kims",
+            name: "Manipuluj kimś",
+            itype: "label",
+            text: "Manipuluj kimś",
+            hint: "Gdy dałeś komuś powód, powiedz, co chcesz, by zrobił i rzuć +Urok.\n\nNormalna osoba:\n• przy 10+ zrobi to z powodu, który jej dałeś; jeśli chcesz zbyt wiele, powie ci, za co mogłaby to zrobić (albo że za nic w świecie);\n• przy 7‒9 zrobi to, ale tylko, jeśli zrobisz coś dla niej tu i teraz, by wesprzeć swoją obietnicę; jeśli chcesz zbyt wiele powie ci, co – jeśli cokolwiek – może ją skłonić, by to zrobiła.\n• przy porażce źle do tego podchodzisz: obrażasz lub wkurzasz rozmówcę.\n\nInny Łowca:\n• przy 10+, jeśli zrobi to, o co prosisz, uzyskuje dwie korzyści: zaznacza doświadczenie i dostaje jednorazowe +1;\n• przy 7‒9 zaznacza doświadczenie, jeśli zrobi to, o co prosisz;\n• przy porażce to Łowca ustala, jak bardzo go obraziłeś lub zirytowałeś; zaznacza doświadczenie, jeśli nie zrobi tego, o co prosiłeś.",
+            rolls: [
+                {
+                    valType: "modifier",
+                    valField: "urok",
+                    notation: "2d6",
+                    successRule: "pbta:standard",
+                    comment: `+UROK [Manipuluj kimś]`,
+                },
+            ]
+        }, {
+            id: "ogarnij_problem",
+            name: "Ogarnij problem",
+            itype: "label",
+            text: "Ogarnij problem",
+            hint: "Gdy się rozglądasz, by Ogarnąć problem, rzuć +Spryt.\nPrzy 10+ zatrzymaj 3, a przy 7‒9 zatrzymaj 1. \nMożesz wydawać zatrzymania, by zadać Strażnikowi jedno z poniższych pytań:\n • Jak najlepiej tam wejść ?\n • Jak najlepiej stąd wyjść ?\n • Czy są tu jakieś zagrożenia, których nie zauważyliśmy ?\n • Co jest największym zagrożeniem ?\n • Jaki słaby punkt mogę wykorzystać ?\n • Jaki jest najlepszy sposób, by chronić ofiary ?\n     Jeśli działasz w zgodzie z odpowiedziami, dostajesz ciągłe +1, póki odpowiedzi mają znaczenie.\nPrzy porażce możesz błędnie odczytać sytuację („Wszystko w porządku! Nic mi nie grozi, gdy pójdę zbadać to samemu!”) lub     ujawnić taktyczne informacje swoim wrogom (a wtedy Strażnik może ci zadać powyższe pytania)",
+            rolls: [
+                {
+                    valType: "modifier",
+                    valField: "spryt",
+                    notation: "2d6",
+                    successRule: "pbta:standard",
+                    comment: `+SPRYT [Ogarnij problem]`,
+                },
+            ]
+        }, {
+            id: "uzyj_magii",
+            name: "Użyj magii",
+            itype: "label",
+            text: "Użyj magii",
+            hint: "Gdy Używasz magii, powiedz, co starasz się uzyskać i jak rzucasz zaklęcie, po czym rzuć +Dziw.\nEfekty mogą być następujące:\n • przy 10+ magia działa bez problemu – wybierz jej efekt;\n • przy 7‒9 działa, ale niedoskonale ‒ wybierz jej efekt i wadę; Strażnik zdecyduje, jaki efekt ma wada;\n • przy porażce tracisz kontrolę nad magią – to nigdy nie kończy się dobrze.",
+            rolls: [
+                {
+                    valType: "modifier",
+                    valField: "dziw",
+                    notation: "2d6",
+                    successRule: "pbta:standard",
+                    comment: `+DZIW [Użyj magii]`,
+                },
+            ]
+        }
+    ] as CharTemplateItem[]
+}
+
 export const csTplMotwPl_Spiskolog: CharTemplate = {
     id: "motw-pl-spiskolog",
     name: "Potwór tygodnia: Spiskolog",
@@ -75,6 +189,10 @@ export const csTplMotwPl_Spiskolog: CharTemplate = {
             ]
         },
         {
+            title: "Ruchy podstawowe",
+            items: genBasicMoves(),
+        },
+        {
             title: "Ruchy",
             items: [
                 {
@@ -82,15 +200,22 @@ export const csTplMotwPl_Spiskolog: CharTemplate = {
                     name: "Łączenie kropek",
                     text: "Łączenie kropek",
                     itype: "check",
-
-                    hint: "Na początku każdej Tajemnicy jeśli szukasz większych spraw, których częścią mogą być obecne wydarzenia, rzuć + Spryt. Przy 10 + zatrzymaj 3, przy 7 - 9 zatrzymaj 1. Wydaj zatrzymane w trakcie Tajemnicy, by zadać Strażnikowi jedno z poniższych pytań: \n• Czy ta osoba jest powiązana z obecnymi wydarzeniami bardziej, niż twierdzi ? \n• Kiedy i gdzie dojdzie do kolejnego kluczowego wydarzenia ? \n• Czego potwór chce od tej osoby ?  \n• Czy to jest powiązane z poprzednimi tajemnicami, które badaliśmy ? \n• Jak ta tajemnica wiąże się z większymi sprawami ? ",
+                    hint: "Na początku każdej Tajemnicy jeśli szukasz większych spraw, których częścią mogą być obecne wydarzenia, rzuć +Spryt. Przy 10 + zatrzymaj 3, przy 7 - 9 zatrzymaj 1. Wydaj zatrzymane w trakcie Tajemnicy, by zadać Strażnikowi jedno z poniższych pytań: \n• Czy ta osoba jest powiązana z obecnymi wydarzeniami bardziej, niż twierdzi ? \n• Kiedy i gdzie dojdzie do kolejnego kluczowego wydarzenia ? \n• Czego potwór chce od tej osoby ?  \n• Czy to jest powiązane z poprzednimi tajemnicami, które badaliśmy ? \n• Jak ta tajemnica wiąże się z większymi sprawami ? ",
+                    rolls: [
+                        {
+                            valType: "modifier",
+                            valField: "spryt",
+                            notation: "2d6",
+                            successRule: "pbta:standard",
+                            comment: `+SPRYT [Łączenie kropek]`,
+                        },
+                    ]
                 },
                 {
                     id: "szalony_wzrok",
                     name: "Szalony wzrok",
                     text: "Szalony wzrok",
                     itype: "check",
-
                     hint: "Dostajesz +1 do Dziwu (do maksymalnie +3)",
                 },
                 {
@@ -98,15 +223,22 @@ export const csTplMotwPl_Spiskolog: CharTemplate = {
                     name: "Zrozum, to ma sens",
                     text: "Zrozum, to ma sens",
                     itype: "check",
-
                     hint: "Możesz używać Sprytu zamiast Uroku, gdy kimś manipulujesz.",
+                    rolls: [
+                        {
+                            valType: "modifier",
+                            valField: "spryt",
+                            notation: "2d6",
+                            successRule: "pbta:standard",
+                            comment: `+SPRYT [Zrozum to ma sens]`,
+                        },
+                    ]
                 },
                 {
                     id: "podejrzliwy_umysl",
                     name: "Podejrzliwy umysł",
                     text: "Podejrzliwy umysł",
                     itype: "check",
-
                     hint: "Wiesz, gdy ktoś cię okłamuje.",
                 },
                 {
@@ -114,15 +246,22 @@ export const csTplMotwPl_Spiskolog: CharTemplate = {
                     name: "Łatwo przeoczyć",
                     text: "Łatwo przeoczyć",
                     itype: "check",
-
                     hint: "Gdy zachowujesz się nieracjonalnie, by czegoś uniknąć, rzuć +Dziw.\nPrzy 10+ uważają cię za osobę niegroźną i nieważną.\nPrzy 7-9 wybierz jedno: niegroźną albo nieważną.\nPrzy porażce skupia się na tobie większość (choć niecałość) uwagi (ale nie cała).",
+                    rolls: [
+                        {
+                            valType: "modifier",
+                            valField: "dziw",
+                            notation: "2d6",
+                            successRule: "pbta:standard",
+                            comment: `+DZIW [Łatwo przeoczyć]`,
+                        },
+                    ]
                 },
                 {
                     id: "na_przekor",
                     name: "Na przekór",
                     text: "Na przekór",
                     itype: "check",
-
                     hint: "Gdy poszukasz i dostaniesz czyjąś szczerą poradę co do najlepszego sposobu działania i potem zrobisz coś innego, zaznacz doświadczenie. Gdy zrobisz coś zupełnie przeciwnego względem tej rady, dostajesz też ciągłe +1 do wszystkich ruchów, które wykonujesz robiąc to.",
                 },
                 {
@@ -130,15 +269,22 @@ export const csTplMotwPl_Spiskolog: CharTemplate = {
                     name: "Znajomi z sieci",
                     text: "Znajomi z sieci",
                     itype: "check",
-
                     hint: "Znasz mnóstwo ludzi w Internecie. Gdy kontaktujesz się ze znajomym z Sieci, by pomógł Ci z Tajemnicą, rzuć +Urok.\nPrzy 10+ jest dostępny i pomocny – może coś naprawić, złamać kod, zhakować komputer lub zdobyć dla ciebie jakąś specjalną informację.\nPrzy 7-9 jest gotowy pomóc, ale to zajmie trochę czasu albo ty musisz zrobić część z tego sama.\nPrzy porażce palisz mosty.",
+                    rolls: [
+                        {
+                            valType: "modifier",
+                            valField: "urok",
+                            notation: "2d6",
+                            successRule: "pbta:standard",
+                            comment: `+UROK [Znajomi z sieci]`,
+                        },
+                    ]
                 },
                 {
                     id: "ukradkowy",
                     name: "Ukradkowy",
                     text: "Ukradkowy",
                     itype: "check",
-
                     hint: "Gdy atakujesz z zasadzki lub z tyłu zadajesz +2 obrażenia",
                 },
             ]
@@ -454,6 +600,10 @@ export const csTplMotwPl_Niebianin: CharTemplate = {
             ]
         },
         {
+            title: "Ruchy podstawowe",
+            items: genBasicMoves(),
+        },
+        {
             title: "Ruchy",
             items: [
                 {
@@ -462,6 +612,15 @@ export const csTplMotwPl_Niebianin: CharTemplate = {
                     text: "Szef spoza świata",
                     itype: "check",
                     hint: "na początku każdej Tajemnicy rzuć +Dziw.\nPrzy 10+ twoi Przełożeni zlecają ci zrobienie czegoś prostego.\nPrzy 7-9 zlecają coś skomplikowanego lub trudnego. W obu przypadkach możesz od razu zadać im jedno pytanie z ruchu badaj tajemnicę. Przy porażce wymagają od ciebie zrobienia czegoś okropnego. Jeśli nie osiągniesz tego co miałaś zrobić, nie możesz znów używać tego ruchu, póki nie odpokutujesz swojej porażki.",
+                    rolls: [
+                        {
+                            valType: "modifier",
+                            valField: "dziw",
+                            notation: "2d6",
+                            successRule: "pbta:standard",
+                            comment: `+DZIW [Szef spoza świata]`,
+                        },
+                    ]
                 },
                 {
                     id: "anielskie_skrzydla",
@@ -469,6 +628,15 @@ export const csTplMotwPl_Niebianin: CharTemplate = {
                     text: "Anielskie skrzydła",
                     itype: "check",
                     hint: "możesz się natychmiast przenosić do miejsc, w których byłeś oraz osób, które dobrze znasz. Jeśli zabierasz ze sobą osobę lub dwie, rzuć +Dziw.\nPrzy 10+ wszyscy trafiacie tam, gdzie chciałeś.\nPrzy 7-9 nie wychodzi ci. Zostajecie rozdzieleni lub wszyscy lądujecie nie tam, gdzie chciałeś.",
+                    rolls: [
+                        {
+                            valType: "modifier",
+                            valField: "dziw",
+                            notation: "2d6",
+                            successRule: "pbta:standard",
+                            comment: `+DZIW [Anielskie skrzydła]`,
+                        },
+                    ]
                 },
                 {
                     id: "zawsze_pod_reka",
@@ -490,6 +658,15 @@ export const csTplMotwPl_Niebianin: CharTemplate = {
                     text: "Nakładanie rąk",
                     itype: "check",
                     hint: "twój dotyk może leczyć rany i choroby. Gdy nakładasz dłonie na kogoś rannego, rzuć +Spokój.\nPrzy 10+ leczysz 2-obrażenia lub choroby oraz stabilizujesz leczonego. \nPrzy 7-9 możesz leczyć jak przy 10+, ale wtedy przejmujesz leczone obrażenia lub chorobę.\nPrzy porażce twoja aura powoduje nowe obrażenia.",
+                    rolls: [
+                        {
+                            valType: "modifier",
+                            valField: "spokój",
+                            notation: "2d6",
+                            successRule: "pbta:standard",
+                            comment: `+SPOKÓJ [Nakładanie rąk]`,
+                        },
+                    ]
                 },
                 {
                     id: "odpedzenie_zla",
@@ -497,6 +674,15 @@ export const csTplMotwPl_Niebianin: CharTemplate = {
                     text: "Odpędzenie zła",
                     itype: "check",
                     hint: "możesz wygnać pobliską nienaturalną istotę. Rzuć +Hart.\nPrzy 10+ jest wygnana. \nPrzy 7-9 to chwilkę potrwa, nim wygnanie zadziała – istota zdąży zrobić akcję lub dwie. W obu przypadkach odpędzana istota nie odnosi żadnych obrażeń, a ty nie masz kontroli nad tym, dokąd trafia.\nPrzy porażce coś ją tu trzyma. To źle. Ten ruch może być użyty względem nienaturalnych Łowców (np. Potwora).",
+                    rolls: [
+                        {
+                            valType: "modifier",
+                            valField: "hart",
+                            notation: "2d6",
+                            successRule: "pbta:standard",
+                            comment: `+HART [Odpędzenie zła]`,
+                        },
+                    ]
                 },
                 {
                     id: "ugodzenie",
@@ -815,6 +1001,10 @@ export const csTplMotwPl_Ekspert: CharTemplate = {
             ]
         },
         {
+            title: "Ruchy podstawowe",
+            items: genBasicMoves(),
+        },
+        {
             title: "Ruchy",
             items: [
                 {
@@ -823,6 +1013,15 @@ export const csTplMotwPl_Ekspert: CharTemplate = {
                     text: "Czytałem o tym",
                     itype: "check",
                     hint: "rzucaj +Spryt zamiast +Spokój, gdy działasz pod presją.",
+                    rolls: [
+                        {
+                            valType: "modifier",
+                            valField: "spryt",
+                            notation: "2d6",
+                            successRule: "pbta:standard",
+                            comment: `+SPRYT [Czytałem o tym]`,
+                        },
+                    ]
                 },
                 {
                     id: "raczej_mam_racje",
@@ -837,6 +1036,15 @@ export const csTplMotwPl_Ekspert: CharTemplate = {
                     text: "Przygotowany",
                     itype: "check",
                     hint: "gdy potrzebujesz czegoś nietypowego lub rzadkiego, rzuć +Spryt.\nPrzy 10+ masz to przy sobie.\nPrzy 7-9 masz to, ale nie przy sobie. Zdobycie tego zajmie trochę czasu.\nPrzy porażce wiesz, gdzie to jest – i jest w bardzo złym miejscu.",
+                    rolls: [
+                        {
+                            valType: "modifier",
+                            valField: "spryt",
+                            notation: "2d6",
+                            successRule: "pbta:standard",
+                            comment: `+SPRYT [Przygotowany]`,
+                        },
+                    ]
                 },
                 {
                     id: "az_tak_nie_bolalo",
@@ -844,6 +1052,15 @@ export const csTplMotwPl_Ekspert: CharTemplate = {
                     text: "Aż tak nie bolało",
                     itype: "check",
                     hint: "raz na Tajemnicę możesz próbować działać pomimo ran. Rzuć +Spokój.\nPrzy 10+ leczysz 2 obrażenia i stabilizujesz się.\nPrzy 7-9 albo leczysz jedno obrażenie, albo się stabilizujesz.\nPrzy porażce boli jeszcze bardziej: Strażnik może użyć ruchu obrażeń albo uczynić twoje obrażenia niestabilnymi.",
+                    rolls: [
+                        {
+                            valType: "modifier",
+                            valField: "spokój",
+                            notation: "2d6",
+                            successRule: "pbta:standard",
+                            comment: `+SPOKÓJ [Aż tak nie bolało]`,
+                        },
+                    ]
                 },
                 {
                     id: "precyzyjny_cios",
@@ -851,6 +1068,15 @@ export const csTplMotwPl_Ekspert: CharTemplate = {
                     text: "Precyzyjny cios",
                     itype: "check",
                     hint: "gdy zadajesz potworowi obrażenia, możesz celować w czuły punkt. Rzuć +Hart. \nPrzy 10+ zadajesz +2 obrażenia.\nPrzy 7-9 zadajesz +1 obrażenie.\nPrzy porażce wystawiasz się i potwór może cię zaatakować.",
+                    rolls: [
+                        {
+                            valType: "modifier",
+                            valField: "hart",
+                            notation: "2d6",
+                            successRule: "pbta:standard",
+                            comment: `+HART [Precyzyjny cios]`,
+                        },
+                    ]
                 },
                 {
                     id: "wszystko_przewidzialem",
@@ -858,6 +1084,15 @@ export const csTplMotwPl_Ekspert: CharTemplate = {
                     text: "Wszystko przewidziałem",
                     itype: "check",
                     hint: "na początku każdej tajemnicy rzuć +Spryt.\nPrzy 10+ zatrzymaj 2, przy 7-9 zatrzymaj 1. Wydawaj je, by być tam, gdzie potrzebujesz być, przygotowany i gotowy. Przy porażce Strażnik zatrzymuje 1 i może je wydać, byś był w najgorszym miejscu, nieprzygotowany i niegotowy.",
+                    rolls: [
+                        {
+                            valType: "modifier",
+                            valField: "spryt",
+                            notation: "2d6",
+                            successRule: "pbta:standard",
+                            comment: `+SPRYT [Wszystko przewidziałem]`,
+                        },
+                    ]
                 },
                 {
                     id: "mroczna_przeszlosc",
@@ -865,6 +1100,15 @@ export const csTplMotwPl_Ekspert: CharTemplate = {
                     text: "Mroczna przeszłość",
                     itype: "check",
                     hint: "nim zostałaś jedną z tych dobrych parałaś się najplugawszymi sztukami magicznymi. Gdy błądzisz wśród wspomnień, szukając czegoś związanego z obecną sprawą, rzuć +Dziw.\nPrzy 10+ zadaj Strażnikowi dwa pytania z poniższej listy.\nPrzy 7-9 zadaj jedno.\nPrzy porażce wciąż możesz zadać jedno pytanie, ale jeśli to zrobisz, byłaś osobiście zamieszana w doprowadzenie do sytuacji, z którą się właśnie mierzycie. Pytania to:\n• Gdy zajmowałam się tą istotą (lub jej gatunkiem), czego się nauczyłam?\n• Jakie formy czarnej magii, które mogłyby tu pomóc, znam?\n• Czy znam kogoś, kto może za tym stać?\n• Kto, kogo znam, może nam teraz pomóc?",
+                    rolls: [
+                        {
+                            valType: "modifier",
+                            valField: "dziw",
+                            notation: "2d6",
+                            successRule: "pbta:standard",
+                            comment: `+DZIW [Mroczna przeszłość]`,
+                        },
+                    ]
                 },
             ]
         },

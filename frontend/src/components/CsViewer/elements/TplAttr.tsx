@@ -79,6 +79,12 @@ export const TplAttr: Component<Props> = ({ item }) => {
     document.getElementById(item.id)?.focus();
   });
 
+  const keyPress = (e: any) => {
+    if (e.code == "Enter" || e.key == "Enter") {
+      applyValue();
+    }
+  }
+
   return (
     <Flex gap="medium" style={{ "align-items": "center" }}>
       <Show when={!itemEdit()}>
@@ -148,6 +154,7 @@ export const TplAttr: Component<Props> = ({ item }) => {
             <Input
               id={item.id}
               onFocus={(e) => e.target.select()}
+              onKeyPress={keyPress}
               value={value()}
               style={{
                 width: "3em",

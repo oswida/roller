@@ -1,7 +1,8 @@
-import { FaSolidCircleInfo } from "solid-icons/fa";
-import { Component, Show, createMemo } from "solid-js";
+import { FaSolidCircleInfo, FaSolidDice } from "solid-icons/fa";
+import { Component, For, Show, createMemo } from "solid-js";
 import {
   CharTemplateItem,
+  CharTemplateItemRoll,
   centPublish,
   currentCs,
   isCsOwner,
@@ -13,7 +14,8 @@ import {
 import { themeColor } from "~/common/theme.css";
 import { Flex } from "../../Flex";
 import { Text } from "../../Text";
-import { tplResourceItemStyle } from "../styles.css";
+import { csTplIconStyle, tplResourceItemStyle } from "../styles.css";
+import { actionRoll } from "../actions";
 
 type Props = {
   item: CharTemplateItem;
@@ -41,8 +43,14 @@ export const TplCheck: Component<Props> = ({ item }) => {
     centPublish(netTopic(topicCsInfo), info);
   };
 
+  const value = (roll: CharTemplateItemRoll) => {
+    const cs = currentCs();
+    if (!cs || !cs.values || !roll.valField) return 0;
+    return cs.values[roll.valField];
+  }
+
   return (
-    <>
+    <Flex style={{ "justify-content": "space-between" }}>
       <Show when={checked()}>
         <Flex gap="medium" style={{ "align-items": "center" }}>
           <div
@@ -81,6 +89,23 @@ export const TplCheck: Component<Props> = ({ item }) => {
           </Show>
         </Flex>
       </Show>
-    </>
+      <Flex>
+        <For each={item.rolls}>
+          {(r) => (
+            <div
+              title={r.comment}
+              onClick={() => actionRoll(currentCs()?.name, r, value(r))}
+              class={csTplIconStyle}
+            >
+              <FaSolidDice
+                style={{
+                  fill: r.iconColor ? r.iconColor : "currentcolor",
+                }}
+              />
+            </div>
+          )}
+        </For>
+      </Flex>
+    </Flex>
   );
 };

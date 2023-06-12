@@ -14,6 +14,7 @@ export type AppSettings = {
   showRollSuccess?: boolean;
   showRollTotal?: boolean;
   smallerDice?: boolean;
+
 };
 
 export const emptyAppSettings = () => {
@@ -146,6 +147,7 @@ export type CharTemplateItemRoll = {
   iconColor?: string;
   hasInput?: boolean;
   inputLabel?: string;
+  valField?: string; // field providing the value if not from the origin control
 };
 
 type CharTemplateItemType =

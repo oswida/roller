@@ -11,8 +11,8 @@ export const csPanelRootStyle = style([
     borderWidth: "thin",
   }),
   {
-    minWidth: "320px",
-    width: "320px",
+    minWidth: "350px",
+    width: "350px",
     height: "calc(100vh - 50px)",
   },
 ]);
