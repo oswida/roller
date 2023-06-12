@@ -1,5 +1,5 @@
 // @refresh reload
-import { Suspense } from "solid-js";
+import { Suspense, createEffect } from "solid-js";
 import {
   Body,
   ErrorBoundary,
@@ -12,12 +12,28 @@ import {
   Scripts,
   Title,
 } from "solid-start";
-import { netInit, queueInit, updateStoreSize } from "./common";
+import {
+  centConnect,
+  centConnectionStatus,
+  centLoadRolls,
+  currentRoom,
+  queueInit,
+  updateStoreSize,
+} from "./common";
 
 export default function Root() {
   updateStoreSize();
-  netInit();
   queueInit();
+
+  createEffect(() => {
+    if (!centConnectionStatus()) {
+      centConnect();
+      return;
+    }
+    const room = currentRoom();
+    if (!room) return;
+    centLoadRolls(room.id);
+  });
 
   return (
     <Html lang="en">

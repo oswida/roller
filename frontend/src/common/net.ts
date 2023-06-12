@@ -119,17 +119,14 @@ export const serverAddress = () => {
 export const activateRoomSubscriptions = () => {
   const client = centClient();
   if (!client) return;
+
   Object.values(client.subscriptions()).forEach((sub) => {
-    if (
-      sub.channel.startsWith(topicRollInfo) ||
-      sub.channel.startsWith(topicCsInfo) ||
-      sub.channel.startsWith(topicRollUpdate)
-    ) {
-      sub.unsubscribe();
-      sub.removeAllListeners();
-      client.removeSubscription(sub);
-    }
+    sub.unsubscribe();
+    sub.removeAllListeners();
+    client.removeSubscription(sub);
   });
+  setConnectedUsers({});
+
   const sub = client.newSubscription(netTopic(topicRollInfo));
   sub.on("publication", (ctx) => {
     enrollTask(() => processRollInfo(ctx));
@@ -187,10 +184,12 @@ export const centConnect = () => {
     sub.subscribe();
   });
   centrifuge.on("disconnected", () => {
+    console.log("disconnected", Date.now());
     setCentConnectionStatus(false);
+    setConnectedUsers({});
   });
   centrifuge.on("error", (err: any) => {
-    console.error("centrifuge error", err);
+    console.error("centrifuge error", err, Date.now());
   });
   centrifuge.connect();
 };
@@ -198,8 +197,14 @@ export const centConnect = () => {
 export const centDisconnect = () => {
   const cl = centClient();
   if (!cl) return;
+  Object.values(cl.subscriptions()).forEach((sub) => {
+    sub.unsubscribe();
+    sub.removeAllListeners();
+    cl.removeSubscription(sub);
+  });
   cl.disconnect();
   setCentConnectionStatus(false);
+  setConnectedUsers({});
 };
 
 export const centPublish = (topic: string, payload: any) => {

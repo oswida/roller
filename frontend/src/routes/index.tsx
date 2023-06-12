@@ -1,4 +1,4 @@
-import { Show, createEffect } from "solid-js";
+import { Show, onCleanup, onMount } from "solid-js";
 import { Toaster } from "solid-toast";
 import { centLoadRolls, csPanelVisible, currentRoom } from "~/common";
 import { Flex } from "~/components";
@@ -9,13 +9,19 @@ export default function Home() {
   let mainRef: HTMLDivElement;
   let barRef: HTMLDivElement;
 
-  createEffect(() => {
-    document.addEventListener("visibilitychange", function (ev) {
-      let state = document.visibilityState;
-      const room = currentRoom();
-      if (!room) return;
-      if (state === "visible") centLoadRolls(room.id);
-    });
+  const visibilityHandler = () => {
+    let state = document.visibilityState;
+    const room = currentRoom();
+    if (!room) return;
+    if (state === "visible") centLoadRolls(room.id);
+  };
+
+  onMount(() => {
+    document.addEventListener("visibilitychange", visibilityHandler);
+  });
+
+  onCleanup(() => {
+    document.removeEventListener("visibilitychange", visibilityHandler);
   });
 
   return (
