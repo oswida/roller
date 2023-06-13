@@ -7,6 +7,7 @@ import { TplCompute } from "./elements/TplCompute";
 import { TplLabel } from "./elements/TplLabel";
 import { TplResource } from "./elements/TplResource";
 import { TplText } from "./elements/TplText";
+import { TplTextCheck } from "./elements/TplTextCheck";
 
 type Props = {
   item: CharTemplateItem;
@@ -43,8 +44,16 @@ export const CsItem: Component<Props> = ({ item }) => {
         <TplText item={item} />
       </Match>
 
+      <Match when={item.itype === "text_check"}>
+        <TplTextCheck item={item} />
+      </Match>
+
       <Match when={item.itype === "check"}>
         <TplCheck item={item} />
+      </Match>
+
+      <Match when={item.itype === "check_circle"}>
+        <TplCheck item={item} circle />
       </Match>
 
       <Match when={item.itype === "label"}>

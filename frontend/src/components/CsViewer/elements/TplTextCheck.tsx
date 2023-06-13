@@ -19,23 +19,38 @@ import {
 import { Flex } from "../../Flex";
 import { Input, InputArea } from "../../Input";
 import { Text } from "../../Text";
-import { csTplIconStyle } from "../styles.css";
+import { csTplIconStyle, tplResourceItemStyle, tplTextItemStyle } from "../styles.css";
 
 type Props = {
   item: CharTemplateItem;
 };
 
-export const TplText: Component<Props> = ({ item }) => {
+type Value = {
+  text: string;
+  checked: boolean;
+}
+
+
+
+export const TplTextCheck: Component<Props> = ({ item }) => {
   const [itemEdit, setItemEdit] = createSignal(false);
   const [editVal, setEditVal] = createSignal("");
 
-  const value = createMemo(() => {
+  const value_text = createMemo(() => {
     const info = currentCs();
-    if (!info || !info.values[item.id]) return "--";
-    return info.values[item.id];
+    if (!info || !info.values[item.id]) return "";
+    const v = info.values[item.id] as Value;
+    return v.text;
   });
 
-  const applyValue = () => {
+  const value_checked = createMemo(() => {
+    const info = currentCs();
+    if (!info || !info.values[item.id]) return false;
+    const v = info.values[item.id] as Value;
+    return v.checked;
+  });
+
+  const applyText = () => {
     setItemEdit(false);
     const v = editVal();
     if (v.trim() === "") {
@@ -45,7 +60,10 @@ export const TplText: Component<Props> = ({ item }) => {
     if (!info) {
       return;
     }
-    info.values[item.id] = v;
+    if (!info.values[item.id])
+      info.values[item.id] = { text: v, checked: false } as Value;
+    else
+      info.values[item.id].text = v;
     updateCsStorage(info);
     setEditVal("");
     setCurrentCs(undefined);
@@ -60,12 +78,27 @@ export const TplText: Component<Props> = ({ item }) => {
 
   const keyPress = (e: any) => {
     if (e.code == "Enter" || e.key == "Enter") {
-      applyValue();
+      applyText();
     }
   }
 
+  const toggle = () => {
+    const info = currentCs();
+    if (!info) {
+      return;
+    }
+    if (!info.values[item.id])
+      info.values[item.id] = { text: "", checked: true } as Value;
+    else
+      info.values[item.id].checked = !info.values[item.id].checked;
+    updateCsStorage(info);
+    setCurrentCs(undefined);
+    setCurrentCs({ ...info });
+    centPublish(netTopic(topicCsInfo), info);
+  }
+
   return (
-    <>
+    <div class={tplTextItemStyle}>
       <Show when={itemEdit()}>
         <Flex direction="column" gap="small">
           <Flex
@@ -85,7 +118,7 @@ export const TplText: Component<Props> = ({ item }) => {
               >
                 <FaSolidXmark style={{ fill: "currentcolor" }} />
               </div>
-              <div onClick={applyValue} title="Save" class={csTplIconStyle}>
+              <div onClick={applyText} title="Save" class={csTplIconStyle}>
                 <FaSolidFloppyDisk style={{ fill: "currentcolor" }} />
               </div>
             </Flex>
@@ -96,7 +129,7 @@ export const TplText: Component<Props> = ({ item }) => {
               onFocus={(e) => e.target.select()}
               onChange={(e: any) => setEditVal(e.target.value)}
               onKeyPress={keyPress}
-              value={value()}
+              value={value_text()}
               style={{
                 width: "280px",
               }}
@@ -108,7 +141,7 @@ export const TplText: Component<Props> = ({ item }) => {
               onFocus={(e) => e.target.select()}
               onChange={(e: any) => setEditVal(e.target.value)}
               onKeyPress={keyPress}
-              value={value()}
+              value={value_text()}
               style={{
                 "min-height": "10em",
                 "font-size": "medium",
@@ -126,11 +159,41 @@ export const TplText: Component<Props> = ({ item }) => {
               "justify-content": "space-between",
             }}
           >
-            <Text fontSize="smaller" colorSchema="secondary">
-              {item.name}
-            </Text>
+            <Flex gap="medium" >
+              <Show when={value_checked()}>
+                <Flex gap="medium" style={{ "align-items": "center" }}>
+                  <div
+                    class={tplResourceItemStyle({ shape: "circle" })}
+                    style={{
+                      "background-color": item.color ? item.color : "currentcolor",
+                    }}
+                    onClick={toggle}
+                    title={item.hint}
+                  >
+                    {" "}
+                  </div>
+                </Flex>
+              </Show>
+              <Show when={!value_checked()}>
+                <Flex gap="medium" style={{ "align-items": "center" }}>
+                  <div
+                    class={tplResourceItemStyle({ shape: "circle" })}
+                    style={{
+                      border: `solid 2px ${item.color ? item.color : "currentcolor"}`,
+                    }}
+                    onClick={toggle}
+                    title={item.hint}
+                  >
+                    {" "}
+                  </div>
+                </Flex>
+              </Show>
+              <Text fontSize="smaller" colorSchema="secondary">
+                {item.name}
+              </Text>
+            </Flex>
             <Show when={isCsOwner(currentCs())}>
-              <Flex>
+              <Flex >
                 <div
                   onClick={() => setItemEdit(true)}
                   title="Edit"
@@ -141,9 +204,9 @@ export const TplText: Component<Props> = ({ item }) => {
               </Flex>
             </Show>
           </Flex>
-          <Text>{value()}</Text>
+          <Text>{value_text()}</Text>
         </Flex>
       </Show>
-    </>
+    </div>
   );
 };

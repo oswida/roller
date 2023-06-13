@@ -53,8 +53,12 @@ export const tplResourceItemStyle = recipe({
       padding: "small",
     }),
     {
-      width: "1em",
-      height: "1em",
+      width: "1.1em",
+      height: "1.1em",
+      maxWidth: "1.1em",
+      minWidth: "1.1em",
+      maxHeight: "1.1em",
+      minHeight: "1.1em",
       cursor: "pointer",
     },
   ],
@@ -68,3 +72,12 @@ export const tplResourceItemStyle = recipe({
     shape: "circle",
   },
 });
+
+
+export const tplTextItemStyle = style([sprinkles({
+  paddingBottom: "small"
+}), {
+  borderBottomColor: themeColor.backgroundGhost,
+  borderBottomStyle: "solid",
+  borderBottomWidth: 1,
+}])

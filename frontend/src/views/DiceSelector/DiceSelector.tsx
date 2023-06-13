@@ -75,7 +75,7 @@ export const DiceSelector: Component<RefProps> = ({ ref }) => {
         </Flex>
       </Show>
 
-      <Flex center>
+      <Flex style={{ "align-items": "center" }}>
         <Show when={!rolling()}>
           <Switch>
             <Match when={privateRoll()}>

@@ -19,9 +19,10 @@ import { actionRoll } from "../actions";
 
 type Props = {
   item: CharTemplateItem;
+  circle?: boolean;
 };
 
-export const TplCheck: Component<Props> = ({ item }) => {
+export const TplCheck: Component<Props> = ({ item, circle }) => {
   const checked = createMemo(() => {
     const info = currentCs();
     if (!info) return false;
@@ -54,7 +55,7 @@ export const TplCheck: Component<Props> = ({ item }) => {
       <Show when={checked()}>
         <Flex gap="medium" style={{ "align-items": "center" }}>
           <div
-            class={tplResourceItemStyle({ shape: "square" })}
+            class={tplResourceItemStyle({ shape: circle ? "circle" : "square" })}
             style={{
               "background-color": item.color ? item.color : "currentcolor",
             }}
@@ -73,9 +74,9 @@ export const TplCheck: Component<Props> = ({ item }) => {
       <Show when={!checked()}>
         <Flex gap="medium" style={{ "align-items": "center" }}>
           <div
-            class={tplResourceItemStyle({ shape: "square" })}
+            class={tplResourceItemStyle({ shape: circle ? "circle" : "square" })}
             style={{
-              border: `solid 1px ${item.color ? item.color : "currentcolor"}`,
+              border: `solid 2px ${item.color ? item.color : "currentcolor"}`,
             }}
             onClick={toggle}
           >

@@ -97,9 +97,10 @@ export const RollsContent: Component<Props> = ({ ref, adjustSize }) => {
   };
 
   createEffect(() => {
-    if (cmOpen()) {
-      document.getElementById("chatMessage")?.focus();
-    }
+    if (!cmOpen()) return;
+    setTimeout(() => {
+      document.getElementById("chat-message")?.focus();
+    }, 300);
   });
 
   return (
@@ -123,8 +124,8 @@ export const RollsContent: Component<Props> = ({ ref, adjustSize }) => {
             open={cmOpen}
           >
             <Input
-              id="chatMessage"
-              tabIndex={0}
+              id="chat-message"
+              onFocus={(e) => e.target.select()}
               onKeyPress={sendChatMessage}
               style={{ width: "20em" }}
               value=""

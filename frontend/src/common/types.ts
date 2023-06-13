@@ -152,8 +152,10 @@ export type CharTemplateItemRoll = {
 
 type CharTemplateItemType =
   | "text"
+  | "text_check"
   | "attr"
   | "check"
+  | "check_circle"
   | "resource"
   | "state_resource"
   | "state_resource_square"
@@ -171,7 +173,7 @@ export type CharTemplateItem = {
   rolls?: CharTemplateItemRoll[]; // rolls to perform, creates roll icons
   color?: string;
   hint?: string;
-  labels?: string[];
+  labels?: string[]; // additional labels: resource
   compute?: (item: CharTemplateItem, values: Record<string, any>) => string; // function for 'computed' type
 };
 
