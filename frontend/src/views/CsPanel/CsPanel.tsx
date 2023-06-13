@@ -49,7 +49,7 @@ import {
   SelectItem,
   Text,
 } from "~/components";
-import { charTemplateItems, charTemplates } from "~/template";
+import { charTemplateGameItems, charTemplateGames, charTemplateItems, charTemplates } from "~/template";
 import { csPanelRootStyle } from "./styles.css";
 
 export const CsPanel: Component = () => {
@@ -58,6 +58,7 @@ export const CsPanel: Component = () => {
   const [delDialogOpen, setDelDialogOpen] = createSignal(false);
   const [shareDialogOpen, setShareDialogOpen] = createSignal(false);
   const [selCsType, setSelCsType] = createSignal("");
+  const [selCsGame, setSelCsGame] = createSignal("");
   const [selCsName, setSelCsName] = createSignal("");
 
   const adjustSize = () => {
@@ -184,6 +185,13 @@ export const CsPanel: Component = () => {
     });
   };
 
+  const templates = createMemo(() => {
+    const g = charTemplateGames[selCsGame()];
+    if (!g) return [];
+    setSelCsType("");
+    return g.map(it => ({ id: it.id, label: it.name } as SelectItem));
+  });
+
   return (
     <div class={csPanelRootStyle}>
       <Flex direction="column">
@@ -213,9 +221,15 @@ export const CsPanel: Component = () => {
               />
               <Select
                 modal={true}
+                label="Game"
+                options={() => charTemplateGameItems}
+                onChange={(e: SelectItem) => setSelCsGame(e.id)}
+              />
+              <Select
+                modal={true}
                 label="Type"
-                options={() => charTemplateItems}
-                onChange={(e: SelectItem) => setSelCsType(e.id)}
+                options={templates}
+                onChange={(e: SelectItem) => { if (e) setSelCsType(e.id) }}
               />
               <Flex gap="large" style={{ "margin-top": "10px" }}>
                 <Button onClick={() => setCrDialogOpen(false)}>Cancel</Button>
