@@ -1,6 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
-import { sprinkles, themeColor } from "~/common/theme.css";
+import { sprinkles } from "~/common/theme.css";
 
 export const chatRootStyle = style([
   sprinkles({
@@ -51,12 +51,8 @@ export const chatItemRootStyle = recipe({
       },
     },
     private: {
-      false: {
-        border: `solid 1px ${themeColor.secondary}`,
-      },
-      true: {
-        border: `solid 1px ${themeColor.accent}`,
-      },
+      false: sprinkles({ borderStyle: "solid", borderWidth: "thin", borderColor: "secondary" }),
+      true: sprinkles({ borderStyle: "solid", borderWidth: "thin", borderColor: "accent" }),
     },
   },
   defaultVariants: {
@@ -128,13 +124,10 @@ export const chatItemHeaderStyle = recipe({
       },
     },
     private: {
-      false: {
-        borderBottom: `solid 1px ${themeColor.secondary}`,
-      },
-      true: {
-        borderBottom: `solid 1px ${themeColor.accent}`,
-      },
+      false: sprinkles({ borderBottomStyle: "solid", borderBottomWidth: "thin", borderBottomColor: "secondary" }),
+      true: sprinkles({ borderBottomStyle: "solid", borderBottomWidth: "thin", borderBottomColor: "accent" }),
     },
+
   },
   defaultVariants: {
     old: false,
@@ -142,12 +135,15 @@ export const chatItemHeaderStyle = recipe({
   },
 });
 
-export const chatItemCommentStyle = style({
+export const chatItemCommentStyle = style([sprinkles({
+  borderTopColor: "accent",
+  borderTopStyle: "dotted",
+  borderTopWidth: "thin",
+  paddingTop: "small"
+}), {
   fontStyle: "italic",
-  borderTop: `1px dotted ${themeColor.accent}`,
-  paddingTop: "5px",
   flex: 1,
-});
+}]);
 
 export const defListStyle = style([
   sprinkles({
@@ -182,12 +178,8 @@ export const defItemStyle = recipe({
   ],
   variants: {
     sel: {
-      true: {
-        backgroundColor: themeColor.backgroundSecondary,
-      },
-      false: {
-        backgroundColor: themeColor.background,
-      },
+      true: sprinkles({ backgroundColor: "backgroundSecondary" }),
+      false: sprinkles({ backgroundColor: "background" }),
     },
   },
   defaultVariants: {
@@ -220,9 +212,11 @@ export const defTabStyle = recipe({
       justifyContent: "center",
       borderRadius: "small",
       paddingX: "small",
+      borderColor: "accent",
+      borderWidth: "thin",
+      borderStyle: "solid"
     }),
     {
-      border: `solid 1px ${themeColor.accent}`,
       cursor: "pointer",
     },
   ],

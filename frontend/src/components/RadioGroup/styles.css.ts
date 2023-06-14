@@ -1,5 +1,5 @@
 import { style } from "@vanilla-extract/css";
-import { themeColor, sprinkles } from "~/common/theme.css";
+import { sprinkles } from "~/common/theme.css";
 
 export const rgRootStyle = style([
   sprinkles({
@@ -35,16 +35,19 @@ export const rgRadioIndicatorStyle = style({
   backgroundColor: "white",
 });
 
-export const rgRadioInputStyle = style({
+export const rgRadioInputStyle = style([sprinkles({
+  outlineColor: "accent",
+}), {
   height: 16,
   width: 16,
   borderRadius: 8,
   backgroundColor: "transparent",
-  outline: `solid 2px ${themeColor.accent} `,
+  outlineStyle: "solid",
+  outlineWidth: 2,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-});
+}]);
 
 export const rgRadioLabelStyle = style({
   marginLeft: "10px",

@@ -1,6 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
-import { themeColor, sprinkles } from "~/common/theme.css";
+import { sprinkles } from "~/common/theme.css";
 
 export const csViewerRootStyle = style([
   sprinkles({
@@ -19,17 +19,12 @@ export const csTplIconStyle = style([
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "backgroundSecondary"
+    backgroundColor: { default: "backgroundSecondary", hover: "accent" }
   }),
   {
     cursor: "pointer",
     width: "32px",
     height: "32px",
-    selectors: {
-      "&:hover": {
-        backgroundColor: themeColor.accent,
-      },
-    },
   },
 ]);
 
@@ -37,14 +32,10 @@ export const csTplAttrValueStyle = style([
   sprinkles({
     padding: "small",
     borderRadius: "small",
+    backgroundColor: { hover: "backgroundSecondary" }
   }),
   {
     cursor: "pointer",
-    selectors: {
-      "&:hover": {
-        backgroundColor: themeColor.backgroundSecondary,
-      },
-    },
   },
 ]);
 
@@ -76,9 +67,9 @@ export const tplResourceItemStyle = recipe({
 
 
 export const tplTextItemStyle = style([sprinkles({
-  paddingBottom: "small"
+  paddingBottom: "small",
+  borderBottomColor: "backgroundGhost",
 }), {
-  borderBottomColor: themeColor.backgroundGhost,
   borderBottomStyle: "solid",
   borderBottomWidth: 1,
 }])

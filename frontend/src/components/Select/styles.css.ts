@@ -1,5 +1,5 @@
 import { style } from "@vanilla-extract/css";
-import { themeColor, sprinkles } from "~/common/theme.css";
+import { sprinkles } from "~/common/theme.css";
 
 export const selectTriggerStyle = style([
   sprinkles({
@@ -10,7 +10,7 @@ export const selectTriggerStyle = style([
     paddingX: "small",
     paddingY: "medium",
     fontSize: "standard",
-    backgroundColor: "background",
+    backgroundColor: { default: "background", hover: "backgroundSecondary" },
     borderColor: "backgroundSecondary",
     borderStyle: "solid",
     borderWidth: "thin",
@@ -22,9 +22,6 @@ export const selectTriggerStyle = style([
     outline: "none",
     transition: "border-color 250ms, color 250ms",
     cursor: "pointer",
-    selectors: {
-      "&:hover": { backgroundColor: themeColor.backgroundSecondary },
-    },
   },
 ]);
 
@@ -60,7 +57,7 @@ export const selectListboxStyle = style([
 export const selectItemStyle = style([
   sprinkles({
     color: "primary",
-    backgroundColor: "backgroundSecondary",
+    backgroundColor: { default: "backgroundSecondary", hover: "background" },
     padding: "small",
     display: "flex",
     alignItems: "center",
@@ -72,11 +69,6 @@ export const selectItemStyle = style([
     marginLeft: "5px",
     marginRight: "5px",
     textAlign: "end",
-    selectors: {
-      "&:hover": {
-        backgroundColor: themeColor.background,
-      },
-    },
   },
 ]);
 

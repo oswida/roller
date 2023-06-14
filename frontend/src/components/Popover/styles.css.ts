@@ -1,5 +1,5 @@
 import { style } from "@vanilla-extract/css";
-import { sprinkles, themeColor } from "~/common/theme.css";
+import { sprinkles } from "~/common/theme.css";
 
 export const popoverTriggerStyle = style([
   sprinkles({
@@ -10,7 +10,7 @@ export const popoverTriggerStyle = style([
     paddingX: "small",
     paddingY: "small",
     fontSize: "standard",
-    backgroundColor: "none",
+    backgroundColor: { default: "none", hover: "accent" },
     borderColor: "backgroundSecondary",
     borderStyle: "solid",
     borderWidth: "thin",
@@ -23,11 +23,6 @@ export const popoverTriggerStyle = style([
     outline: "none",
     transition: "border-color 250ms, color 250ms",
     cursor: "pointer",
-    selectors: {
-      "&:hover": {
-        backgroundColor: themeColor.accent,
-      },
-    },
   },
 ]);
 
@@ -38,10 +33,12 @@ export const popoverHeaderStyle = style([
     justifyContent: "space-between",
     display: "flex",
     color: "primary",
+    borderBottomColor: "backgroundSecondary",
   }),
   {
     flex: 1,
-    borderBottom: `1px solid ${themeColor.backgroundSecondary}`,
+    borderBottomWidth: 1,
+    borderBottomStyle: "solid"
   },
 ]);
 

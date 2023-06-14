@@ -1,6 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
-import { sprinkles, themeColor } from "~/common/theme.css";
+import { sprinkles } from "~/common/theme.css";
 
 export const accordionRootStyle = style([
   sprinkles({
@@ -13,7 +13,7 @@ export const accordionTriggerStyle = style([
   sprinkles({
     display: "flex",
     flexDirection: "row",
-    backgroundColor: "none",
+    backgroundColor: { default: "none", hover: "accent" },
     color: "primary",
     alignItems: "center",
     justifyContent: "center",
@@ -24,11 +24,6 @@ export const accordionTriggerStyle = style([
     cursor: "pointer",
     width: "24px",
     height: "24px",
-    selectors: {
-      "&:hover": {
-        backgroundColor: themeColor.accent,
-      },
-    },
   },
 ]);
 

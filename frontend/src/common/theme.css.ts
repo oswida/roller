@@ -78,11 +78,18 @@ export type themeBorderSizeType = "none" | "thin" | "medium" | "thick";
 const themeBorderStyle = {
   none: "none",
   solid: "solid",
+  dotted: "dotted"
 };
 
 export type themeBorderStyleType = "none" | "solid";
 
 const themeProperties = defineProperties({
+  conditions: {
+    default: {},
+    hover: { selector: '&:hover' },
+    focus: { selector: '&:focus' }
+  },
+  defaultCondition: "default",
   properties: {
     display: ["none", "flex", "inline", "block", "inline-flex"],
     flexDirection: ["row", "column"],
@@ -105,6 +112,10 @@ const themeProperties = defineProperties({
     borderBottomRightRadius: themeSpace,
     borderWidth: themeBorderSize,
     borderStyle: themeBorderStyle,
+    borderBottomWidth: themeBorderSize,
+    borderBottomStyle: themeBorderStyle,
+    borderTopWidth: themeBorderSize,
+    borderTopStyle: themeBorderStyle,
   },
   shorthands: {
     padding: ["paddingTop", "paddingBottom", "paddingLeft", "paddingRight"],
@@ -124,10 +135,19 @@ const themeProperties = defineProperties({
 });
 
 const colorProperties = defineProperties({
+  conditions: {
+    default: {},
+    hover: { selector: '&:hover' },
+    focus: { selector: '&:focus' }
+  },
+  defaultCondition: "default",
   properties: {
     color: themeColor,
     backgroundColor: themeColor,
     borderColor: themeColor,
+    borderBottomColor: themeColor,
+    borderTopColor: themeColor,
+    outlineColor: themeColor,
   },
 });
 

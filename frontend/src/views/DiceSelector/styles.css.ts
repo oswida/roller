@@ -1,6 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
-import { sprinkles, themeColor } from "~/common/theme.css";
+import { sprinkles } from "~/common/theme.css";
 
 export const diceSelectorStyle = style([
   sprinkles({
@@ -21,7 +21,7 @@ export const diceSelectorStyle = style([
 export const diceEntryStyle = style([
   sprinkles({
     display: "flex",
-    backgroundColor: "backgroundSecondary",
+    backgroundColor: { default: "backgroundSecondary", hover: "accent" },
     color: "primary",
     alignItems: "center",
     borderRadius: "circle",
@@ -40,9 +40,6 @@ export const diceEntryStyle = style([
     position: "relative",
     cursor: "pointer",
     userSelect: "none",
-    selectors: {
-      "&:hover": { backgroundColor: themeColor.accent },
-    },
   },
 ]);
 

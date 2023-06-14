@@ -1,10 +1,10 @@
 import { recipe } from "@vanilla-extract/recipes";
-import { sprinkles, themeColor } from "~/common/theme.css";
+import { sprinkles } from "~/common/theme.css";
 
 export const buttonStyle = recipe({
   base: [
     sprinkles({
-      backgroundColor: "background",
+      backgroundColor: { default: "background", hover: "backgroundSecondary" },
       paddingX: "medium",
       paddingY: "small",
       display: "flex",
@@ -22,12 +22,6 @@ export const buttonStyle = recipe({
       userSelect: "none",
       outline: "none",
       lineHeight: 0,
-      // transition: "250ms background-color",
-      selectors: {
-        "&:hover": {
-          backgroundColor: themeColor.backgroundSecondary,
-        },
-      },
     },
   ],
   variants: {
