@@ -1,4 +1,4 @@
-import { globalStyle } from "@vanilla-extract/css";
+import { createVar, globalStyle } from "@vanilla-extract/css";
 import { createSprinkles, defineProperties } from "@vanilla-extract/sprinkles";
 
 export type themeSpaceType = "none" | "small" | "medium" | "large" | "circle";
@@ -11,15 +11,23 @@ export const themeSpace: Record<string, string> = {
   circle: "50%",
 };
 
+export const cvBackground = createVar();
+export const cvBackgroundSecondary = createVar();
+export const cvBackgroundGhost = createVar();
+export const cvAccent = createVar();
+export const cvPrimary = createVar();
+export const cvSecondary = createVar();
+export const cvDanger = createVar();
+
 export const themeColor = {
-  background: "#080014", //"#2E0003",  ,
-  backgroundSecondary: "#21293B", //"#60251D", // "#21293B",
-  backgroundGhost: "#08001455",
-  accent: "#93502D", // "#335064",
-  primary: "#fff",
-  secondary: "#E2BA51", //"#91D3C2",
+  background: cvBackground,//"#080014", //"#2E0003",  ,
+  backgroundSecondary: cvBackgroundSecondary,//"#21293B", //"#60251D", // "#21293B",
+  backgroundGhost: cvBackgroundGhost, //"#08001455",
+  accent: cvAccent, //"#93502D", // "#335064",
+  primary: cvPrimary, //"#fff",
+  secondary: cvSecondary, // "#E2BA51", //"#91D3C2",
   none: "transparent",
-  danger: "	#ff5252",
+  danger: cvDanger, //"	#ff5252",
 };
 
 export type themeColorType =
@@ -181,3 +189,25 @@ globalStyle("button>svg", {
   fill: "currentcolor",
   stroke: "currentcolor",
 });
+
+
+export const basicTheme = {
+  [cvBackground]: "#080014",
+  [cvBackgroundSecondary]: "#21293B",
+  [cvBackgroundGhost]: "#08001455",
+  [cvAccent]: "#93502D",
+  [cvPrimary]: "#fff",
+  [cvSecondary]: "#E2BA51",
+  [cvDanger]: "#ff5252"
+};
+
+export const redTheme = {
+  [cvBackground]: "#2E0003",
+  [cvBackgroundSecondary]: "#60251D",
+  [cvBackgroundGhost]: "#60251D55",
+  [cvAccent]: "#93502D",
+  [cvPrimary]: "#fff",
+  [cvSecondary]: "#E2BA51",
+  [cvDanger]: "#ff5252"
+};
+

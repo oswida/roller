@@ -14,6 +14,7 @@ import {
   Title,
 } from "solid-start";
 import {
+  appSettings,
   centConnect,
   centConnectionStatus,
   centLoadRolls,
@@ -21,6 +22,7 @@ import {
   queueInit,
   updateStoreSize,
 } from "./common";
+import { rootStyle } from "./root.css";
 
 export default function Root() {
   updateStoreSize();
@@ -37,7 +39,7 @@ export default function Root() {
   });
 
   return (
-    <Html lang="en">
+    <Html lang="en" class={rootStyle({ theme: appSettings().appTheme ? appSettings().appTheme : "basic" })}>
       <Head>
         <Title></Title>
         <Meta charset="utf-8" />

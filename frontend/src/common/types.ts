@@ -2,6 +2,8 @@ import { v4 as uuid } from "uuid";
 
 // Settings
 
+export type themeType = "red" | "basic";
+
 export type AppSettings = {
   userIdent: string;
   userName: string;
@@ -10,11 +12,10 @@ export type AppSettings = {
   diceColor: string;
   diceMaterial: string;
   rightLayout?: boolean;
-  appTheme?: string;
+  appTheme?: themeType;
   showRollSuccess?: boolean;
   showRollTotal?: boolean;
   smallerDice?: boolean;
-
 };
 
 export const emptyAppSettings = () => {

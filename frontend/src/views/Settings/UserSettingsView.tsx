@@ -8,6 +8,7 @@ import {
   diceMaterialSet,
   rollerSettingsKey,
   saveToStorage,
+  themeType,
 } from "~/common";
 import { Flex, Input, Select, SelectItem, Switch, Text } from "~/components";
 import { buttonStyle } from "~/components/Button/styles.css";
@@ -101,6 +102,25 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
     saveToStorage(rollerSettingsKey, newState);
   };
 
+  const themes = createMemo(() => {
+    return [
+      { id: "red", label: "Red" } as SelectItem,
+      { id: "basic", label: "Blue" } as SelectItem
+    ]
+  });
+
+  const themeChange = (value: SelectItem) => {
+    const data = { ...appSettings() };
+    data.appTheme = value.id as themeType;
+    saveToStorage(rollerSettingsKey, data);
+  };
+
+  const currentTheme = createMemo(() => {
+    const r = themes().filter((it) => it.id == appSettings().appTheme);
+    if (r.length > 0) return r[0];
+    return undefined;
+  });
+
   return (
     <Flex direction="column" gap="medium">
       <Flex
@@ -129,11 +149,19 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
         </CopyToClipboard>
       </Flex>
       <Flex style={{ "justify-content": "space-between" }}>
-        <Switch
+        <Select
+          modal={true}
+          label="UI Theme"
+          labelLeft
+          options={themes}
+          selected={currentTheme}
+          onChange={themeChange}
+        />
+        {/* <Switch
           label="Chat on right"
           checked={rightLayout}
           setChecked={setRightLayout}
-        />
+        /> */}
         <Switch
           label="Smaller dice"
           checked={smallerDice}
