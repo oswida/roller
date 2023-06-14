@@ -39,7 +39,11 @@ export default function Root() {
   });
 
   return (
-    <Html lang="en" class={rootStyle({ theme: appSettings().appTheme ? appSettings().appTheme : "basic" })}>
+    <Html lang="en" class={rootStyle({
+      theme: appSettings().appTheme ? appSettings().appTheme : "basic",
+      font: appSettings().appFont ? appSettings().appFont : "Lato"
+    }
+    )}>
       <Head>
         <Title></Title>
         <Meta charset="utf-8" />

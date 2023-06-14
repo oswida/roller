@@ -1,4 +1,5 @@
 import { v4 as uuid } from "uuid";
+import { themeFontFamilyType } from "./theme.css";
 
 // Settings
 
@@ -13,6 +14,7 @@ export type AppSettings = {
   diceMaterial: string;
   rightLayout?: boolean;
   appTheme?: themeType;
+  appFont?: themeFontFamilyType,
   showRollSuccess?: boolean;
   showRollTotal?: boolean;
   smallerDice?: boolean;

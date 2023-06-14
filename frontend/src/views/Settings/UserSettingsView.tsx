@@ -10,6 +10,7 @@ import {
   saveToStorage,
   themeType,
 } from "~/common";
+import { themeFontFamilyType } from "~/common/theme.css";
 import { Flex, Input, Select, SelectItem, Switch, Text } from "~/components";
 import { buttonStyle } from "~/components/Button/styles.css";
 
@@ -121,6 +122,29 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
     return undefined;
   });
 
+  const fonts = createMemo(() => {
+    return [
+      { id: "Alegreya", label: "Alegreya" } as SelectItem,
+      { id: "Lato", label: "Lato" } as SelectItem,
+      { id: "Merriweather", label: "Merriweather" } as SelectItem,
+      { id: "Oxanium", label: "Oxanium" } as SelectItem,
+      { id: "Quattrocento", label: "Quattrocento" } as SelectItem,
+      { id: "Roboto", label: "Roboto" } as SelectItem,
+    ]
+  });
+
+  const fontChange = (value: SelectItem) => {
+    const data = { ...appSettings() };
+    data.appFont = value.id as themeFontFamilyType;
+    saveToStorage(rollerSettingsKey, data);
+  };
+
+  const currentFont = createMemo(() => {
+    const r = fonts().filter((it) => it.id == appSettings().appFont);
+    if (r.length > 0) return r[0];
+    return undefined;
+  });
+
   return (
     <Flex direction="column" gap="medium">
       <Flex
@@ -148,15 +172,26 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
           </div>
         </CopyToClipboard>
       </Flex>
-      <Flex style={{ "justify-content": "space-between" }}>
+      <Flex style={{ "justify-content": "space-evenly" }}>
         <Select
           modal={true}
-          label="UI Theme"
+          label="UI Color Theme"
           labelLeft
           options={themes}
           selected={currentTheme}
           onChange={themeChange}
         />
+        <Select
+          modal={true}
+          label="UI Font"
+          labelLeft
+          options={fonts}
+          selected={currentFont}
+          onChange={fontChange}
+        />
+      </Flex>
+      <Flex style={{ "justify-content": "space-between" }}>
+
         {/* <Switch
           label="Chat on right"
           checked={rightLayout}

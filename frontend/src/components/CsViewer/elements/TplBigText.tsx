@@ -42,7 +42,6 @@ export const TplBigText: Component<Props> = ({ item }) => {
 
   const shortValue = createMemo(() => {
     const v = value().split("\n");
-    console.log(v);
     if (!v) return "";
     if (v[0].length > 50) {
       return v[0].substring(0, 50) + " ...";

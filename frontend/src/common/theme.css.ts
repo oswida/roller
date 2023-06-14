@@ -168,7 +168,7 @@ export type Sprinkles = Parameters<typeof sprinkles>[0];
 globalStyle("html, body", {
   margin: 0,
   padding: 0,
-  fontFamily: "Lato",
+  // fontFamily: "Lato",
 });
 
 globalStyle("*, *:before, *:after", {
