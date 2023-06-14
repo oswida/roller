@@ -2,17 +2,18 @@ import { CharTemplate, CharTemplateItem } from "~/common";
 
 const genApproaches = () => {
   const a = ["Podstępna", "Pomysłowa", "Siłowa", "Szybka", "Uważna", "Widowiskowa"];
+  const h = ["gdy stosujesz zmyłkę, działasz ukradkiem lub oszukujesz", "gdy wymagane jest szybkie myślenie, rozwiązywanie problemów lub branie pod uwagę złożonych zmiennych", "gdy używasz brutalnej siły", "gdy działasz szybko i zręcznie", "gdy poświęcasz czas, aby wykonać czynności prawidłowo, przywiązując wagę do szczegółów", "gdy działasz ze stylem i polotem"]
   return a.map(
-    (it) =>
+    (it, idx) =>
     ({
       id: it.toLowerCase().normalize(),
       name: it,
       itype: "attr",
+      hint: h[idx],
       rolls: [
         {
           valType: "modifier",
           notation: "4df",
-          // successRule: "fate:standard",
           comment: `${it}`,
         },
       ],
@@ -44,9 +45,28 @@ export const csTplFAEPL: CharTemplate = {
         },
         {
           id: "presja",
-          name: "Presja",
-          itype: "resource_square",
-          limit: 3
+          name: "presja",
+          itype: "row",
+          items: [
+            {
+              id: "presja_1",
+              name: "Presja (1)",
+              text: "Presja (1)",
+              itype: "check",
+            },
+            {
+              id: "presja_2",
+              name: "Presja (2)",
+              text: "Presja (2)",
+              itype: "check",
+            },
+            {
+              id: "presja_3",
+              name: "Presja (3)",
+              text: "Presja (3)",
+              itype: "check",
+            },
+          ]
         },
         {
           id: "konsekwencja_lagodna",
@@ -75,11 +95,13 @@ export const csTplFAEPL: CharTemplate = {
           id: "koncepcja",
           name: "Koncepcja ogólna",
           itype: "text",
+          hint: "To pojedyncza fraza lub zdanie, które zgrabnie podsumowuje bohatera – opisuje, kim jest, czym się zajmuje, jak się zachowuje. Myśląc o koncepcji ogólnej, spróbuj sobie wyobrazić, w jaki sposób ten aspekt może ci pomóc oraz jak może uprzykrzyć ci życie"
         },
         {
           id: "utrapienie",
           itype: "text",
           name: "Utrapienie",
+          hint: "To może być jakaś osobista słabość lub powracający wróg bądź też ważne zobowiązanie – wszystko to, co może skomplikować ci życie."
         },
         {
           id: "aspekt_3",

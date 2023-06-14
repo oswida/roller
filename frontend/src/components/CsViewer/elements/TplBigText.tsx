@@ -1,4 +1,4 @@
-import { FaSolidEye, FaSolidFloppyDisk, FaSolidPen } from "solid-icons/fa";
+import { FaSolidCircleInfo, FaSolidEye, FaSolidFloppyDisk, FaSolidPen } from "solid-icons/fa";
 import {
   Component,
   Show,
@@ -23,6 +23,7 @@ import { Text } from "../../Text";
 import { csTplIconStyle, tplTextItemStyle } from "../styles.css";
 import { Popover } from "~/components/Popover";
 import { Button, Dialog } from "~/components";
+import { themeColor } from "~/common/theme.css";
 
 type Props = {
   item: CharTemplateItem;
@@ -52,9 +53,6 @@ export const TplBigText: Component<Props> = ({ item }) => {
   const applyValue = () => {
     setEditOpen(false);
     const v = editVal();
-    if (v.trim() === "") {
-      return;
-    }
     const info = currentCs();
     if (!info) {
       return;
@@ -85,9 +83,16 @@ export const TplBigText: Component<Props> = ({ item }) => {
             "justify-content": "space-between",
           }}
         >
-          <Text fontSize="smaller" colorSchema="secondary">
-            {item.name}
-          </Text>
+          <Flex>
+            <Text fontSize="smaller" colorSchema="secondary">
+              {item.name}
+            </Text>
+            <Show when={item.hint && item.hint !== ""}>
+              <div title={item.hint} style={{ cursor: "help" }}>
+                <FaSolidCircleInfo fill={themeColor.accent} />
+              </div>
+            </Show>
+          </Flex>
           <Flex>
             <Show when={isCsOwner(currentCs())}>
               <Popover

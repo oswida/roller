@@ -1,4 +1,4 @@
-import { Component, Match, Switch } from "solid-js";
+import { Component, For, Match, Switch } from "solid-js";
 import { CharTemplateItem } from "~/common";
 import { TplAttr } from "./elements/TplAttr";
 import { TplAttrMax } from "./elements/TplAttrMax";
@@ -9,6 +9,7 @@ import { TplResource } from "./elements/TplResource";
 import { TplText } from "./elements/TplText";
 import { TplTextCheck } from "./elements/TplTextCheck";
 import { TplBigText } from "./elements/TplBigText";
+import { Flex } from "../Flex";
 
 type Props = {
   item: CharTemplateItem;
@@ -17,6 +18,12 @@ type Props = {
 export const CsItem: Component<Props> = ({ item }) => {
   return (
     <Switch>
+      <Match when={item.itype === "row"}>
+        <Flex gap="small">
+          <For each={item.items}>{(it) => (<CsItem item={it} />)}</For>
+        </Flex>
+      </Match>
+
       <Match when={item.itype === "attr"}>
         <TplAttr item={item} />
       </Match>

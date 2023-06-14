@@ -151,6 +151,7 @@ export type CharTemplateItemRoll = {
 };
 
 type CharTemplateItemType =
+  "row"
   | "text"
   | "text_check"
   | "attr"
@@ -167,7 +168,7 @@ type CharTemplateItemType =
 
 export type CharTemplateItem = {
   id: string; // item unique id
-  name: string; // item name
+  name?: string; // item name
   itype: CharTemplateItemType; // control type
   text?: string;
   limit?: number; // limit for resource controls and text lines
@@ -176,6 +177,7 @@ export type CharTemplateItem = {
   hint?: string;
   labels?: string[]; // additional labels: resource
   compute?: (item: CharTemplateItem, values: Record<string, any>) => string; // function for 'computed' type
+  items?: CharTemplateItem[]; // children items
 };
 
 export type CharTemplateSection = {

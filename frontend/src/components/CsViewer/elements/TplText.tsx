@@ -1,4 +1,4 @@
-import { FaSolidFloppyDisk, FaSolidPen, FaSolidXmark } from "solid-icons/fa";
+import { FaSolidCircleInfo, FaSolidFloppyDisk, FaSolidPen, FaSolidXmark } from "solid-icons/fa";
 import {
   Component,
   Show,
@@ -20,6 +20,7 @@ import { Flex } from "../../Flex";
 import { Input, InputArea } from "../../Input";
 import { Text } from "../../Text";
 import { csTplIconStyle, tplTextItemStyle } from "../styles.css";
+import { themeColor } from "~/common/theme.css";
 
 type Props = {
   item: CharTemplateItem;
@@ -38,9 +39,6 @@ export const TplText: Component<Props> = ({ item }) => {
   const applyValue = () => {
     setItemEdit(false);
     const v = editVal();
-    if (v.trim() === "") {
-      return;
-    }
     const info = currentCs();
     if (!info) {
       return;
@@ -74,9 +72,16 @@ export const TplText: Component<Props> = ({ item }) => {
               "justify-content": "space-between",
             }}
           >
-            <Text fontSize="smaller" colorSchema="secondary">
-              {item.name}
-            </Text>
+            <Flex>
+              <Text fontSize="smaller" colorSchema="secondary">
+                {item.name}
+              </Text>
+              <Show when={item.hint && item.hint !== ""}>
+                <div title={item.hint} style={{ cursor: "help" }}>
+                  <FaSolidCircleInfo fill={themeColor.accent} />
+                </div>
+              </Show>
+            </Flex>
             <Flex>
               <div
                 onClick={() => setItemEdit(false)}
@@ -126,9 +131,16 @@ export const TplText: Component<Props> = ({ item }) => {
               "justify-content": "space-between",
             }}
           >
-            <Text fontSize="smaller" colorSchema="secondary">
-              {item.name}
-            </Text>
+            <Flex>
+              <Text fontSize="smaller" colorSchema="secondary">
+                {item.name}
+              </Text>
+              <Show when={item.hint && item.hint !== ""}>
+                <div title={item.hint} style={{ cursor: "help" }}>
+                  <FaSolidCircleInfo fill={themeColor.accent} />
+                </div>
+              </Show>
+            </Flex>
             <Show when={isCsOwner(currentCs())}>
               <Flex>
                 <div
