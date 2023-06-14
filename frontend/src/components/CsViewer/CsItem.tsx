@@ -8,6 +8,7 @@ import { TplLabel } from "./elements/TplLabel";
 import { TplResource } from "./elements/TplResource";
 import { TplText } from "./elements/TplText";
 import { TplTextCheck } from "./elements/TplTextCheck";
+import { TplBigText } from "./elements/TplBigText";
 
 type Props = {
   item: CharTemplateItem;
@@ -62,6 +63,10 @@ export const CsItem: Component<Props> = ({ item }) => {
 
       <Match when={item.itype === "computed"}>
         <TplCompute item={item} />
+      </Match>
+
+      <Match when={item.itype === "big_text"}>
+        <TplBigText item={item} />
       </Match>
     </Switch>
   );

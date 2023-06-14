@@ -1,6 +1,6 @@
 import { Dialog as Dlg } from "@kobalte/core";
 import { FaSolidXmark } from "solid-icons/fa";
-import { ParentComponent } from "solid-js";
+import { ComponentProps, ParentComponent } from "solid-js";
 import { buttonStyle } from "../Button/styles.css";
 import {
   dialogContentStyle,
@@ -21,7 +21,7 @@ type Props = {
   modal?: boolean;
 };
 
-export const Dialog: ParentComponent<Props> = ({
+export const Dialog: ParentComponent<Props & ComponentProps<"div">> = ({
   dialogTitle,
   trigger,
   children,
@@ -30,6 +30,7 @@ export const Dialog: ParentComponent<Props> = ({
   triggerStyle,
   triggerHint,
   modal,
+  ...rest
 }) => {
   return (
     <Dlg.Root
@@ -47,7 +48,7 @@ export const Dialog: ParentComponent<Props> = ({
       <Dlg.Portal>
         <Dlg.Overlay class={dialogOverlayStyle} />
         <div class={dialogPositionerStyle}>
-          <Dlg.Content class={dialogRootStyle}>
+          <Dlg.Content class={dialogRootStyle} {...rest}>
             <div class={dialogHeaderStyle}>
               <Dlg.Title class={dialogTitleStyle}>{dialogTitle()}</Dlg.Title>
               <Dlg.CloseButton class={buttonStyle({})}>

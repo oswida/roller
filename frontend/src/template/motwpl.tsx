@@ -538,12 +538,12 @@ export const csTplMotwPl_Spiskolog: CharTemplate = {
                 {
                     id: "notatki_postac",
                     name: "Postać",
-                    itype: "text"
+                    itype: "big_text"
                 },
                 {
                     id: "notatki_gra",
                     name: "Gra",
-                    itype: "text"
+                    itype: "big_text"
                 }
             ]
         }
@@ -939,12 +939,12 @@ export const csTplMotwPl_Niebianin: CharTemplate = {
                 {
                     id: "notatki_postac",
                     name: "Postać",
-                    itype: "text"
+                    itype: "big_text"
                 },
                 {
                     id: "notatki_gra",
                     name: "Gra",
-                    itype: "text"
+                    itype: "big_text"
                 }
             ]
         }
@@ -1390,12 +1390,12 @@ export const csTplMotwPl_Ekspert: CharTemplate = {
                 {
                     id: "notatki_postac",
                     name: "Postać",
-                    itype: "text"
+                    itype: "big_text"
                 },
                 {
                     id: "notatki_gra",
                     name: "Gra",
-                    itype: "text"
+                    itype: "big_text"
                 }
             ]
         }

@@ -18,6 +18,8 @@ import {
 import { appSettings, currentRoom } from "./storage";
 import { sprinkles, themeSpace } from "./theme.css";
 import { CsInfo, NetRollInfo, RollInfo, RollResult, RollSet } from "./types";
+import DOMPurify from "dompurify";
+import { marked } from "marked";
 
 export const TOPBAR_HEIGHT = 50;
 
@@ -232,3 +234,11 @@ export const createSpaceVariants = (name: string) => {
   });
   return result;
 };
+
+
+export const parseMarkdown = (data: string) => {
+  return DOMPurify.
+    sanitize(marked.parse(data, { headerIds: false, mangle: false, })).
+    replaceAll("<p>", "").
+    replaceAll("</p>", "");
+}

@@ -19,6 +19,7 @@ export const csTplIconStyle = style([
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "backgroundSecondary"
   }),
   {
     cursor: "pointer",

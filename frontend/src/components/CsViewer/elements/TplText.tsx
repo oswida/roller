@@ -19,7 +19,7 @@ import {
 import { Flex } from "../../Flex";
 import { Input, InputArea } from "../../Input";
 import { Text } from "../../Text";
-import { csTplIconStyle } from "../styles.css";
+import { csTplIconStyle, tplTextItemStyle } from "../styles.css";
 
 type Props = {
   item: CharTemplateItem;
@@ -65,7 +65,7 @@ export const TplText: Component<Props> = ({ item }) => {
   }
 
   return (
-    <>
+    <div class={tplTextItemStyle}>
       <Show when={itemEdit()}>
         <Flex direction="column" gap="small">
           <Flex
@@ -144,6 +144,6 @@ export const TplText: Component<Props> = ({ item }) => {
           <Text>{value()}</Text>
         </Flex>
       </Show>
-    </>
+    </div>
   );
 };

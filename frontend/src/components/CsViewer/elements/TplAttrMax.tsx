@@ -103,7 +103,9 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
           }}
         >
           <DataBlock
-            width="60%"
+            width="50%"
+            widthLeft="80%"
+            widthRight="20%"
             left={<Text title={item.hint}>{item.name}</Text>}
             leftBackground="accent"
             rightFunc={() => (
@@ -167,6 +169,9 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
           <FaSolidXmark style={{ fill: themeColor.danger }} />
         </div>
         <DataBlock
+          width="50%"
+          widthLeft="80%"
+          widthRight="20%"
           left={<Text>{item.name}</Text>}
           leftBackground="accent"
           right={

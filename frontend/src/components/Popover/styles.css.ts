@@ -10,7 +10,7 @@ export const popoverTriggerStyle = style([
     paddingX: "small",
     paddingY: "small",
     fontSize: "standard",
-    backgroundColor: "background",
+    backgroundColor: "none",
     borderColor: "backgroundSecondary",
     borderStyle: "solid",
     borderWidth: "thin",
@@ -25,7 +25,7 @@ export const popoverTriggerStyle = style([
     cursor: "pointer",
     selectors: {
       "&:hover": {
-        backgroundColor: themeColor.backgroundSecondary,
+        backgroundColor: themeColor.accent,
       },
     },
   },

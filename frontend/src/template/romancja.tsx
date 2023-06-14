@@ -71,12 +71,12 @@ export const csTplRomancja: CharTemplate = {
             items: [
                 {
                     id: "talenty_ekwipunek",
-                    itype: "text",
+                    itype: "big_text",
                     name: "Talenty i ekwipunek",
                 },
                 {
                     id: "rozne",
-                    itype: "text",
+                    itype: "big_text",
                     name: "Różne",
                 }
             ]

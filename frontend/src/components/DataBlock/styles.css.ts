@@ -8,11 +8,10 @@ export const datablockStyle = recipe({
       flexDirection: "row",
       alignItems: "center",
       paddingY: "small",
-      paddingX: "medium",
       color: "primary",
     }),
     {
-      width: "auto",
+      // width: "auto",
       minWidth: "3em",
     },
   ],
@@ -27,11 +26,15 @@ export const datablockStyle = recipe({
         borderBottomLeftRadius: "medium",
         borderTopLeftRadius: "medium",
         justifyContent: "flex-start",
+        paddingRight: "small",
+        paddingLeft: "medium"
       }),
       right: sprinkles({
         borderBottomRightRadius: "medium",
         borderTopRightRadius: "medium",
         justifyContent: "flex-end",
+        paddingLeft: "small",
+        paddingRight: "medium"
       }),
     },
   },

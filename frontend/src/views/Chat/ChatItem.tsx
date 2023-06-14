@@ -84,6 +84,9 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
             <Flex style={{ "justify-content": "space-between", flex: 1 }}>
               <Show when={appSettings().showRollTotal && item.result.total}>
                 <DataBlock
+                  width="45%"
+                  widthLeft="80%"
+                  widthRight="20%"
                   left={<Text colorSchema="secondary">Total {modValue()}</Text>}
                   right={<div>{item.result.total}</div>}
                   leftBackground="secondary"
@@ -99,17 +102,19 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
               >
                 <Show when={item.successTarget && item.successTarget !== 0}>
                   <DataBlock
+                    width="55%"
+                    widthLeft="20%"
+                    widthRight="80%"
                     rightBackground="accent"
                     leftBackground="accent"
                     left={
                       <Flex center>
-                        <BiRegularTargetLock fill="currentcolor" />{" "}
+                        <BiRegularTargetLock fill="currentcolor" />
                         <Text colorSchema="primary">{item.successTarget}</Text>
                       </Flex>
                     }
                     right={
                       <Text colorSchema="primary" title={item.successRule}>
-                        {" "}
                         {succValue()}
                       </Text>
                     }
@@ -121,7 +126,6 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
                     leftBackground="accent"
                     right={
                       <Text colorSchema="primary" title={item.successRule}>
-                        {" "}
                         {succValue()}
                       </Text>
                     }

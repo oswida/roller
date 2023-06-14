@@ -144,6 +144,20 @@ export const csTplCairnPl: CharTemplate = {
           color: "#ff5252"
         }
       ],
-    },
+    }, {
+      title: "Notatki",
+      items: [
+        {
+          id: "Postać",
+          name: "Postać",
+          itype: "big_text"
+        },
+        {
+          id: "Sesje",
+          name: "Sesje",
+          itype: "big_text"
+        }
+      ]
+    }
   ],
 };
