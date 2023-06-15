@@ -151,6 +151,7 @@ const colorProperties = defineProperties({
   defaultCondition: "default",
   properties: {
     color: themeColor,
+    fill: themeColor,
     backgroundColor: themeColor,
     borderColor: themeColor,
     borderBottomColor: themeColor,

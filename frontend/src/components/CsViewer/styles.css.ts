@@ -39,7 +39,7 @@ export const csTplAttrValueStyle = style([
   },
 ]);
 
-export const tplResourceItemStyle = recipe({
+export const tplCheckItemStyle = recipe({
   base: [
     sprinkles({
       padding: "small",
@@ -73,3 +73,7 @@ export const tplTextItemStyle = style([sprinkles({
   borderBottomStyle: "solid",
   borderBottomWidth: 1,
 }])
+
+export const tplHintIconStyle = style([sprinkles({
+  fill: "accent",
+})])

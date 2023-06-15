@@ -102,13 +102,13 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
               >
                 <Show when={item.successTarget && item.successTarget !== 0}>
                   <DataBlock
-                    width="55%"
-                    widthLeft="20%"
-                    widthRight="80%"
+                    width="57%"
+                    widthLeft="35%"
+                    widthRight="70%"
                     rightBackground="accent"
                     leftBackground="accent"
                     left={
-                      <Flex center>
+                      <Flex center style={{ gap: "2px" }}>
                         <BiRegularTargetLock fill="currentcolor" />
                         <Text colorSchema="primary">{item.successTarget}</Text>
                       </Flex>

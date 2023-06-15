@@ -30,6 +30,8 @@ import { Input } from "../../Input";
 import { Text } from "../../Text";
 import { actionCompute, actionRoll } from "../actions";
 import { csTplAttrValueStyle, csTplIconStyle } from "../styles.css";
+import { TplHintBlock } from "../blocks/TplHintBlock";
+import { TplRollBlock } from "../blocks/TplRollBlock";
 
 type Props = {
   item: CharTemplateItem;
@@ -131,36 +133,8 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
           />
 
           <Flex gap="medium">
-            <Show
-              when={
-                item.rolls && item.rolls.length > 0 && isCsOwner(currentCs())
-              }
-            >
-              <Flex>
-                <For each={item.rolls}>
-                  {(r) => (
-                    <div
-                      title={r.comment}
-                      onClick={() =>
-                        actionRoll(currentCs()?.name, r, value()[0])
-                      }
-                      class={csTplIconStyle}
-                    >
-                      <FaSolidDice
-                        style={{
-                          fill: r.iconColor ? r.iconColor : "currentcolor",
-                        }}
-                      />
-                    </div>
-                  )}
-                </For>
-              </Flex>
-            </Show>
-            <Show when={item.hint && item.hint !== ""}>
-              <div title={item.hint} style={{ cursor: "help" }}>
-                <FaSolidCircleInfo fill={themeColor.accent} />
-              </div>
-            </Show>
+            <TplRollBlock item={item} value={() => value()[0]} />
+            <TplHintBlock hint={item.hint} />
           </Flex>
         </Flex>
       </Show>

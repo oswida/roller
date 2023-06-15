@@ -23,7 +23,7 @@ import { Text } from "../../Text";
 import { csTplIconStyle, tplTextItemStyle } from "../styles.css";
 import { Popover } from "~/components/Popover";
 import { Button, Dialog } from "~/components";
-import { themeColor } from "~/common/theme.css";
+import { TplHintBlock } from "../blocks/TplHintBlock";
 
 type Props = {
   item: CharTemplateItem;
@@ -86,11 +86,7 @@ export const TplBigText: Component<Props> = ({ item }) => {
             <Text fontSize="smaller" colorSchema="secondary">
               {item.name}
             </Text>
-            <Show when={item.hint && item.hint !== ""}>
-              <div title={item.hint} style={{ cursor: "help" }}>
-                <FaSolidCircleInfo fill={themeColor.accent} />
-              </div>
-            </Show>
+            <TplHintBlock hint={item.hint} />
           </Flex>
           <Flex>
             <Show when={isCsOwner(currentCs())}>

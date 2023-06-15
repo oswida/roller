@@ -24,9 +24,15 @@ export const textStyle = recipe({
       bigger: sprinkles({ fontSize: "bigger" }),
       big: sprinkles({ fontSize: "big" }),
     },
+    preserveLines: {
+      true: {
+        whiteSpace: "pre-wrap"
+      }
+    }
   },
   defaultVariants: {
     colorSchema: "primary",
     fontSize: "standard",
+    preserveLines: false,
   },
 });

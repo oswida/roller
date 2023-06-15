@@ -1,4 +1,4 @@
-import { FaSolidCircleInfo, FaSolidFloppyDisk, FaSolidPen, FaSolidXmark } from "solid-icons/fa";
+import { FaSolidPen } from "solid-icons/fa";
 import {
   Component,
   Show,
@@ -17,13 +17,15 @@ import {
   updateCsStorage,
 } from "~/common";
 import { Flex } from "../../Flex";
-import { Input, InputArea } from "../../Input";
 import { Text } from "../../Text";
-import { csTplIconStyle, tplResourceItemStyle, tplTextItemStyle } from "../styles.css";
-import { themeColor } from "~/common/theme.css";
+import { csTplIconStyle, tplTextItemStyle } from "../styles.css";
+import { TplHintBlock } from "../blocks/TplHintBlock";
+import { TplTextEditBlock } from "../blocks/TplTextEditBlock";
+import { TplCheckBlock } from "../blocks/TplCheckBlock";
 
 type Props = {
   item: CharTemplateItem;
+  circle?: boolean;
 };
 
 type Value = {
@@ -31,11 +33,8 @@ type Value = {
   checked: boolean;
 }
 
-
-
-export const TplTextCheck: Component<Props> = ({ item }) => {
+export const TplTextCheck: Component<Props> = ({ item, circle }) => {
   const [itemEdit, setItemEdit] = createSignal(false);
-  const [editVal, setEditVal] = createSignal("");
 
   const value_text = createMemo(() => {
     const info = currentCs();
@@ -51,9 +50,7 @@ export const TplTextCheck: Component<Props> = ({ item }) => {
     return v.checked;
   });
 
-  const applyText = () => {
-    setItemEdit(false);
-    const v = editVal();
+  const applyText = (v: string) => {
     const info = currentCs();
     if (!info) {
       return;
@@ -63,7 +60,6 @@ export const TplTextCheck: Component<Props> = ({ item }) => {
     else
       info.values[item.id].text = v;
     updateCsStorage(info);
-    setEditVal("");
     setCurrentCs(undefined);
     setCurrentCs({ ...info });
     centPublish(netTopic(topicCsInfo), info);
@@ -74,11 +70,6 @@ export const TplTextCheck: Component<Props> = ({ item }) => {
     document.getElementById(item.id)?.focus();
   });
 
-  const keyPress = (e: any) => {
-    if (e.code == "Enter" || e.key == "Enter") {
-      applyText();
-    }
-  }
 
   const toggle = () => {
     const info = currentCs();
@@ -98,63 +89,7 @@ export const TplTextCheck: Component<Props> = ({ item }) => {
   return (
     <div class={tplTextItemStyle}>
       <Show when={itemEdit()}>
-        <Flex direction="column" gap="small">
-          <Flex
-            style={{
-              "align-items": "center",
-              "justify-content": "space-between",
-            }}
-          >
-            <Flex>
-              <Text fontSize="smaller" colorSchema="secondary">
-                {item.name}
-              </Text>
-              <Show when={item.hint && item.hint !== ""}>
-                <div title={item.hint} style={{ cursor: "help" }}>
-                  <FaSolidCircleInfo fill={themeColor.accent} />
-                </div>
-              </Show>
-            </Flex>
-            <Flex>
-              <div
-                onClick={() => setItemEdit(false)}
-                title="Cancel"
-                class={csTplIconStyle}
-              >
-                <FaSolidXmark style={{ fill: "currentcolor" }} />
-              </div>
-              <div onClick={applyText} title="Save" class={csTplIconStyle}>
-                <FaSolidFloppyDisk style={{ fill: "currentcolor" }} />
-              </div>
-            </Flex>
-          </Flex>
-          <Show when={item.limit && item.limit == 1}>
-            <Input
-              id={item.id}
-              onFocus={(e) => e.target.select()}
-              onChange={(e: any) => setEditVal(e.target.value)}
-              onKeyPress={keyPress}
-              value={value_text()}
-              style={{
-                width: "280px",
-              }}
-            />
-          </Show>
-          <Show when={!item.limit || item.limit != 1}>
-            <InputArea
-              id={item.id}
-              onFocus={(e) => e.target.select()}
-              onChange={(e: any) => setEditVal(e.target.value)}
-              onKeyPress={keyPress}
-              value={value_text()}
-              style={{
-                "min-height": "10em",
-                "font-size": "medium",
-                width: "280px",
-              }}
-            />
-          </Show>
-        </Flex>
+        <TplTextEditBlock item={item} onEditToggle={setItemEdit} value={value_text} setValue={applyText} />
       </Show>
       <Show when={!itemEdit()}>
         <Flex direction="column" gap="small">
@@ -165,43 +100,17 @@ export const TplTextCheck: Component<Props> = ({ item }) => {
             }}
           >
             <Flex gap="medium" >
-              <Show when={value_checked()}>
-                <Flex gap="medium" style={{ "align-items": "center" }}>
-                  <div
-                    class={tplResourceItemStyle({ shape: "circle" })}
-                    style={{
-                      "background-color": item.color ? item.color : "currentcolor",
-                    }}
-                    onClick={toggle}
-                    title={item.hint}
-                  >
-                    {" "}
-                  </div>
-                </Flex>
-              </Show>
-              <Show when={!value_checked()}>
-                <Flex gap="medium" style={{ "align-items": "center" }}>
-                  <div
-                    class={tplResourceItemStyle({ shape: "circle" })}
-                    style={{
-                      border: `solid 2px ${item.color ? item.color : "currentcolor"}`,
-                    }}
-                    onClick={toggle}
-                    title={item.hint}
-                  >
-                    {" "}
-                  </div>
-                </Flex>
-              </Show>
+              <TplCheckBlock
+                checked={value_checked}
+                circle={circle}
+                color={item.color}
+                onClick={isCsOwner(currentCs()) ? toggle : undefined}
+              />
               <Flex>
                 <Text fontSize="smaller" colorSchema="secondary">
                   {item.name}
                 </Text>
-                <Show when={item.hint && item.hint !== ""}>
-                  <div title={item.hint} style={{ cursor: "help" }}>
-                    <FaSolidCircleInfo fill={themeColor.accent} />
-                  </div>
-                </Show>
+                <TplHintBlock hint={item.hint} />
               </Flex>
             </Flex>
             <Show when={isCsOwner(currentCs())}>
@@ -216,7 +125,7 @@ export const TplTextCheck: Component<Props> = ({ item }) => {
               </Flex>
             </Show>
           </Flex>
-          <Text>{value_text()}</Text>
+          <Text preserveLines>{value_text()}</Text>
         </Flex>
       </Show>
     </div>

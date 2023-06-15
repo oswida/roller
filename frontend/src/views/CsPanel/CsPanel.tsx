@@ -110,7 +110,6 @@ export const CsPanel: Component = () => {
       setCurrentCs(undefined);
       setCurrentCs(appCs()[flt[0].id]);
     }
-    toast("New charsheet created");
   };
 
   const csChange = (item: SelectItem) => {
@@ -137,7 +136,6 @@ export const CsPanel: Component = () => {
     const cs = currentCs();
     if (!cs) return;
     deleteCsStorage(cs.id);
-    toast("Charsheet deleted");
     setCurrentCs(undefined);
   };
 
@@ -154,7 +152,6 @@ export const CsPanel: Component = () => {
     }
     updateCsStorage(cs);
     centPublish(netTopic(topicCsInfo), cs);
-    toast("Charsheet share toggled");
   };
 
   const expandAll = () => {

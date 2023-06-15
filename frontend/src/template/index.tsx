@@ -8,6 +8,7 @@ import {
 } from "./motwpl";
 import { csTplRomancja } from "./romancja";
 import { csTplFAEPL } from "./faepl";
+import { csTplCyberPl } from "./cyberpl";
 
 const newTplList = [
   csTplRomancja,
@@ -16,6 +17,7 @@ const newTplList = [
   csTplMotwPl_Ekspert,
   csTplMotwPl_Spiskolog,
   csTplFAEPL,
+  csTplCyberPl
 ];
 
 export const charTemplates: Record<string, CharTemplate | undefined> = {

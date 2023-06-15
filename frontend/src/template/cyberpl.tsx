@@ -1,7 +1,7 @@
 import { CharTemplate, CharTemplateItem } from "~/common";
 
 const genAttrs = () => {
-  const a = ["Siła", "Zręczność", "Wola"];
+  const a = ["Biologia", "Psyche", "Interfejs"];
   return a.map(
     (it) =>
     ({
@@ -15,29 +15,29 @@ const genAttrs = () => {
           successRule: "cairn:standard",
           comment: `${it}`,
         },
-        // {
-        //     valType: "target",
-        //     notation: "2d20",
-        //     successRule: "cairn:standard",
-        //     comment: `${it}: łatwy`,
-        //     iconColor: "darkgreen"
-        // },
-        // {
-        //     valType: "target",
-        //     notation: "2d20",
-        //     successRule: "total:cairn:hard",
-        //     comment: `${it}: trudny`,
-        //     iconColor: "darkred"
-        // },
+        {
+          valType: "target",
+          notation: "2d20",
+          successRule: "cairn:standard",
+          comment: `${it}: łatwy`,
+          iconColor: "#286623"
+        },
+        {
+          valType: "target",
+          notation: "2d20",
+          successRule: "cairn:hard",
+          comment: `${it}: trudny`,
+          iconColor: "#941e18"
+        },
       ],
     } as CharTemplateItem)
   );
 };
 
-export const csTplCairnPl: CharTemplate = {
-  id: "cairn-pl",
-  name: "Cairn PL",
-  game: "Cairn",
+export const csTplCyberPl: CharTemplate = {
+  id: "cyber-pl",
+  name: "Cyber PL standard",
+  game: "Cyber",
   sections: [
     {
       title: "Zdolności",
@@ -69,8 +69,14 @@ export const csTplCairnPl: CharTemplate = {
       title: "Ekwipunek",
       items: [
         {
-          id: "zloto",
-          name: "Złoto",
+          id: "abonament",
+          name: "Abonament",
+          itype: "text",
+          limit: 1,
+        },
+        {
+          id: "kredyty",
+          name: "Kredyty",
           itype: "attr",
         },
         {

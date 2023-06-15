@@ -1,4 +1,4 @@
-import { FaSolidCircleInfo, FaSolidMinus, FaSolidPlus } from "solid-icons/fa";
+import { FaSolidMinus, FaSolidPlus } from "solid-icons/fa";
 import { Component, For, Show, createMemo } from "solid-js";
 import {
   CharTemplateItem,
@@ -10,12 +10,13 @@ import {
   topicCsInfo,
   updateCsStorage,
 } from "~/common";
-import { themeColor } from "~/common/theme.css";
 import { charTemplates } from "~/template";
 import { Flex } from "../../Flex";
 import { Text } from "../../Text";
 import { actionCompute } from "../actions";
-import { csTplIconStyle, tplResourceItemStyle } from "../styles.css";
+import { csTplIconStyle } from "../styles.css";
+import { TplHintBlock } from "../blocks/TplHintBlock";
+import { TplCheckBlock } from "../blocks/TplCheckBlock";
 
 type Props = {
   item: CharTemplateItem;
@@ -61,11 +62,7 @@ export const TplResource: Component<Props> = ({ item, state, square }) => {
         <Text fontSize="smaller" colorSchema="secondary">
           {item.name}
         </Text>
-        <Show when={item.hint && item.hint !== ""}>
-          <div title={item.hint} style={{ cursor: "help" }}>
-            <FaSolidCircleInfo fill={themeColor.accent} />
-          </div>
-        </Show>
+        <TplHintBlock hint={item.hint} />
       </Flex>
       <Flex gap="small" style={{ "align-items": "center" }}>
         <Flex direction="column" gap="small" center>
@@ -80,37 +77,11 @@ export const TplResource: Component<Props> = ({ item, state, square }) => {
         </Flex>
         <For each={new Array(item.limit).fill(" ")}>
           {(it, idx) => (
-            <>
-              <Show when={idx() < numValue()}>
-                <div
-                  class={tplResourceItemStyle({
-                    shape: square ? "square" : "circle",
-                  })}
-                  style={{
-                    "background-color": item.color
-                      ? item.color
-                      : "currentcolor",
-                  }}
-                >
-                  {" "}
-                </div>
-              </Show>
-              <Show when={idx() >= numValue()}>
-                <div
-                  class={tplResourceItemStyle({
-                    shape: square ? "square" : "circle",
-                  })}
-                  style={{
-                    border: `solid 1px ${
-                      item.color ? item.color : "currentcolor"
-                    }`,
-                  }}
-                >
-                  {" "}
-                </div>
-              </Show>
-            </>
-          )}
+            <TplCheckBlock
+              checked={() => idx() < numValue()}
+              circle={!square}
+              color={item.color}
+            />)}
         </For>
         <Flex direction="column" gap="small" center>
           <Show when={state && item.labels && item.labels.length > 1}>
