@@ -204,10 +204,29 @@ export const basicTheme = {
 export const redTheme = {
   [cvBackground]: "#2E0003",
   [cvBackgroundSecondary]: "#60251D",
-  [cvBackgroundGhost]: "#60251D55",
-  [cvAccent]: "#93502D",
+  [cvBackgroundGhost]: "#2E000355",
+  [cvAccent]: "#038042", //"#017039",//"#914720", //"#008C47",
   [cvPrimary]: "#fff",
-  [cvSecondary]: "#E2BA51",
+  [cvSecondary]: "#D9D555",
   [cvDanger]: "#ff5252"
 };
 
+export const evergreenTheme = {
+  [cvBackground]: "#C4FF6E",
+  [cvBackgroundSecondary]: "#9FDB43",
+  [cvBackgroundGhost]: "#C4FF6E55",
+  [cvAccent]: "#4da85b",
+  [cvPrimary]: "#211508",
+  [cvSecondary]: "#381E10",
+  [cvDanger]: "#ff5252"
+};
+
+export const monosilverTheme = {
+  [cvBackground]: "#E0E1E0",
+  [cvBackgroundSecondary]: "#D1D3D4",
+  [cvBackgroundGhost]: "#ffffff55",
+  [cvAccent]: "#A3A3A2",
+  [cvPrimary]: "#1A1A1A",
+  [cvSecondary]: "#000",
+  [cvDanger]: "#f54040"
+};

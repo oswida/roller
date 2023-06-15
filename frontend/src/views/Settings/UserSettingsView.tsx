@@ -106,7 +106,9 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
   const themes = createMemo(() => {
     return [
       { id: "red", label: "Red" } as SelectItem,
-      { id: "basic", label: "Blue" } as SelectItem
+      { id: "basic", label: "Blue" } as SelectItem,
+      { id: "evergreen", label: "Evergreen" } as SelectItem,
+      { id: "monosilver", label: "Monosilver" } as SelectItem
     ]
   });
 

@@ -122,7 +122,7 @@ export const TplBigText: Component<Props> = ({ item }) => {
               style={{ "max-width": "80%" }}
               open={viewOpen}
               onOpenChange={setViewOpen}
-              dialogTitle={() => item.name}
+              dialogTitle={() => item.name ? item.name : ""}
               modal={true}
               triggerStyle={{ "background-color": "transparent" }}
               trigger={

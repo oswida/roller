@@ -1,5 +1,5 @@
 import { recipe } from "@vanilla-extract/recipes";
-import { cvBackground, cvBackgroundSecondary, cvBackgroundGhost, cvAccent, cvPrimary, cvSecondary, cvDanger, redTheme, basicTheme, sprinkles } from "./common/theme.css";
+import { redTheme, basicTheme, sprinkles, evergreenTheme, monosilverTheme } from "./common/theme.css";
 
 export const rootStyle = recipe({
     base: {
@@ -12,7 +12,13 @@ export const rootStyle = recipe({
             },
             basic: {
                 vars: basicTheme
-            }
+            },
+            evergreen: {
+                vars: evergreenTheme
+            },
+            monosilver: {
+                vars: monosilverTheme
+            },
         },
         font: {
             Oxanium: sprinkles({ fontFamily: "Oxanium" }),
