@@ -1,10 +1,11 @@
 import { FaSolidXmark, FaSolidFloppyDisk } from "solid-icons/fa";
-import { Component, Show, createSignal } from "solid-js";
+import { Component, Show, createEffect, createSignal } from "solid-js";
 import { CharTemplateItem } from "~/common"
-import { Flex, Text, Input } from "~/components";
-import { InputArea } from "~/components/Input";
+import { Input, InputArea } from "../../Input";
 import { csTplIconStyle } from "../styles.css";
 import { TplHintBlock } from "./TplHintBlock";
+import { Flex } from "../../Flex";
+import { Text } from "../../Text";
 
 type Props = {
     item: CharTemplateItem;
@@ -23,13 +24,19 @@ export const TplTextEditBlock: Component<Props> = ({ item, onEditToggle, value, 
     }
 
     const applyValue = () => {
-        onEditToggle(false);
         const v = editVal();
         setValue(v);
+        onEditToggle(false);
         setEditVal("");
     }
 
-    return <Flex direction="column" gap="small">
+    createEffect(() => {
+        setTimeout(() => {
+            document.getElementById(item.id)?.focus();
+        }, 200);
+    });
+
+    return <Flex direction="column" gap="small" style={{ flex: 1 }}>
         <Flex
             style={{
                 "align-items": "center",
@@ -63,7 +70,7 @@ export const TplTextEditBlock: Component<Props> = ({ item, onEditToggle, value, 
                 onKeyPress={keyPress}
                 value={value()}
                 style={{
-                    width: "280px",
+                    width: "310px",
                 }}
             />
         </Show>
@@ -77,7 +84,7 @@ export const TplTextEditBlock: Component<Props> = ({ item, onEditToggle, value, 
                 style={{
                     "min-height": "10em",
                     "font-size": "medium",
-                    width: "280px",
+                    width: "310px",
                 }}
             />
         </Show>

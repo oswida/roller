@@ -167,7 +167,9 @@ type CharTemplateItemType =
   | "attr_max"
   | "label"
   | "computed"
-  | "big_text";
+  | "big_text"
+  | "text_list"
+  | "text_list_check";
 
 export type CharTemplateItem = {
   id: string; // item unique id

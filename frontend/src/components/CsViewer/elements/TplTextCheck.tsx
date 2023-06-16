@@ -101,6 +101,7 @@ export const TplTextCheck: Component<Props> = ({ item, circle }) => {
           >
             <Flex gap="medium" >
               <TplCheckBlock
+                hint={item.labels ? item.labels[0] : undefined}
                 checked={value_checked}
                 circle={circle}
                 color={item.color}

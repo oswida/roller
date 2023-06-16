@@ -10,6 +10,7 @@ import { TplText } from "./elements/TplText";
 import { TplTextCheck } from "./elements/TplTextCheck";
 import { TplBigText } from "./elements/TplBigText";
 import { Flex } from "../Flex";
+import { TplTextList } from "./elements/TplTextList";
 
 type Props = {
   item: CharTemplateItem;
@@ -74,6 +75,14 @@ export const CsItem: Component<Props> = ({ item }) => {
 
       <Match when={item.itype === "big_text"}>
         <TplBigText item={item} />
+      </Match>
+
+      <Match when={item.itype === "text_list"}>
+        <TplTextList item={item} />
+      </Match>
+
+      <Match when={item.itype === "text_list_check"}>
+        <TplTextList item={item} checkable />
       </Match>
     </Switch>
   );

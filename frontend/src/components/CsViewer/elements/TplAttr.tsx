@@ -1,12 +1,9 @@
 import {
   FaSolidCheck,
-  FaSolidCircleInfo,
-  FaSolidDice,
   FaSolidXmark,
 } from "solid-icons/fa";
 import {
   Component,
-  For,
   Show,
   createEffect,
   createMemo,
@@ -28,7 +25,7 @@ import { DataBlock } from "../../DataBlock";
 import { Flex } from "../../Flex";
 import { Input } from "../../Input";
 import { Text } from "../../Text";
-import { actionCompute, actionRoll } from "../actions";
+import { actionCompute } from "../actions";
 import { csTplAttrValueStyle, csTplIconStyle } from "../styles.css";
 import { TplHintBlock } from "../blocks/TplHintBlock";
 import { TplRollBlock } from "../blocks/TplRollBlock";

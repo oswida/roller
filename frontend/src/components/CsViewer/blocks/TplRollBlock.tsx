@@ -1,7 +1,7 @@
 import { FaSolidDice } from "solid-icons/fa";
 import { Component, For, Show } from "solid-js";
 import { CharTemplateItem, CharTemplateItemRoll, currentCs, isCsOwner } from "~/common";
-import { Flex } from "~/components";
+import { Flex } from "../../Flex";
 import { csTplIconStyle } from "../styles.css";
 import { actionRoll } from "../actions";
 

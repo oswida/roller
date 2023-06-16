@@ -142,6 +142,13 @@ export const csTplCairnPl: CharTemplate = {
           name: "Plecak 6",
           labels: ["Zmęczenie"],
           color: "#ff5252"
+        },
+        {
+          id: "dodatkowy_ekwip",
+          name: "Dodtkowe miejsca",
+          itype: "text_list_check",
+          labels: ["Zmęczenie"],
+          color: "#ff5252"
         }
       ],
     }, {

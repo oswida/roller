@@ -47,6 +47,7 @@ export const TplCheck: Component<Props> = ({ item, circle }) => {
     <Flex style={{ "justify-content": "space-between" }}>
       <Flex gap="medium" style={{ "align-items": "center" }}>
         <TplCheckBlock
+          hint={item.labels ? item.labels[0] : undefined}
           checked={checked}
           circle={circle}
           color={item.color}

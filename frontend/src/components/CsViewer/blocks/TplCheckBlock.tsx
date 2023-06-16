@@ -6,9 +6,10 @@ type Props = {
     circle?: boolean;
     color?: string;
     onClick?: () => void;
+    hint?: string;
 }
 
-export const TplCheckBlock: Component<Props> = ({ checked, circle, color, onClick }) => {
+export const TplCheckBlock: Component<Props> = ({ checked, circle, color, onClick, hint }) => {
     return <>
         <Show when={checked()}>
             <div
@@ -16,6 +17,7 @@ export const TplCheckBlock: Component<Props> = ({ checked, circle, color, onClic
                 style={{
                     "background-color": color ? color : "currentcolor",
                 }}
+                title={hint}
                 onClick={onClick}
             >
                 {" "}
@@ -27,6 +29,7 @@ export const TplCheckBlock: Component<Props> = ({ checked, circle, color, onClic
                 style={{
                     border: `solid 2px ${color ? color : "currentcolor"}`,
                 }}
+                title={hint}
                 onClick={onClick}
             >
                 {" "}
