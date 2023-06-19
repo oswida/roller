@@ -9,6 +9,7 @@ import {
   dialogPositionerStyle,
   dialogRootStyle,
   dialogTitleStyle,
+  dialogTriggerStyle,
 } from "./styles.css";
 
 type Props = {
@@ -39,7 +40,7 @@ export const Dialog: ParentComponent<Props & ComponentProps<"div">> = ({
       modal={modal}
     >
       <Dlg.Trigger
-        class={buttonStyle({})}
+        class={dialogTriggerStyle}
         style={triggerStyle}
         title={triggerHint}
       >

@@ -159,6 +159,29 @@ export const cairnRollSuccessInfo = (
   return "";
 };
 
+// Success info for Ironsworn style rolls
+export const ironswornRollSuccessInfo = (result: RollResult, rule: string) => {
+  const sixs = result.sets.filter((set) => set.sides === 6);
+  const tens = result.sets.filter((set) => set.sides === 10);
+  const mod = result.modifier;
+  const modstr = `${mod >= 0 ? "+" : "-"}${mod}`;
+  if (sixs.length < 1 || tens.length < 1) return "";
+  const action = sixs[0].rolls[0].value + mod;
+  const t1 = tens[0].rolls[0].value;
+  const t2 = tens[0].rolls[1].value;
+  switch (rule) {
+    case "standard":
+      if (action > t1 && action > t2) return `(${modstr}) Strong Hit`;
+      if (action <= t1 && action <= t2) return `(${modstr}) Miss`;
+      return `(${modstr}) Weak Hit`;
+    case "glina":
+      if (action > t1 && action > t2) return `(${modstr}) Triumf`;
+      if (action <= t1 && action <= t2) return `(${modstr}) Skucha`;
+      return `(${modstr}) Fuks`;
+  }
+  return "";
+};
+
 // Success info
 export const rollSuccessInfo = (
   result: RollResult,
@@ -178,6 +201,8 @@ export const rollSuccessInfo = (
       return;
     case "total":
       return totalRollSuccessInfo(result, parts[1], level);
+    case "ironsworn":
+      return ironswornRollSuccessInfo(result, parts[1]);
     default:
       return "";
   }

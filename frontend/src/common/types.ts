@@ -142,15 +142,31 @@ export const emptyCsInfo = (id: string) => {
 
 // charsheet templates
 
+export type CharTemplateItemRollVal =
+  | "modifier"
+  | "target"
+  | "modifier_plus_mod"
+  | "target_plus_mod";
+
+export type ItemRollSuccessRule =
+  | "pbta:standard"
+  | "cairn:standard"
+  | "cairn:hard"
+  | "pio3s:standard"
+  | "pio3s:hard"
+  | "total:ueq" // under or equal
+  | "total:oeq" // over or equal
+  | "ironsworn:standard"
+  | "ironsworn:glina";
+
 export type CharTemplateItemRoll = {
   notation: string;
-  successRule?: string;
-  valType: "modifier" | "target";
+  successRule?: ItemRollSuccessRule;
+  valType: CharTemplateItemRollVal;
   comment?: string;
   iconColor?: string;
-  hasInput?: boolean;
-  inputLabel?: string;
   valField?: string; // field providing the value if not from the origin control
+  labels?: string[]; // additional labels, used in _plus_mod as a modifier input
 };
 
 type CharTemplateItemType =

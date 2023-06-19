@@ -1,30 +1,28 @@
 import {
-  CallbackFunc,
   CharTemplateItemRoll,
   CsInfo,
   RollDefInfo,
   enrollTask,
   rollDef,
   setChatViewTab,
-  setCsRollInputCallback,
-  setCsRollInputOpen,
-  setCsRollInputTitle,
 } from "~/common";
 import { charTemplates } from "~/template";
 
 export const actionRoll = (
   tplName: string | undefined,
   roll: CharTemplateItemRoll,
-  value: string
+  value: string,
+  mods?: number
 ) => {
   const num = Number.parseInt(value.trim());
   if (Number.isNaN(num)) return;
   switch (roll.valType) {
     case "modifier":
+    case "modifier_plus_mod":
       const info: RollDefInfo = {
         id: "",
         dice: roll.notation,
-        modifier: num,
+        modifier: mods ? num + mods : num,
         name: "",
         successRule: roll.successRule ? roll.successRule : "",
         successTarget: "",
@@ -33,30 +31,17 @@ export const actionRoll = (
       enrollTask(() => rollDef(info, false, `${roll.comment} (${tplName})`));
       break;
     case "target":
+    case "target_plus_mod":
       const info2: RollDefInfo = {
         id: "",
         dice: roll.notation,
-        modifier: 0,
+        modifier: mods ? mods : 0,
         name: "",
         successRule: roll.successRule ? roll.successRule : "",
         successTarget: `${num}`,
       };
-      if (roll.hasInput) {
-        setCsRollInputTitle(roll.inputLabel ? roll.inputLabel : "");
-        const cb: CallbackFunc = (value: string) => {
-          const m = Number.parseInt(value);
-          info2.modifier = m;
-          setChatViewTab("rolls");
-          enrollTask(() =>
-            rollDef(info2, false, `${roll.comment} (${tplName})`)
-          );
-        };
-        setCsRollInputCallback((prev) => cb);
-        setCsRollInputOpen(true);
-      } else {
-        setChatViewTab("rolls");
-        enrollTask(() => rollDef(info2, false, `${roll.comment} (${tplName})`));
-      }
+      setChatViewTab("rolls");
+      enrollTask(() => rollDef(info2, false, `${roll.comment} (${tplName})`));
       break;
   }
 };

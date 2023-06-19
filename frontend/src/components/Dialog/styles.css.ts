@@ -71,3 +71,28 @@ export const dialogTitleStyle = style([
     color: "primary",
   }),
 ]);
+
+export const dialogTriggerStyle = style([
+  sprinkles({
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "small",
+    paddingX: "small",
+    paddingY: "small",
+    fontSize: "standard",
+    backgroundColor: { default: "none", hover: "accent" },
+    borderColor: "backgroundSecondary",
+    borderStyle: "solid",
+    borderWidth: "thin",
+    color: "primary",
+  }),
+  {
+    lineHeight: 1,
+    height: "35px",
+    width: "35px",
+    outline: "none",
+    // transition: "border-color 250ms, color 250ms",
+    cursor: "pointer",
+  },
+]);

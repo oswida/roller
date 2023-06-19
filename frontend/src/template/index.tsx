@@ -9,6 +9,7 @@ import {
 import { csTplRomancja } from "./romancja";
 import { csTplFAEPL } from "./faepl";
 import { csTplCyberPl } from "./cyberpl";
+import { csTplGlina } from "./glina";
 
 const newTplList = [
   csTplRomancja,
@@ -17,7 +18,8 @@ const newTplList = [
   csTplMotwPl_Ekspert,
   csTplMotwPl_Spiskolog,
   csTplFAEPL,
-  csTplCyberPl
+  csTplCyberPl,
+  csTplGlina,
 ];
 
 export const charTemplates: Record<string, CharTemplate | undefined> = {
@@ -38,10 +40,8 @@ export const charTemplateItems: SelectItem[] = newTplList
   .sort((a, b) => a.name.localeCompare(b.name))
   .map((it) => ({ id: it.id, label: it.name } as SelectItem));
 
-export const charTemplateGameItems: SelectItem[] = Object.keys(charTemplateGames)
+export const charTemplateGameItems: SelectItem[] = Object.keys(
+  charTemplateGames
+)
   .sort((a, b) => a.localeCompare(b))
   .map((it) => ({ id: it, label: it } as SelectItem));
-
-
-
-
