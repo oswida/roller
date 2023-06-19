@@ -1,15 +1,16 @@
 import { Component, For, Match, Switch } from "solid-js";
 import { CharTemplateItem } from "~/common";
+import { Flex } from "../Flex";
 import { TplAttr } from "./elements/TplAttr";
 import { TplAttrMax } from "./elements/TplAttrMax";
+import { TplBigText } from "./elements/TplBigText";
 import { TplCheck } from "./elements/TplCheck";
 import { TplCompute } from "./elements/TplCompute";
 import { TplLabel } from "./elements/TplLabel";
 import { TplResource } from "./elements/TplResource";
+import { TplSelect } from "./elements/TplSelect";
 import { TplText } from "./elements/TplText";
 import { TplTextCheck } from "./elements/TplTextCheck";
-import { TplBigText } from "./elements/TplBigText";
-import { Flex } from "../Flex";
 import { TplTextList } from "./elements/TplTextList";
 
 type Props = {
@@ -21,7 +22,7 @@ export const CsItem: Component<Props> = ({ item }) => {
     <Switch>
       <Match when={item.itype === "row"}>
         <Flex gap="medium">
-          <For each={item.items}>{(it) => (<CsItem item={it} />)}</For>
+          <For each={item.items}>{(it) => <CsItem item={it} />}</For>
         </Flex>
       </Match>
 
@@ -83,6 +84,10 @@ export const CsItem: Component<Props> = ({ item }) => {
 
       <Match when={item.itype === "text_list_check"}>
         <TplTextList item={item} checkable />
+      </Match>
+
+      <Match when={item.itype === "select"}>
+        <TplSelect item={item} />
       </Match>
     </Switch>
   );

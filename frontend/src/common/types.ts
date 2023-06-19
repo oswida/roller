@@ -14,7 +14,7 @@ export type AppSettings = {
   diceMaterial: string;
   rightLayout?: boolean;
   appTheme?: themeType;
-  appFont?: themeFontFamilyType,
+  appFont?: themeFontFamilyType;
   showRollSuccess?: boolean;
   showRollTotal?: boolean;
   smallerDice?: boolean;
@@ -154,7 +154,7 @@ export type CharTemplateItemRoll = {
 };
 
 type CharTemplateItemType =
-  "row"
+  | "row"
   | "text"
   | "text_check"
   | "attr"
@@ -169,7 +169,8 @@ type CharTemplateItemType =
   | "computed"
   | "big_text"
   | "text_list"
-  | "text_list_check";
+  | "text_list_check"
+  | "select";
 
 export type CharTemplateItem = {
   id: string; // item unique id
@@ -180,7 +181,7 @@ export type CharTemplateItem = {
   rolls?: CharTemplateItemRoll[]; // rolls to perform, creates roll icons
   color?: string;
   hint?: string;
-  labels?: string[]; // additional labels: resource
+  labels?: string[]; // additional labels: resource, list of choices: select
   compute?: (item: CharTemplateItem, values: Record<string, any>) => string; // function for 'computed' type
   items?: CharTemplateItem[]; // children items
 };
