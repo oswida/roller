@@ -31,7 +31,7 @@ export const TplText: Component<Props> = ({ item }) => {
 
   const value = createMemo(() => {
     const info = currentCs();
-    if (!info || !info.values[item.id]) return "--";
+    if (!info || !info.values[item.id]) return "";
     return info.values[item.id];
   });
 
@@ -52,11 +52,15 @@ export const TplText: Component<Props> = ({ item }) => {
     document.getElementById(item.id)?.focus();
   });
 
-
   return (
     <div class={tplTextItemStyle}>
       <Show when={itemEdit()}>
-        <TplTextEditBlock item={item} onEditToggle={setItemEdit} value={value} setValue={applyValue} />
+        <TplTextEditBlock
+          item={item}
+          onEditToggle={setItemEdit}
+          value={value}
+          setValue={applyValue}
+        />
       </Show>
       <Show when={!itemEdit()}>
         <Flex direction="column" gap="small">

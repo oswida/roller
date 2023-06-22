@@ -30,6 +30,10 @@ export const CsItem: Component<Props> = ({ item }) => {
         <TplAttr item={item} />
       </Match>
 
+      <Match when={item.itype === "attr_wide"}>
+        <TplAttr item={item} wide />
+      </Match>
+
       <Match when={item.itype === "attr_max"}>
         <TplAttrMax item={item} />
       </Match>

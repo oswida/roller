@@ -1,7 +1,4 @@
-import {
-  FaSolidCheck,
-  FaSolidXmark,
-} from "solid-icons/fa";
+import { FaSolidCheck, FaSolidXmark } from "solid-icons/fa";
 import {
   Component,
   Show,
@@ -32,9 +29,10 @@ import { TplRollBlock } from "../blocks/TplRollBlock";
 
 type Props = {
   item: CharTemplateItem;
+  wide?: boolean;
 };
 
-export const TplAttr: Component<Props> = ({ item }) => {
+export const TplAttr: Component<Props> = ({ item, wide }) => {
   const [itemEdit, setItemEdit] = createSignal(false);
   const [editVal, setEditVal] = createSignal("");
 
@@ -82,7 +80,7 @@ export const TplAttr: Component<Props> = ({ item }) => {
     if (e.code == "Enter" || e.key == "Enter") {
       applyValue();
     }
-  }
+  };
 
   return (
     <Flex gap="medium" style={{ "align-items": "center" }}>
@@ -95,7 +93,7 @@ export const TplAttr: Component<Props> = ({ item }) => {
           }}
         >
           <DataBlock
-            width="50%"
+            width={wide ? "70%" : "50%"}
             widthLeft="80%"
             widthRight="20%"
             left={<Text title={item.hint}>{item.name}</Text>}

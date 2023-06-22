@@ -174,6 +174,7 @@ type CharTemplateItemType =
   | "text"
   | "text_check"
   | "attr"
+  | "attr_wide"
   | "check"
   | "check_circle"
   | "resource"

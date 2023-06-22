@@ -1,4 +1,9 @@
-import { FaSolidCircleInfo, FaSolidEye, FaSolidFloppyDisk, FaSolidPen } from "solid-icons/fa";
+import {
+  FaSolidCircleInfo,
+  FaSolidEye,
+  FaSolidFloppyDisk,
+  FaSolidPen,
+} from "solid-icons/fa";
 import {
   Component,
   Show,
@@ -36,7 +41,7 @@ export const TplBigText: Component<Props> = ({ item }) => {
 
   const value = createMemo(() => {
     const info = currentCs();
-    if (!info || !info.values[item.id]) return "--";
+    if (!info || !info.values[item.id]) return "";
     return info.values[item.id] as string;
   });
 
@@ -64,17 +69,15 @@ export const TplBigText: Component<Props> = ({ item }) => {
     centPublish(netTopic(topicCsInfo), info);
   };
 
-
   createEffect(() => {
     if (!editOpen()) return;
     setTimeout(() => {
       document.getElementById("text-value")?.focus();
-    }, 200)
+    }, 200);
   });
 
   return (
     <div class={tplTextItemStyle}>
-
       <Flex direction="column" gap="small">
         <Flex
           style={{
@@ -111,14 +114,19 @@ export const TplBigText: Component<Props> = ({ item }) => {
                   value={value()}
                   onFocus={(e) => e.target.select()}
                   id="text-value"
-                  style={{ "min-width": "50em", "font-size": "medium", "min-height": "15em" }} />
+                  style={{
+                    "min-width": "50em",
+                    "font-size": "medium",
+                    "min-height": "15em",
+                  }}
+                />
               </Popover>
             </Show>
             <Dialog
               style={{ "max-width": "80%" }}
               open={viewOpen}
               onOpenChange={setViewOpen}
-              dialogTitle={() => item.name ? item.name : ""}
+              dialogTitle={() => (item.name ? item.name : "")}
               modal={true}
               triggerStyle={{ "background-color": "transparent" }}
               trigger={
@@ -132,15 +140,14 @@ export const TplBigText: Component<Props> = ({ item }) => {
                 style={{
                   width: "100%",
                   "text-align": "left",
-                  "vertical-align": "top"
-                }} />
+                  "vertical-align": "top",
+                }}
+              />
             </Dialog>
-
           </Flex>
         </Flex>
         <Text title="Click eye icon to see the whole text">{shortValue()}</Text>
       </Flex>
-
     </div>
   );
 };

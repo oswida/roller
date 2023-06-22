@@ -19,7 +19,7 @@ export const csTplIconStyle = style([
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: { default: "backgroundSecondary", hover: "accent" }
+    backgroundColor: { default: "backgroundSecondary", hover: "accent" },
   }),
   {
     cursor: "pointer",
@@ -32,7 +32,7 @@ export const csTplAttrValueStyle = style([
   sprinkles({
     padding: "small",
     borderRadius: "small",
-    backgroundColor: { hover: "backgroundSecondary" }
+    backgroundColor: { hover: "backgroundSecondary" },
   }),
   {
     cursor: "pointer",
@@ -52,6 +52,7 @@ export const tplCheckItemStyle = recipe({
       maxHeight: "1.1em",
       minHeight: "1.1em",
       cursor: "pointer",
+      outline: "none",
     },
   ],
   variants: {
@@ -65,15 +66,19 @@ export const tplCheckItemStyle = recipe({
   },
 });
 
+export const tplTextItemStyle = style([
+  sprinkles({
+    paddingBottom: "small",
+    borderBottomColor: "backgroundGhost",
+  }),
+  {
+    borderBottomStyle: "solid",
+    borderBottomWidth: 1,
+  },
+]);
 
-export const tplTextItemStyle = style([sprinkles({
-  paddingBottom: "small",
-  borderBottomColor: "backgroundGhost",
-}), {
-  borderBottomStyle: "solid",
-  borderBottomWidth: 1,
-}])
-
-export const tplHintIconStyle = style([sprinkles({
-  fill: "accent",
-})])
+export const tplHintIconStyle = style([
+  sprinkles({
+    fill: "accent",
+  }),
+]);
