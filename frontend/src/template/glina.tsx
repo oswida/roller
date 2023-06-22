@@ -1,26 +1,27 @@
 import { CharTemplate, CharTemplateItem } from "~/common";
 
-export const csTplGlina: CharTemplate = {
+export const csTplGlinaBH: CharTemplate = {
   id: "glina",
-  name: "Glina",
+  name: "Brudny Harry",
   game: "Glina RPG",
   sections: [
     {
-      title: "Test",
+      title: "Postać",
       items: [
         {
-          id: "test",
-          name: "test",
-          itype: "attr",
-          rolls: [
-            {
-              notation: "2d10+1d6",
-              comment: "PLUS MOD",
-              valType: "modifier_plus_mod",
-              labels: ["Action dice modifier"],
-              successRule: "ironsworn:glina",
-            },
-          ],
+          id: "imie",
+          name: "Imię",
+          itype: "text",
+          limit: 1,
+          // rolls: [
+          //   {
+          //     notation: "2d10+1d6",
+          //     comment: "PLUS MOD",
+          //     valType: "modifier_plus_mod",
+          //     labels: ["Action dice modifier"],
+          //     successRule: "ironsworn:glina",
+          //   },
+          // ],
         },
       ],
     },
