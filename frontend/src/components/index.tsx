@@ -11,3 +11,4 @@ export * from "./RadioGroup";
 export * from "./Select";
 export * from "./Switch";
 export * from "./Text";
+export * from "./Tooltip";
