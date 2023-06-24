@@ -139,19 +139,23 @@ export const diceMaterialSet = [
 ];
 
 export const rollNotationWithResults = (result: RollResult) => {
-  const dice = result.notation.split("+");
-  const diceRes: Record<string, RollSet> = {};
-  result.sets.forEach((set) => {
-    diceRes[`${set.num}${set.type}`] = set;
-  });
-  const dicePreset = dice.map((it) => {
-    if (!diceRes[it].rolls) return [];
-    return diceRes[it].rolls.map((r) => r.value).join(",");
-  });
-  if (dicePreset.length > 0) {
-    return `${result.notation}@${dicePreset.join(",")}`;
+  try {
+    const dice = result.notation.split("+");
+    const diceRes: Record<string, RollSet> = {};
+    result.sets.forEach((set) => {
+      diceRes[`${set.num}${set.type}`] = set;
+    });
+    const dicePreset = dice.map((it) => {
+      if (!diceRes[it] || !diceRes[it].rolls) return "";
+      return diceRes[it].rolls.map((r) => r.value).join(",");
+    });
+    if (dicePreset.length > 0) {
+      return `${result.notation}@${dicePreset.join(",")}`;
+    }
+    return result.notation;
+  } catch (e: any) {
+    return result.notation;
   }
-  return result.notation;
 };
 
 export const animateRemoteRoll = async (info: RollInfo) => {

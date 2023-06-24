@@ -28,7 +28,6 @@ export const updateRolls = (info: RollInfo) => {
 };
 export const [privateRoll, setPrivateRoll] = createSignal(false);
 export const [modRoll, setModRoll] = createSignal(false);
-export const [rollModifier, setRollModifier] = createSignal(0);
 
 // Centrifuge
 export const [centConnectionStatus, setCentConnectionStatus] =

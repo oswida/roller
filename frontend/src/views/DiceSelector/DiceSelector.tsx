@@ -14,46 +14,53 @@ import {
   enrollTask,
   modRoll,
   privateRoll,
-  rollModifier,
   rolling,
   setDicePool,
   setModRoll,
   setPrivateRoll,
   setRollComment,
-  setRollModifier,
   setRolling,
 } from "~/common";
 import { Button, Dialog, Flex, Input, Text } from "~/components";
 import { DicePanel } from "./DicePanel";
 import { diceSelectorStyle } from "./styles.css";
-import { csTplIconStyle } from "~/components/CsViewer/styles.css";
-import { buttonStyle } from "~/components/Button/styles.css";
+import toast from "solid-toast";
 
-const ModifierDialog = ({ roll }: { roll: () => void }) => {
+const ModifierDialog = ({ priv }: { priv: boolean }) => {
   const [mdOpen, setMdOpen] = createSignal(false);
 
   const action = async () => {
-    const el = document.getElementById("modifier") as HTMLInputElement;
-    if (!el) return;
-    const n = Number.parseInt(el.value);
+    const el = document.getElementById("dice-modifier") as HTMLInputElement;
+    if (!el) {
+      console.log("cannot find dice-modifier element");
+      return;
+    }
+    let n = Number.parseInt(el.value);
     setMdOpen(false);
-    if (Number.isNaN(n)) return;
+    if (Number.isNaN(n)) n = 0;
     if (rolling() || !currentRoom() || currentRoom()?.id == "") return;
     const db = diceBox();
     if (!db) return;
     const pool = dicePool();
-    if (!pool || Object.values(pool).length == 0) return;
+    if (!pool || Object.values(pool).length == 0) {
+      toast("No dice selected");
+      return;
+    }
     const dice = Object.entries(pool)
       .filter(([k, v]) => v > 0)
       .map(([k, v]) => `${v}d${k}`);
-    if (dice.length <= 0) return;
+    if (dice.length <= 0) {
+      toast("No proper dice selected");
+      return;
+    }
     setRolling(true);
     const s = appSettings();
     await db.updateConfig({
       theme_colorset: s.diceColor,
       theme_texture: s.diceMaterial,
     });
-    await db.roll(`${dice.join("+")}+${n}`);
+    if (n !== 0) await db.roll(`${dice.join("+")}+${n}`);
+    else await db.roll(`${dice.join("+")}`);
   };
 
   return (
@@ -62,16 +69,21 @@ const ModifierDialog = ({ roll }: { roll: () => void }) => {
       onOpenChange={setMdOpen}
       dialogTitle={() => "Roll modifier"}
       trigger={
-        <Button variant="ghost">
-          <ImDice fill="currentColor" />
-          <Text>Roll</Text>
+        <Button variant="ghost" colorSchema={priv ? "secondary" : undefined}>
+          <Show when={priv}>
+            <FaSolidEyeSlash fill="currentColor" />
+          </Show>
+          <Show when={!priv}>
+            <ImDice fill="currentColor" />
+          </Show>
+          <Text colorSchema={priv ? "secondary" : undefined}>Roll</Text>
         </Button>
       }
       triggerHint="Roll with modifier"
       hideTriggerStyle
       modal
     >
-      <Input id="modifier" label="Value" />
+      <Input id="dice-modifier" label="Value" />
       <Flex gap="large" center>
         <Button onClick={() => enrollTask(action)}>Roll</Button>
       </Flex>
@@ -91,7 +103,10 @@ export const DiceSelector: Component<RefProps> = ({ ref }) => {
     const db = diceBox();
     if (!db) return;
     const pool = dicePool();
-    if (!pool || Object.values(pool).length == 0) return;
+    if (!pool || Object.values(pool).length == 0) {
+      toast("No dice selected");
+      return;
+    }
     const dice = Object.entries(pool)
       .filter(([k, v]) => v > 0)
       .map(([k, v]) => `${v}d${k}`);
@@ -156,15 +171,7 @@ export const DiceSelector: Component<RefProps> = ({ ref }) => {
             </Switch>
           </Show>
           <Show when={modRoll()}>
-            <ModifierDialog roll={roll} />
-            {/* <Button
-                  variant="ghost"
-                  colorSchema="secondary"
-                  onClick={() => enrollTask(roll)}
-                >
-                  <FaSolidEyeSlash />
-                  <Text colorSchema="secondary">Roll</Text>
-                </Button> */}
+            <ModifierDialog priv={privateRoll()} />
           </Show>
 
           <Input
@@ -203,7 +210,6 @@ export const DiceSelector: Component<RefProps> = ({ ref }) => {
         <Flex gap="medium" center>
           <Button variant="ghost" onClick={resetPool} title="Reset">
             <IoReload />
-            {/* <Text>Reset</Text> */}
           </Button>
           <DicePanel />
 
