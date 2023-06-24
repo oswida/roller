@@ -137,7 +137,7 @@ func (d *DB) ItemList(itemPrefix string, containerId string, ids []string, item 
 				if err != nil {
 					return err
 				}
-				if len(ids) == 0 || contains(ids, item.GetId()) {
+				if len(ids) == 0 || contains(ids, result.GetId()) {
 					data = append(data, result)
 				}
 				return nil

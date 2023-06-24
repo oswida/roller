@@ -122,9 +122,11 @@ export const TplTextList: Component<Props> = ({ item, checkable }) => {
           </Text>
           <TplHintBlock hint={item.hint} />
         </Flex>
-        <div class={csTplIconStyle} title="Add item" onClick={addItem}>
-          <FaSolidPlus fill="currentColor" />
-        </div>
+        <Show when={isCsOwner(currentCs())}>
+          <div class={csTplIconStyle} title="Add item" onClick={addItem}>
+            <FaSolidPlus fill="currentColor" />
+          </div>
+        </Show>
       </Flex>
       <For each={values()}>
         {(it, idx) => (

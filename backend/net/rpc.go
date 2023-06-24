@@ -2,6 +2,7 @@ package net
 
 import (
 	"encoding/json"
+	"fmt"
 	"rpgroll/db"
 	"time"
 
@@ -68,11 +69,11 @@ func (eng *Engine) RpcCsUpdate(e centrifuge.RPCEvent) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = eng.Db.ItemUpdate(db.ItemPrefixCs, data.Sender, data.Data)
+	err = eng.Db.ItemUpdate(db.ItemPrefixCs, data.Room, data.Data)
 	if err != nil {
 		return nil, err
 	}
-	eng.Log.Debug("Updating charsheet", zap.String("id", data.Data.Id))
+	eng.Log.Debug("Updating charsheet", zap.String("room", data.Room), zap.String("id", data.Data.Id))
 	return []byte{}, nil
 }
 
@@ -85,7 +86,7 @@ func (eng *Engine) RpcCsDelete(e centrifuge.RPCEvent) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return []byte{}, eng.Db.ItemDelete(db.ItemPrefixCs, data.Sender, data.Data)
+	return []byte{}, eng.Db.ItemDelete(db.ItemPrefixCs, data.Room, data.Data)
 }
 
 func (eng *Engine) RpcCsList(e centrifuge.RPCEvent) ([]byte, error) {
@@ -97,11 +98,13 @@ func (eng *Engine) RpcCsList(e centrifuge.RPCEvent) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	var charsheet db.CsInfo
-	list, err := eng.Db.ItemList(db.ItemPrefixCs, data.Sender, data.Data, charsheet)
+	charsheet := db.CsInfo{}
+	eng.Log.Debug(fmt.Sprintf("CS list load %v, %v", data.Room, data.Data))
+	list, err := eng.Db.ItemList(db.ItemPrefixCs, data.Room, []string{}, charsheet)
 	if err != nil {
 		return nil, err
 	}
+	eng.Log.Debug(fmt.Sprintf("CS list %v", list))
 	bytes, err := json.Marshal(list)
 	if err != nil {
 		return nil, err

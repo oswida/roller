@@ -95,13 +95,17 @@ export const TplCounter: Component<Props> = ({ item, wide }) => {
         >
           <Text>{item.name}</Text>
           <Flex>
-            <div class={csTplIconStyle} onClick={() => applyValue(false)}>
-              <FaSolidMinus fill="currentColor" />
-            </div>
+            <Show when={isCsOwner(currentCs())}>
+              <div class={csTplIconStyle} onClick={() => applyValue(false)}>
+                <FaSolidMinus fill="currentColor" />
+              </div>
+            </Show>
             <Text class={tplCounterStyle}>{value()}</Text>
-            <div class={csTplIconStyle} onClick={() => applyValue(true)}>
-              <FaSolidPlus fill="currentColor" />
-            </div>
+            <Show when={isCsOwner(currentCs())}>
+              <div class={csTplIconStyle} onClick={() => applyValue(true)}>
+                <FaSolidPlus fill="currentColor" />
+              </div>
+            </Show>
           </Flex>
         </Flex>
         <Flex gap="medium">

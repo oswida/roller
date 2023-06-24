@@ -2,6 +2,7 @@ package net
 
 import (
 	"encoding/json"
+
 	"rpgroll/db"
 	"time"
 
@@ -30,6 +31,7 @@ func (eng *Engine) CsInfoPublishCallback(e centrifuge.PublishEvent) error {
 	if err != nil {
 		return err
 	}
+
 	if data.Data.Shared {
 		return eng.Db.ItemUpdate(db.ItemPrefixCs, data.Room, data.Data)
 	} else {

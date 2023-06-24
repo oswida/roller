@@ -318,6 +318,7 @@ export const centLoadCs = (roomId: string, ids?: string[]) => {
   if (!client) {
     return;
   }
+  console.log("Loading CS", roomId, ids);
   const msg = {
     sender: appSettings().userIdent,
     room: roomId,
@@ -328,6 +329,7 @@ export const centLoadCs = (roomId: string, ids?: string[]) => {
     .then((result) => {
       const data = result.data as CsInfo[];
       if (data) {
+        console.log("cs data", data);
         const newState = { ...appCs() };
         data.forEach((r) => (newState[r.id] = r));
 
@@ -336,12 +338,14 @@ export const centLoadCs = (roomId: string, ids?: string[]) => {
         toCheck.forEach((id) => {
           if (
             !receivedIds.includes(id) &&
+            newState[id] &&
             newState[id].shared &&
             newState[id].owner !== appSettings().userIdent
           ) {
             delete newState[id]; // charsheet has been deleted
           }
         });
+        console.log("saving cs after upload", newState);
         saveToStorage(rollerCsKey, newState);
         if (ids?.length == 1 && ids[0] == currentCs()?.id) {
           setCurrentCs(undefined);
