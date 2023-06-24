@@ -38,7 +38,15 @@ export const TplTextCheck: Component<Props> = ({ item, circle }) => {
 
   const value_text = createMemo(() => {
     const info = currentCs();
-    if (!info || !info.values[item.id]) return "";
+    if (!info) return "";
+    if (!info.values[item.id]) {
+      if (item.initialValue)
+        info.values[item.id] = {
+          text: item.initialValue,
+          checked: false,
+        } as Value;
+      else info.values[item.id] = { text: "", checked: false } as Value;
+    }
     const v = info.values[item.id] as Value;
     return v.text;
   });

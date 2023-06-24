@@ -102,6 +102,10 @@ export const CsItem: Component<Props> = ({ item }) => {
       <Match when={item.itype === "counter"}>
         <TplCounter item={item} />
       </Match>
+
+      <Match when={item.itype === "counter_check"}>
+        <TplCounter item={item} checkable />
+      </Match>
     </Switch>
   );
 };

@@ -110,6 +110,7 @@ export const TplTextList: Component<Props> = ({ item, checkable }) => {
     const id = `${item.id}${editedItem()}`;
     setTimeout(() => {
       document.getElementById(id)?.focus();
+      setEditVal(values()[editedItem()].text);
     }, 200);
   });
 

@@ -25,23 +25,19 @@ export const TplTextEditBlock: Component<Props> = ({
   hideName,
   useId,
 }) => {
-  const [editVal, setEditVal] = createSignal("");
-
   const keyPress = (e: any) => {
     if ((e.code == "Enter" || e.key == "Enter") && item.limit == 1) {
       applyValue();
     }
   };
 
-  const updateVal = debounce((v: string) => {
-    setEditVal(v);
-  }, 100);
-
   const applyValue = () => {
-    const v = editVal();
+    const id = useId ? useId : item.id;
+    const el = document.getElementById(id) as any;
+    if (!el) return;
+    const v = el.value;
     setValue(v);
     onEditToggle(false);
-    setEditVal("");
   };
 
   createEffect(() => {
@@ -84,7 +80,6 @@ export const TplTextEditBlock: Component<Props> = ({
         <Input
           id={useId ? useId : item.id}
           onFocus={(e) => e.target.select()}
-          onInput={(e: any) => updateVal(e.target.value)}
           onKeyPress={keyPress}
           value={value()}
           style={{
@@ -96,7 +91,6 @@ export const TplTextEditBlock: Component<Props> = ({
         <InputArea
           id={useId ? useId : item.id}
           onFocus={(e) => e.target.select()}
-          onInput={(e: any) => updateVal(e.target.value)}
           onKeyPress={keyPress}
           value={value()}
           style={{

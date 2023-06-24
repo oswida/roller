@@ -27,7 +27,11 @@ type Props = {
 export const TplResource: Component<Props> = ({ item, state, square }) => {
   const numValue = createMemo(() => {
     const info = currentCs();
-    if (!info || !info.values[item.id]) return 0;
+    if (!info) return 0;
+    if (!info.values[item.id]) {
+      if (item.initialValue) info.values[item.id] = item.initialValue;
+      else info.values[item.id] = 0;
+    }
     const num = Number.parseInt(info.values[item.id]);
     if (Number.isNaN(num)) return 0;
     return num;
@@ -81,7 +85,8 @@ export const TplResource: Component<Props> = ({ item, state, square }) => {
               checked={() => idx() < numValue()}
               circle={!square}
               color={item.color}
-            />)}
+            />
+          )}
         </For>
         <Flex direction="column" gap="small" center>
           <Show when={state && item.labels && item.labels.length > 1}>

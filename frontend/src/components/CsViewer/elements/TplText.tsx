@@ -31,7 +31,11 @@ export const TplText: Component<Props> = ({ item }) => {
 
   const value = createMemo(() => {
     const info = currentCs();
-    if (!info || !info.values[item.id]) return "";
+    if (!info) return "";
+    if (!info.values[item.id]) {
+      if (item.initialValue) info.values[item.id] = item.initialValue;
+      else info.values[item.id] = "";
+    }
     return info.values[item.id];
   });
 

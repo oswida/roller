@@ -44,7 +44,10 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
 
   const value = createMemo(() => {
     const info = currentCs();
-    if (!info || !info.values[item.id]) return ["-", "-"];
+    if (!info) return ["-", "-"];
+    if (!info.values[item.id])
+      if (item.initialValue) info.values[item.id] = item.initialValue;
+      else info.values[item.id] = [0, 0];
     return info.values[item.id];
   });
 
@@ -92,7 +95,7 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
     if (e.code == "Enter" || e.key == "Enter") {
       applyValue();
     }
-  }
+  };
 
   return (
     <Flex gap="medium" style={{ "align-items": "center" }}>

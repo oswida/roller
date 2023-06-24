@@ -36,20 +36,38 @@ import {
 } from "../styles.css";
 import { TplHintBlock } from "../blocks/TplHintBlock";
 import { TplRollBlock } from "../blocks/TplRollBlock";
+import { TplCheckBlock } from "../blocks/TplCheckBlock";
+
+type CounterItem = {
+  value: number;
+  checked: boolean;
+};
 
 type Props = {
   item: CharTemplateItem;
   wide?: boolean;
+  checkable?: boolean;
+  circle?: boolean;
 };
 
-export const TplCounter: Component<Props> = ({ item, wide }) => {
+export const TplCounter: Component<Props> = ({
+  item,
+  wide,
+  checkable,
+  circle,
+}) => {
   const value = createMemo(() => {
     const info = currentCs();
-    if (!info) return "?";
+    if (!info) return { value: 0, checked: false } as CounterItem;
     if (!info.values[item.id]) {
-      info.values[item.id] = item.labels ? item.labels[0] : "-";
+      if (item.initialValue)
+        info.values[item.id] = {
+          value: item.initialValue,
+          checked: false,
+        } as CounterItem;
+      else info.values[item.id] = { value: 0, checked: false } as CounterItem;
     }
-    return info.values[item.id];
+    return info.values[item.id] as CounterItem;
   });
 
   const applyValue = (inc: boolean) => {
@@ -60,20 +78,28 @@ export const TplCounter: Component<Props> = ({ item, wide }) => {
     const labels = item.labels;
     if (!labels) return;
     let i = 0;
-    labels.forEach((it, idx) => {
-      if (it === info.values[item.id]) i = idx;
-    });
+    const value = info.values[item.id] as CounterItem;
+    i = value.value;
     if (inc) i++;
     else i--;
     if (i < 0) i = 0;
     if (i >= labels.length) i = labels.length - 1;
 
-    const tpl = charTemplates[info.template];
-    info.values[item.id] = labels[i];
-    if (tpl?.computeDeps && tpl?.computeDeps[item.id]) {
-      const v = actionCompute(item.id, info);
-      info.values = { ...info.values, ...v };
+    info.values[item.id] = { ...info.values[item.id], value: i };
+    updateCsStorage(info);
+    setCurrentCs(undefined);
+    setCurrentCs({ ...info });
+    centPublish(netTopic(topicCsInfo), info);
+  };
+
+  const toggle = () => {
+    const info = currentCs();
+    if (!info) {
+      return;
     }
+    const value = info.values[item.id] as CounterItem;
+    value.checked = !value.checked;
+    info.values[item.id] = { ...value };
     updateCsStorage(info);
     setCurrentCs(undefined);
     setCurrentCs({ ...info });
@@ -91,22 +117,40 @@ export const TplCounter: Component<Props> = ({ item, wide }) => {
       >
         <Flex
           gap="medium"
-          style={{ "justify-content": "space-between", flex: 1 }}
+          style={{
+            "justify-content": "space-between",
+            flex: 1,
+            "align-items": "center",
+          }}
         >
-          <Text>{item.name}</Text>
           <Flex>
-            <Show when={isCsOwner(currentCs())}>
-              <div class={csTplIconStyle} onClick={() => applyValue(false)}>
-                <FaSolidMinus fill="currentColor" />
-              </div>
+            <Show when={checkable}>
+              <TplCheckBlock
+                checked={() => value().checked}
+                circle={circle}
+                color={item.color}
+                onClick={isCsOwner(currentCs()) ? toggle : undefined}
+              />
             </Show>
-            <Text class={tplCounterStyle}>{value()}</Text>
-            <Show when={isCsOwner(currentCs())}>
-              <div class={csTplIconStyle} onClick={() => applyValue(true)}>
-                <FaSolidPlus fill="currentColor" />
-              </div>
-            </Show>
+            <Text>{item.name}</Text>
           </Flex>
+          <Show when={!checkable || (checkable && value().checked)}>
+            <Flex>
+              <Show when={isCsOwner(currentCs())}>
+                <div class={csTplIconStyle} onClick={() => applyValue(false)}>
+                  <FaSolidMinus fill="currentColor" />
+                </div>
+              </Show>
+              <Text class={tplCounterStyle}>
+                {item.labels ? item.labels[value().value] : ""}
+              </Text>
+              <Show when={isCsOwner(currentCs())}>
+                <div class={csTplIconStyle} onClick={() => applyValue(true)}>
+                  <FaSolidPlus fill="currentColor" />
+                </div>
+              </Show>
+            </Flex>
+          </Show>
         </Flex>
         <Flex gap="medium">
           <TplRollBlock item={item} value={value} />

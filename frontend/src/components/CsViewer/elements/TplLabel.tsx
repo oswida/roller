@@ -1,5 +1,10 @@
 import { Component, Show } from "solid-js";
-import { CharTemplateItem, CharTemplateItemRoll, currentCs, isCsOwner } from "~/common";
+import {
+  CharTemplateItem,
+  CharTemplateItemRoll,
+  currentCs,
+  isCsOwner,
+} from "~/common";
 import { Flex } from "../../Flex";
 import { Text } from "../../Text";
 import { themeColor } from "~/common/theme.css";
@@ -11,12 +16,11 @@ type Props = {
 };
 
 export const TplLabel: Component<Props> = ({ item }) => {
-
   const value = (roll: CharTemplateItemRoll) => {
     const cs = currentCs();
     if (!cs || !cs.values || !roll.valField) return 0;
     return cs.values[roll.valField];
-  }
+  };
 
   return (
     <Flex style={{ "justify-content": "space-between" }}>
@@ -26,9 +30,11 @@ export const TplLabel: Component<Props> = ({ item }) => {
         </Text>
         <TplHintBlock hint={item.hint} />
       </Flex>
-
       <Flex>
-        <TplRollBlock item={item} />
+        <TplRollBlock
+          item={item}
+          value={() => (item.initialValue ? item.initialValue : "0")}
+        />
       </Flex>
     </Flex>
   );

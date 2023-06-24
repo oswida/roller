@@ -189,7 +189,8 @@ type CharTemplateItemType =
   | "text_list"
   | "text_list_check"
   | "select"
-  | "counter";
+  | "counter"
+  | "counter_check";
 
 export type CharTemplateItem = {
   id: string; // item unique id
@@ -203,6 +204,7 @@ export type CharTemplateItem = {
   labels?: string[]; // additional labels: resource, list of choices: select
   compute?: (item: CharTemplateItem, values: Record<string, any>) => string; // function for 'computed' type
   items?: CharTemplateItem[]; // children items
+  initialValue?: any;
 };
 
 export type CharTemplateSection = {
