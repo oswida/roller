@@ -31,7 +31,7 @@ type Props = {
 type Value = {
   text: string;
   checked: boolean;
-}
+};
 
 export const TplTextCheck: Component<Props> = ({ item, circle }) => {
   const [itemEdit, setItemEdit] = createSignal(false);
@@ -57,8 +57,7 @@ export const TplTextCheck: Component<Props> = ({ item, circle }) => {
     }
     if (!info.values[item.id])
       info.values[item.id] = { text: v, checked: false } as Value;
-    else
-      info.values[item.id].text = v;
+    else info.values[item.id].text = v;
     updateCsStorage(info);
     setCurrentCs(undefined);
     setCurrentCs({ ...info });
@@ -70,7 +69,6 @@ export const TplTextCheck: Component<Props> = ({ item, circle }) => {
     document.getElementById(item.id)?.focus();
   });
 
-
   const toggle = () => {
     const info = currentCs();
     if (!info) {
@@ -78,18 +76,22 @@ export const TplTextCheck: Component<Props> = ({ item, circle }) => {
     }
     if (!info.values[item.id])
       info.values[item.id] = { text: "", checked: true } as Value;
-    else
-      info.values[item.id].checked = !info.values[item.id].checked;
+    else info.values[item.id].checked = !info.values[item.id].checked;
     updateCsStorage(info);
     setCurrentCs(undefined);
     setCurrentCs({ ...info });
     centPublish(netTopic(topicCsInfo), info);
-  }
+  };
 
   return (
     <div class={tplTextItemStyle}>
       <Show when={itemEdit()}>
-        <TplTextEditBlock item={item} onEditToggle={setItemEdit} value={value_text} setValue={applyText} />
+        <TplTextEditBlock
+          item={item}
+          onEditToggle={setItemEdit}
+          value={value_text}
+          setValue={applyText}
+        />
       </Show>
       <Show when={!itemEdit()}>
         <Flex direction="column" gap="small">
@@ -99,7 +101,7 @@ export const TplTextCheck: Component<Props> = ({ item, circle }) => {
               "justify-content": "space-between",
             }}
           >
-            <Flex gap="medium" >
+            <Flex gap="medium">
               <TplCheckBlock
                 hint={item.labels ? item.labels[0] : undefined}
                 checked={value_checked}
@@ -108,14 +110,12 @@ export const TplTextCheck: Component<Props> = ({ item, circle }) => {
                 onClick={isCsOwner(currentCs()) ? toggle : undefined}
               />
               <Flex>
-                <Text fontSize="smaller" colorSchema="secondary">
-                  {item.name}
-                </Text>
+                <Text>{item.name}</Text>
                 <TplHintBlock hint={item.hint} />
               </Flex>
             </Flex>
-            <Show when={isCsOwner(currentCs())}>
-              <Flex >
+            <Show when={isCsOwner(currentCs()) && value_checked()}>
+              <Flex>
                 <div
                   onClick={() => setItemEdit(true)}
                   title="Edit"
@@ -126,7 +126,9 @@ export const TplTextCheck: Component<Props> = ({ item, circle }) => {
               </Flex>
             </Show>
           </Flex>
-          <Text preserveLines>{value_text()}</Text>
+          <Show when={value_checked()}>
+            <Text preserveLines>{value_text()}</Text>
+          </Show>
         </Flex>
       </Show>
     </div>

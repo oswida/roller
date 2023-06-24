@@ -62,6 +62,10 @@ export const CsItem: Component<Props> = ({ item }) => {
         <TplTextCheck item={item} />
       </Match>
 
+      <Match when={item.itype === "text_check_circle"}>
+        <TplTextCheck item={item} circle />
+      </Match>
+
       <Match when={item.itype === "check"}>
         <TplCheck item={item} />
       </Match>

@@ -173,6 +173,7 @@ type CharTemplateItemType =
   | "row"
   | "text"
   | "text_check"
+  | "text_check_circle"
   | "attr"
   | "attr_wide"
   | "check"

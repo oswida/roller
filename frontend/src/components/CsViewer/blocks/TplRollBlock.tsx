@@ -66,7 +66,6 @@ const ModifierDialog = ({
           {(it) => <Input id={`${item.name}-${it}`} label={it} />}
         </For>
         <Flex gap="large" center>
-          <Button onClick={() => setMdOpen(false)}>Cancel</Button>
           <Button onClick={action}>Roll</Button>
         </Flex>
       </Dialog>

@@ -13,6 +13,8 @@ type Props = {
   onEditToggle: (value: boolean) => void;
   value: () => string;
   setValue: (value: string) => void;
+  hideName?: boolean;
+  useId?: string;
 };
 
 export const TplTextEditBlock: Component<Props> = ({
@@ -20,6 +22,8 @@ export const TplTextEditBlock: Component<Props> = ({
   onEditToggle,
   value,
   setValue,
+  hideName,
+  useId,
 }) => {
   const [editVal, setEditVal] = createSignal("");
 
@@ -41,8 +45,9 @@ export const TplTextEditBlock: Component<Props> = ({
   };
 
   createEffect(() => {
+    const id = useId ? useId : item.id;
     setTimeout(() => {
-      document.getElementById(item.id)?.focus();
+      document.getElementById(id)?.focus();
     }, 200);
   });
 
@@ -54,12 +59,14 @@ export const TplTextEditBlock: Component<Props> = ({
           "justify-content": "space-between",
         }}
       >
-        <Flex>
-          <Text fontSize="smaller" colorSchema="secondary">
-            {item.name}
-          </Text>
-          <TplHintBlock hint={item.hint} />
-        </Flex>
+        <Show when={!hideName}>
+          <Flex>
+            <Text fontSize="smaller" colorSchema="secondary">
+              {item.name}
+            </Text>
+            <TplHintBlock hint={item.hint} />
+          </Flex>
+        </Show>
         <Flex>
           <div
             onClick={() => onEditToggle(false)}
@@ -75,7 +82,7 @@ export const TplTextEditBlock: Component<Props> = ({
       </Flex>
       <Show when={item.limit && item.limit == 1}>
         <Input
-          id={item.id}
+          id={useId ? useId : item.id}
           onFocus={(e) => e.target.select()}
           onInput={(e: any) => updateVal(e.target.value)}
           onKeyPress={keyPress}
@@ -87,7 +94,7 @@ export const TplTextEditBlock: Component<Props> = ({
       </Show>
       <Show when={!item.limit || item.limit != 1}>
         <InputArea
-          id={item.id}
+          id={useId ? useId : item.id}
           onFocus={(e) => e.target.select()}
           onInput={(e: any) => updateVal(e.target.value)}
           onKeyPress={keyPress}
