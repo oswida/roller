@@ -1,7 +1,9 @@
 import { AiOutlineClear } from "solid-icons/ai";
+import { ImDice } from "solid-icons/im";
+import { BiSolidAddToQueue } from "solid-icons/bi";
 import { FaSolidDice, FaSolidEyeSlash, FaSolidHourglass } from "solid-icons/fa";
 import { IoReload } from "solid-icons/io";
-import { Component, Match, Show, Switch } from "solid-js";
+import { Component, For, Match, Show, Switch, createSignal } from "solid-js";
 import {
   RefProps,
   animating,
@@ -10,16 +12,72 @@ import {
   diceBox,
   dicePool,
   enrollTask,
+  modRoll,
   privateRoll,
+  rollModifier,
   rolling,
   setDicePool,
+  setModRoll,
   setPrivateRoll,
   setRollComment,
+  setRollModifier,
   setRolling,
 } from "~/common";
-import { Button, Flex, Input, Text } from "~/components";
+import { Button, Dialog, Flex, Input, Text } from "~/components";
 import { DicePanel } from "./DicePanel";
 import { diceSelectorStyle } from "./styles.css";
+import { csTplIconStyle } from "~/components/CsViewer/styles.css";
+import { buttonStyle } from "~/components/Button/styles.css";
+
+const ModifierDialog = ({ roll }: { roll: () => void }) => {
+  const [mdOpen, setMdOpen] = createSignal(false);
+
+  const action = async () => {
+    const el = document.getElementById("modifier") as HTMLInputElement;
+    if (!el) return;
+    const n = Number.parseInt(el.value);
+    setMdOpen(false);
+    if (Number.isNaN(n)) return;
+    if (rolling() || !currentRoom() || currentRoom()?.id == "") return;
+    const db = diceBox();
+    if (!db) return;
+    const pool = dicePool();
+    if (!pool || Object.values(pool).length == 0) return;
+    const dice = Object.entries(pool)
+      .filter(([k, v]) => v > 0)
+      .map(([k, v]) => `${v}d${k}`);
+    if (dice.length <= 0) return;
+    setRolling(true);
+    const s = appSettings();
+    await db.updateConfig({
+      theme_colorset: s.diceColor,
+      theme_texture: s.diceMaterial,
+    });
+    await db.roll(`${dice.join("+")}+${n}`);
+  };
+
+  return (
+    <Dialog
+      open={mdOpen}
+      onOpenChange={setMdOpen}
+      dialogTitle={() => "Roll modifier"}
+      trigger={
+        <Button variant="ghost">
+          <ImDice fill="currentColor" />
+          <Text>Roll</Text>
+        </Button>
+      }
+      triggerHint="Roll with modifier"
+      hideTriggerStyle
+      modal
+    >
+      <Input id="modifier" label="Value" />
+      <Flex gap="large" center>
+        <Button onClick={() => enrollTask(action)}>Roll</Button>
+      </Flex>
+    </Dialog>
+  );
+};
 
 export const DiceSelector: Component<RefProps> = ({ ref }) => {
   let inputRef: HTMLInputElement;
@@ -77,24 +135,37 @@ export const DiceSelector: Component<RefProps> = ({ ref }) => {
 
       <Flex style={{ "align-items": "center" }}>
         <Show when={!rolling()}>
-          <Switch>
-            <Match when={privateRoll()}>
-              <Button
-                variant="ghost"
-                colorSchema="secondary"
-                onClick={() => enrollTask(roll)}
-              >
-                <FaSolidEyeSlash />
-                <Text colorSchema="secondary">Roll</Text>
-              </Button>
-            </Match>
-            <Match when={!privateRoll()}>
-              <Button variant="ghost" onClick={() => enrollTask(roll)}>
-                <FaSolidDice />
-                <Text>Roll</Text>
-              </Button>
-            </Match>
-          </Switch>
+          <Show when={!modRoll()}>
+            <Switch>
+              <Match when={privateRoll()}>
+                <Button
+                  variant="ghost"
+                  colorSchema="secondary"
+                  onClick={() => enrollTask(roll)}
+                >
+                  <FaSolidEyeSlash />
+                  <Text colorSchema="secondary">Roll</Text>
+                </Button>
+              </Match>
+              <Match when={!privateRoll()}>
+                <Button variant="ghost" onClick={() => enrollTask(roll)}>
+                  <ImDice />
+                  <Text>Roll</Text>
+                </Button>
+              </Match>
+            </Switch>
+          </Show>
+          <Show when={modRoll()}>
+            <ModifierDialog roll={roll} />
+            {/* <Button
+                  variant="ghost"
+                  colorSchema="secondary"
+                  onClick={() => enrollTask(roll)}
+                >
+                  <FaSolidEyeSlash />
+                  <Text colorSchema="secondary">Roll</Text>
+                </Button> */}
+          </Show>
 
           <Input
             tooltip="Comment"
@@ -109,6 +180,13 @@ export const DiceSelector: Component<RefProps> = ({ ref }) => {
             onClick={() => setPrivateRoll(!privateRoll())}
           >
             <FaSolidEyeSlash />
+          </Button>
+          <Button
+            title="Toggle additional modifier"
+            toggled={modRoll}
+            onClick={() => setModRoll(!modRoll())}
+          >
+            <BiSolidAddToQueue fill="currentColor" />
           </Button>
         </Show>
         <Show when={rolling()}>
@@ -133,10 +211,9 @@ export const DiceSelector: Component<RefProps> = ({ ref }) => {
             variant="ghost"
             onClick={clearTable}
             title="Clear table"
-            style={{ "margin-left": "32px" }}
+            style={{ "margin-left": "16px" }}
           >
             <AiOutlineClear />
-            {/* <Text>Clear</Text> */}
           </Button>
         </Flex>
       </Show>

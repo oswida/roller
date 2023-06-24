@@ -96,3 +96,25 @@ export const dialogTriggerStyle = style([
     cursor: "pointer",
   },
 ]);
+
+export const emptyTriggerStyle = style([
+  sprinkles({
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingX: "small",
+    paddingY: "small",
+    fontSize: "standard",
+    backgroundColor: "none",
+    borderStyle: "none",
+    color: "primary",
+  }),
+  {
+    // lineHeight: 1,
+    // height: "35px",
+    // width: "35px",
+    outline: "none",
+    // transition: "border-color 250ms, color 250ms",
+    cursor: "pointer",
+  },
+]);

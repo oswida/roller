@@ -10,6 +10,7 @@ import {
   dialogRootStyle,
   dialogTitleStyle,
   dialogTriggerStyle,
+  emptyTriggerStyle,
 } from "./styles.css";
 
 type Props = {
@@ -20,6 +21,7 @@ type Props = {
   open?: () => boolean;
   onOpenChange?: (value: boolean) => void;
   modal?: boolean;
+  hideTriggerStyle?: boolean;
 };
 
 export const Dialog: ParentComponent<Props & ComponentProps<"div">> = ({
@@ -31,6 +33,7 @@ export const Dialog: ParentComponent<Props & ComponentProps<"div">> = ({
   triggerStyle,
   triggerHint,
   modal,
+  hideTriggerStyle,
   ...rest
 }) => {
   return (
@@ -40,7 +43,7 @@ export const Dialog: ParentComponent<Props & ComponentProps<"div">> = ({
       modal={modal}
     >
       <Dlg.Trigger
-        class={dialogTriggerStyle}
+        class={hideTriggerStyle ? emptyTriggerStyle : dialogTriggerStyle}
         style={triggerStyle}
         title={triggerHint}
       >

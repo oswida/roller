@@ -144,11 +144,14 @@ export const rollNotationWithResults = (result: RollResult) => {
   result.sets.forEach((set) => {
     diceRes[`${set.num}${set.type}`] = set;
   });
-  const dicePreset = dice.map((it) =>
-    diceRes[it].rolls.map((r) => r.value).join(",")
-  );
-  const retv = `${result.notation}@${dicePreset.join(",")}`;
-  return retv;
+  const dicePreset = dice.map((it) => {
+    if (!diceRes[it].rolls) return [];
+    return diceRes[it].rolls.map((r) => r.value).join(",");
+  });
+  if (dicePreset.length > 0) {
+    return `${result.notation}@${dicePreset.join(",")}`;
+  }
+  return result.notation;
 };
 
 export const animateRemoteRoll = async (info: RollInfo) => {
@@ -235,10 +238,10 @@ export const createSpaceVariants = (name: string) => {
   return result;
 };
 
-
 export const parseMarkdown = (data: string) => {
-  return DOMPurify.
-    sanitize(marked.parse(data, { headerIds: false, mangle: false, })).
-    replaceAll("<p>", "").
-    replaceAll("</p>", "");
-}
+  return DOMPurify.sanitize(
+    marked.parse(data, { headerIds: false, mangle: false })
+  )
+    .replaceAll("<p>", "")
+    .replaceAll("</p>", "");
+};

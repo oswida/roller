@@ -31,9 +31,9 @@ func (eng *Engine) CsInfoPublishCallback(e centrifuge.PublishEvent) error {
 		return err
 	}
 	if data.Data.Shared {
-		return eng.Db.ItemUpdate(db.ItemPrefixCs, data.Sender, data.Data)
+		return eng.Db.ItemUpdate(db.ItemPrefixCs, data.Room, data.Data)
 	} else {
 		// delete if shared has been switched off
-		return eng.Db.ItemDelete(db.ItemPrefixCs, data.Sender, data.Data)
+		return eng.Db.ItemDelete(db.ItemPrefixCs, data.Room, data.Data)
 	}
 }

@@ -14,6 +14,7 @@ import {
   csTplGlinaCB,
   csTplGlinaKR,
   csTplGlinaNG,
+  csTplGlinaPB,
 } from "./glina";
 
 const newTplList = [
@@ -28,6 +29,7 @@ const newTplList = [
   csTplGlinaCB,
   csTplGlinaKR,
   csTplGlinaNG,
+  csTplGlinaPB,
 ];
 
 export const charTemplates: Record<string, CharTemplate | undefined> = {

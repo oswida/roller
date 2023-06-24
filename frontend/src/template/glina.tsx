@@ -24,6 +24,15 @@ const genAttrs = () => {
       id: "stopien",
       name: "Stopień służbowy",
       itype: "attr_wide",
+      rolls: [
+        {
+          notation: "2d10+1d6",
+          comment: "Stopień służbowy",
+          valType: "modifier_plus_mod",
+          labels: ["Modyfikator rzutu"],
+          successRule: "ironsworn:glina",
+        },
+      ],
     } as CharTemplateItem,
   ];
 };
@@ -46,15 +55,6 @@ const genSledcze = () => {
         id: it.toLowerCase().normalize(),
         name: it,
         itype: "attr_wide",
-        rolls: [
-          {
-            notation: "2d10+1d6",
-            comment: `${it}`,
-            valType: "modifier_plus_mod",
-            labels: ["Modyfikator rzutu"],
-            successRule: "ironsworn:glina",
-          },
-        ],
       } as CharTemplateItem)
   );
 };
@@ -190,6 +190,11 @@ export const csTplGlinaBH: CharTemplate = {
           limit: 1,
           text: "„Arrakis” – artystka",
           hint: "Może fascynuje cię lub obraca się w bardzo nieodpowiednim towarzystwie?",
+        },
+        {
+          id: "znajomosci_dodatkowe",
+          name: "Dodatkowe",
+          itype: "text_list_check",
         },
       ],
     },
@@ -336,6 +341,11 @@ export const csTplGlinaCB: CharTemplate = {
           limit: 1,
           text: "Lisowska – dziennikarka śledcza",
           hint: "Może pomagałeś jej z Darknetem i innymi technologiami do bezpiecznego kontaktowania się ze źródłami informacji lub jest na tropie twojej pracy dla wywiadu?",
+        },
+        {
+          id: "znajomosci_dodatkowe",
+          name: "Dodatkowe",
+          itype: "text_list_check",
         },
       ],
     },
@@ -502,6 +512,11 @@ export const csTplGlinaKR: CharTemplate = {
           limit: 1,
           text: "Anonim – szantażysta",
           hint: "Może masz na niego haki lub to on pogrywa sobie z tobą?",
+        },
+        {
+          id: "znajomosci_dodatkowe",
+          name: "Dodatkowe",
+          itype: "text_list_check",
         },
       ],
     },
@@ -679,6 +694,11 @@ export const csTplGlinaNG: CharTemplate = {
           text: "„Jessica” – baristka",
           hint: "Może pracuje w miejscu, w którym lubisz spędzać czas, lub połączyła was tajemnicza historia?",
         },
+        {
+          id: "znajomosci_dodatkowe",
+          name: "Dodatkowe",
+          itype: "text_list_check",
+        },
       ],
     },
     {
@@ -733,6 +753,167 @@ export const csTplGlinaNG: CharTemplate = {
           itype: "check_circle",
           text: "Zimna krew",
           hint: "Gdy mistrz gry wymaga od ciebie wyzwolenia ruchu „wyrzuć z siebie stres”, możesz odmówić zrobienia tego, ale w zamian otrzymujesz +2 stresu.",
+        },
+      ],
+    },
+    {
+      title: "Notatki",
+      items: [
+        {
+          id: "notatki_sluzbowe",
+          name: "Służbowe",
+          itype: "big_text",
+        },
+      ],
+    },
+  ],
+};
+
+export const csTplGlinaPB: CharTemplate = {
+  id: "glina_pb",
+  name: "Pitbull",
+  game: "Glina RPG",
+  sections: [
+    {
+      title: "Postać",
+      items: genPostac,
+    },
+    {
+      title: "Atrybuty",
+      items: genAttrs(),
+    },
+    {
+      title: "Zasoby",
+      items: genCounters,
+    },
+    {
+      title: "Znajomości",
+      items: [
+        {
+          id: "l1",
+          name: "l1",
+          itype: "label",
+          text: "Wybierz dwie opisane niżej znajomości. Jednej przydziel wartość +1 (dobra relacja), drugiej wartość -1 (chłodna relacja).",
+        },
+        {
+          id: "kowalska",
+          name: "Kowalska",
+          itype: "text_check_circle",
+          text: "Kowalska – koleżanka ze szkoły policyjnej",
+          limit: 1,
+          hint: "Może to twoja najlepsza kumpela lub babka, przez którą wciąż jesteś w tym samym miejscu?",
+        },
+        {
+          id: "wolszczak",
+          name: "Wolszczak",
+          itype: "text_check_circle",
+          text: "Wolszczak – starszy stopniem policjant",
+          limit: 1,
+          hint: "Może to twój mentor lub ktoś, kogo szczerze nienawidzisz?",
+        },
+        {
+          id: "dziara",
+          name: "Dziara",
+          itype: "text_check_circle",
+          text: "„Dziara” – przestępca",
+          limit: 1,
+          hint: "Może to gość, który ma u ciebie spory dług, lub facet, który poluje na twoją głowę?",
+        },
+        {
+          id: "andrzej",
+          name: "Andrzej",
+          itype: "text_check_circle",
+          text: "Andrzej – bankier",
+          limit: 1,
+          hint: "Może to źródło informacji lub facet, którego rozpracowujesz już naprawdę długo?",
+        },
+        {
+          id: "magdalena",
+          name: "Magdalena",
+          itype: "text_check_circle",
+          limit: 1,
+          text: "Magdalena – chemiczka",
+          hint: "Może to kobieta, z którą się kiedyś umawiałeś, lub szefowa groźnej grupy przestępczej?",
+        },
+        {
+          id: "znajomosci_dodatkowe",
+          name: "Dodatkowe",
+          itype: "text_list_check",
+        },
+      ],
+    },
+    {
+      title: "Więzi",
+      items: [
+        {
+          id: "wiezi",
+          name: "Więzi",
+          hint: "Opisz trzy więzi. Każda z nich jest na poziomie +2.",
+          itype: "text_list",
+        },
+      ],
+    },
+    {
+      title: "Ruchy śledcze",
+      items: genSledcze(),
+    },
+    {
+      title: "Ruchy archetypu",
+      items: [
+        {
+          id: "zawziety",
+          name: "Zawzięty",
+          itype: "check_circle",
+          text: "Zawzięty",
+          hint: "Gdy wpadniesz na trop, masz dodatkową motywację. Kiedy w ruchu śledczym pada triumf, otrzymujesz +1 do szczęścia psa.",
+        },
+        {
+          id: "tuz_po_szkole",
+          name: "Tuż po szkole",
+          itype: "check_circle",
+          text: "Tuż po szkole",
+          hint: "Pamiętasz sporo teorii, a nigdy nie wiadomo, kiedy to się może przydać. Jeden raz podczas sesji, gdy wykonujesz ruch „pomoc specjalistów”, możesz przerzucić skuchę.",
+        },
+        {
+          id: "szybcy_wsciekli",
+          name: "Szybcy i wściekli",
+          itype: "check_circle",
+          text: "Szybcy i wściekli",
+          hint: "Gdy uczestniczysz w pościgu pieszym lub brawurowo prowadzisz samochód, otrzymujesz +1 do rzutu.",
+        },
+        {
+          id: "mlody_ma_racje",
+          name: "Młody ma rację",
+          itype: "check_circle",
+          text: "Młody ma rację",
+          hint: "Gdy próbujesz zmienić tor myślenia starszych stopniem policjantów, wykonaj rzut + inteligencja.<br>**Triumf**: Policjanci zgadzają się z twoim zdaniem lub zmieniają swoje.<br>**Fuks**: Policjanci zgadzają się z twoim zdaniem lub zmieniają swoje, ale kosztuje cię to dodatkową pracę. Podnieś swój czas pracy o +1.<br>**Skucha**: Twoja opinia zostaje zignorowana, narażasz się na żarty, dodatkową pracę lub tracisz czas",
+          rolls: [
+            {
+              notation: "2d10+1d6",
+              comment: "Młody ma rację",
+              valType: "modifier_plus_mod",
+              labels: ["Modyfikator rzutu"],
+              successRule: "ironsworn:glina",
+              valField: "inteligencja",
+            },
+          ],
+        },
+        {
+          id: "po_godzinach",
+          name: "Po godzinach",
+          itype: "check_circle",
+          text: "Po godzinach",
+          hint: "Masz jeszcze tyle energii, żeby pracować po godzinach. Gdy wartość twojego czasu pracy ma przekroczyć +8 i musisz otrzymać stres, wykonaj rzut + psychika.<br>**Triumf**:Nie otrzymujesz stresu za zmęczenie, gdy wyrabiasz nadgodziny.<br>**Fuks**: Nie otrzymujesz stresu za zmęczenie, ale musisz obniżyć o jego równowartość szczęście psa.<br>**Skucha**: Wybierz jedno:<br>- Nie otrzymujesz stresu za zmęczenie, ale obniż znajomość lub więź o -1,<br>- Otrzymujesz +1 stresu więcej, niż powinieneś.",
+          rolls: [
+            {
+              notation: "2d10+1d6",
+              comment: "Po godzinach",
+              valType: "modifier_plus_mod",
+              labels: ["Modyfikator rzutu"],
+              successRule: "ironsworn:glina",
+              valField: "psychika",
+            },
+          ],
         },
       ],
     },
