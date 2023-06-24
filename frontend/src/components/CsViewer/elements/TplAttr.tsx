@@ -38,7 +38,7 @@ export const TplAttr: Component<Props> = ({ item, wide }) => {
 
   const value = createMemo(() => {
     const info = currentCs();
-    if (!info || !info.values[item.id]) return "--";
+    if (!info || !info.values[item.id]) return "-";
     return info.values[item.id];
   });
 

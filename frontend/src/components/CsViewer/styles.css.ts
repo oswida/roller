@@ -82,3 +82,21 @@ export const tplHintIconStyle = style([
     fill: "accent",
   }),
 ]);
+
+export const tplCounterStyle = style([
+  sprinkles({
+    color: "primary",
+    borderColor: "accent",
+    borderRadius: "small",
+    borderWidth: "thin",
+    borderStyle: "solid",
+    paddingY: "small",
+    paddingX: "medium",
+    alignItems: "center",
+    justifyContent: "center",
+  }),
+  {
+    minWidth: "3em",
+    textAlign: "center",
+  },
+]);

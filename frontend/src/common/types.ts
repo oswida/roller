@@ -188,7 +188,8 @@ type CharTemplateItemType =
   | "big_text"
   | "text_list"
   | "text_list_check"
-  | "select";
+  | "select"
+  | "counter";
 
 export type CharTemplateItem = {
   id: string; // item unique id
