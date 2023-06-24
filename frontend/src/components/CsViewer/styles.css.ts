@@ -86,7 +86,7 @@ export const tplHintIconStyle = style([
 export const tplCounterStyle = style([
   sprinkles({
     color: "primary",
-    borderColor: "accent",
+    borderColor: "secondary",
     borderRadius: "small",
     borderWidth: "thin",
     borderStyle: "solid",

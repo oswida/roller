@@ -70,7 +70,7 @@ const genCounters: CharTemplateItem[] = [
     id: "stres",
     name: "Stres",
     itype: "counter",
-    labels: ["0", "1", "2", "3", "4", "5"],
+    labels: ["0", "1", "2", "3", "4", "5", "*6"],
   },
   {
     id: "szczescie_psa",
@@ -126,7 +126,7 @@ const genPostac: CharTemplateItem[] = [
 ];
 
 export const csTplGlinaBH: CharTemplate = {
-  id: "glina",
+  id: "glina_bh",
   name: "Brudny Harry",
   game: "Glina RPG",
   sections: [
@@ -139,7 +139,7 @@ export const csTplGlinaBH: CharTemplate = {
       items: genAttrs(),
     },
     {
-      title: "Liczniki",
+      title: "Zasoby",
       items: genCounters,
     },
     {
@@ -272,7 +272,7 @@ export const csTplGlinaBH: CharTemplate = {
 };
 
 export const csTplGlinaCB: CharTemplate = {
-  id: "glina",
+  id: "glina_cb",
   name: "Cyber",
   game: "Glina RPG",
   sections: [
@@ -285,7 +285,7 @@ export const csTplGlinaCB: CharTemplate = {
       items: genAttrs(),
     },
     {
-      title: "Liczniki",
+      title: "Zasoby",
       items: genCounters,
     },
     {
@@ -438,7 +438,7 @@ export const csTplGlinaCB: CharTemplate = {
 };
 
 export const csTplGlinaKR: CharTemplate = {
-  id: "glina",
+  id: "glina_kr",
   name: "Karierowicz",
   game: "Glina RPG",
   sections: [
@@ -451,7 +451,7 @@ export const csTplGlinaKR: CharTemplate = {
       items: genAttrs(),
     },
     {
-      title: "Liczniki",
+      title: "Zasoby",
       items: genCounters,
     },
     {
@@ -597,6 +597,142 @@ export const csTplGlinaKR: CharTemplate = {
               valField: "osobowość",
             },
           ],
+        },
+      ],
+    },
+    {
+      title: "Notatki",
+      items: [
+        {
+          id: "notatki_sluzbowe",
+          name: "Służbowe",
+          itype: "big_text",
+        },
+      ],
+    },
+  ],
+};
+
+export const csTplGlinaNG: CharTemplate = {
+  id: "glina_ng",
+  name: "Negocjator",
+  game: "Glina RPG",
+  sections: [
+    {
+      title: "Postać",
+      items: genPostac,
+    },
+    {
+      title: "Atrybuty",
+      items: genAttrs(),
+    },
+    {
+      title: "Zasoby",
+      items: genCounters,
+    },
+    {
+      title: "Znajomości",
+      items: [
+        {
+          id: "l1",
+          name: "l1",
+          itype: "label",
+          text: "Wybierz dwie opisane niżej znajomości. Jednej przydziel wartość +1 (dobra relacja), drugiej wartość -1 (chłodna relacja).",
+        },
+        {
+          id: "sikora",
+          name: "Kpt. Sikora",
+          itype: "text_check_circle",
+          text: "Kpt. Sikora – żołnierz",
+          limit: 1,
+          hint: "Może współpracujecie przy najtrudniejszych sprawach lub wchodzicie sobie w paradę?",
+        },
+        {
+          id: "gabriela",
+          name: "Gabriela",
+          itype: "text_check_circle",
+          text: "Gabriela – negocjatorka",
+          limit: 1,
+          hint: "Może jest twoją partnerką w czasie negocjacji lub przewyższa cię kompetencjami i sławą?",
+        },
+        {
+          id: "radzka",
+          name: "Radzka",
+          itype: "text_check_circle",
+          text: "Radzka – przedsiębiorczyni",
+          limit: 1,
+          hint: "Może ocaliłeś jej życie lub w wyniku twojego działania straciła coś cennego?",
+        },
+        {
+          id: "wiktor",
+          name: "Wiktor",
+          itype: "text_check_circle",
+          text: "Wiktor – kierowca taksówki",
+          limit: 1,
+          hint: "Może to człowiek gotowy cię wysłuchać lub niebezpiecznie zafascynowany twoją pracą?",
+        },
+        {
+          id: "jessica",
+          name: "Jessica",
+          itype: "text_check_circle",
+          limit: 1,
+          text: "„Jessica” – baristka",
+          hint: "Może pracuje w miejscu, w którym lubisz spędzać czas, lub połączyła was tajemnicza historia?",
+        },
+      ],
+    },
+    {
+      title: "Więzi",
+      items: [
+        {
+          id: "wiezi",
+          name: "Więzi",
+          hint: "Opisz trzy więzi. Każda z nich jest na poziomie +2.",
+          itype: "text_list",
+        },
+      ],
+    },
+    {
+      title: "Ruchy śledcze",
+      items: genSledcze(),
+    },
+    {
+      title: "Ruchy archetypu",
+      items: [
+        {
+          id: "nerwy_ze_stali",
+          name: "Nerwy ze stali",
+          itype: "check_circle",
+          text: "Nerwy ze stali",
+          hint: "Twój maksymalny poziom stresu wynosi 6 zamiast standardowego 5",
+        },
+        {
+          id: "zostanmy_przyjaciolmi",
+          name: "Zostańmy przyjaciółmi",
+          itype: "check_circle",
+          text: "Zostańmy przyjaciółmi",
+          hint: "Gdy uwodzisz, bratasz się lub okazujesz empatię, otrzymujesz +1 do rzutu",
+        },
+        {
+          id: "druga_szansa",
+          name: "Druga szansa",
+          itype: "check_circle",
+          text: "Druga szansa",
+          hint: "Gdy prowadzisz negocjacje z desperatem i coś pójdzie nie po twojej myśli, otrzymujesz drugą szansę, żeby to naprawić. Jeden raz podczas sesji możesz zamienić **skuchę** na **fuks**.",
+        },
+        {
+          id: "mowa_ciala",
+          name: "Mowa ciała",
+          itype: "check_circle",
+          text: "Mowa ciała",
+          hint: "Drobne ruchy, tiki, powtarzające się gesty mówią ci więcej o człowieku niż rozmowa z nim. Gdy oceniasz czyjeś zachowanie na podstawie mowy ciała otrzymujesz +1 do rzutu.",
+        },
+        {
+          id: "zimna_krew",
+          name: "Zimna krew",
+          itype: "check_circle",
+          text: "Zimna krew",
+          hint: "Gdy mistrz gry wymaga od ciebie wyzwolenia ruchu „wyrzuć z siebie stres”, możesz odmówić zrobienia tego, ale w zamian otrzymujesz +2 stresu.",
         },
       ],
     },
