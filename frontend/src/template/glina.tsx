@@ -948,3 +948,305 @@ export const csTplGlinaPB: CharTemplate = {
     },
   ],
 };
+
+export const csTplGlinaPZ: CharTemplate = {
+  id: "glina_pz",
+  name: "Pozorant",
+  game: "Glina RPG",
+  sections: [
+    {
+      title: "Postać",
+      items: genPostac,
+    },
+    {
+      title: "Atrybuty",
+      items: genAttrs(),
+    },
+    {
+      title: "Zasoby",
+      items: genCounters,
+    },
+    {
+      title: "Znajomości",
+      items: [
+        {
+          id: "l1",
+          name: "l1",
+          itype: "label",
+          text: "Wybierz dwie opisane niżej znajomości. Jednej przydziel wartość +1 (dobra relacja), drugiej wartość -1 (chłodna relacja).",
+        },
+        {
+          id: "skwierczynska",
+          name: "Skwierczyńska – redaktorka naczelna",
+          itype: "counter_check",
+          labels: ["-1", "0", "1"],
+          initialValue: 1,
+          hint: "Może kupowała od ciebie informacje lub narobiła koło ciebie sporo hałasu?",
+        },
+        {
+          id: "alan",
+          name: "Alan – strażnik więzienny",
+          itype: "counter_check",
+          labels: ["-1", "0", "1"],
+          initialValue: 1,
+          hint: "Może dzięki niemu zarabiasz więcej lub to on wydaje ci polecenia?",
+        },
+        {
+          id: "wiktor",
+          name: "Wiktor – pracownik archiwum",
+          itype: "counter_check",
+          labels: ["-1", "0", "1"],
+          initialValue: 1,
+          hint: "Może od dawna współpracujecie lub facet widział coś, czego nie powinien?",
+        },
+        {
+          id: "viki",
+          name: "„Viki” – handlarka narkotyków",
+          itype: "counter_check",
+          labels: ["-1", "0", "1"],
+          initialValue: 1,
+          hint: "Może sprzedajesz jej informacje lub policjanci pracują nad nią, a ty jesteś umoczony po uszy?",
+        },
+        {
+          id: "anna",
+          name: "Anna – paserka",
+          itype: "counter_check",
+          labels: ["-1", "0", "1"],
+          initialValue: 1,
+          hint: "Może uratowałeś jej tyłek lub twój sportowy samochód pochodzi z jej dziupli?",
+        },
+        {
+          id: "znajomosci_dodatkowe",
+          name: "Dodatkowe",
+          itype: "text_list",
+        },
+      ],
+    },
+    {
+      title: "Więzi",
+      items: [
+        {
+          id: "wiezi",
+          name: "Więzi",
+          hint: "Opisz trzy więzi. Każda z nich jest na poziomie +2.",
+          itype: "text_list",
+        },
+      ],
+    },
+    {
+      title: "Ruchy śledcze",
+      items: genSledcze(),
+    },
+    {
+      title: "Ruchy archetypu",
+      items: [
+        {
+          id: "dluznik",
+          name: "Twój dłużnik",
+          itype: "check_circle",
+          text: "Twój dłużnik",
+          hint: "Raz na sesję powiedz, kto ma u ciebie dług. Otrzymaj +1 do ruchu wykonywanego z udziałem tej osoby. W przypadku skuchy podczas rzutu na akcję możesz uznać dług za spłacony w zamian za osiągnięcie fuksa.",
+        },
+        {
+          id: "wymyk",
+          name: "Wymyk",
+          itype: "check_circle",
+          text: "Wymyk",
+          hint: "gdy atmosfera zaczyna się zagęszczać, potraﬁsz skierować rozmowę na inne tory. Raz podczas sesji, gdy kłamiesz, manipulujesz, przekupujesz kogoś lub oceniasz czyjeś zachowanie (mowa ciała), możesz przerzucić skuchę.",
+        },
+        {
+          id: "chwyc_sie_brzytwy",
+          name: "Chwyć się brzytwy",
+          itype: "check_circle",
+          text: "Chwyć się brzytwy",
+          hint: "Gdy wpadniesz w kłopoty w półświatku, powołaj się na jakąś swoją znajomość lub więź. W zamian za wyjście obronną ręką z sytuacji obniż daną znajomość lub więź o -1.",
+        },
+        {
+          id: "tuszowanie",
+          name: "Tuszowanie",
+          itype: "check_circle",
+          text: "Tuszowanie",
+          hint: "Otrzymaj +2 stresu i pojaw się w scenie, w której miało cię nie być, a jej konsekwencje mogły cię dotyczyć.",
+        },
+        {
+          id: "znajomi_na_miescie",
+          name: "Znajomi na mieście",
+          itype: "check_circle",
+          text: "Znajomi na mieście",
+          hint: "Masz dostęp do niebezpiecznych ludzi i podłych miejsc. Gdy nawiązujesz kontakt z ludźmi lub pojawiasz się w danym miejscu, opisz, kto lub co to jest, i wykonaj rzut + osobowość.<br>- **Triumf**: Zostajesz przyjęty jak swój<br>- **Fuks**: ostaniesz przyjęty jak swój, jeżeli udowodnisz, że jesteś godny zaufania. Musisz dokonać trudnego wyboru: tracisz coś, ktoś chce czegoś w zamian albo otrzymaj +1 stresu.<br>- **Skucha**: Spaliłeś mosty. Masz się komuś więcej nie pokazywać na oczy lub nie pojawiać się w tym miejscu. Otrzymujesz +1 stresu.",
+          rolls: [
+            {
+              notation: "2d10+1d6",
+              comment: "Znajomi na mieście",
+              valType: "modifier_plus_mod",
+              labels: ["Modyfikator rzutu"],
+              successRule: "ironsworn:glina",
+              valField: "osobowość",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      title: "Notatki",
+      items: [
+        {
+          id: "notatki_sluzbowe",
+          name: "Służbowe",
+          itype: "big_text",
+        },
+      ],
+    },
+  ],
+};
+
+export const csTplGlinaPF: CharTemplate = {
+  id: "glina_pf",
+  name: "Profiler",
+  game: "Glina RPG",
+  sections: [
+    {
+      title: "Postać",
+      items: genPostac,
+    },
+    {
+      title: "Atrybuty",
+      items: genAttrs(),
+    },
+    {
+      title: "Zasoby",
+      items: genCounters,
+    },
+    {
+      title: "Znajomości",
+      items: [
+        {
+          id: "l1",
+          name: "l1",
+          itype: "label",
+          text: "Wybierz dwie opisane niżej znajomości. Jednej przydziel wartość +1 (dobra relacja), drugiej wartość -1 (chłodna relacja).",
+        },
+        {
+          id: "rzeznik",
+          name: "„Rzeźnik z Metropolii” – seryjny morderca",
+          itype: "counter_check",
+          labels: ["-1", "0", "1"],
+          initialValue: 1,
+          hint: "Może pomaga ci tropić innych morderców lub to ty odpowiadasz za jego złapanie czy wciąż go ścigasz?",
+        },
+        {
+          id: "syriusz",
+          name: "Syriusz – groźny przestępca",
+          itype: "counter_check",
+          labels: ["-1", "0", "1"],
+          initialValue: 1,
+          hint: "Może to człowiek, którego uważasz za niewinnego, lub przestępca ścigany listami gończymi?",
+        },
+        {
+          id: "mocek",
+          name: "Mocek – naczelniczka zakładu karnego",
+          itype: "counter_check",
+          labels: ["-1", "0", "1"],
+          initialValue: 1,
+          hint: "Może ułatwia ci kontakt z osadzonymi lub była świadkiem zagrożenia twojego życia, przez co miała kłopoty?",
+        },
+        {
+          id: "stefanczyk",
+          name: "Dr Stefańczyk – psycholożka",
+          itype: "counter_check",
+          labels: ["-1", "0", "1"],
+          initialValue: 1,
+          hint: "Może to twoja superwizorka, która cię wspiera, lub konkurentka, z którą wciąż się mierzysz?",
+        },
+        {
+          id: "mateusz",
+          name: "Mateusz – policjant z prewencji",
+          itype: "counter_check",
+          labels: ["-1", "0", "1"],
+          initialValue: 1,
+          hint: "Może jest twoim pierwszym kontaktem na miejscu zbrodni lub łączyła was jakaś nietypowa znajomość?",
+        },
+        {
+          id: "znajomosci_dodatkowe",
+          name: "Dodatkowe",
+          itype: "text_list",
+        },
+      ],
+    },
+    {
+      title: "Więzi",
+      items: [
+        {
+          id: "wiezi",
+          name: "Więzi",
+          hint: "Opisz trzy więzi. Każda z nich jest na poziomie +2.",
+          itype: "text_list",
+        },
+      ],
+    },
+    {
+      title: "Ruchy śledcze",
+      items: genSledcze(),
+    },
+    {
+      title: "Ruchy archetypu",
+      items: [
+        {
+          id: "mapa_smierci",
+          name: "Mapa śmierci",
+          itype: "check_circle",
+          text: "Mapa śmierci",
+          hint: "Gdy dokonujesz oględzin miejsca zbrodni lub zwłok, otrzymujesz +1 do rzutu.",
+        },
+        {
+          id: "krok_przed",
+          name: "O krok przed",
+          itype: "check_circle",
+          text: "O krok przed",
+          hint: "Możesz poprosić mistrza gry o stworzenie ścieżki postępu dla poznania modus operandi, podpisu przestępcy lub jego klasyfikacji; powiedz, czego chciałbyś się dowiedzieć, a mistrz gry określi długość ścieżki postępu. Gdy próbujesz zapełnić uruchomioną ścieżkę postępu, otrzymujesz dodatkowe +2 do zdobycia tropu przy triumfie lub dodatkowe +1 do zdobycia tropu przy fuksie.",
+        },
+        {
+          id: "umysl_mordercy",
+          name: "Umysł mordercy",
+          itype: "check_circle",
+          text: "Umysł mordercy",
+          hint: "Gdy w czasie roboty papierkowej analizujesz dokumenty opisujące konkretną zbrodnię, potraﬁsz na ich podstawie ocenić, jakie emocje kierowały sprawcą. Mistrz gry powinien ci je opisać.",
+        },
+        {
+          id: "poznaj_wroga",
+          name: "Poznaj wroga",
+          itype: "check_circle",
+          text: "Poznaj wroga",
+          hint: "Proﬁler musi dowiedzieć się jak najwięcej o zwy czajach i preferencjach przestępcy, w związku z czym doskonale wie, jakie pytania zadawać w czasie rozmowy na jego temat. Raz podczas sesji możesz przerzucić skuchę, gdy wykonujesz ruch „komunikacja interpersonalna”.",
+        },
+        {
+          id: "tereny_lowieckie",
+          name: "Tereny łowieckie",
+          itype: "check_circle",
+          text: "Tereny łowieckie",
+          hint: "Potraﬁsz określić i zawęzić kategorie miejsc, w których najchętniej działa przestępca. Wykonaj rzut + inteligencja.<br>- **Triumf**: Precyzyjnie określasz teren łowiecki – ogródki działkowe, park, mieszkania oﬁar itd. Mistrz gry go opisuje.<br>- **Fuks**: Określasz trzy prawdopodobne tereny łowieckie, na których najchętniej działa przestępca. Mistrz gry je opisuje.<br>- **Skucha**: Nie umiesz określić terenu łowieckiego przestępcy.<br>- Uruchom ścieżkę postępu. <br>- Wybierz jeden element:<br>  - Otrzymujesz +2 do czasu pracy,<br>   - Otrzymujesz +1 stresu.",
+          rolls: [
+            {
+              notation: "2d10+1d6",
+              comment: "Tereny łowieckie",
+              valType: "modifier_plus_mod",
+              labels: ["Modyfikator rzutu"],
+              successRule: "ironsworn:glina",
+              valField: "inteligencja",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      title: "Notatki",
+      items: [
+        {
+          id: "notatki_sluzbowe",
+          name: "Służbowe",
+          itype: "big_text",
+        },
+      ],
+    },
+  ],
+};

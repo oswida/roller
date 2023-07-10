@@ -149,7 +149,7 @@ export const TplTextList: Component<Props> = ({ item, checkable }) => {
                       }
                     />
                   </Show>
-                  <Text innerHTML={parseMarkdown(it.text)}></Text>
+                  <Text preserveLines>{it.text}</Text>
                 </Flex>
               </Show>
               <Show when={isCsOwner(currentCs()) && editedItem() !== idx()}>
