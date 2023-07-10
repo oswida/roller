@@ -207,8 +207,8 @@ export const csTplGlinaBH: CharTemplate = {
           name: "„Arrakis” – artystka",
           itype: "counter_check",
           labels: ["-1", "0", "1"],
-          hint: "Może fascynuje cię lub obraca się w bardzo nieodpowiednim towarzystwie?",
           initialValue: 1,
+          hint: "Może fascynuje cię lub obraca się w bardzo nieodpowiednim towarzystwie?",
         },
         {
           id: "znajomosci_dodatkowe",
@@ -326,12 +326,14 @@ export const csTplGlinaCB: CharTemplate = {
           name: "Kwiatkowski – oﬁcer wywiadu",
           itype: "counter_check",
           labels: ["-1", "0", "1"],
+          initialValue: 1,
           hint: "Może to on zwerbował cię do jednostki lub ma na ciebie haka?",
         },
         {
           id: "lisbeth",
           itype: "counter_check",
           labels: ["-1", "0", "1"],
+          initialValue: 1,
           name: "„Lisbeth Salander” – hakerka",
           hint: "Może pracowaliście kiedyś razem lub jest niczym nieuchwytny duch?",
         },
@@ -339,6 +341,7 @@ export const csTplGlinaCB: CharTemplate = {
           id: "morfeusz",
           itype: "counter_check",
           labels: ["-1", "0", "1"],
+          initialValue: 1,
           name: "„Morfeusz” – przedsiębiorca",
           hint: "Może to właściciel klubu nocnego lub handlarz informacjami, które nie powinny wyciekać z policyjnych baz danych?",
         },
@@ -346,6 +349,7 @@ export const csTplGlinaCB: CharTemplate = {
           id: "angelina",
           itype: "counter_check",
           labels: ["-1", "0", "1"],
+          initialValue: 1,
           name: "„Angelina” – streamerka",
           hint: "Może to dziewczyna, która wpadła ci w oko, lub kobieta, którą za bardzo podziwiasz?",
         },
@@ -353,6 +357,7 @@ export const csTplGlinaCB: CharTemplate = {
           id: "lisowska",
           itype: "counter_check",
           labels: ["-1", "0", "1"],
+          initialValue: 1,
           name: "Lisowska – dziennikarka śledcza",
           hint: "Może pomagałeś jej z Darknetem i innymi technologiami do bezpiecznego kontaktowania się ze źródłami informacji lub jest na tropie twojej pracy dla wywiadu?",
         },
@@ -430,7 +435,7 @@ export const csTplGlinaCB: CharTemplate = {
           ],
         },
         {
-          id: "darkn=net",
+          id: "darknet",
           name: "Darknet",
           itype: "check_circle",
           text: "Darknet",
@@ -492,6 +497,7 @@ export const csTplGlinaKR: CharTemplate = {
           name: "Dr Grabowska – lekarka medycyny sądowej",
           itype: "counter_check",
           labels: ["-1", "0", "1"],
+          initialValue: 1,
           hint: "Może to wykładowczyni, która cię uczyła, lub osoba, przez którą wylądowałeś właśnie tutaj?",
         },
         {
@@ -499,6 +505,7 @@ export const csTplGlinaKR: CharTemplate = {
           name: "Wojciechowski – prokurator",
           itype: "counter_check",
           labels: ["-1", "0", "1"],
+          initialValue: 1,
           hint: "Może twoje wsparcie w ciężkich czasach lub facet, który prowadzi podwójne życie?",
         },
         {
@@ -506,6 +513,7 @@ export const csTplGlinaKR: CharTemplate = {
           name: "„Pani X” – ktoś wyżej postawiony",
           itype: "counter_check",
           labels: ["-1", "0", "1"],
+          initialValue: 1,
           hint: "Może to szara eminencja, która się tobą opiekuje, lub duch, który wciąż miesza ci szyki?",
         },
         {
@@ -513,6 +521,7 @@ export const csTplGlinaKR: CharTemplate = {
           name: "Emily – celebrytka",
           itype: "counter_check",
           labels: ["-1", "0", "1"],
+          initialValue: 1,
           hint: "Może to przyjaciółka, która dotarła wysoko, lub osoba, z którą nie chciałbyś się znowu spotkać?",
         },
         {
@@ -520,6 +529,7 @@ export const csTplGlinaKR: CharTemplate = {
           name: "Anonim – szantażysta",
           itype: "counter_check",
           labels: ["-1", "0", "1"],
+          initialValue: 1,
           hint: "Może masz na niego haki lub to on pogrywa sobie z tobą?",
         },
         {
@@ -668,6 +678,7 @@ export const csTplGlinaNG: CharTemplate = {
           name: "Kpt. Sikora – żołnierz",
           itype: "counter_check",
           labels: ["-1", "0", "1"],
+          initialValue: 1,
           hint: "Może współpracujecie przy najtrudniejszych sprawach lub wchodzicie sobie w paradę?",
         },
         {
@@ -675,6 +686,7 @@ export const csTplGlinaNG: CharTemplate = {
           name: "Gabriela – negocjatorka",
           itype: "counter_check",
           labels: ["-1", "0", "1"],
+          initialValue: 1,
           hint: "Może jest twoją partnerką w czasie negocjacji lub przewyższa cię kompetencjami i sławą?",
         },
         {
@@ -682,6 +694,7 @@ export const csTplGlinaNG: CharTemplate = {
           name: "Radzka – przedsiębiorczyni",
           itype: "counter_check",
           labels: ["-1", "0", "1"],
+          initialValue: 1,
           hint: "Może ocaliłeś jej życie lub w wyniku twojego działania straciła coś cennego?",
         },
         {
@@ -689,6 +702,7 @@ export const csTplGlinaNG: CharTemplate = {
           name: "Wiktor – kierowca taksówki",
           itype: "counter_check",
           labels: ["-1", "0", "1"],
+          initialValue: 1,
           hint: "Może to człowiek gotowy cię wysłuchać lub niebezpiecznie zafascynowany twoją pracą?",
         },
         {
@@ -696,6 +710,7 @@ export const csTplGlinaNG: CharTemplate = {
           name: "„Jessica” – baristka",
           itype: "counter_check",
           labels: ["-1", "0", "1"],
+          initialValue: 1,
           hint: "Może pracuje w miejscu, w którym lubisz spędzać czas, lub połączyła was tajemnicza historia?",
         },
         {
@@ -804,6 +819,7 @@ export const csTplGlinaPB: CharTemplate = {
           name: "Kowalska – koleżanka ze szkoły policyjnej",
           itype: "counter_check",
           labels: ["-1", "0", "1"],
+          initialValue: 1,
           hint: "Może to twoja najlepsza kumpela lub babka, przez którą wciąż jesteś w tym samym miejscu?",
         },
         {
@@ -811,6 +827,7 @@ export const csTplGlinaPB: CharTemplate = {
           name: "Wolszczak – starszy stopniem policjant",
           itype: "counter_check",
           labels: ["-1", "0", "1"],
+          initialValue: 1,
           hint: "Może to twój mentor lub ktoś, kogo szczerze nienawidzisz?",
         },
         {
@@ -818,6 +835,7 @@ export const csTplGlinaPB: CharTemplate = {
           name: "„Dziara” – przestępca",
           itype: "counter_check",
           labels: ["-1", "0", "1"],
+          initialValue: 1,
           hint: "Może to gość, który ma u ciebie spory dług, lub facet, który poluje na twoją głowę?",
         },
         {
@@ -825,6 +843,7 @@ export const csTplGlinaPB: CharTemplate = {
           name: "Andrzej – bankier",
           itype: "counter_check",
           labels: ["-1", "0", "1"],
+          initialValue: 1,
           hint: "Może to źródło informacji lub facet, którego rozpracowujesz już naprawdę długo?",
         },
         {
@@ -832,6 +851,7 @@ export const csTplGlinaPB: CharTemplate = {
           name: "Magdalena – chemiczka",
           itype: "counter_check",
           labels: ["-1", "0", "1"],
+          initialValue: 1,
           hint: "Może to kobieta, z którą się kiedyś umawiałeś, lub szefowa groźnej grupy przestępczej?",
         },
         {

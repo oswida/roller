@@ -12,6 +12,7 @@ import {
   currentCs,
   isCsOwner,
   netTopic,
+  parseMarkdown,
   setCurrentCs,
   topicCsInfo,
   updateCsStorage,
@@ -148,7 +149,7 @@ export const TplTextList: Component<Props> = ({ item, checkable }) => {
                       }
                     />
                   </Show>
-                  <Text>{it.text}</Text>
+                  <Text innerHTML={parseMarkdown(it.text)}></Text>
                 </Flex>
               </Show>
               <Show when={isCsOwner(currentCs()) && editedItem() !== idx()}>

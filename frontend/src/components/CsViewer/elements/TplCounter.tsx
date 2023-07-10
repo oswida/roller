@@ -1,16 +1,6 @@
-import {
-  FaSolidCheck,
-  FaSolidMinus,
-  FaSolidPlus,
-  FaSolidXmark,
-} from "solid-icons/fa";
-import {
-  Component,
-  Show,
-  createEffect,
-  createMemo,
-  createSignal,
-} from "solid-js";
+import { FaSolidMinus, FaSolidPlus } from "solid-icons/fa";
+import { IoReload } from "solid-icons/io";
+import { Component, Show, createMemo } from "solid-js";
 import {
   CharTemplateItem,
   centPublish,
@@ -21,22 +11,13 @@ import {
   topicCsInfo,
   updateCsStorage,
 } from "~/common";
-import { themeColor } from "~/common/theme.css";
-import { charTemplates } from "~/template";
-import { DataBlock } from "../../DataBlock";
 import { Flex } from "../../Flex";
-import { Input } from "../../Input";
 import { Text } from "../../Text";
-import { actionCompute } from "../actions";
-import {
-  csTplAttrValueStyle,
-  csTplIconStyle,
-  tplCounterStyle,
-  tplHintIconStyle,
-} from "../styles.css";
+import { csTplIconStyle, tplCounterStyle } from "../styles.css";
 import { TplHintBlock } from "../blocks/TplHintBlock";
 import { TplRollBlock } from "../blocks/TplRollBlock";
 import { TplCheckBlock } from "../blocks/TplCheckBlock";
+import { charTemplates } from "~/template";
 
 type CounterItem = {
   value: number;
@@ -92,6 +73,21 @@ export const TplCounter: Component<Props> = ({
     centPublish(netTopic(topicCsInfo), info);
   };
 
+  const resetValue = () => {
+    const info = currentCs();
+    if (!info) {
+      return;
+    }
+    info.values[item.id] = {
+      ...info.values[item.id],
+      value: item.initialValue,
+    };
+    updateCsStorage(info);
+    setCurrentCs(undefined);
+    setCurrentCs({ ...info });
+    centPublish(netTopic(topicCsInfo), info);
+  };
+
   const toggle = () => {
     const info = currentCs();
     if (!info) {
@@ -137,7 +133,11 @@ export const TplCounter: Component<Props> = ({
           <Show when={!checkable || (checkable && value().checked)}>
             <Flex>
               <Show when={isCsOwner(currentCs())}>
-                <div class={csTplIconStyle} onClick={() => applyValue(false)}>
+                <div
+                  class={csTplIconStyle}
+                  onClick={() => applyValue(false)}
+                  title="Decrease value"
+                >
                   <FaSolidMinus fill="currentColor" />
                 </div>
               </Show>
@@ -145,8 +145,19 @@ export const TplCounter: Component<Props> = ({
                 {item.labels ? item.labels[value().value] : ""}
               </Text>
               <Show when={isCsOwner(currentCs())}>
-                <div class={csTplIconStyle} onClick={() => applyValue(true)}>
+                <div
+                  class={csTplIconStyle}
+                  onClick={() => applyValue(true)}
+                  title="Increase value"
+                >
                   <FaSolidPlus fill="currentColor" />
+                </div>
+                <div
+                  class={csTplIconStyle}
+                  onClick={resetValue}
+                  title="Reset to default"
+                >
+                  <IoReload fill="currentColor" />
                 </div>
               </Show>
             </Flex>
