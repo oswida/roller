@@ -184,6 +184,7 @@ export const csTplGlinaBH: CharTemplate = {
           itype: "counter_check",
           labels: ["-1", "0", "1"],
           hint: "Może pracowaliście razem lub zawsze depcze ci po piętach?",
+          initialValue: 1,
         },
         {
           id: "yvette",
@@ -191,6 +192,7 @@ export const csTplGlinaBH: CharTemplate = {
           itype: "counter_check",
           labels: ["-1", "0", "1"],
           hint: "Może jest twoją wielką miłością lub złożyłeś jej obietnicę, której nie możesz spełnić?",
+          initialValue: 1,
         },
         {
           id: "tomasz",
@@ -198,6 +200,7 @@ export const csTplGlinaBH: CharTemplate = {
           itype: "counter_check",
           labels: ["-1", "0", "1"],
           hint: "Może to twój informator lub facet, któremu zrujnowałeś życie?",
+          initialValue: 1,
         },
         {
           id: "arrakis",
@@ -205,6 +208,7 @@ export const csTplGlinaBH: CharTemplate = {
           itype: "counter_check",
           labels: ["-1", "0", "1"],
           hint: "Może fascynuje cię lub obraca się w bardzo nieodpowiednim towarzystwie?",
+          initialValue: 1,
         },
         {
           id: "znajomosci_dodatkowe",

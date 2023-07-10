@@ -31,6 +31,7 @@ import {
   generateSerialKeys,
   rollerRoomsKey,
   rollerSettingsKey,
+  rolling,
   saveToStorage,
   setCsPanelVisible,
   storageSize,
@@ -161,16 +162,18 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
           </Popover>
         </Flex>
 
-        <Flex gap="medium" class={topbarItemStyle}>
-          <Button
-            variant="icon"
-            toggled={csPanelVisible}
-            onClick={() => setCsPanelVisible(!csPanelVisible())}
-          >
-            <BsPersonBadge size={25} />
-          </Button>
-          <Text>Charsheets</Text>
-        </Flex>
+        <Show when={!rolling()}>
+          <Flex gap="medium" class={topbarItemStyle}>
+            <Button
+              variant="icon"
+              toggled={csPanelVisible}
+              onClick={() => setCsPanelVisible(!csPanelVisible())}
+            >
+              <BsPersonBadge size={25} />
+            </Button>
+            <Text>Charsheets</Text>
+          </Flex>
+        </Show>
       </Flex>
 
       <Flex gap="large" center>

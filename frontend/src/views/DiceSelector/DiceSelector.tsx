@@ -174,13 +174,6 @@ export const DiceSelector: Component<RefProps> = ({ ref }) => {
             <ModifierDialog priv={privateRoll()} />
           </Show>
 
-          <Input
-            tooltip="Comment"
-            placeholder="Comment"
-            ref={(e) => (inputRef = e)}
-            onInput={(e) => updateComment(e)}
-          />
-
           <Button
             title="Toggle private roll"
             toggled={privateRoll}
@@ -195,6 +188,13 @@ export const DiceSelector: Component<RefProps> = ({ ref }) => {
           >
             <BiSolidAddToQueue fill="currentColor" />
           </Button>
+          <Input
+            tooltip="Comment"
+            placeholder="Comment"
+            ref={(e) => (inputRef = e)}
+            style={{ width: "12em" }}
+            onInput={(e) => updateComment(e)}
+          />
         </Show>
         <Show when={rolling()}>
           <Button variant="ghost">
@@ -208,7 +208,7 @@ export const DiceSelector: Component<RefProps> = ({ ref }) => {
 
       <Show when={!appSettings().rightLayout}>
         <Flex gap="medium" center>
-          <Button variant="ghost" onClick={resetPool} title="Reset">
+          <Button variant="ghost" onClick={resetPool} title="Reset dice pool">
             <IoReload />
           </Button>
           <DicePanel />
@@ -217,7 +217,7 @@ export const DiceSelector: Component<RefProps> = ({ ref }) => {
             variant="ghost"
             onClick={clearTable}
             title="Clear table"
-            style={{ "margin-left": "16px" }}
+            // style={{ "margin-left": "16px" }}
           >
             <AiOutlineClear />
           </Button>

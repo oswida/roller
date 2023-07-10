@@ -25,8 +25,8 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
     saveToStorage(rollerSettingsKey, data);
   };
 
-  const rightLayout = createMemo(() => {
-    const rl = appSettings().rightLayout;
+  const strongerRoll = createMemo(() => {
+    const rl = appSettings().strongerRoll;
     if (!rl) return false;
     return rl;
   });
@@ -83,8 +83,8 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
     return rl;
   });
 
-  const setRightLayout = (value: boolean) => {
-    const newState = { ...appSettings(), rightLayout: value };
+  const setStrongerRoll = (value: boolean) => {
+    const newState = { ...appSettings(), strongerRoll: value };
     saveToStorage(rollerSettingsKey, newState);
   };
 
@@ -108,8 +108,8 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
       { id: "red", label: "Red" } as SelectItem,
       { id: "basic", label: "Blue" } as SelectItem,
       { id: "evergreen", label: "Evergreen" } as SelectItem,
-      { id: "monosilver", label: "Monosilver" } as SelectItem
-    ]
+      { id: "monosilver", label: "Monosilver" } as SelectItem,
+    ];
   });
 
   const themeChange = (value: SelectItem) => {
@@ -132,7 +132,7 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
       { id: "Oxanium", label: "Oxanium" } as SelectItem,
       { id: "Quattrocento", label: "Quattrocento" } as SelectItem,
       { id: "Roboto", label: "Roboto" } as SelectItem,
-    ]
+    ];
   });
 
   const fontChange = (value: SelectItem) => {
@@ -192,27 +192,7 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
           onChange={fontChange}
         />
       </Flex>
-      <Flex style={{ "justify-content": "space-between" }}>
 
-        {/* <Switch
-          label="Chat on right"
-          checked={rightLayout}
-          setChecked={setRightLayout}
-        /> */}
-        <Switch
-          label="Smaller dice"
-          checked={smallerDice}
-          setChecked={setSmalldice}
-        />
-      </Flex>
-      <Flex style={{ "justify-content": "space-between" }}>
-        <Switch label="Show roll total" checked={total} setChecked={setTotal} />
-        <Switch
-          label="Show roll success"
-          checked={success}
-          setChecked={setSuccess}
-        />
-      </Flex>
       <Flex style={{ "justify-content": "space-evenly" }}>
         <Select
           modal={true}
@@ -228,6 +208,27 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
           options={materialList}
           selected={currentDiceMaterial}
           onChange={diceMaterialChange}
+        />
+      </Flex>
+
+      <Flex style={{ "justify-content": "space-between" }}>
+        <Switch
+          label="Stronger roll"
+          checked={strongerRoll}
+          setChecked={setStrongerRoll}
+        />
+        <Switch
+          label="Smaller dice"
+          checked={smallerDice}
+          setChecked={setSmalldice}
+        />
+      </Flex>
+      <Flex style={{ "justify-content": "space-between" }}>
+        <Switch label="Show roll total" checked={total} setChecked={setTotal} />
+        <Switch
+          label="Show roll success"
+          checked={success}
+          setChecked={setSuccess}
         />
       </Flex>
     </Flex>

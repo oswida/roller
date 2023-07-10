@@ -52,6 +52,15 @@ const diceConfig = {
 };
 
 export const RollView: Component<RefProps> = ({ ref }) => {
+  createEffect(async () => {
+    const box = diceBox();
+    if (!box) return;
+    const sr = appSettings().strongerRoll;
+    await box.updateConfig({
+      gravity_multiplier: appSettings().strongerRoll ? 300 : 400,
+    });
+  });
+
   createEffect(
     on(csPanelVisible, () => {
       if (diceBox()) {
@@ -69,6 +78,7 @@ export const RollView: Component<RefProps> = ({ ref }) => {
       const Box = new DiceBox("#dice-table", {
         ...diceConfig,
         baseScale: appSettings().smallerDice ? 75 : 95,
+        gravity_multiplier: appSettings().strongerRoll ? 300 : 400,
       });
       setDiceBox(Box);
       Box.initialize().then(() => {

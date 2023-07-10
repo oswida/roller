@@ -18,6 +18,7 @@ export type AppSettings = {
   showRollSuccess?: boolean;
   showRollTotal?: boolean;
   smallerDice?: boolean;
+  strongerRoll?: boolean;
 };
 
 export const emptyAppSettings = () => {
