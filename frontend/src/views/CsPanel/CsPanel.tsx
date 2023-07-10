@@ -5,6 +5,7 @@ import {
   FaSolidPlus,
   FaSolidShareNodes,
   FaSolidTrash,
+  FaSolidUserPen,
 } from "solid-icons/fa";
 import {
   Component,
@@ -32,6 +33,7 @@ import {
   deleteCsStorage,
   exportData,
   importData,
+  isCsOwner,
   netTopic,
   setCsExpanded,
   setCurrentCs,
@@ -49,17 +51,24 @@ import {
   SelectItem,
   Text,
 } from "~/components";
-import { charTemplateGameItems, charTemplateGames, charTemplateItems, charTemplates } from "~/template";
+import {
+  charTemplateGameItems,
+  charTemplateGames,
+  charTemplateItems,
+  charTemplates,
+} from "~/template";
 import { csPanelRootStyle } from "./styles.css";
 
 export const CsPanel: Component = () => {
   let listRef: HTMLDivElement;
   const [crDialogOpen, setCrDialogOpen] = createSignal(false);
   const [delDialogOpen, setDelDialogOpen] = createSignal(false);
+  const [renameDialogOpen, setRenameDialogOpen] = createSignal(false);
   const [shareDialogOpen, setShareDialogOpen] = createSignal(false);
   const [selCsType, setSelCsType] = createSignal("");
   const [selCsGame, setSelCsGame] = createSignal("");
   const [selCsName, setSelCsName] = createSignal("");
+  const [editCsName, setEditCsName] = createSignal("");
 
   const adjustSize = () => {
     if (!listRef) {
@@ -182,11 +191,22 @@ export const CsPanel: Component = () => {
     });
   };
 
+  const renameCs = () => {
+    setRenameDialogOpen(false);
+    const name = editCsName();
+    if (!name || name.trim() === "") return;
+    const cs = currentCs();
+    if (!cs) return;
+    cs.name = name;
+    updateCsStorage(cs);
+    centPublish(netTopic(topicCsInfo), cs);
+  };
+
   const templates = createMemo(() => {
     const g = charTemplateGames[selCsGame()];
     if (!g) return [];
     setSelCsType("");
-    return g.map(it => ({ id: it.id, label: it.name } as SelectItem));
+    return g.map((it) => ({ id: it.id, label: it.name } as SelectItem));
   });
 
   return (
@@ -226,21 +246,23 @@ export const CsPanel: Component = () => {
                 modal={true}
                 label="Type"
                 options={templates}
-                onChange={(e: SelectItem) => { if (e) setSelCsType(e.id) }}
+                onChange={(e: SelectItem) => {
+                  if (e) setSelCsType(e.id);
+                }}
               />
               <Flex gap="large" style={{ "margin-top": "10px" }}>
                 <Button onClick={() => setCrDialogOpen(false)}>Cancel</Button>
                 <Button onClick={createCharsheet}>Create</Button>
               </Flex>
             </Dialog>
-            <Button title="Import charsheet" onClick={importCs}>
+            <Button title="Import charsheet" onClick={importCs} variant="ghost">
               <FaSolidFileImport />
             </Button>
           </Flex>
 
           <Show when={currentCs()}>
             <Flex>
-              <Show when={currentCs()?.owner == appSettings().userIdent}>
+              <Show when={isCsOwner(currentCs())}>
                 <Alert
                   label="Delete charsheet"
                   open={delDialogOpen}
@@ -258,9 +280,7 @@ export const CsPanel: Component = () => {
                     <Button onClick={deleteCharsheet}>Delete</Button>
                   </Flex>
                 </Alert>
-              </Show>
 
-              <Show when={currentCs()?.owner == appSettings().userIdent}>
                 <Alert
                   label="Share charsheet"
                   open={shareDialogOpen}
@@ -288,12 +308,40 @@ export const CsPanel: Component = () => {
                     <Button onClick={shareCharsheet}>Accept</Button>
                   </Flex>
                 </Alert>
+
+                <Dialog
+                  dialogTitle={() => "Rename charsheet"}
+                  trigger={<FaSolidUserPen />}
+                  triggerHint="Rename charsheet"
+                  open={renameDialogOpen}
+                  onOpenChange={setRenameDialogOpen}
+                >
+                  <Input
+                    label="Name"
+                    value={currentCs()?.name}
+                    onChange={(e) => setEditCsName(e.target.value)}
+                  />
+                  <Flex gap="large" style={{ "margin-top": "10px" }}>
+                    <Button onClick={() => setRenameDialogOpen(false)}>
+                      Cancel
+                    </Button>
+                    <Button onClick={renameCs}>Rename</Button>
+                  </Flex>
+                </Dialog>
               </Show>
 
-              <Button title="Export charsheet" onClick={exportCs}>
+              <Button
+                title="Export charsheet"
+                onClick={exportCs}
+                variant="ghost"
+              >
                 <FaSolidFileExport />
               </Button>
-              <Button title="Toggle expand all" onClick={expandAll}>
+              <Button
+                title="Toggle expand all"
+                onClick={expandAll}
+                variant="ghost"
+              >
                 <BsArrowsExpand />
               </Button>
             </Flex>

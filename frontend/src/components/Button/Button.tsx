@@ -1,7 +1,4 @@
-import {
-  ComponentProps,
-  ParentComponent,
-} from "solid-js";
+import { ComponentProps, ParentComponent } from "solid-js";
 import { Button as Btn } from "@kobalte/core";
 import { buttonStyle } from "./styles.css";
 
@@ -17,6 +14,7 @@ export const Button: ParentComponent<Props & ComponentProps<"button">> = ({
   disabled,
   toggled,
   colorSchema,
+
   ...rest
 }) => {
   return (

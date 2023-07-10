@@ -20,8 +20,8 @@ export const cvSecondary = createVar();
 export const cvDanger = createVar();
 
 export const themeColor = {
-  background: cvBackground,//"#080014", //"#2E0003",  ,
-  backgroundSecondary: cvBackgroundSecondary,//"#21293B", //"#60251D", // "#21293B",
+  background: cvBackground, //"#080014", //"#2E0003",  ,
+  backgroundSecondary: cvBackgroundSecondary, //"#21293B", //"#60251D", // "#21293B",
   backgroundGhost: cvBackgroundGhost, //"#08001455",
   accent: cvAccent, //"#93502D", // "#335064",
   primary: cvPrimary, //"#fff",
@@ -86,7 +86,12 @@ export type themeBorderSizeType = "none" | "thin" | "medium" | "thick";
 const themeBorderStyle = {
   none: "none",
   solid: "solid",
-  dotted: "dotted"
+  dotted: "dotted",
+};
+
+const themeBorderStylePartial = {
+  none: 0,
+  solid: 1,
 };
 
 export type themeBorderStyleType = "none" | "solid";
@@ -94,8 +99,8 @@ export type themeBorderStyleType = "none" | "solid";
 const themeProperties = defineProperties({
   conditions: {
     default: {},
-    hover: { selector: '&:hover' },
-    focus: { selector: '&:focus' }
+    hover: { selector: "&:hover" },
+    focus: { selector: "&:focus" },
   },
   defaultCondition: "default",
   properties: {
@@ -121,8 +126,8 @@ const themeProperties = defineProperties({
     borderWidth: themeBorderSize,
     borderStyle: themeBorderStyle,
     borderBottomWidth: themeBorderSize,
-    borderBottomStyle: themeBorderStyle,
     borderTopWidth: themeBorderSize,
+    borderBottomStyle: themeBorderStyle,
     borderTopStyle: themeBorderStyle,
   },
   shorthands: {
@@ -145,8 +150,8 @@ const themeProperties = defineProperties({
 const colorProperties = defineProperties({
   conditions: {
     default: {},
-    hover: { selector: '&:hover' },
-    focus: { selector: '&:focus' }
+    hover: { selector: "&:hover" },
+    focus: { selector: "&:focus" },
   },
   defaultCondition: "default",
   properties: {
@@ -191,7 +196,6 @@ globalStyle("button>svg", {
   stroke: "currentcolor",
 });
 
-
 export const basicTheme = {
   [cvBackground]: "#080014",
   [cvBackgroundSecondary]: "#21293B",
@@ -199,7 +203,7 @@ export const basicTheme = {
   [cvAccent]: "#93502D",
   [cvPrimary]: "#fff",
   [cvSecondary]: "#E2BA51",
-  [cvDanger]: "#ff5252"
+  [cvDanger]: "#ff5252",
 };
 
 export const redTheme = {
@@ -209,7 +213,7 @@ export const redTheme = {
   [cvAccent]: "#038042", //"#017039",//"#914720", //"#008C47",
   [cvPrimary]: "#fff",
   [cvSecondary]: "#D9D555",
-  [cvDanger]: "#ff5252"
+  [cvDanger]: "#ff5252",
 };
 
 export const evergreenTheme = {
@@ -219,7 +223,7 @@ export const evergreenTheme = {
   [cvAccent]: "#4da85b",
   [cvPrimary]: "#211508",
   [cvSecondary]: "#381E10",
-  [cvDanger]: "#ff5252"
+  [cvDanger]: "#ff5252",
 };
 
 export const monosilverTheme = {
@@ -229,5 +233,5 @@ export const monosilverTheme = {
   [cvAccent]: "#A3A3A2",
   [cvPrimary]: "#1A1A1A",
   [cvSecondary]: "#000",
-  [cvDanger]: "#f54040"
+  [cvDanger]: "#f54040",
 };

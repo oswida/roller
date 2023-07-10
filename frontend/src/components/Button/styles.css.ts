@@ -30,11 +30,17 @@ export const buttonStyle = recipe({
         border: "none",
         height: "35px",
       },
-      ghost: {
-        border: "solid 1px",
-        height: "35px",
-        backgroundColor: "transparent",
-      },
+      ghost: [
+        sprinkles({
+          borderColor: "backgroundSecondary",
+          borderStyle: "solid",
+          borderWidth: "thin",
+        }),
+        {
+          height: "35px",
+          backgroundColor: "transparent",
+        },
+      ],
       underline: {
         border: "none",
         borderBottom: "solid 1px",
