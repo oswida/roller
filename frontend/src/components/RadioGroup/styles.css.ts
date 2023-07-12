@@ -35,19 +35,22 @@ export const rgRadioIndicatorStyle = style({
   backgroundColor: "white",
 });
 
-export const rgRadioInputStyle = style([sprinkles({
-  outlineColor: "accent",
-}), {
-  height: 16,
-  width: 16,
-  borderRadius: 8,
-  backgroundColor: "transparent",
-  outlineStyle: "solid",
-  outlineWidth: 2,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}]);
+export const rgRadioInputStyle = style([
+  sprinkles({
+    outlineColor: "primary400",
+  }),
+  {
+    height: 16,
+    width: 16,
+    borderRadius: 8,
+    backgroundColor: "transparent",
+    outlineStyle: "solid",
+    outlineWidth: 2,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+]);
 
 export const rgRadioLabelStyle = style({
   marginLeft: "10px",

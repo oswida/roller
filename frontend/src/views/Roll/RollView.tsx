@@ -22,6 +22,7 @@ import {
   netTopic,
   rollComment,
   setDiceBox,
+  setRollComment,
   setRolling,
   setSuccessRule,
   setSuccessTarget,
@@ -99,6 +100,7 @@ export const RollView: Component<RefProps> = ({ ref }) => {
         info.successTarget = successTarget();
         setSuccessRule("");
         setSuccessTarget(0);
+        setRollComment("");
         updateRolls(info);
         setRolling(false);
         if (!info.private) {

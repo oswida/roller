@@ -3,7 +3,7 @@ import { themeFontFamilyType } from "./theme.css";
 
 // Settings
 
-export type themeType = "red" | "basic";
+export type themeType = "blue" | "blueDark" | "teal";
 
 export type AppSettings = {
   userIdent: string;

@@ -7,9 +7,9 @@ import {
 } from "~/common";
 import { Flex } from "../../Flex";
 import { Text } from "../../Text";
-import { themeColor } from "~/common/theme.css";
 import { TplHintBlock } from "../blocks/TplHintBlock";
 import { TplRollBlock } from "../blocks/TplRollBlock";
+import { themeVars } from "~/common/theme.css";
 
 type Props = {
   item: CharTemplateItem;
@@ -25,7 +25,7 @@ export const TplLabel: Component<Props> = ({ item }) => {
   return (
     <Flex style={{ "justify-content": "space-between" }}>
       <Flex>
-        <Text style={{ color: item.color ? item.color : themeColor.secondary }}>
+        <Text style={{ color: item.color ? item.color : themeVars.info900 }}>
           {item.text}
         </Text>
         <TplHintBlock hint={item.hint} />

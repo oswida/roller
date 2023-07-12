@@ -22,7 +22,6 @@ import {
   topicCsInfo,
   updateCsStorage,
 } from "~/common";
-import { themeColor } from "~/common/theme.css";
 import { charTemplates } from "~/template";
 import { DataBlock } from "../../DataBlock";
 import { Flex } from "../../Flex";
@@ -32,6 +31,7 @@ import { actionCompute, actionRoll } from "../actions";
 import { csTplAttrValueStyle, csTplIconStyle } from "../styles.css";
 import { TplHintBlock } from "../blocks/TplHintBlock";
 import { TplRollBlock } from "../blocks/TplRollBlock";
+import { themeVars } from "~/common/theme.css";
 
 type Props = {
   item: CharTemplateItem;
@@ -143,7 +143,7 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
       </Show>
       <Show when={itemEdit()}>
         <div class={csTplIconStyle} onClick={() => setItemEdit(false)}>
-          <FaSolidXmark style={{ fill: themeColor.danger }} />
+          <FaSolidXmark style={{ fill: themeVars.danger900 }} />
         </div>
         <DataBlock
           width="50%"

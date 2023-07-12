@@ -5,24 +5,25 @@ export const inputRootStyle = style([
   sprinkles({
     display: "flex",
     gap: "small",
-    color: "primary",
+    color: "primary900",
     alignItems: "center",
   }),
 ]);
 
 export const inputFieldStyle = style([
   sprinkles({
-    color: "primary",
-    backgroundColor: "background",
+    color: "primary900",
+    backgroundColor: "primary100",
     fontSize: "standard",
     paddingX: "medium",
     paddingY: "small",
     borderRadius: "small",
-    borderColor: "accent",
+    borderColor: "primary400",
   }),
   {
     borderWidth: 1,
     borderStyle: "solid",
     flex: 1,
+    outline: "none",
   },
 ]);

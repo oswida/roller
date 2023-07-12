@@ -4,7 +4,7 @@ import { sprinkles } from "~/common/theme.css";
 
 export const csViewerRootStyle = style([
   sprinkles({
-    backgroundColor: "backgroundSecondary",
+    backgroundColor: "primary200",
   }),
   {
     overflow: "auto",
@@ -19,12 +19,16 @@ export const csTplIconStyle = style([
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: { default: "backgroundSecondary", hover: "accent" },
+    backgroundColor: { default: "none", hover: "primary400" },
+    // color: { default: "primary900", hover: "primary100" },
   }),
   {
     cursor: "pointer",
-    width: "32px",
-    height: "32px",
+    width: "35px",
+    height: "35px",
+    minWidth: "35px",
+    minHeight: "35px",
+    outline: "none",
   },
 ]);
 
@@ -32,7 +36,8 @@ export const csTplAttrValueStyle = style([
   sprinkles({
     padding: "small",
     borderRadius: "small",
-    backgroundColor: { hover: "backgroundSecondary" },
+    backgroundColor: { hover: "primary300" },
+    color: { hover: "primary900" },
   }),
   {
     cursor: "pointer",
@@ -69,7 +74,7 @@ export const tplCheckItemStyle = recipe({
 export const tplTextItemStyle = style([
   sprinkles({
     paddingBottom: "small",
-    borderBottomColor: "backgroundGhost",
+    borderBottomColor: "primary300",
   }),
   {
     borderBottomStyle: "solid",
@@ -79,14 +84,14 @@ export const tplTextItemStyle = style([
 
 export const tplHintIconStyle = style([
   sprinkles({
-    fill: "accent",
+    fill: "primary500",
   }),
 ]);
 
 export const tplCounterStyle = style([
   sprinkles({
-    color: "primary",
-    borderColor: "secondary",
+    color: "primary900",
+    borderColor: "primary800",
     borderRadius: "small",
     borderWidth: "thin",
     borderStyle: "solid",

@@ -1,9 +1,8 @@
 import { style } from "@vanilla-extract/css";
 import { sprinkles } from "~/common/theme.css";
 
-
 export const appStyle = style([
-  sprinkles({ backgroundColor: "background", color: "primary" }),
+  sprinkles({ backgroundColor: "primary100", color: "primary900" }),
   {
     width: "100vw",
     height: "100vh",

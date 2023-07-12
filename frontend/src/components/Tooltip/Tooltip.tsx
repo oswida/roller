@@ -9,7 +9,9 @@ type Props = {
 export const Tooltip: ParentComponent<Props> = ({ children, trigger }) => {
   return (
     <Ttip.Root>
-      <Ttip.Trigger class={tooltipTriggerStyle}>{trigger}</Ttip.Trigger>
+      <Ttip.Trigger class={tooltipTriggerStyle} style={{ color: "inherit" }}>
+        {trigger}
+      </Ttip.Trigger>
       <Ttip.Portal>
         <Ttip.Content class={tooltipRootStyle}>
           <Ttip.Arrow />

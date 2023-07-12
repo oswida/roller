@@ -10,11 +10,11 @@ export const popoverTriggerStyle = style([
     paddingX: "small",
     paddingY: "small",
     fontSize: "standard",
-    backgroundColor: { default: "none", hover: "accent" },
-    borderColor: "backgroundSecondary",
+    backgroundColor: { default: "none", hover: "primary400" },
+    borderColor: "primary300",
     borderStyle: "solid",
     borderWidth: "thin",
-    color: "primary",
+    color: "primary900",
   }),
   {
     lineHeight: 1,
@@ -28,17 +28,18 @@ export const popoverTriggerStyle = style([
 
 export const popoverHeaderStyle = style([
   sprinkles({
-    backgroundColor: "background",
+    backgroundColor: "primary100",
     alignItems: "center",
     justifyContent: "space-between",
     display: "flex",
-    color: "primary",
-    borderBottomColor: "backgroundSecondary",
+    color: "primary900",
+    paddingBottom: "small",
+    borderBottomColor: "primary300",
   }),
   {
     flex: 1,
     borderBottomWidth: 1,
-    borderBottomStyle: "solid"
+    borderBottomStyle: "solid",
   },
 ]);
 
@@ -46,15 +47,35 @@ export const popoverContentStyle = style([
   sprinkles({
     display: "flex",
     flexDirection: "column",
-    backgroundColor: "background",
+    backgroundColor: "primary100",
     borderRadius: "small",
-    borderColor: "accent",
-    color: "primary",
+    borderColor: "primary400",
+    color: "primary900",
     padding: "medium",
   }),
   {
     borderStyle: "solid",
     borderWidth: 1,
     minWidth: "250px",
+  },
+]);
+
+export const popoverCloseButtonStyle = style([
+  sprinkles({
+    backgroundColor: { default: "primary200", hover: "primary300" },
+    color: "primary900",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "small",
+    fontSize: "standard",
+  }),
+  {
+    width: 25,
+    height: 25,
+    outline: "none",
+    cursor: "pointer",
+    userSelect: "none",
+    border: "none",
   },
 ]);

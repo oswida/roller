@@ -6,7 +6,7 @@ export const rollViewStyle = recipe({
     sprinkles({
       display: "flex",
       padding: "small",
-      backgroundColor: "backgroundSecondary",
+      backgroundColor: "primary200",
     }),
   ],
   variants: {

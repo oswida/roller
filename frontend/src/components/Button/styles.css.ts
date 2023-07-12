@@ -4,10 +4,10 @@ import { sprinkles } from "~/common/theme.css";
 export const buttonStyle = recipe({
   base: [
     sprinkles({
-      backgroundColor: { default: "background", hover: "backgroundSecondary" },
+      backgroundColor: { default: "primary200", hover: "primary300" },
       paddingX: "medium",
       paddingY: "small",
-      display: "flex",
+
       gap: "medium",
       alignItems: "center",
       justifyContent: "center",
@@ -18,7 +18,6 @@ export const buttonStyle = recipe({
       cursor: "pointer",
       appearance: "none",
       display: "inline-flex",
-      width: "auto",
       userSelect: "none",
       outline: "none",
       lineHeight: 0,
@@ -26,18 +25,26 @@ export const buttonStyle = recipe({
   ],
   variants: {
     variant: {
-      flat: {
-        border: "none",
-        height: "35px",
-      },
-      ghost: [
+      flat: [
         sprinkles({
-          borderColor: "backgroundSecondary",
+          borderColor: "primary400",
           borderStyle: "solid",
           borderWidth: "thin",
         }),
         {
           height: "35px",
+          width: "auto",
+        },
+      ],
+      ghost: [
+        sprinkles({
+          borderColor: "primary400",
+          borderStyle: "solid",
+          borderWidth: "thin",
+        }),
+        {
+          height: "35px",
+          width: "auto",
           backgroundColor: "transparent",
         },
       ],
@@ -57,10 +64,9 @@ export const buttonStyle = recipe({
         border: "none",
       },
       smallicon: {
-        width: 30,
-        height: 30,
-        border: "none",
-        borderRadius: sprinkles({ borderRadius: "small" }),
+        width: 25,
+        height: 25,
+        paddingLeft: 0,
       },
     },
     disabled: {
@@ -72,13 +78,17 @@ export const buttonStyle = recipe({
       },
     },
     toggled: {
-      true: sprinkles({ backgroundColor: "accent" }),
-      false: sprinkles({ backgroundColor: "background" }),
+      true: sprinkles({
+        backgroundColor: "primary400",
+        color: "primary100",
+        fill: "primary100",
+      }),
+      false: sprinkles({ backgroundColor: "primary200" }),
     },
     colorSchema: {
-      primary: sprinkles({ color: "primary" }),
-      secondary: sprinkles({ color: "secondary" }),
-      accent: sprinkles({ color: "accent" }),
+      primary: sprinkles({ color: "primary900" }),
+      secondary: sprinkles({ color: "primary800" }),
+      accent: sprinkles({ color: "primary400" }),
     },
   },
   defaultVariants: {

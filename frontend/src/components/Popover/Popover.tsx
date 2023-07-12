@@ -3,6 +3,7 @@ import { FaSolidXmark } from "solid-icons/fa";
 import { For, JSX, ParentComponent, Show } from "solid-js";
 import { buttonStyle } from "../Button/styles.css";
 import {
+  popoverCloseButtonStyle,
   popoverContentStyle,
   popoverHeaderStyle,
   popoverTriggerStyle,
@@ -45,10 +46,8 @@ export const Popover: ParentComponent<Props> = ({
               <b>{title}</b>
             </Text>
             <Flex gap="medium">
-              <Show when={headerActions}>
-                {headerActions}
-              </Show>
-              <Pop.CloseButton class={buttonStyle({ variant: "icon" })}>
+              <Show when={headerActions}>{headerActions}</Show>
+              <Pop.CloseButton class={popoverCloseButtonStyle}>
                 <FaSolidXmark />
               </Pop.CloseButton>
             </Flex>

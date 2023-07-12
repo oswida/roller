@@ -1,6 +1,7 @@
 import { JSXElement, ParentComponent } from "solid-js";
 import { AlertDialog } from "@kobalte/core";
 import {
+  dialogCloseButtonStyle,
   dialogPositionerStyle,
   dialogRootStyle,
   dialogTitleStyle,
@@ -41,7 +42,7 @@ export const Alert: ParentComponent<Props> = ({
               <AlertDialog.Title class={dialogTitleStyle}>
                 {label}
               </AlertDialog.Title>
-              <AlertDialog.CloseButton class={buttonStyle({})}>
+              <AlertDialog.CloseButton class={dialogCloseButtonStyle}>
                 <FaSolidXmark />
               </AlertDialog.CloseButton>
             </div>

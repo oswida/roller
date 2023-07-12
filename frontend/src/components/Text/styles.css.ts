@@ -11,11 +11,11 @@ export const textStyle = recipe({
   ],
   variants: {
     colorSchema: {
-      primary: sprinkles({ color: "primary" }),
-      secondary: sprinkles({ color: "secondary" }),
-      background: sprinkles({ color: "background" }),
-      accent: sprinkles({ color: "accent" }),
-      danger: sprinkles({ color: "danger" }),
+      primary: sprinkles({ color: "primary900" }),
+      secondary: sprinkles({ color: "primary700" }),
+      background: sprinkles({ color: "primary100" }),
+      accent: sprinkles({ color: "primary400" }),
+      danger: sprinkles({ color: "danger900" }),
     },
     fontSize: {
       smaller: sprinkles({ fontSize: "smaller" }),
@@ -26,9 +26,9 @@ export const textStyle = recipe({
     },
     preserveLines: {
       true: {
-        whiteSpace: "pre-wrap"
-      }
-    }
+        whiteSpace: "pre-wrap",
+      },
+    },
   },
   defaultVariants: {
     colorSchema: "primary",

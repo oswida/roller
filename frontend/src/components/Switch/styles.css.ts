@@ -17,7 +17,7 @@ export const switchControlStyle = recipe({
   base: [
     sprinkles({
       borderRadius: "large",
-      borderColor: "secondary",
+      borderColor: "primary600",
       borderWidth: "thin",
       borderStyle: "solid",
     }),
@@ -27,8 +27,8 @@ export const switchControlStyle = recipe({
   ],
   variants: {
     checked: {
-      true: sprinkles({ backgroundColor: "secondary" }),
-      false: sprinkles({ backgroundColor: "backgroundSecondary" }),
+      true: sprinkles({ backgroundColor: "primary300" }),
+      false: sprinkles({ backgroundColor: "primary100" }),
     },
   },
 });
@@ -37,7 +37,7 @@ export const switchThumbStyle = recipe({
   base: [
     sprinkles({
       borderRadius: "circle",
-      backgroundColor: "accent",
+      backgroundColor: "primary400",
     }),
     {
       width: "1.5em",

@@ -10,11 +10,11 @@ export const selectTriggerStyle = style([
     paddingX: "small",
     paddingY: "medium",
     fontSize: "standard",
-    backgroundColor: { default: "background", hover: "backgroundSecondary" },
-    borderColor: "backgroundSecondary",
+    backgroundColor: { default: "primary100", hover: "primary300" },
+    borderColor: "primary300",
     borderStyle: "solid",
     borderWidth: "thin",
-    color: "primary",
+    color: "primary900",
   }),
   {
     lineHeight: 1,
@@ -27,11 +27,11 @@ export const selectTriggerStyle = style([
 
 export const selectListStyle = style([
   sprinkles({
-    color: "primary",
-    backgroundColor: "backgroundSecondary",
+    color: "primary900",
+    backgroundColor: "primary200",
     padding: "none",
     display: "flex",
-    borderColor: "accent",
+    borderColor: "primary400",
     borderRadius: "small",
     borderWidth: "thin",
     borderStyle: "solid",
@@ -45,7 +45,8 @@ export const selectListStyle = style([
 
 export const selectListboxStyle = style([
   sprinkles({
-    padding: "small",
+    paddingY: "small",
+    paddingX: "none",
     margin: "none",
   }),
   {
@@ -56,25 +57,25 @@ export const selectListboxStyle = style([
 
 export const selectItemStyle = style([
   sprinkles({
-    color: "primary",
-    backgroundColor: { default: "backgroundSecondary", hover: "background" },
+    color: { default: "primary900", hover: "primary100" },
+    backgroundColor: { default: "primary200", hover: "primary500" },
     padding: "small",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
     borderRadius: "small",
     gap: "medium",
+    marginX: "small",
   }),
   {
-    marginLeft: "5px",
-    marginRight: "5px",
     textAlign: "end",
+    flex: 1,
   },
 ]);
 
 export const selectLabelStyle = style([
   sprinkles({
-    color: "secondary",
+    color: "primary800",
     fontSize: "smaller",
   }),
 ]);

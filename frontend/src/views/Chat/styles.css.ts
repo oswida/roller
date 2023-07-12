@@ -4,9 +4,9 @@ import { sprinkles } from "~/common/theme.css";
 
 export const chatRootStyle = style([
   sprinkles({
-    backgroundColor: "backgroundSecondary",
+    backgroundColor: "primary200",
     padding: "small",
-    color: "primary",
+    color: "primary900",
     display: "flex",
     flexDirection: "column",
     gap: "small",
@@ -24,7 +24,7 @@ export const chatListStyle = style([
     fontSize: "smaller",
     display: "flex",
     flexDirection: "column",
-    color: "primary",
+    color: "primary900",
     gap: "small",
   }),
   {
@@ -51,8 +51,16 @@ export const chatItemRootStyle = recipe({
       },
     },
     private: {
-      false: sprinkles({ borderStyle: "solid", borderWidth: "thin", borderColor: "secondary" }),
-      true: sprinkles({ borderStyle: "solid", borderWidth: "thin", borderColor: "accent" }),
+      false: sprinkles({
+        borderStyle: "solid",
+        borderWidth: "thin",
+        borderColor: "primary600",
+      }),
+      true: sprinkles({
+        borderStyle: "solid",
+        borderWidth: "thin",
+        borderColor: "primary400",
+      }),
     },
   },
   defaultVariants: {
@@ -66,8 +74,8 @@ export const chatItemContentStyle = recipe({
     sprinkles({
       display: "flex",
       flexDirection: "column",
-      color: "primary",
-      backgroundColor: "background",
+      color: "primary900",
+      backgroundColor: "primary100",
       borderBottomLeftRadius: "small",
       borderBottomRightRadius: "small",
       gap: "medium",
@@ -100,8 +108,8 @@ export const chatItemContentStyle = recipe({
 export const chatItemHeaderStyle = recipe({
   base: [
     sprinkles({
-      backgroundColor: "background",
-      color: "primary",
+      backgroundColor: "primary100",
+      color: "primary900",
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
@@ -124,10 +132,17 @@ export const chatItemHeaderStyle = recipe({
       },
     },
     private: {
-      false: sprinkles({ borderBottomStyle: "solid", borderBottomWidth: "thin", borderBottomColor: "secondary" }),
-      true: sprinkles({ borderBottomStyle: "solid", borderBottomWidth: "thin", borderBottomColor: "accent" }),
+      false: sprinkles({
+        borderBottomStyle: "solid",
+        borderBottomWidth: "thin",
+        borderBottomColor: "primary600",
+      }),
+      true: sprinkles({
+        borderBottomStyle: "solid",
+        borderBottomWidth: "thin",
+        borderBottomColor: "primary400",
+      }),
     },
-
   },
   defaultVariants: {
     old: false,
@@ -135,25 +150,28 @@ export const chatItemHeaderStyle = recipe({
   },
 });
 
-export const chatItemCommentStyle = style([sprinkles({
-  borderTopColor: "accent",
-  borderTopStyle: "dotted",
-  borderTopWidth: "thin",
-  paddingTop: "small"
-}), {
-  fontStyle: "italic",
-  flex: 1,
-}]);
+export const chatItemCommentStyle = style([
+  sprinkles({
+    borderTopColor: "primary400",
+    borderTopStyle: "dotted",
+    borderTopWidth: "thin",
+    paddingTop: "small",
+  }),
+  {
+    fontStyle: "italic",
+    flex: 1,
+  },
+]);
 
 export const defListStyle = style([
   sprinkles({
-    backgroundColor: "background",
+    backgroundColor: "primary100",
     borderRadius: "small",
     padding: "small",
     fontSize: "smaller",
     display: "flex",
     flexDirection: "column",
-    color: "primary",
+    color: "primary900",
     gap: "medium",
   }),
   {
@@ -166,20 +184,20 @@ export const defItemStyle = recipe({
     sprinkles({
       display: "flex",
       flexDirection: "column",
-      color: "primary",
+      color: "primary900",
       borderRadius: "small",
       gap: "medium",
       padding: "medium",
       fontSize: "standard",
-      borderColor: "accent",
+      borderColor: "primary400",
       borderWidth: "thin",
       borderStyle: "solid",
     }),
   ],
   variants: {
     sel: {
-      true: sprinkles({ backgroundColor: "backgroundSecondary" }),
-      false: sprinkles({ backgroundColor: "background" }),
+      true: sprinkles({ backgroundColor: "primary800" }),
+      false: sprinkles({ backgroundColor: "primary100" }),
     },
   },
   defaultVariants: {
@@ -191,8 +209,8 @@ export const defModifierStyle = style([
   sprinkles({
     display: "flex",
     borderRadius: "small",
-    backgroundColor: "accent",
-    color: "primary",
+    backgroundColor: "primary400",
+    color: "primary900",
     justifyContent: "center",
     alignItems: "center",
     padding: "small",
@@ -212,9 +230,9 @@ export const defTabStyle = recipe({
       justifyContent: "center",
       borderRadius: "small",
       paddingX: "small",
-      borderColor: "accent",
+      borderColor: "primary400",
       borderWidth: "thin",
-      borderStyle: "solid"
+      borderStyle: "solid",
     }),
     {
       cursor: "pointer",
@@ -222,7 +240,7 @@ export const defTabStyle = recipe({
   ],
   variants: {
     sel: {
-      true: sprinkles({ backgroundColor: "background" }),
+      true: sprinkles({ backgroundColor: "primary100" }),
     },
   },
 });

@@ -3,9 +3,9 @@ import { sprinkles } from "~/common/theme.css";
 
 export const csPanelRootStyle = style([
   sprinkles({
-    backgroundColor: "background",
+    backgroundColor: "primary100",
     padding: "small",
-    borderColor: "accent",
+    borderColor: "primary400",
     borderRadius: "small",
     borderStyle: "solid",
     borderWidth: "thin",

@@ -13,10 +13,11 @@ export const accordionTriggerStyle = style([
   sprinkles({
     display: "flex",
     flexDirection: "row",
-    backgroundColor: { default: "none", hover: "accent" },
-    color: "primary",
+    backgroundColor: { default: "none", hover: "primary300" },
+    color: { default: "primary100", hover: "primary900" },
     alignItems: "center",
     justifyContent: "center",
+    borderRadius: "small",
   }),
   {
     outline: "none",
@@ -36,19 +37,27 @@ export const accordionHeaderStyle = recipe({
       alignItems: "center",
       fontSize: "bigger",
       padding: "small",
+      borderTopLeftRadius: "small",
+      borderTopRightRadius: "small",
     }),
     { flex: 1, marginTop: 0, marginBottom: 2 },
   ],
   variants: {
     colorSchema: {
-      primary: sprinkles({ color: "primary" }),
-      secondary: sprinkles({ color: "secondary" }),
-      accent: sprinkles({ color: "accent" }),
+      primary: sprinkles({
+        color: "primary900",
+        backgroundColor: "primary100",
+      }),
+      secondary: sprinkles({
+        color: "primary700",
+        backgroundColor: "primary300",
+      }),
+      accent: sprinkles({ color: "primary200", backgroundColor: "primary800" }),
     },
     backgroundSchema: {
-      background: sprinkles({ backgroundColor: "background" }),
-      ghost: sprinkles({ backgroundColor: "backgroundGhost" }),
-      secondary: sprinkles({ backgroundColor: "backgroundSecondary" }),
+      background: sprinkles({ backgroundColor: "primary100" }),
+      ghost: sprinkles({ backgroundColor: "primary200" }),
+      secondary: sprinkles({ backgroundColor: "primary300" }),
       transparent: {
         backgroundColor: "transparent",
       },

@@ -8,7 +8,6 @@ export const datablockStyle = recipe({
       flexDirection: "row",
       alignItems: "center",
       paddingY: "small",
-      color: "primary",
     }),
     {
       // width: "auto",
@@ -17,9 +16,12 @@ export const datablockStyle = recipe({
   ],
   variants: {
     background: {
-      secondary: sprinkles({ backgroundColor: "backgroundSecondary" }),
-      accent: sprinkles({ backgroundColor: "accent" }),
-      none: sprinkles({ backgroundColor: "none" }),
+      secondary: sprinkles({
+        backgroundColor: "primary300",
+        color: "primary900",
+      }),
+      accent: sprinkles({ backgroundColor: "primary600", color: "primary100" }),
+      none: sprinkles({ backgroundColor: "none", color: "primary900" }),
     },
     position: {
       left: sprinkles({
@@ -27,14 +29,14 @@ export const datablockStyle = recipe({
         borderTopLeftRadius: "medium",
         justifyContent: "flex-start",
         paddingRight: "small",
-        paddingLeft: "medium"
+        paddingLeft: "medium",
       }),
       right: sprinkles({
         borderBottomRightRadius: "medium",
         borderTopRightRadius: "medium",
         justifyContent: "flex-end",
         paddingLeft: "small",
-        paddingRight: "medium"
+        paddingRight: "medium",
       }),
     },
   },

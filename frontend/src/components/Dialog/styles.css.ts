@@ -3,10 +3,10 @@ import { sprinkles } from "~/common/theme.css";
 
 export const dialogRootStyle = style([
   sprinkles({
-    backgroundColor: "backgroundSecondary",
-    color: "primary",
+    backgroundColor: "primary200",
+    color: "primary900",
     borderRadius: "small",
-    borderColor: "accent",
+    borderColor: "primary600",
     borderStyle: "solid",
     borderWidth: "thin",
   }),
@@ -17,11 +17,11 @@ export const dialogRootStyle = style([
 
 export const dialogHeaderStyle = style([
   sprinkles({
-    backgroundColor: "background",
+    backgroundColor: "primary300",
     alignItems: "center",
     justifyContent: "space-between",
     display: "flex",
-    color: "primary",
+    color: "primary900",
     paddingY: "small",
     paddingX: "medium",
     borderTopLeftRadius: "small",
@@ -68,7 +68,7 @@ export const dialogContentStyle = style([
 export const dialogTitleStyle = style([
   sprinkles({
     fontSize: "standard",
-    color: "primary",
+    color: "primary900",
   }),
 ]);
 
@@ -81,11 +81,11 @@ export const dialogTriggerStyle = style([
     paddingX: "small",
     paddingY: "small",
     fontSize: "standard",
-    backgroundColor: { default: "none", hover: "accent" },
-    borderColor: "backgroundSecondary",
+    backgroundColor: { default: "none", hover: "primary400" },
+    borderColor: "primary300",
     borderStyle: "solid",
     borderWidth: "thin",
-    color: "primary",
+    color: "primary900",
   }),
   {
     lineHeight: 1,
@@ -105,11 +105,31 @@ export const emptyTriggerStyle = style([
     fontSize: "standard",
     backgroundColor: "none",
     borderStyle: "none",
-    color: "primary",
+    color: "primary900",
     padding: "none",
     margin: "none",
   }),
   {
     outline: "none",
+  },
+]);
+
+export const dialogCloseButtonStyle = style([
+  sprinkles({
+    backgroundColor: { default: "primary200", hover: "primary300" },
+    color: "primary900",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "small",
+    fontSize: "standard",
+  }),
+  {
+    width: 25,
+    height: 25,
+    outline: "none",
+    cursor: "pointer",
+    userSelect: "none",
+    border: "none",
   },
 ]);

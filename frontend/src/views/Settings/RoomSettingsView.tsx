@@ -22,7 +22,8 @@ import {
   setAppRolls,
   topicRoomInfo,
 } from "~/common";
-import { Alert, Button, Flex, Input, Text } from "~/components";
+import { themeVars } from "~/common/theme.css";
+import { Alert, Button, Flex, Input, Text, Tooltip } from "~/components";
 import { buttonStyle } from "~/components/Button/styles.css";
 
 type Props = {
@@ -131,8 +132,13 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
             open={delConfirmOpen}
             trigger={
               <Flex gap="medium" center>
-                <FaSolidTrash style={{ fill: "currentcolor" }} />
-                <Text colorSchema="danger">Delete room</Text>
+                <Tooltip
+                  trigger={
+                    <FaSolidTrash style={{ fill: themeVars.danger600 }} />
+                  }
+                >
+                  Delete room
+                </Tooltip>
               </Flex>
             }
           >

@@ -16,7 +16,6 @@ import {
   topicCsInfo,
   updateCsStorage,
 } from "~/common";
-import { themeColor } from "~/common/theme.css";
 import { charTemplates } from "~/template";
 import { DataBlock } from "../../DataBlock";
 import { Flex } from "../../Flex";
@@ -26,6 +25,7 @@ import { actionCompute } from "../actions";
 import { csTplAttrValueStyle, csTplIconStyle } from "../styles.css";
 import { TplHintBlock } from "../blocks/TplHintBlock";
 import { TplRollBlock } from "../blocks/TplRollBlock";
+import { themeVars } from "~/common/theme.css";
 
 type Props = {
   item: CharTemplateItem;
@@ -100,7 +100,11 @@ export const TplAttr: Component<Props> = ({ item, wide }) => {
             width={wide ? "70%" : "50%"}
             widthLeft="80%"
             widthRight="20%"
-            left={<Text title={item.hint}>{item.name}</Text>}
+            left={
+              <Text title={item.hint} style={{ color: "inherit" }}>
+                {item.name}
+              </Text>
+            }
             leftBackground="accent"
             rightFunc={() => (
               <Text
@@ -122,13 +126,13 @@ export const TplAttr: Component<Props> = ({ item, wide }) => {
       </Show>
       <Show when={itemEdit()}>
         <div class={csTplIconStyle} onClick={() => setItemEdit(false)}>
-          <FaSolidXmark style={{ fill: themeColor.danger }} />
+          <FaSolidXmark style={{ fill: themeVars.danger600 }} />
         </div>
         <DataBlock
           width="50%"
           widthLeft="80%"
           widthRight="20%"
-          left={<Text>{item.name}</Text>}
+          left={<Text style={{ color: "inherit" }}>{item.name}</Text>}
           leftBackground="accent"
           right={
             <Input
@@ -147,7 +151,7 @@ export const TplAttr: Component<Props> = ({ item, wide }) => {
           rightBackground="accent"
         />
         <div class={csTplIconStyle} onClick={applyValue}>
-          <FaSolidCheck style={{ fill: "currentcolor" }} />
+          <FaSolidCheck style={{ fill: themeVars.success600 }} />
         </div>
       </Show>
     </Flex>

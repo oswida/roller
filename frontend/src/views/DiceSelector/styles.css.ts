@@ -6,7 +6,7 @@ export const diceSelectorStyle = style([
   sprinkles({
     display: "flex",
     justifyContent: "space-between",
-    backgroundColor: "background",
+    backgroundColor: "primary100",
     paddingBottom: "medium",
     paddingX: "medium",
     paddingTop: "large",
@@ -21,11 +21,11 @@ export const diceSelectorStyle = style([
 export const diceEntryStyle = style([
   sprinkles({
     display: "flex",
-    backgroundColor: { default: "backgroundSecondary", hover: "accent" },
-    color: "primary",
+    backgroundColor: { default: "primary300", hover: "primary400" },
+    color: "primary900",
     alignItems: "center",
     borderRadius: "circle",
-    borderColor: "primary",
+    borderColor: "primary900",
     justifyContent: "center",
     fontSize: "big",
     padding: "medium",
@@ -46,12 +46,12 @@ export const diceEntryStyle = style([
 export const diceNumberStyle = style([
   sprinkles({
     display: "flex",
-    backgroundColor: "primary",
-    color: "background",
+    backgroundColor: "primary900",
+    color: "primary100",
     padding: "small",
     alignItems: "center",
     borderRadius: "circle",
-    borderColor: "accent",
+    borderColor: "primary400",
     borderStyle: "solid",
     justifyContent: "center",
     fontSize: "standard",

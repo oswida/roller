@@ -11,7 +11,7 @@ import toast from "solid-toast";
 import { RollDefInfo, enrollTask, rollDef, setChatViewTab } from "~/common";
 import { Button, Dialog, Flex, Input, Text } from "~/components";
 import { defItemStyle } from "./styles.css";
-import { themeColor } from "~/common/theme.css";
+import { themeVars } from "~/common/theme.css";
 
 type Props = {
   item: RollDefInfo;
@@ -77,7 +77,7 @@ export const DefItem: Component<Props & ComponentProps<"div">> = ({
             open={valOpen}
             onOpenChange={setValOpen}
             trigger={<Text fontSize="bigger">{notation()}</Text>}
-            triggerStyle={{ "background-color": themeColor.accent }}
+            triggerStyle={{ "background-color": themeVars.primary400 }}
             dialogTitle={() => "Target value"}
           >
             <Input
@@ -92,7 +92,7 @@ export const DefItem: Component<Props & ComponentProps<"div">> = ({
         </Show>
         <Show when={!needsParam()}>
           <Button
-            style={{ "background-color": themeColor.accent }}
+            style={{ "background-color": themeVars.primary400 }}
             onClick={() => enrollTask(roll)}
           >
             <Text fontSize="bigger">{notation()}</Text>

@@ -19,7 +19,7 @@ import {
 
 import { BiRegularTargetLock } from "solid-icons/bi";
 import { FaSolidEyeSlash } from "solid-icons/fa";
-import { themeColor } from "~/common/theme.css";
+import { themeVars } from "~/common/theme.css";
 
 export const ChatItem = ({ item }: { item: RollInfo }) => {
   const [revOpen, setRevOpen] = createSignal(false);
@@ -110,11 +110,13 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
                     left={
                       <Flex center style={{ gap: "2px" }}>
                         <BiRegularTargetLock fill="currentcolor" />
-                        <Text colorSchema="primary">{item.successTarget}</Text>
+                        <Text colorSchema="background">
+                          {item.successTarget}
+                        </Text>
                       </Flex>
                     }
                     right={
-                      <Text colorSchema="primary" title={item.successRule}>
+                      <Text colorSchema="background" title={item.successRule}>
                         {succValue()}
                       </Text>
                     }
@@ -125,7 +127,7 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
                     rightBackground="accent"
                     leftBackground="accent"
                     right={
-                      <Text colorSchema="primary" title={item.successRule}>
+                      <Text colorSchema="background" title={item.successRule}>
                         {succValue()}
                       </Text>
                     }
@@ -157,7 +159,7 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
             <Show when={myPrivate()}>
               <Alert
                 label="Reveal"
-                trigger={<FaSolidEyeSlash color={themeColor.secondary} />}
+                trigger={<FaSolidEyeSlash color={themeVars.info900} />}
                 triggerHint="Reveal private roll"
                 open={revOpen}
                 onOpenChange={setRevOpen}

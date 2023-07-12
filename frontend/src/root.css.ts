@@ -1,36 +1,51 @@
 import { recipe } from "@vanilla-extract/recipes";
-import { redTheme, basicTheme, sprinkles, evergreenTheme, monosilverTheme } from "./common/theme.css";
+import {
+  sprinkles,
+  colorThemeTeal,
+  colorThemeBlueDark,
+  colorThemeBlue,
+  colorThemeGreen,
+  colorThemeBrown,
+  colorThemeRed,
+  colorThemeRedDark,
+} from "./common/theme.css";
 
 export const rootStyle = recipe({
-    base: {
-
+  base: {},
+  variants: {
+    theme: {
+      blue: {
+        vars: colorThemeBlue,
+      },
+      blueDark: {
+        vars: colorThemeBlueDark,
+      },
+      teal: {
+        vars: colorThemeTeal,
+      },
+      green: {
+        vars: colorThemeGreen,
+      },
+      brown: {
+        vars: colorThemeBrown,
+      },
+      red: {
+        vars: colorThemeRed,
+      },
+      redDark: {
+        vars: colorThemeRedDark,
+      },
     },
-    variants: {
-        theme: {
-            red: {
-                vars: redTheme
-            },
-            basic: {
-                vars: basicTheme
-            },
-            evergreen: {
-                vars: evergreenTheme
-            },
-            monosilver: {
-                vars: monosilverTheme
-            },
-        },
-        font: {
-            Oxanium: sprinkles({ fontFamily: "Oxanium" }),
-            Lato: sprinkles({ fontFamily: "Lato" }),
-            Alegreya: sprinkles({ fontFamily: "Alegreya" }),
-            Merriweather: sprinkles({ fontFamily: "Merriweather" }),
-            Quattrocento: sprinkles({ fontFamily: "Quattrocento" }),
-            Roboto: sprinkles({ fontFamily: "Roboto" })
-        }
+    font: {
+      Oxanium: sprinkles({ fontFamily: "Oxanium" }),
+      Lato: sprinkles({ fontFamily: "Lato" }),
+      Alegreya: sprinkles({ fontFamily: "Alegreya" }),
+      Merriweather: sprinkles({ fontFamily: "Merriweather" }),
+      Quattrocento: sprinkles({ fontFamily: "Quattrocento" }),
+      Roboto: sprinkles({ fontFamily: "Roboto" }),
     },
-    defaultVariants: {
-        theme: "basic",
-        font: "Oxanium"
-    }
-})
+  },
+  defaultVariants: {
+    font: "Oxanium",
+  },
+});

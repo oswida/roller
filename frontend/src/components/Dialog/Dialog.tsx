@@ -3,6 +3,7 @@ import { FaSolidXmark } from "solid-icons/fa";
 import { ComponentProps, ParentComponent } from "solid-js";
 import { buttonStyle } from "../Button/styles.css";
 import {
+  dialogCloseButtonStyle,
   dialogContentStyle,
   dialogHeaderStyle,
   dialogOverlayStyle,
@@ -55,7 +56,7 @@ export const Dialog: ParentComponent<Props & ComponentProps<"div">> = ({
           <Dlg.Content class={dialogRootStyle} {...rest}>
             <div class={dialogHeaderStyle}>
               <Dlg.Title class={dialogTitleStyle}>{dialogTitle()}</Dlg.Title>
-              <Dlg.CloseButton class={buttonStyle({})}>
+              <Dlg.CloseButton class={dialogCloseButtonStyle}>
                 <FaSolidXmark />
               </Dlg.CloseButton>
             </div>
