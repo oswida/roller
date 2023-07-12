@@ -125,10 +125,10 @@ export const totalRollSuccessInfo = (
 ) => {
   if (!level) return "";
   switch (rule) {
-    case "ueq":
+    case "ueq": // less or equal
       if (result.total <= level) return "Success";
       return "Failure";
-    case "oeq":
+    case "oeq": // more or equal
       if (result.total >= level) return "Success";
       return "Failure";
   }

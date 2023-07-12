@@ -105,3 +105,15 @@ export const tplCounterStyle = style([
     textAlign: "center",
   },
 ]);
+
+export const tplComputedValueStyle = style([
+  sprinkles({
+    paddingY: "small",
+    paddingX: "medium",
+    borderRadius: "small",
+    backgroundColor: "info400",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  }),
+]);

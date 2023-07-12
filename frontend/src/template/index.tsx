@@ -18,6 +18,7 @@ import {
   csTplGlinaPF,
   csTplGlinaPZ,
 } from "./glina";
+import { csTplWzm6 } from "./wzm";
 
 const newTplList = [
   csTplRomancja,
@@ -34,6 +35,7 @@ const newTplList = [
   csTplGlinaPB,
   csTplGlinaPZ,
   csTplGlinaPF,
+  csTplWzm6,
 ];
 
 export const charTemplates: Record<string, CharTemplate | undefined> = {

@@ -1,5 +1,10 @@
-import { Component, For, Match, Switch } from "solid-js";
-import { CharTemplateItem } from "~/common";
+import { Component, For, Match, Switch, onMount } from "solid-js";
+import {
+  CharTemplateItem,
+  currentCs,
+  setCurrentCs,
+  updateCsStorage,
+} from "~/common";
 import { Flex } from "../Flex";
 import { TplAttr } from "./elements/TplAttr";
 import { TplAttrMax } from "./elements/TplAttrMax";
@@ -13,12 +18,27 @@ import { TplText } from "./elements/TplText";
 import { TplTextCheck } from "./elements/TplTextCheck";
 import { TplTextList } from "./elements/TplTextList";
 import { TplCounter } from "./elements/TplCounter";
+import { charTemplates } from "~/template";
+import { actionCompute } from "./actions";
 
 type Props = {
   item: CharTemplateItem;
 };
 
 export const CsItem: Component<Props> = ({ item }) => {
+  // onMount(() => {
+  //   const info = currentCs();
+  //   if (!info) return;
+  //   const tpl = charTemplates[info.template];
+  //   if (!tpl || !tpl.computeDeps || !tpl.computeDeps[item.id]) return;
+  //   const v = actionCompute(item.id, info);
+  //   console.log("cc", v);
+  //   info.values = { ...info.values, ...v };
+  //   updateCsStorage(info);
+  //   setCurrentCs(undefined);
+  //   setCurrentCs({ ...info });
+  // });
+
   return (
     <Switch>
       <Match when={item.itype === "row"}>

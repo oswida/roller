@@ -111,7 +111,11 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
             width="50%"
             widthLeft="80%"
             widthRight="20%"
-            left={<Text title={item.hint}>{item.name}</Text>}
+            left={
+              <Text title={item.hint} style={{ color: "inherit" }}>
+                {item.name}
+              </Text>
+            }
             leftBackground="accent"
             rightFunc={() => (
               <>
@@ -149,7 +153,7 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
           width="50%"
           widthLeft="80%"
           widthRight="20%"
-          left={<Text>{item.name}</Text>}
+          left={<Text style={{ color: "inherit" }}>{item.name}</Text>}
           leftBackground="accent"
           right={
             <Flex>

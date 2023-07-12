@@ -1,7 +1,21 @@
-import { Component, createMemo } from "solid-js";
-import { CharTemplateItem, currentCs } from "~/common";
+import { Component, Show, createMemo } from "solid-js";
+import {
+  CharTemplateItem,
+  centPublish,
+  currentCs,
+  isCsOwner,
+  netTopic,
+  setCurrentCs,
+  topicCsInfo,
+  updateCsStorage,
+} from "~/common";
 import { Flex } from "../../Flex";
 import { Text } from "../../Text";
+import { csTplIconStyle, tplComputedValueStyle } from "../styles.css";
+import { TplHintBlock } from "../blocks/TplHintBlock";
+import { IoReload } from "solid-icons/io";
+import { charTemplates } from "~/template";
+import { actionCompute } from "../actions";
 
 type Props = {
   item: CharTemplateItem;
@@ -37,6 +51,20 @@ export const TplCompute: Component<Props> = ({ item }) => {
     return info.values[item.id];
   });
 
+  const recompute = () => {
+    const info = currentCs();
+    if (!info || !info.values) return "";
+    const tpl = charTemplates[info.template];
+    if (!item.compute) return;
+    const v = item.compute(item, info.values);
+    console.log("recompute", v);
+    info.values[item.id] = v;
+    updateCsStorage(info);
+    setCurrentCs(undefined);
+    setCurrentCs({ ...info });
+    centPublish(netTopic(topicCsInfo), info);
+  };
+
   return (
     <Flex
       style={{
@@ -44,10 +72,18 @@ export const TplCompute: Component<Props> = ({ item }) => {
         "justify-content": "space-between",
       }}
     >
-      <Text fontSize="smaller" colorSchema="secondary">
-        {item.name}
-      </Text>
-      <Text>{value()}</Text>
+      <Flex gap="medium">
+        <Text>{item.name}</Text>
+        <TplHintBlock hint={item.hint} />
+      </Flex>
+      <Flex>
+        <Text class={tplComputedValueStyle}>{value()}</Text>
+        <Show when={isCsOwner(currentCs())}>
+          <div class={csTplIconStyle} onClick={recompute} title="Recompute">
+            <IoReload fill="currentColor" />
+          </div>
+        </Show>
+      </Flex>
     </Flex>
   );
 };
