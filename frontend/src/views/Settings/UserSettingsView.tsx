@@ -108,10 +108,13 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
       { id: "blue", label: "Blue" } as SelectItem,
       { id: "blueDark", label: "Blue Dark" } as SelectItem,
       { id: "brown", label: "Brown" } as SelectItem,
+      { id: "brownDark", label: "Brown Dark" } as SelectItem,
       { id: "green", label: "Green" } as SelectItem,
+      { id: "greenDark", label: "Green Dark" } as SelectItem,
       { id: "red", label: "Red" } as SelectItem,
       { id: "redDark", label: "Red Dark" } as SelectItem,
       { id: "teal", label: "Teal" } as SelectItem,
+      { id: "tealDark", label: "Teal Dark" } as SelectItem,
     ];
   });
 

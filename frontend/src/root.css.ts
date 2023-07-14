@@ -8,6 +8,9 @@ import {
   colorThemeBrown,
   colorThemeRed,
   colorThemeRedDark,
+  colorThemeBrownDark,
+  colorThemeGreenDark,
+  colorThemeTealDark,
 } from "./common/theme.css";
 
 export const rootStyle = recipe({
@@ -23,11 +26,20 @@ export const rootStyle = recipe({
       teal: {
         vars: colorThemeTeal,
       },
+      tealDark: {
+        vars: colorThemeTealDark,
+      },
       green: {
         vars: colorThemeGreen,
       },
+      greenDark: {
+        vars: colorThemeGreenDark,
+      },
       brown: {
         vars: colorThemeBrown,
+      },
+      brownDark: {
+        vars: colorThemeBrownDark,
       },
       red: {
         vars: colorThemeRed,
