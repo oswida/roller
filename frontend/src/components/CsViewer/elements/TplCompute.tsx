@@ -57,7 +57,6 @@ export const TplCompute: Component<Props> = ({ item }) => {
     const tpl = charTemplates[info.template];
     if (!item.compute) return;
     const v = item.compute(item, info.values);
-    console.log("recompute", v);
     info.values[item.id] = v;
     updateCsStorage(info);
     setCurrentCs(undefined);

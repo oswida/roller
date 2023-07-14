@@ -26,19 +26,6 @@ type Props = {
 };
 
 export const CsItem: Component<Props> = ({ item }) => {
-  // onMount(() => {
-  //   const info = currentCs();
-  //   if (!info) return;
-  //   const tpl = charTemplates[info.template];
-  //   if (!tpl || !tpl.computeDeps || !tpl.computeDeps[item.id]) return;
-  //   const v = actionCompute(item.id, info);
-  //   console.log("cc", v);
-  //   info.values = { ...info.values, ...v };
-  //   updateCsStorage(info);
-  //   setCurrentCs(undefined);
-  //   setCurrentCs({ ...info });
-  // });
-
   return (
     <Switch>
       <Match when={item.itype === "row"}>

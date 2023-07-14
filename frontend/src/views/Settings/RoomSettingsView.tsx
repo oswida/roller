@@ -132,12 +132,8 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
             open={delConfirmOpen}
             trigger={
               <Flex gap="medium" center>
-                <Tooltip
-                  trigger={
-                    <FaSolidTrash style={{ fill: themeVars.danger600 }} />
-                  }
-                >
-                  Delete room
+                <Tooltip text="Delete room">
+                  <FaSolidTrash style={{ fill: themeVars.danger600 }} />
                 </Tooltip>
               </Flex>
             }

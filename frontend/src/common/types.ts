@@ -128,6 +128,7 @@ export type CsInfo = {
   template: string;
   values: Record<string, any>;
   shared?: boolean;
+  portraitUrl?: string;
 };
 
 export const emptyCsInfo = (id: string) => {

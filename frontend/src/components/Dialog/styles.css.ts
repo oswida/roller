@@ -74,7 +74,7 @@ export const dialogTitleStyle = style([
 
 export const dialogTriggerStyle = style([
   sprinkles({
-    display: "inline-flex",
+    display: "flex",
     alignItems: "center",
     justifyContent: "center",
     borderRadius: "small",
@@ -89,10 +89,9 @@ export const dialogTriggerStyle = style([
   }),
   {
     lineHeight: 1,
-    height: "35px",
-    width: "35px",
+    // height: "35px",
+    // width: "35px",
     outline: "none",
-    // transition: "border-color 250ms, color 250ms",
     cursor: "pointer",
   },
 ]);

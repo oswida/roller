@@ -1,21 +1,31 @@
 import { Tooltip as Ttip } from "@kobalte/core";
+import { ParentComponent, Show } from "solid-js";
+import { parseMarkdown } from "~/common";
 import { tooltipRootStyle, tooltipTriggerStyle } from "./styles.css";
-import { ParentComponent, JSXElement } from "solid-js";
 
 type Props = {
-  trigger?: JSXElement;
+  text: string;
+  markdown?: boolean;
 };
 
-export const Tooltip: ParentComponent<Props> = ({ children, trigger }) => {
+// trigger as children
+export const Tooltip: ParentComponent<Props> = ({
+  children,
+  text,
+  markdown,
+}) => {
   return (
     <Ttip.Root>
       <Ttip.Trigger class={tooltipTriggerStyle} style={{ color: "inherit" }}>
-        {trigger}
+        {children}
       </Ttip.Trigger>
       <Ttip.Portal>
         <Ttip.Content class={tooltipRootStyle}>
           <Ttip.Arrow />
-          {children}
+          <Show when={!markdown}>{text}</Show>
+          <Show when={markdown}>
+            <div innerHTML={parseMarkdown(text)}></div>
+          </Show>
         </Ttip.Content>
       </Ttip.Portal>
     </Ttip.Root>

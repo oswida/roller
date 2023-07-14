@@ -112,7 +112,6 @@ export const serverAddress = () => {
   const schema = import.meta.env.DEV ? "ws" : "wss";
   const host = import.meta.env.DEV ? "localhost:5000" : window.location.host;
   const addr = `${schema}://${host}/connection/websocket`;
-  console.log("server address", addr);
   return addr;
 };
 
@@ -318,7 +317,6 @@ export const centLoadCs = (roomId: string, ids?: string[]) => {
   if (!client) {
     return;
   }
-  console.log("Loading CS", roomId, ids);
   const msg = {
     sender: appSettings().userIdent,
     room: roomId,
@@ -329,7 +327,6 @@ export const centLoadCs = (roomId: string, ids?: string[]) => {
     .then((result) => {
       const data = result.data as CsInfo[];
       if (data) {
-        console.log("cs data", data);
         const newState = { ...appCs() };
         data.forEach((r) => (newState[r.id] = r));
 
@@ -345,7 +342,6 @@ export const centLoadCs = (roomId: string, ids?: string[]) => {
             delete newState[id]; // charsheet has been deleted
           }
         });
-        console.log("saving cs after upload", newState);
         saveToStorage(rollerCsKey, newState);
         if (ids?.length == 1 && ids[0] == currentCs()?.id) {
           setCurrentCs(undefined);

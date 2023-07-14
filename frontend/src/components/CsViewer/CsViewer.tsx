@@ -1,17 +1,47 @@
-import { Component, Show, createMemo } from "solid-js";
+import { FaSolidImagePortrait } from "solid-icons/fa";
+import {
+  Component,
+  Match,
+  Show,
+  Switch,
+  createEffect,
+  createMemo,
+  createSignal,
+} from "solid-js";
 import {
   RefProps,
+  centPublish,
   csExpanded,
   currentCs,
+  netTopic,
   setCsExpanded,
+  topicCsInfo,
   updateCsOpenSections,
+  updateCsStorage,
 } from "~/common";
-import { Accordion, AccordionOption } from "~/components";
 import { charTemplates } from "~/template";
+import { Accordion, AccordionOption } from "../Accordion";
+import { Button } from "../Button";
+import { Dialog } from "../Dialog";
+import { Flex } from "../Flex";
+import { Input } from "../Input";
+import { Text } from "../Text";
+import { Tooltip } from "../Tooltip";
 import { CsSection } from "./CsSection";
 import { csViewerRootStyle } from "./styles.css";
 
+const PORTRAIT_HEIGHT = 96;
+
 export const CsViewer: Component<RefProps> = ({ ref }) => {
+  const [charPortrait, setCharPortrait] = createSignal("");
+  const [portraitOpen, setPortraitOpen] = createSignal(false);
+
+  createEffect(() => {
+    const cs = currentCs();
+    if (!cs) return;
+    if (cs.portraitUrl) setCharPortrait(cs.portraitUrl);
+  });
+
   const tpl = createMemo(() => {
     const cs = currentCs();
     if (!cs) return undefined;
@@ -40,9 +70,70 @@ export const CsViewer: Component<RefProps> = ({ ref }) => {
     updateCsOpenSections(info, value);
   };
 
+  const hasPortrait = createMemo(() => {
+    const cs = currentCs();
+    if (!cs) return false;
+    return (
+      cs.portraitUrl !== undefined &&
+      cs.portraitUrl !== null &&
+      cs.portraitUrl.trim() !== ""
+    );
+  });
+
+  const changePortrait = () => {
+    setPortraitOpen(false);
+    const cs = currentCs();
+    if (!cs) return;
+    cs.portraitUrl = charPortrait();
+    updateCsStorage(cs);
+    centPublish(netTopic(topicCsInfo), cs);
+  };
+
   return (
     <div class={csViewerRootStyle} ref={(e) => ref(e)}>
       <Show when={currentCs() && tpl()}>
+        <Flex gap="large" style={{ "min-height": "fit-content" }}>
+          <Tooltip text="Click to change character portrait">
+            <Dialog
+              open={portraitOpen}
+              onOpenChange={setPortraitOpen}
+              trigger={
+                <Switch>
+                  <Match when={hasPortrait()}>
+                    <img
+                      src={currentCs()?.portraitUrl}
+                      style={{
+                        height: `${PORTRAIT_HEIGHT}px`,
+                        "max-height": `${PORTRAIT_HEIGHT}px`,
+                      }}
+                    />
+                  </Match>
+                  <Match when={!hasPortrait()}>
+                    <Flex center>
+                      <Tooltip text="Click to change character portrait">
+                        <FaSolidImagePortrait fill="currentColor" />
+                      </Tooltip>
+                    </Flex>
+                  </Match>
+                </Switch>
+              }
+              dialogTitle={() => "Change portrait URL"}
+            >
+              <Input
+                value={currentCs()?.portraitUrl}
+                onChange={(e) => setCharPortrait(e.target.value)}
+              />
+              <Flex gap="large" center>
+                <Button onClick={() => setPortraitOpen(false)}>Cancel</Button>
+                <Button onClick={changePortrait}>Save</Button>
+              </Flex>
+            </Dialog>
+          </Tooltip>
+
+          <Text colorSchema="secondary" fontSize="bigger">
+            {currentCs()?.name}
+          </Text>
+        </Flex>
         <Accordion
           collapsible
           multiple
