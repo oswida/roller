@@ -22,7 +22,11 @@ import { Flex } from "../../Flex";
 import { Input } from "../../Input";
 import { Text } from "../../Text";
 import { actionCompute } from "../actions";
-import { csTplAttrValueStyle, csTplIconStyle } from "../styles.css";
+import {
+  csTplAttrNameStyle,
+  csTplAttrValueStyle,
+  csTplIconStyle,
+} from "../styles.css";
 import { TplHintBlock } from "../blocks/TplHintBlock";
 import { TplRollBlock } from "../blocks/TplRollBlock";
 import { themeVars } from "~/common/theme.css";
@@ -101,7 +105,7 @@ export const TplAttr: Component<Props> = ({ item, wide }) => {
             widthLeft="80%"
             widthRight="20%"
             left={
-              <Text title={item.hint} style={{ color: "inherit" }}>
+              <Text title={item.hint} class={csTplAttrNameStyle}>
                 {item.name}
               </Text>
             }

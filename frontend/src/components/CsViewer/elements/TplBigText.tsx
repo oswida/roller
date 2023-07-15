@@ -27,7 +27,8 @@ import { InputArea } from "../../Input";
 import { Text } from "../../Text";
 import { csTplIconStyle, tplTextItemStyle } from "../styles.css";
 import { Popover } from "~/components/Popover";
-import { Button, Dialog } from "~/components";
+import { Dialog, DialogContent, DialogTrigger } from "../../Dialog";
+import { Button } from "../../Button";
 import { TplHintBlock } from "../blocks/TplHintBlock";
 
 type Props = {
@@ -122,27 +123,25 @@ export const TplBigText: Component<Props> = ({ item }) => {
                 />
               </Popover>
             </Show>
-            <Dialog
-              style={{ "max-width": "80%" }}
-              open={viewOpen}
-              onOpenChange={setViewOpen}
-              dialogTitle={() => (item.name ? item.name : "")}
-              modal={true}
-              triggerStyle={{ "background-color": "transparent" }}
-              trigger={
+            <Dialog open={viewOpen()} onOpenChange={setViewOpen} modal>
+              <DialogTrigger>
                 <div class={csTplIconStyle} title="View whole text">
                   <FaSolidEye fill="currentColor" />
                 </div>
-              }
-            >
-              <div
-                innerHTML={parseMarkdown(value())}
-                style={{
-                  width: "100%",
-                  "text-align": "left",
-                  "vertical-align": "top",
-                }}
-              />
+              </DialogTrigger>
+              <DialogContent
+                title={item.name ? item.name : ""}
+                style={{ "max-width": "80%" }}
+              >
+                <div
+                  innerHTML={parseMarkdown(value())}
+                  style={{
+                    width: "100%",
+                    "text-align": "left",
+                    "vertical-align": "top",
+                  }}
+                />
+              </DialogContent>
             </Dialog>
           </Flex>
         </Flex>

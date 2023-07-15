@@ -40,8 +40,8 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
 
   const modValue = createMemo(() => {
     if (!item.result.modifier || item.result.modifier == 0) return ``;
-    if (item.result.modifier > 0) return ` (+${item.result.modifier})`;
-    return ` (${item.result.modifier})`;
+    if (item.result.modifier > 0) return `+${item.result.modifier}`;
+    return `${item.result.modifier}`;
   });
 
   const succValue = createMemo(() => {

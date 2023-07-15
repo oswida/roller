@@ -21,7 +21,15 @@ import {
   setRollComment,
   setRolling,
 } from "~/common";
-import { Button, Dialog, Flex, Input, Text } from "~/components";
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+  Flex,
+  Input,
+  Text,
+} from "~/components";
 import { DicePanel } from "./DicePanel";
 import { diceSelectorStyle } from "./styles.css";
 import toast from "solid-toast";
@@ -64,11 +72,8 @@ const ModifierDialog = ({ priv }: { priv: boolean }) => {
   };
 
   return (
-    <Dialog
-      open={mdOpen}
-      onOpenChange={setMdOpen}
-      dialogTitle={() => "Roll modifier"}
-      trigger={
+    <Dialog open={mdOpen()} onOpenChange={setMdOpen} modal>
+      <DialogTrigger>
         <Button variant="ghost" colorSchema={priv ? "secondary" : undefined}>
           <Show when={priv}>
             <FaSolidEyeSlash fill="currentColor" />
@@ -78,15 +83,13 @@ const ModifierDialog = ({ priv }: { priv: boolean }) => {
           </Show>
           <Text colorSchema={priv ? "secondary" : undefined}>Roll</Text>
         </Button>
-      }
-      triggerHint="Roll with modifier"
-      hideTriggerStyle
-      modal
-    >
-      <Input id="dice-modifier" label="Value" />
-      <Flex gap="large" center>
-        <Button onClick={() => enrollTask(action)}>Roll</Button>
-      </Flex>
+      </DialogTrigger>
+      <DialogContent title="Roll modifier">
+        <Input id="dice-modifier" label="Value" />
+        <Flex gap="large" center>
+          <Button onClick={() => enrollTask(action)}>Roll</Button>
+        </Flex>
+      </DialogContent>
     </Dialog>
   );
 };

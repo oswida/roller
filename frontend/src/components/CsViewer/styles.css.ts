@@ -14,7 +14,6 @@ export const csViewerRootStyle = style([
 
 export const csTplIconStyle = style([
   sprinkles({
-    padding: "small",
     borderRadius: "small",
     display: "flex",
     alignItems: "center",
@@ -37,11 +36,17 @@ export const csTplAttrValueStyle = style([
     padding: "small",
     borderRadius: "small",
     backgroundColor: { hover: "primary300" },
-    color: { hover: "primary900" },
+    color: { hover: "primary900", default: "primary100" },
   }),
   {
     cursor: "pointer",
   },
+]);
+
+export const csTplAttrNameStyle = style([
+  sprinkles({
+    color: { default: "primary100" },
+  }),
 ]);
 
 export const tplCheckItemStyle = recipe({

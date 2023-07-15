@@ -10,7 +10,7 @@ import {
 import { Flex } from "../../Flex";
 import { csTplIconStyle } from "../styles.css";
 import { actionRoll } from "../actions";
-import { Dialog } from "../../Dialog";
+import { Dialog, DialogContent, DialogTrigger } from "../../Dialog";
 import { Input } from "../../Input";
 import { Button } from "../../Button";
 
@@ -47,11 +47,8 @@ const ModifierDialog = ({
 
   return (
     <Show when={roll.labels && roll.labels.length > 0}>
-      <Dialog
-        open={mdOpen}
-        onOpenChange={setMdOpen}
-        dialogTitle={() => (item.name ? item.name : "")}
-        trigger={
+      <Dialog open={mdOpen()} onOpenChange={setMdOpen}>
+        <DialogTrigger>
           <div title={roll.comment} class={csTplIconStyle}>
             <ImDice
               style={{
@@ -59,15 +56,15 @@ const ModifierDialog = ({
               }}
             />
           </div>
-        }
-        triggerHint={roll.comment}
-      >
-        <For each={roll.labels}>
-          {(it) => <Input id={`${item.name}-${it}`} label={it} />}
-        </For>
-        <Flex gap="large" center>
-          <Button onClick={action}>Roll</Button>
-        </Flex>
+        </DialogTrigger>
+        <DialogContent title={item.name ? item.name : ""}>
+          <For each={roll.labels}>
+            {(it) => <Input id={`${item.name}-${it}`} label={it} />}
+          </For>
+          <Flex gap="large" center>
+            <Button onClick={action}>Roll</Button>
+          </Flex>
+        </DialogContent>
       </Dialog>
     </Show>
   );

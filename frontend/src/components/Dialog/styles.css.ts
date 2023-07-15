@@ -1,4 +1,5 @@
 import { style } from "@vanilla-extract/css";
+import { recipe } from "@vanilla-extract/recipes";
 import { sprinkles } from "~/common/theme.css";
 
 export const dialogRootStyle = style([
@@ -72,29 +73,27 @@ export const dialogTitleStyle = style([
   }),
 ]);
 
-export const dialogTriggerStyle = style([
-  sprinkles({
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: "small",
-    paddingX: "small",
-    paddingY: "small",
-    fontSize: "standard",
-    backgroundColor: { default: "none", hover: "primary400" },
-    borderColor: "primary300",
-    borderStyle: "solid",
-    borderWidth: "thin",
-    color: "primary900",
-  }),
-  {
-    lineHeight: 1,
-    // height: "35px",
-    // width: "35px",
-    outline: "none",
-    cursor: "pointer",
-  },
-]);
+export const dialogTriggerStyle = recipe({
+  base: [
+    sprinkles({
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: "small",
+      fontSize: "standard",
+      backgroundColor: { default: "none", hover: "primary400" },
+      color: "primary900",
+    }),
+    {
+      lineHeight: 1,
+      outline: "none",
+      cursor: "pointer",
+      border: "none",
+      padding: "0px",
+      margin: "0px",
+    },
+  ],
+});
 
 export const emptyTriggerStyle = style([
   sprinkles({

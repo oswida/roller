@@ -10,7 +10,6 @@ import {
 import { dialogHeaderStyle } from "../Dialog/styles.css";
 import { dialogOverlayStyle } from "../Dialog/styles.css";
 import { dialogContentStyle } from "../Dialog/styles.css";
-import { buttonStyle } from "../Button/styles.css";
 import { FaSolidXmark } from "solid-icons/fa";
 
 type Props = {
@@ -21,37 +20,39 @@ type Props = {
   triggerHint?: string;
 };
 
-export const Alert: ParentComponent<Props> = ({
-  open,
-  onOpenChange,
-  children,
-  label,
-  trigger,
-  triggerHint,
-}) => {
+export const AlertTrigger: ParentComponent<
+  AlertDialog.AlertDialogTriggerProps
+> = ({ children, ...rest }) => {
   return (
-    <AlertDialog.Root onOpenChange={onOpenChange} open={open()}>
-      <AlertDialog.Trigger class={dialogTriggerStyle} title={triggerHint}>
-        {trigger}
-      </AlertDialog.Trigger>
-      <AlertDialog.Portal>
-        <AlertDialog.Overlay class={dialogOverlayStyle} />
-        <div class={dialogPositionerStyle}>
-          <AlertDialog.Content class={dialogRootStyle}>
-            <div class={dialogHeaderStyle}>
-              <AlertDialog.Title class={dialogTitleStyle}>
-                {label}
-              </AlertDialog.Title>
-              <AlertDialog.CloseButton class={dialogCloseButtonStyle}>
-                <FaSolidXmark />
-              </AlertDialog.CloseButton>
-            </div>
-            <AlertDialog.Description class={dialogContentStyle}>
-              {children}
-            </AlertDialog.Description>
-          </AlertDialog.Content>
-        </div>
-      </AlertDialog.Portal>
-    </AlertDialog.Root>
+    <AlertDialog.Trigger class={dialogTriggerStyle({})} {...rest}>
+      {children}
+    </AlertDialog.Trigger>
   );
 };
+
+export const AlertContent: ParentComponent<
+  AlertDialog.AlertDialogContentProps
+> = ({ title, children, ...rest }) => {
+  return (
+    <AlertDialog.Portal>
+      <AlertDialog.Overlay class={dialogOverlayStyle} />
+      <div class={dialogPositionerStyle}>
+        <AlertDialog.Content class={dialogRootStyle} {...rest}>
+          <div class={dialogHeaderStyle}>
+            <AlertDialog.Title class={dialogTitleStyle}>
+              {title}
+            </AlertDialog.Title>
+            <AlertDialog.CloseButton class={dialogCloseButtonStyle}>
+              <FaSolidXmark />
+            </AlertDialog.CloseButton>
+          </div>
+          <AlertDialog.Description class={dialogContentStyle}>
+            {children}
+          </AlertDialog.Description>
+        </AlertDialog.Content>
+      </div>
+    </AlertDialog.Portal>
+  );
+};
+
+export const Alert = AlertDialog.Root;

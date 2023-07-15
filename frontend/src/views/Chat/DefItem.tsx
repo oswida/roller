@@ -9,7 +9,15 @@ import {
 } from "solid-js";
 import toast from "solid-toast";
 import { RollDefInfo, enrollTask, rollDef, setChatViewTab } from "~/common";
-import { Button, Dialog, Flex, Input, Text } from "~/components";
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+  Flex,
+  Input,
+  Text,
+} from "~/components";
 import { defItemStyle } from "./styles.css";
 import { themeVars } from "~/common/theme.css";
 
@@ -73,21 +81,20 @@ export const DefItem: Component<Props & ComponentProps<"div">> = ({
       <Flex style={{ "justify-content": "space-between" }}>
         <Text fontSize="bigger">{item.name}</Text>
         <Show when={needsParam()}>
-          <Dialog
-            open={valOpen}
-            onOpenChange={setValOpen}
-            trigger={<Text fontSize="bigger">{notation()}</Text>}
-            triggerStyle={{ "background-color": themeVars.primary400 }}
-            dialogTitle={() => "Target value"}
-          >
-            <Input
-              id="valInput"
-              ref={(e) => (valRef = e)}
-              style={{ width: "5em" }}
-              value={item.successTarget}
-              onChange={(e) => (item.successTarget = e.target.value)}
-            />
-            <Button onClick={() => enrollTask(rollWithValue)}>Roll</Button>
+          <Dialog open={valOpen()} onOpenChange={setValOpen}>
+            <DialogTrigger>
+              <Text fontSize="bigger">{notation()}</Text>
+            </DialogTrigger>
+            <DialogContent title="Target value">
+              <Input
+                id="valInput"
+                ref={(e) => (valRef = e)}
+                style={{ width: "5em" }}
+                value={item.successTarget}
+                onChange={(e) => (item.successTarget = e.target.value)}
+              />
+              <Button onClick={() => enrollTask(rollWithValue)}>Roll</Button>
+            </DialogContent>
           </Dialog>
         </Show>
         <Show when={!needsParam()}>

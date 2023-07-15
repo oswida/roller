@@ -42,9 +42,13 @@ import {
 } from "~/common";
 import {
   Alert,
+  AlertContent,
+  AlertTrigger,
   Button,
   CsViewer,
   Dialog,
+  DialogContent,
+  DialogTrigger,
   Flex,
   Input,
   Select,
@@ -225,35 +229,36 @@ export const CsPanel: Component = () => {
         <CsViewer ref={(e: any) => (listRef = e)} />
         <Flex gap="none" style={{ "justify-content": "space-between" }}>
           <Flex>
-            <Dialog
-              trigger={<FaSolidPlus />}
-              triggerHint="Create charsheet"
-              open={crDialogOpen}
-              onOpenChange={setCrDialogOpen}
-              dialogTitle={() => "Create charsheet"}
-            >
-              <Input
-                label="Name"
-                onChange={(e) => setSelCsName(e.target.value)}
-              />
-              <Select
-                modal={true}
-                label="Game"
-                options={() => charTemplateGameItems}
-                onChange={(e: SelectItem) => setSelCsGame(e.id)}
-              />
-              <Select
-                modal={true}
-                label="Type"
-                options={templates}
-                onChange={(e: SelectItem) => {
-                  if (e) setSelCsType(e.id);
-                }}
-              />
-              <Flex gap="large" style={{ "margin-top": "10px" }}>
-                <Button onClick={() => setCrDialogOpen(false)}>Cancel</Button>
-                <Button onClick={createCharsheet}>Create</Button>
-              </Flex>
+            <Dialog open={crDialogOpen()} onOpenChange={setCrDialogOpen}>
+              <DialogTrigger>
+                <Button>
+                  <FaSolidPlus />
+                </Button>
+              </DialogTrigger>
+              <DialogContent title="Create charsheet">
+                <Input
+                  label="Name"
+                  onChange={(e) => setSelCsName(e.target.value)}
+                />
+                <Select
+                  modal={true}
+                  label="Game"
+                  options={() => charTemplateGameItems}
+                  onChange={(e: SelectItem) => setSelCsGame(e.id)}
+                />
+                <Select
+                  modal={true}
+                  label="Type"
+                  options={templates}
+                  onChange={(e: SelectItem) => {
+                    if (e) setSelCsType(e.id);
+                  }}
+                />
+                <Flex gap="large" style={{ "margin-top": "10px" }}>
+                  <Button onClick={() => setCrDialogOpen(false)}>Cancel</Button>
+                  <Button onClick={createCharsheet}>Create</Button>
+                </Flex>
+              </DialogContent>
             </Dialog>
             <Button title="Import charsheet" onClick={importCs} variant="ghost">
               <FaSolidFileImport />
@@ -263,70 +268,79 @@ export const CsPanel: Component = () => {
           <Show when={currentCs()}>
             <Flex>
               <Show when={isCsOwner(currentCs())}>
-                <Alert
-                  label="Delete charsheet"
-                  open={delDialogOpen}
-                  onOpenChange={setDelDialogOpen}
-                  trigger={<FaSolidTrash />}
-                  triggerHint="Delete selected charsheet"
-                >
-                  <Text>
-                    Delete {currentCs()?.name} {"?"}
-                  </Text>
-                  <Flex gap="large" style={{ "margin-top": "10px" }}>
-                    <Button onClick={() => setDelDialogOpen(false)}>
-                      Cancel
+                <Alert open={delDialogOpen()} onOpenChange={setDelDialogOpen}>
+                  <AlertTrigger>
+                    <Button>
+                      <FaSolidTrash />
                     </Button>
-                    <Button onClick={deleteCharsheet}>Delete</Button>
-                  </Flex>
+                  </AlertTrigger>
+                  <AlertContent title="Delete charsheet">
+                    <Text>
+                      Delete {currentCs()?.name} {"?"}
+                    </Text>
+                    <Flex gap="large" style={{ "margin-top": "10px" }}>
+                      <Button onClick={() => setDelDialogOpen(false)}>
+                        Cancel
+                      </Button>
+                      <Button onClick={deleteCharsheet}>Delete</Button>
+                    </Flex>
+                  </AlertContent>
                 </Alert>
 
                 <Alert
-                  label="Share charsheet"
-                  open={shareDialogOpen}
+                  open={shareDialogOpen()}
                   onOpenChange={setShareDialogOpen}
-                  trigger={<FaSolidShareNodes />}
-                  triggerHint="Share selected charsheet"
                 >
-                  <Switch>
-                    <Match when={currentCs()?.shared}>
-                      <Text>
-                        Stop sharing {currentCs()?.name} {"?"}
-                      </Text>
-                    </Match>
-                    <Match when={!currentCs()?.shared}>
-                      <Text>
-                        Share {currentCs()?.name} {"?"}
-                      </Text>
-                    </Match>
-                  </Switch>
-
-                  <Flex gap="large" style={{ "margin-top": "10px" }}>
-                    <Button onClick={() => setShareDialogOpen(false)}>
-                      Cancel
+                  <AlertTrigger>
+                    <Button>
+                      <FaSolidShareNodes />
                     </Button>
-                    <Button onClick={shareCharsheet}>Accept</Button>
-                  </Flex>
+                  </AlertTrigger>
+                  <AlertContent title="Share charsheet">
+                    <Switch>
+                      <Match when={currentCs()?.shared}>
+                        <Text>
+                          Stop sharing {currentCs()?.name} {"?"}
+                        </Text>
+                      </Match>
+                      <Match when={!currentCs()?.shared}>
+                        <Text>
+                          Share {currentCs()?.name} {"?"}
+                        </Text>
+                      </Match>
+                    </Switch>
+
+                    <Flex gap="large" style={{ "margin-top": "10px" }}>
+                      <Button onClick={() => setShareDialogOpen(false)}>
+                        Cancel
+                      </Button>
+                      <Button onClick={shareCharsheet}>Accept</Button>
+                    </Flex>
+                  </AlertContent>
                 </Alert>
 
                 <Dialog
-                  dialogTitle={() => "Rename charsheet"}
-                  trigger={<FaSolidUserPen />}
-                  triggerHint="Rename charsheet"
-                  open={renameDialogOpen}
+                  open={renameDialogOpen()}
                   onOpenChange={setRenameDialogOpen}
                 >
-                  <Input
-                    label="Name"
-                    value={currentCs()?.name}
-                    onChange={(e) => setEditCsName(e.target.value)}
-                  />
-                  <Flex gap="large" style={{ "margin-top": "10px" }}>
-                    <Button onClick={() => setRenameDialogOpen(false)}>
-                      Cancel
+                  <DialogTrigger>
+                    <Button>
+                      <FaSolidUserPen />
                     </Button>
-                    <Button onClick={renameCs}>Rename</Button>
-                  </Flex>
+                  </DialogTrigger>
+                  <DialogContent title="Rename charsheet">
+                    <Input
+                      label="Name"
+                      value={currentCs()?.name}
+                      onChange={(e) => setEditCsName(e.target.value)}
+                    />
+                    <Flex gap="large" style={{ "margin-top": "10px" }}>
+                      <Button onClick={() => setRenameDialogOpen(false)}>
+                        Cancel
+                      </Button>
+                      <Button onClick={renameCs}>Rename</Button>
+                    </Flex>
+                  </DialogContent>
                 </Dialog>
               </Show>
 
