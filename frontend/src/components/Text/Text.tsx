@@ -1,5 +1,6 @@
 import { ComponentProps, ParentComponent } from "solid-js";
 import { textStyle } from "./styles.css";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../Tooltip";
 
 type Props = {
   colorSchema?: "primary" | "secondary" | "background" | "accent" | "danger";
@@ -12,15 +13,24 @@ export const Text: ParentComponent<Props & ComponentProps<"div">> = ({
   colorSchema,
   fontSize,
   preserveLines,
+  title,
   ...rest
 }) => {
   return (
-    <div class={textStyle({
-      colorSchema: colorSchema,
-      fontSize: fontSize,
-      preserveLines: preserveLines
-    })} {...rest}>
-      {children}
-    </div>
+    <Tooltip>
+      <TooltipTrigger>
+        <div
+          class={textStyle({
+            colorSchema: colorSchema,
+            fontSize: fontSize,
+            preserveLines: preserveLines,
+          })}
+          {...rest}
+        >
+          {children}
+        </div>
+      </TooltipTrigger>
+      <TooltipContent>{title}</TooltipContent>
+    </Tooltip>
   );
 };

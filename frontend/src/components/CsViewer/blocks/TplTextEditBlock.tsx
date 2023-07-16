@@ -7,6 +7,7 @@ import { TplHintBlock } from "./TplHintBlock";
 import { Flex } from "../../Flex";
 import { Text } from "../../Text";
 import { debounce } from "@solid-primitives/scheduled";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../../Tooltip";
 
 type Props = {
   item: CharTemplateItem;
@@ -64,16 +65,22 @@ export const TplTextEditBlock: Component<Props> = ({
           </Flex>
         </Show>
         <Flex>
-          <div
-            onClick={() => onEditToggle(false)}
-            title="Cancel"
-            class={csTplIconStyle}
-          >
-            <FaSolidXmark style={{ fill: "currentcolor" }} />
-          </div>
-          <div onClick={applyValue} title="Save" class={csTplIconStyle}>
-            <FaSolidFloppyDisk style={{ fill: "currentcolor" }} />
-          </div>
+          <Tooltip>
+            <TooltipTrigger>
+              <div onClick={() => onEditToggle(false)} class={csTplIconStyle}>
+                <FaSolidXmark style={{ fill: "currentcolor" }} />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>Cancel</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger>
+              <div onClick={applyValue} class={csTplIconStyle}>
+                <FaSolidFloppyDisk style={{ fill: "currentcolor" }} />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>Save</TooltipContent>
+          </Tooltip>
         </Flex>
       </Flex>
       <Show when={item.limit && item.limit == 1}>

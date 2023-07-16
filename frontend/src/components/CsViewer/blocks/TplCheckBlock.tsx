@@ -1,5 +1,6 @@
 import { Component, Show } from "solid-js";
 import { tplCheckItemStyle } from "../styles.css";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../../Tooltip";
 
 type Props = {
   checked: () => boolean;
@@ -19,30 +20,38 @@ export const TplCheckBlock: Component<Props> = ({
   return (
     <>
       <Show when={checked()}>
-        <div
-          class={tplCheckItemStyle({ shape: circle ? "circle" : "square" })}
-          style={{
-            "background-color": color ? color : "currentcolor",
-            border: `solid 2px ${color ? color : "currentcolor"}`,
-          }}
-          title={hint}
-          onClick={onClick}
-        >
-          {" "}
-        </div>
+        <Tooltip>
+          <TooltipTrigger>
+            <div
+              class={tplCheckItemStyle({ shape: circle ? "circle" : "square" })}
+              style={{
+                "background-color": color ? color : "currentcolor",
+                border: `solid 2px ${color ? color : "currentcolor"}`,
+              }}
+              onClick={onClick}
+            >
+              {" "}
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>{hint}</TooltipContent>
+        </Tooltip>
       </Show>
       <Show when={!checked()}>
-        <div
-          class={tplCheckItemStyle({ shape: circle ? "circle" : "square" })}
-          style={{
-            border: `solid 2px ${color ? color : "currentcolor"}`,
-            "background-color": "transparent",
-          }}
-          title={hint}
-          onClick={onClick}
-        >
-          {" "}
-        </div>
+        <Tooltip>
+          <TooltipTrigger>
+            <div
+              class={tplCheckItemStyle({ shape: circle ? "circle" : "square" })}
+              style={{
+                border: `solid 2px ${color ? color : "currentcolor"}`,
+                "background-color": "transparent",
+              }}
+              onClick={onClick}
+            >
+              {" "}
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>{hint}</TooltipContent>
+        </Tooltip>
       </Show>
     </>
   );

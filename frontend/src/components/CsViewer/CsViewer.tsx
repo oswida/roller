@@ -26,7 +26,7 @@ import { Dialog, DialogContent, DialogTrigger } from "../Dialog";
 import { Flex } from "../Flex";
 import { Input } from "../Input";
 import { Text } from "../Text";
-import { Tooltip } from "../Tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../Tooltip";
 import { CsSection } from "./CsSection";
 import { csViewerRootStyle } from "./styles.css";
 
@@ -93,45 +93,55 @@ export const CsViewer: Component<RefProps> = ({ ref }) => {
     <div class={csViewerRootStyle} ref={(e) => ref(e)}>
       <Show when={currentCs() && tpl()}>
         <Flex gap="large" style={{ "min-height": "fit-content" }}>
-          <Tooltip text="Click to change character portrait">
-            <Dialog open={portraitOpen()} onOpenChange={setPortraitOpen}>
-              <DialogTrigger>
-                <Switch>
-                  <Match when={hasPortrait()}>
-                    <img
-                      src={currentCs()?.portraitUrl}
-                      style={{
-                        height: `${PORTRAIT_HEIGHT}px`,
-                        "max-height": `${PORTRAIT_HEIGHT}px`,
-                      }}
-                    />
-                  </Match>
-                  <Match when={!hasPortrait()}>
-                    <Flex center>
-                      <Tooltip text="Click to change character portrait">
-                        <FaSolidImagePortrait
-                          fill="currentColor"
-                          style={{
-                            height: `${PORTRAIT_HEIGHT}px`,
-                            "max-height": `${PORTRAIT_HEIGHT}px`,
-                          }}
-                        />
-                      </Tooltip>
-                    </Flex>
-                  </Match>
-                </Switch>
-              </DialogTrigger>
-              <DialogContent title="Change portrait URL">
-                <Input
-                  value={currentCs()?.portraitUrl}
-                  onChange={(e) => setCharPortrait(e.target.value)}
-                />
-                <Flex gap="large" center>
-                  <Button onClick={() => setPortraitOpen(false)}>Cancel</Button>
-                  <Button onClick={changePortrait}>Save</Button>
-                </Flex>
-              </DialogContent>
-            </Dialog>
+          <Tooltip>
+            <TooltipTrigger>
+              <Dialog open={portraitOpen()} onOpenChange={setPortraitOpen}>
+                <DialogTrigger>
+                  <Switch>
+                    <Match when={hasPortrait()}>
+                      <img
+                        src={currentCs()?.portraitUrl}
+                        style={{
+                          height: `${PORTRAIT_HEIGHT}px`,
+                          "max-height": `${PORTRAIT_HEIGHT}px`,
+                        }}
+                      />
+                    </Match>
+                    <Match when={!hasPortrait()}>
+                      <Flex center>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <FaSolidImagePortrait
+                              fill="currentColor"
+                              style={{
+                                height: `${PORTRAIT_HEIGHT}px`,
+                                "max-height": `${PORTRAIT_HEIGHT}px`,
+                              }}
+                            />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            Click to change character portrait
+                          </TooltipContent>
+                        </Tooltip>
+                      </Flex>
+                    </Match>
+                  </Switch>
+                </DialogTrigger>
+                <DialogContent title="Change portrait URL">
+                  <Input
+                    value={currentCs()?.portraitUrl}
+                    onChange={(e) => setCharPortrait(e.target.value)}
+                  />
+                  <Flex gap="large" center>
+                    <Button onClick={() => setPortraitOpen(false)}>
+                      Cancel
+                    </Button>
+                    <Button onClick={changePortrait}>Save</Button>
+                  </Flex>
+                </DialogContent>
+              </Dialog>
+            </TooltipTrigger>
+            <TooltipContent>Click to change character portrait</TooltipContent>
           </Tooltip>
 
           <Text colorSchema="secondary" fontSize="bigger">

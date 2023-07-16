@@ -13,6 +13,7 @@ import { actionRoll } from "../actions";
 import { Dialog, DialogContent, DialogTrigger } from "../../Dialog";
 import { Input } from "../../Input";
 import { Button } from "../../Button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../../Tooltip";
 
 type Props = {
   item: CharTemplateItem;
@@ -49,13 +50,18 @@ const ModifierDialog = ({
     <Show when={roll.labels && roll.labels.length > 0}>
       <Dialog open={mdOpen()} onOpenChange={setMdOpen}>
         <DialogTrigger>
-          <div title={roll.comment} class={csTplIconStyle}>
-            <ImDice
-              style={{
-                fill: roll.iconColor ? roll.iconColor : "currentcolor",
-              }}
-            />
-          </div>
+          <Tooltip>
+            <TooltipTrigger>
+              <div class={csTplIconStyle}>
+                <ImDice
+                  style={{
+                    fill: roll.iconColor ? roll.iconColor : "currentcolor",
+                  }}
+                />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>{roll.comment}</TooltipContent>
+          </Tooltip>
         </DialogTrigger>
         <DialogContent title={item.name ? item.name : ""}>
           <For each={roll.labels}>
@@ -84,23 +90,27 @@ export const TplRollBlock: Component<Props> = ({ item, value }) => {
           {(r) => (
             <>
               <Show when={r.valType === "modifier" || r.valType === "target"}>
-                <div
-                  title={r.comment}
-                  onClick={() =>
-                    actionRoll(
-                      currentCs()?.name,
-                      r,
-                      value ? value() : fieldValue(r)
-                    )
-                  }
-                  class={csTplIconStyle}
-                >
-                  <ImDice
-                    style={{
-                      fill: r.iconColor ? r.iconColor : "currentcolor",
-                    }}
-                  />
-                </div>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <div
+                      onClick={() =>
+                        actionRoll(
+                          currentCs()?.name,
+                          r,
+                          value ? value() : fieldValue(r)
+                        )
+                      }
+                      class={csTplIconStyle}
+                    >
+                      <ImDice
+                        style={{
+                          fill: r.iconColor ? r.iconColor : "currentcolor",
+                        }}
+                      />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>{r.comment}</TooltipContent>
+                </Tooltip>
               </Show>
               <Show
                 when={

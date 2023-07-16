@@ -23,7 +23,18 @@ import {
   topicRoomInfo,
 } from "~/common";
 import { themeVars } from "~/common/theme.css";
-import { Alert, Button, Flex, Input, Text, Tooltip } from "~/components";
+import {
+  Alert,
+  AlertContent,
+  AlertTrigger,
+  Button,
+  Flex,
+  Input,
+  Text,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "~/components";
 import { buttonStyle } from "~/components/Button/styles.css";
 
 type Props = {
@@ -126,24 +137,25 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
           </div>
         </CopyToClipboard>
         <Show when={appSettings().userIdent == currentRoom()?.owner}>
-          <Alert
-            label="Delete room"
-            onOpenChange={setDelConfirmOpen}
-            open={delConfirmOpen}
-            trigger={
+          <Alert onOpenChange={setDelConfirmOpen} open={delConfirmOpen()}>
+            <AlertTrigger>
               <Flex gap="medium" center>
-                <Tooltip text="Delete room">
-                  <FaSolidTrash style={{ fill: themeVars.danger600 }} />
+                <Tooltip>
+                  <TooltipTrigger>
+                    <FaSolidTrash style={{ fill: themeVars.danger600 }} />
+                  </TooltipTrigger>
+                  <TooltipContent>Delete room</TooltipContent>
                 </Tooltip>
               </Flex>
-            }
-          >
-            <Text>Are you sure? </Text>
-            <Text>Delete room {currentRoom()?.name}?</Text>
-            <Flex center gap="large" style={{ "margin-top": "10px" }}>
-              <Button onClick={() => setDelConfirmOpen(false)}>Cancel</Button>
-              <Button onClick={deleteRoom}>Delete</Button>
-            </Flex>
+            </AlertTrigger>
+            <AlertContent title="Delete room">
+              <Text>Are you sure? </Text>
+              <Text>Delete room {currentRoom()?.name}?</Text>
+              <Flex center gap="large" style={{ "margin-top": "10px" }}>
+                <Button onClick={() => setDelConfirmOpen(false)}>Cancel</Button>
+                <Button onClick={deleteRoom}>Delete</Button>
+              </Flex>
+            </AlertContent>
           </Alert>
         </Show>
       </Flex>

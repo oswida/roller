@@ -3,31 +3,29 @@ import { ParentComponent, Show } from "solid-js";
 import { parseMarkdown } from "~/common";
 import { tooltipRootStyle, tooltipTriggerStyle } from "./styles.css";
 
-type Props = {
-  text: string;
-  markdown?: boolean;
-};
+export const Tooltip = Ttip.Root;
 
-// trigger as children
-export const Tooltip: ParentComponent<Props> = ({
+export const TooltipTrigger: ParentComponent<Ttip.TooltipTriggerProps> = ({
   children,
-  text,
-  markdown,
+  ...rest
 }) => {
   return (
-    <Ttip.Root>
-      <Ttip.Trigger class={tooltipTriggerStyle} style={{ color: "inherit" }}>
+    <Ttip.Trigger class={tooltipTriggerStyle} {...rest}>
+      {children}
+    </Ttip.Trigger>
+  );
+};
+
+export const TooltipContent: ParentComponent<Ttip.TooltipContentProps> = ({
+  children,
+  ...rest
+}) => {
+  return (
+    <Ttip.Portal>
+      <Ttip.Content class={tooltipRootStyle} {...rest}>
+        <Ttip.Arrow />
         {children}
-      </Ttip.Trigger>
-      <Ttip.Portal>
-        <Ttip.Content class={tooltipRootStyle}>
-          <Ttip.Arrow />
-          <Show when={!markdown}>{text}</Show>
-          <Show when={markdown}>
-            <div innerHTML={parseMarkdown(text)}></div>
-          </Show>
-        </Ttip.Content>
-      </Ttip.Portal>
-    </Ttip.Root>
+      </Ttip.Content>
+    </Ttip.Portal>
   );
 };
