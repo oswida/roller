@@ -22,6 +22,7 @@ export const tooltipRootStyle = style([
 export const tooltipTriggerStyle = style([
   sprinkles({
     backgroundColor: "none",
+    color: "primary900",
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",

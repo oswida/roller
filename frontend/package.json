@@ -15,7 +15,7 @@
   "devDependencies": {
     "@types/dompurify": "^3.0.2",
     "@types/marked": "^5.0.0",
-    "@types/node": "^18.11.18",
+    "@types/node": "^20.4.2",
     "@types/uuid": "^9.0.2",
     "esbuild": "^0.14.54",
     "postcss": "^8.4.21",
@@ -39,6 +39,7 @@
     "async-mutex": "^0.4.0",
     "centrifuge": "^3.1.2",
     "dompurify": "^3.0.3",
+    "image-resize-compress": "^1.1.0",
     "marked": "^5.1.0",
     "marked-gfm-heading-id": "^3.0.4",
     "marked-mangle": "^1.0.1",

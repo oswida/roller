@@ -1,4 +1,4 @@
-import { FaSolidImagePortrait } from "solid-icons/fa";
+import { FaSolidImagePortrait, FaSolidXmark } from "solid-icons/fa";
 import {
   Component,
   Match,
@@ -13,6 +13,8 @@ import {
   centPublish,
   csExpanded,
   currentCs,
+  importImage,
+  isCsOwner,
   netTopic,
   setCsExpanded,
   topicCsInfo,
@@ -21,16 +23,13 @@ import {
 } from "~/common";
 import { charTemplates } from "~/template";
 import { Accordion, AccordionOption } from "../Accordion";
-import { Button } from "../Button";
-import { Dialog, DialogContent, DialogTrigger } from "../Dialog";
 import { Flex } from "../Flex";
-import { Input } from "../Input";
 import { Text } from "../Text";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../Tooltip";
 import { CsSection } from "./CsSection";
 import { csViewerRootStyle } from "./styles.css";
 
-const PORTRAIT_HEIGHT = 96;
+const PORTRAIT_HEIGHT = 72;
 
 export const CsViewer: Component<RefProps> = ({ ref }) => {
   const [charPortrait, setCharPortrait] = createSignal("");
@@ -81,10 +80,23 @@ export const CsViewer: Component<RefProps> = ({ ref }) => {
   });
 
   const changePortrait = () => {
-    setPortraitOpen(false);
+    importImage(
+      (data: any) => {
+        const cs = currentCs();
+        if (!cs) return;
+        cs.portraitUrl = data;
+        updateCsStorage(cs);
+        centPublish(netTopic(topicCsInfo), cs);
+      },
+      undefined,
+      PORTRAIT_HEIGHT
+    );
+  };
+
+  const deletePortrait = () => {
     const cs = currentCs();
     if (!cs) return;
-    cs.portraitUrl = charPortrait();
+    cs.portraitUrl = undefined;
     updateCsStorage(cs);
     centPublish(netTopic(topicCsInfo), cs);
   };
@@ -92,54 +104,52 @@ export const CsViewer: Component<RefProps> = ({ ref }) => {
   return (
     <div class={csViewerRootStyle} ref={(e) => ref(e)}>
       <Show when={currentCs() && tpl()}>
-        <Flex gap="large" style={{ "min-height": "fit-content" }}>
+        <Flex
+          gap="large"
+          style={{
+            "min-height": "fit-content",
+            "align-items": "center",
+            "justify-content": "space-evenly",
+            padding: "5px",
+            "padding-right": "10px",
+          }}
+        >
           <Tooltip>
             <TooltipTrigger>
-              <Dialog open={portraitOpen()} onOpenChange={setPortraitOpen}>
-                <DialogTrigger>
-                  <Switch>
-                    <Match when={hasPortrait()}>
-                      <img
-                        src={currentCs()?.portraitUrl}
-                        style={{
-                          height: `${PORTRAIT_HEIGHT}px`,
-                          "max-height": `${PORTRAIT_HEIGHT}px`,
-                        }}
+              <Flex center>
+                <Switch>
+                  <Match when={currentCs()?.portraitUrl}>
+                    <div
+                      onClick={
+                        isCsOwner(currentCs()) ? changePortrait : undefined
+                      }
+                    >
+                      <img src={currentCs()?.portraitUrl} />
+                    </div>
+                  </Match>
+                  <Match when={!currentCs()?.portraitUrl}>
+                    <div
+                      onClick={
+                        isCsOwner(currentCs()) ? changePortrait : undefined
+                      }
+                    >
+                      <FaSolidImagePortrait fill="currentColor" size={24} />
+                    </div>
+                  </Match>
+                </Switch>
+                <Show when={currentCs()?.portraitUrl && isCsOwner(currentCs())}>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <FaSolidXmark
+                        fill="currentColor"
+                        size={16}
+                        onClick={deletePortrait}
                       />
-                    </Match>
-                    <Match when={!hasPortrait()}>
-                      <Flex center>
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <FaSolidImagePortrait
-                              fill="currentColor"
-                              style={{
-                                height: `${PORTRAIT_HEIGHT}px`,
-                                "max-height": `${PORTRAIT_HEIGHT}px`,
-                              }}
-                            />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            Click to change character portrait
-                          </TooltipContent>
-                        </Tooltip>
-                      </Flex>
-                    </Match>
-                  </Switch>
-                </DialogTrigger>
-                <DialogContent title="Change portrait URL">
-                  <Input
-                    value={currentCs()?.portraitUrl}
-                    onChange={(e) => setCharPortrait(e.target.value)}
-                  />
-                  <Flex gap="large" center>
-                    <Button onClick={() => setPortraitOpen(false)}>
-                      Cancel
-                    </Button>
-                    <Button onClick={changePortrait}>Save</Button>
-                  </Flex>
-                </DialogContent>
-              </Dialog>
+                    </TooltipTrigger>
+                    <TooltipContent>Delete character portrait</TooltipContent>
+                  </Tooltip>
+                </Show>
+              </Flex>
             </TooltipTrigger>
             <TooltipContent>Click to change character portrait</TooltipContent>
           </Tooltip>

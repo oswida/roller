@@ -48,6 +48,7 @@ type CsInfo struct {
 	Template string         `json:"template"`
 	Values   map[string]any `json:"values"`
 	Shared   bool           `json:"shared,omitempty"`
+	Portrait string         `json:"portraitUrl,omitempty"`
 }
 
 func (info CsInfo) GetId() string {

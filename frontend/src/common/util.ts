@@ -20,6 +20,7 @@ import { sprinkles, themeSpace } from "./theme.css";
 import { CsInfo, NetRollInfo, RollInfo, RollResult, RollSet } from "./types";
 import DOMPurify from "dompurify";
 import { marked } from "marked";
+import { blobToURL, fromBlob } from "image-resize-compress";
 
 export const TOPBAR_HEIGHT = 50;
 
@@ -54,10 +55,10 @@ export const exportData = (data: any, filename: string) => {
   link.click();
 };
 
-export const importData = (callback: (data: any) => void) => {
+export const importData = (callback: (data: any) => void, ext?: string) => {
   const el = document.createElement("input");
   el.setAttribute("type", "file");
-  el.setAttribute("accept", "application/json");
+  el.setAttribute("accept", ext ? ext : "application/json");
   el.addEventListener("change", function () {
     if (!this.files || this.files.length === 0) return;
     const reader = new FileReader();
@@ -65,6 +66,29 @@ export const importData = (callback: (data: any) => void) => {
       callback(JSON.parse(event.target.result));
     });
     reader.readAsText(this.files[0]);
+  });
+  el.click();
+};
+
+export const importImage = (
+  callback: (data: any) => void,
+  width?: number | undefined,
+  height?: number | undefined
+) => {
+  const el = document.createElement("input");
+  el.setAttribute("type", "file");
+  el.setAttribute("accept", "image/png, image/jpeg");
+  el.addEventListener("change", function () {
+    if (!this.files || this.files.length === 0) return;
+    fromBlob(this.files[0], 0.5, width ? width : "auto", height, "webp")
+      .then((value: Blob) => {
+        blobToURL(value).then((img: string) => {
+          callback(img);
+        });
+      })
+      .catch((e: any) => {
+        console.error(e);
+      });
   });
   el.click();
 };
