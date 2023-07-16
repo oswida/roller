@@ -29,6 +29,9 @@ import {
   Flex,
   Input,
   Text,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
 } from "~/components";
 import { DicePanel } from "./DicePanel";
 import { diceSelectorStyle } from "./styles.css";
@@ -136,22 +139,7 @@ export const DiceSelector: Component<RefProps> = ({ ref }) => {
 
   return (
     <div class={diceSelectorStyle} ref={ref}>
-      <Show when={appSettings().rightLayout}>
-        <Flex gap="medium" center>
-          <Button variant="ghost" onClick={resetPool} title="Reset">
-            <IoReload />
-            <Text>Reset</Text>
-          </Button>
-          <DicePanel />
-
-          <Button variant="ghost" onClick={clearTable} title="Clear table">
-            <AiOutlineClear />
-            <Text>Clear</Text>
-          </Button>
-        </Flex>
-      </Show>
-
-      <Flex style={{ "align-items": "center" }}>
+      <Flex style={{ "align-items": "center" }} gap="small">
         <Show when={!rolling()}>
           <Show when={!modRoll()}>
             <Switch>
@@ -177,53 +165,68 @@ export const DiceSelector: Component<RefProps> = ({ ref }) => {
             <ModifierDialog priv={privateRoll()} />
           </Show>
 
-          <Button
-            title="Toggle private roll"
-            toggled={privateRoll}
-            onClick={() => setPrivateRoll(!privateRoll())}
-          >
-            <FaSolidEyeSlash />
-          </Button>
-          <Button
-            title="Toggle additional modifier"
-            toggled={modRoll}
-            onClick={() => setModRoll(!modRoll())}
-          >
-            <BiSolidAddToQueue fill="currentColor" />
-          </Button>
-          <Input
-            tooltip="Comment"
-            placeholder="Comment"
-            ref={(e) => (inputRef = e)}
-            style={{ width: "12em" }}
-            onInput={(e) => updateComment(e)}
-          />
+          <Tooltip>
+            <TooltipTrigger>
+              <Button
+                toggled={privateRoll}
+                onClick={() => setPrivateRoll(!privateRoll())}
+              >
+                <FaSolidEyeSlash />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Toggle private roll</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger>
+              <Button toggled={modRoll} onClick={() => setModRoll(!modRoll())}>
+                <BiSolidAddToQueue fill="currentColor" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Toggle additional modifier</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger>
+              <Input
+                placeholder="Comment"
+                ref={(e) => (inputRef = e)}
+                style={{ width: "12em" }}
+                onInput={(e) => updateComment(e)}
+              />
+            </TooltipTrigger>
+            <TooltipContent>Comment</TooltipContent>
+          </Tooltip>
         </Show>
         <Show when={rolling()}>
           <Button variant="ghost">
             <FaSolidHourglass />
             <Text>Rolling...</Text>
           </Button>
-
-          <Input tooltip="Please wait" placeholder="Please wait" disabled />
+          <Input placeholder="Please wait" disabled />
         </Show>
       </Flex>
 
       <Show when={!appSettings().rightLayout}>
         <Flex gap="medium" center>
-          <Button variant="ghost" onClick={resetPool} title="Reset dice pool">
-            <IoReload />
-          </Button>
+          <Tooltip>
+            <TooltipTrigger>
+              <Button variant="ghost" onClick={resetPool}>
+                <IoReload />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Reset dice pool</TooltipContent>
+          </Tooltip>
+
           <DicePanel />
 
-          <Button
-            variant="ghost"
-            onClick={clearTable}
-            title="Clear table"
-            // style={{ "margin-left": "16px" }}
-          >
-            <AiOutlineClear />
-          </Button>
+          <Tooltip>
+            <TooltipTrigger>
+              <Button variant="ghost" onClick={clearTable}>
+                <AiOutlineClear />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Clear table</TooltipContent>
+          </Tooltip>
         </Flex>
       </Show>
     </div>

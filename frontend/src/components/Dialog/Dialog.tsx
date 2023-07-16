@@ -1,6 +1,6 @@
 import { Dialog as Dlg } from "@kobalte/core";
 import { FaSolidXmark } from "solid-icons/fa";
-import { ComponentProps, ParentComponent, splitProps } from "solid-js";
+import { ParentComponent } from "solid-js";
 import {
   dialogCloseButtonStyle,
   dialogContentStyle,

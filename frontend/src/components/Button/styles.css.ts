@@ -7,7 +7,6 @@ export const buttonStyle = recipe({
       backgroundColor: { default: "primary200", hover: "primary300" },
       paddingX: "medium",
       paddingY: "small",
-
       gap: "medium",
       alignItems: "center",
       justifyContent: "center",
@@ -80,8 +79,6 @@ export const buttonStyle = recipe({
     toggled: {
       true: sprinkles({
         backgroundColor: "primary400",
-        color: "primary100",
-        fill: "primary100",
       }),
       false: sprinkles({ backgroundColor: "primary200" }),
     },

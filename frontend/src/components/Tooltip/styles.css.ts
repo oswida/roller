@@ -3,7 +3,7 @@ import { sprinkles } from "~/common/theme.css";
 
 export const tooltipRootStyle = style([
   sprinkles({
-    backgroundColor: "primary100",
+    backgroundColor: "info100",
     color: "primary900",
     borderColor: "primary600",
     borderWidth: "thin",
@@ -11,6 +11,7 @@ export const tooltipRootStyle = style([
     borderRadius: "small",
     paddingY: "small",
     paddingX: "medium",
+    fontSize: "smaller",
   }),
   {
     maxWidth: "40em",
@@ -30,5 +31,6 @@ export const tooltipTriggerStyle = style([
     border: "none",
     cursor: "pointer",
     userSelect: "none",
+    padding: "0px",
   },
 ]);

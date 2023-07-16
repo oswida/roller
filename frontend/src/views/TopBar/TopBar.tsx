@@ -36,7 +36,16 @@ import {
   setCsPanelVisible,
   storageSize,
 } from "~/common";
-import { Button, Flex, Popover, Select, SelectItem, Text } from "~/components";
+import {
+  Button,
+  Flex,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Select,
+  SelectItem,
+  Text,
+} from "~/components";
 import {
   RoomConnectView,
   RoomSettingsView,
@@ -108,14 +117,15 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
         <Flex class={topbarItemStyle}>
           <Popover
             modal={true}
-            trigger={
-              <FaSolidUser style={{ height: "1.5em", width: "1.5em" }} />
-            }
-            title="User settings"
-            open={userSettingOpen}
+            open={userSettingOpen()}
             onOpenChange={setUserSettingsOpen}
           >
-            <UserSettingsView onOpenChange={setUserSettingsOpen} />
+            <PopoverTrigger title="User settings">
+              <FaSolidUser style={{ height: "1.5em", width: "1.5em" }} />
+            </PopoverTrigger>
+            <PopoverContent>
+              <UserSettingsView onOpenChange={setUserSettingsOpen} />
+            </PopoverContent>
           </Popover>
           <Dynamic component={"Text"}>{username()}</Dynamic>
         </Flex>
@@ -123,16 +133,17 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
         <Flex class={topbarItemStyle}>
           <Show when={roomList().length > 0}>
             <Popover
-              trigger={
+              open={roomSettingOpen()}
+              onOpenChange={setRoomSettingsOpen}
+            >
+              <PopoverTrigger title="Rooms">
                 <FaSolidChalkboardUser
                   style={{ height: "1.5em", width: "1.5em" }}
                 />
-              }
-              title="Rooms"
-              open={roomSettingOpen}
-              onOpenChange={setRoomSettingsOpen}
-            >
-              <RoomSettingsView onOpenChange={setRoomSettingsOpen} />
+              </PopoverTrigger>
+              <PopoverContent>
+                <RoomSettingsView onOpenChange={setRoomSettingsOpen} />
+              </PopoverContent>
             </Popover>
             <Dynamic
               component={Select}
@@ -150,15 +161,13 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
           <Button variant="icon" title="Create room" onClick={createRoom}>
             <FaSolidPlus />
           </Button>
-          <Popover
-            trigger={
+          <Popover open={roomConnectOpen()} onOpenChange={setRoomConnectOpen}>
+            <PopoverTrigger title="Connect to room">
               <FaSolidPlug style={{ height: "1.5em", width: "1.5em" }} />
-            }
-            title="Connect to room"
-            open={roomConnectOpen}
-            onOpenChange={setRoomConnectOpen}
-          >
-            <RoomConnectView onOpenChange={setRoomConnectOpen} />
+            </PopoverTrigger>
+            <PopoverContent>
+              <RoomConnectView onOpenChange={setRoomConnectOpen} />
+            </PopoverContent>
           </Popover>
         </Flex>
 

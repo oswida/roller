@@ -1,7 +1,6 @@
 import { Popover as Pop } from "@kobalte/core";
 import { FaSolidXmark } from "solid-icons/fa";
-import { For, JSX, ParentComponent, Show } from "solid-js";
-import { buttonStyle } from "../Button/styles.css";
+import { JSX, ParentComponent, Show } from "solid-js";
 import {
   popoverCloseButtonStyle,
   popoverContentStyle,
@@ -10,51 +9,51 @@ import {
 } from "./styles.css";
 import { Text } from "../Text";
 import { Flex } from "../Flex";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../Tooltip";
+
+export const Popover = Pop.Root;
+
+export const PopoverTrigger: ParentComponent<Pop.PopoverTriggerProps> = ({
+  children,
+  title,
+  ...rest
+}) => {
+  return (
+    <Tooltip>
+      <TooltipTrigger>
+        <Pop.Trigger class={popoverTriggerStyle} {...rest}>
+          {children}
+        </Pop.Trigger>
+      </TooltipTrigger>
+      <TooltipContent>{title}</TooltipContent>
+    </Tooltip>
+  );
+};
 
 type Props = {
-  title?: string;
-  trigger: any;
-  open?: () => boolean;
-  onOpenChange?: (value: boolean) => void;
-  modal?: boolean;
   headerActions?: JSX.Element;
 };
 
-export const Popover: ParentComponent<Props> = ({
-  children,
-  title,
-  trigger,
-  open,
-  onOpenChange,
-  modal,
-  headerActions,
-}) => {
+export const PopoverContent: ParentComponent<
+  Pop.PopoverContentProps & Props
+> = ({ children, title, headerActions, ...rest }) => {
   return (
-    <Pop.Root
-      open={open ? open() : undefined}
-      onOpenChange={onOpenChange}
-      modal={modal}
-    >
-      <Pop.Trigger class={popoverTriggerStyle} title={title}>
-        {trigger}
-      </Pop.Trigger>
-      <Pop.Portal>
-        <Pop.Content class={popoverContentStyle}>
-          <Pop.Arrow />
-          <div class={popoverHeaderStyle}>
-            <Text>
-              <b>{title}</b>
-            </Text>
-            <Flex gap="medium">
-              <Show when={headerActions}>{headerActions}</Show>
-              <Pop.CloseButton class={popoverCloseButtonStyle}>
-                <FaSolidXmark />
-              </Pop.CloseButton>
-            </Flex>
-          </div>
-          <Pop.Description>{children}</Pop.Description>
-        </Pop.Content>
-      </Pop.Portal>
-    </Pop.Root>
+    <Pop.Portal>
+      <Pop.Content class={popoverContentStyle}>
+        <Pop.Arrow />
+        <div class={popoverHeaderStyle}>
+          <Text>
+            <b>{title}</b>
+          </Text>
+          <Flex gap="medium">
+            <Show when={headerActions}>{headerActions}</Show>
+            <Pop.CloseButton class={popoverCloseButtonStyle}>
+              <FaSolidXmark />
+            </Pop.CloseButton>
+          </Flex>
+        </div>
+        <Pop.Description>{children}</Pop.Description>
+      </Pop.Content>
+    </Pop.Portal>
   );
 };

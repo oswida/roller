@@ -26,7 +26,7 @@ import { Flex } from "../../Flex";
 import { InputArea } from "../../Input";
 import { Text } from "../../Text";
 import { csTplIconStyle, tplTextItemStyle } from "../styles.css";
-import { Popover } from "~/components/Popover";
+import { Popover, PopoverContent, PopoverTrigger } from "../../Popover";
 import { Dialog, DialogContent, DialogTrigger } from "../../Dialog";
 import { Button } from "../../Button";
 import { TplHintBlock } from "../blocks/TplHintBlock";
@@ -96,31 +96,32 @@ export const TplBigText: Component<Props> = ({ item }) => {
             <Show when={isCsOwner(currentCs())}>
               <Popover
                 modal={true}
-                title={item.name}
-                open={editOpen}
+                open={editOpen()}
                 onOpenChange={setEditOpen}
-                trigger={
-                  <div title="Edit">
-                    <FaSolidPen style={{ fill: "currentcolor" }} />
-                  </div>
-                }
-                headerActions={
-                  <Button title="Save" onClick={applyValue}>
-                    <FaSolidFloppyDisk fill="currentColor" />
-                  </Button>
-                }
               >
-                <InputArea
-                  onChange={(e) => setEditVal(e.target.value)}
-                  value={value()}
-                  onFocus={(e) => e.target.select()}
-                  id="text-value"
-                  style={{
-                    "min-width": "50em",
-                    "font-size": "medium",
-                    "min-height": "15em",
-                  }}
-                />
+                <PopoverTrigger title="Edit">
+                  <FaSolidPen style={{ fill: "currentcolor" }} />
+                </PopoverTrigger>
+                <PopoverContent
+                  title={item.name}
+                  headerActions={
+                    <Button title="Save" onClick={applyValue}>
+                      <FaSolidFloppyDisk fill="currentColor" />
+                    </Button>
+                  }
+                >
+                  <InputArea
+                    onChange={(e) => setEditVal(e.target.value)}
+                    value={value()}
+                    onFocus={(e) => e.target.select()}
+                    id="text-value"
+                    style={{
+                      "min-width": "50em",
+                      "font-size": "medium",
+                      "min-height": "15em",
+                    }}
+                  />
+                </PopoverContent>
               </Popover>
             </Show>
             <Dialog open={viewOpen()} onOpenChange={setViewOpen} modal>

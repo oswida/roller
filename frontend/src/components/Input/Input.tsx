@@ -23,12 +23,16 @@ export const Input: Component<Props & ComponentProps<"input">> = ({
   return (
     <TextField.Root class={inputRootStyle}>
       <Flex direction="column" gap="small">
-        <TextField.Label>
-          <Text fontSize="smaller" colorSchema="secondary">
-            <Show when={label}>{label}</Show>
-            <Show when={dynamicLabel}>{dynamicLabel ? dynamicLabel() : ""}</Show>
-          </Text>
-        </TextField.Label>
+        <Show when={label || dynamicLabel}>
+          <TextField.Label>
+            <Text fontSize="smaller" colorSchema="secondary">
+              <Show when={label}>{label}</Show>
+              <Show when={dynamicLabel}>
+                {dynamicLabel ? dynamicLabel() : ""}
+              </Show>
+            </Text>
+          </TextField.Label>
+        </Show>
         <TextField.Input
           class={inputFieldStyle}
           title={tooltip}

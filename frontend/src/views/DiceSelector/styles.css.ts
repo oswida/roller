@@ -11,7 +11,7 @@ export const diceSelectorStyle = style([
     paddingX: "medium",
     paddingTop: "large",
     alignItems: "center",
-    gap: "large",
+    gap: "medium",
   }),
   {
     flexWrap: "wrap",

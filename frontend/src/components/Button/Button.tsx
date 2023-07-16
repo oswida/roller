@@ -14,7 +14,6 @@ export const Button: ParentComponent<Props & ComponentProps<"button">> = ({
   disabled,
   toggled,
   colorSchema,
-
   ...rest
 }) => {
   return (

@@ -1,4 +1,4 @@
-import { ComponentProps, ParentComponent } from "solid-js";
+import { ComponentProps, Match, ParentComponent, Switch } from "solid-js";
 import { textStyle } from "./styles.css";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../Tooltip";
 
@@ -17,8 +17,25 @@ export const Text: ParentComponent<Props & ComponentProps<"div">> = ({
   ...rest
 }) => {
   return (
-    <Tooltip>
-      <TooltipTrigger>
+    <Switch>
+      <Match when={title}>
+        <Tooltip>
+          <TooltipTrigger>
+            <div
+              class={textStyle({
+                colorSchema: colorSchema,
+                fontSize: fontSize,
+                preserveLines: preserveLines,
+              })}
+              {...rest}
+            >
+              {children}
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>{title}</TooltipContent>
+        </Tooltip>
+      </Match>
+      <Match when={!title}>
         <div
           class={textStyle({
             colorSchema: colorSchema,
@@ -29,8 +46,7 @@ export const Text: ParentComponent<Props & ComponentProps<"div">> = ({
         >
           {children}
         </div>
-      </TooltipTrigger>
-      <TooltipContent>{title}</TooltipContent>
-    </Tooltip>
+      </Match>
+    </Switch>
   );
 };

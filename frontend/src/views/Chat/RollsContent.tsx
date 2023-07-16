@@ -24,7 +24,15 @@ import {
   topicRollUpdate,
   updateRolls,
 } from "~/common";
-import { Flex, Button, Text, Popover, Input } from "~/components";
+import {
+  Flex,
+  Button,
+  Text,
+  Popover,
+  Input,
+  PopoverTrigger,
+  PopoverContent,
+} from "~/components";
 import { ChatItem } from "./ChatItem";
 import { chatListStyle, defTabStyle } from "./styles.css";
 import toast from "solid-toast";
@@ -116,21 +124,20 @@ export const RollsContent: Component<Props> = ({ ref, adjustSize }) => {
         </Flex>
 
         <Flex>
-          <Popover
-            modal={true}
-            trigger={<FaSolidMessage />}
-            title="Send chat message"
-            onOpenChange={setCmOpen}
-            open={cmOpen}
-          >
-            <Input
-              id="chat-message"
-              onFocus={(e) => e.target.select()}
-              onKeyPress={sendChatMessage}
-              style={{ width: "20em" }}
-              value=""
-              ref={(e) => (msgInput = e)}
-            />
+          <Popover modal={true} onOpenChange={setCmOpen} open={cmOpen()}>
+            <PopoverTrigger title="Send chat message">
+              <FaSolidMessage />
+            </PopoverTrigger>
+            <PopoverContent>
+              <Input
+                id="chat-message"
+                onFocus={(e) => e.target.select()}
+                onKeyPress={sendChatMessage}
+                style={{ width: "20em" }}
+                value=""
+                ref={(e) => (msgInput = e)}
+              />
+            </PopoverContent>
           </Popover>
           <Show when={appSettings().userIdent == currentRoom()?.owner}>
             <Flex>
