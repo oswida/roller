@@ -3,6 +3,7 @@ import { setStorageSize } from "./state";
 import {
   AppSettings,
   CsInfo,
+  HandoutInfo,
   RollDefInfo,
   RoomInfo,
   StorageItem,
@@ -14,6 +15,7 @@ export const rollerSettingsKey = "settings";
 export const rollerRoomsKey = "rooms";
 export const rollerDefsKey = "defs";
 export const rollerCsKey = "cs";
+export const rollerHandoutKey = "handout";
 
 const STORE_PREFIX = "roller3";
 
@@ -33,6 +35,8 @@ export const [appStore, setAppStore, { remove, clear, toJSON }] =
           return decompressData(value) as Record<string, RollDefInfo>;
         case "cs":
           return decompressData(value) as Record<string, CsInfo>;
+        case "handout":
+          return decompressData(value) as Record<string, HandoutInfo>;
         default:
           return decompressData(value) as string;
       }
@@ -46,7 +50,13 @@ export const saveToStorage = (key: string, data: any) => {
 
 export const updateStoreSize = () => {
   let size = 0;
-  const keys = [rollerSettingsKey, rollerRoomsKey, rollerCsKey, rollerDefsKey];
+  const keys = [
+    rollerSettingsKey,
+    rollerRoomsKey,
+    rollerCsKey,
+    rollerDefsKey,
+    rollerHandoutKey,
+  ];
   keys.forEach((k) => {
     const data = localStorage.getItem(`${STORE_PREFIX}.${k}`);
     size += data ? data.length : 0;
@@ -89,6 +99,15 @@ export const appCs = () => {
     setAppStore(rollerCsKey, cs);
   }
   return cs;
+};
+
+export const appHandouts = () => {
+  let hd = appStore.cs as Record<string, HandoutInfo>;
+  if (!hd) {
+    hd = {};
+    setAppStore(rollerHandoutKey, hd);
+  }
+  return hd;
 };
 
 export const currentRoom = () => {

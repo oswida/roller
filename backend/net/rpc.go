@@ -157,3 +157,57 @@ func (eng *Engine) RpcRollClear(e centrifuge.RPCEvent) ([]byte, error) {
 	}
 	return []byte{}, eng.Db.ItemClear(db.ItemPrefixRoll, data.Room)
 }
+
+// Handouts
+
+func (eng *Engine) RpcHandoutUpdate(e centrifuge.RPCEvent) ([]byte, error) {
+	eng.mux.Lock()
+	defer eng.mux.Unlock()
+
+	var data HandoutMessage
+	err := json.Unmarshal(e.Data, &data)
+	if err != nil {
+		return nil, err
+	}
+	err = eng.Db.ItemUpdate(db.ItemPrefixHandout, data.Room, data.Data)
+	if err != nil {
+		return nil, err
+	}
+	eng.Log.Debug("Updating handout", zap.String("room", data.Room), zap.String("id", data.Data.Id))
+	return []byte{}, nil
+}
+
+func (eng *Engine) RpcHandoutDelete(e centrifuge.RPCEvent) ([]byte, error) {
+	eng.mux.Lock()
+	defer eng.mux.Unlock()
+
+	var data HandoutMessage
+	err := json.Unmarshal(e.Data, &data)
+	if err != nil {
+		return nil, err
+	}
+	return []byte{}, eng.Db.ItemDelete(db.ItemPrefixHandout, data.Room, data.Data)
+}
+
+func (eng *Engine) RpcHandoutList(e centrifuge.RPCEvent) ([]byte, error) {
+	eng.mux.Lock()
+	defer eng.mux.Unlock()
+
+	var data ListMessage
+	err := json.Unmarshal(e.Data, &data)
+	if err != nil {
+		return nil, err
+	}
+	charsheet := db.HandoutInfo{}
+	eng.Log.Debug(fmt.Sprintf("Handout list load %v, %v", data.Room, data.Data))
+	list, err := eng.Db.ItemList(db.ItemPrefixHandout, data.Room, []string{}, charsheet)
+	if err != nil {
+		return nil, err
+	}
+	eng.Log.Debug(fmt.Sprintf("Handout list %v", list))
+	bytes, err := json.Marshal(list)
+	if err != nil {
+		return nil, err
+	}
+	return bytes, nil
+}

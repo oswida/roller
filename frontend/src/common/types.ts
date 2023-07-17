@@ -96,6 +96,7 @@ export const topicRoomInfo = "room_info";
 export const topicRollInfo = "roll_info";
 export const topicRollUpdate = "roll_update";
 export const topicCsInfo = "cs_info";
+export const topicHandoutInfo = "handout_info";
 
 // Roll definitions
 
@@ -265,4 +266,37 @@ export type SelectOption = {
 
 export type RefProps = {
   ref: any;
+};
+
+// Handouts
+
+export type HandoutInfoType =
+  | "text"
+  | "clock"
+  | "track"
+  | "image"
+  | "container";
+
+export type HandoutInfo = {
+  id: string;
+  owner: string;
+  name: string;
+  htype: HandoutInfoType;
+  value: any;
+  description?: string;
+  hint?: string;
+  limit?: number;
+  url?: string;
+  shared?: boolean;
+};
+
+export const emptyHandoutInfo = (id: string, htype: HandoutInfoType) => {
+  return {
+    id: uuid(),
+    owner: id,
+    name: "handout",
+    htype: htype,
+    value: "",
+    shared: false,
+  } as HandoutInfo;
 };

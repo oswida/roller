@@ -67,3 +67,8 @@ export const updateCsOpenSections = (info: CsInfo, sections: string[]) => {
 export const [connectedUsers, setConnectedUsers] = createSignal<
   Record<string, string>
 >({});
+
+// Handouts
+export const [handoutShared, setHandoutShared] = createSignal<
+  Record<string, string>
+>({});

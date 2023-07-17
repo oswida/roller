@@ -5,30 +5,36 @@ import {
   connectedUsers,
   csShared,
   currentCs,
+  handoutShared,
   setAppRolls,
   setCentClient,
   setCentConnectionStatus,
   setConnectedUsers,
   setCsShared,
   setCurrentCs,
+  setHandoutShared,
   updateRolls,
 } from "./state";
 import {
   appCs,
+  appHandouts,
   appRooms,
   appSettings,
   currentRoom,
   rollerCsKey,
+  rollerHandoutKey,
   rollerRoomsKey,
   saveToStorage,
 } from "./storage";
 import {
   CentMessage,
   CsInfo,
+  HandoutInfo,
   NetRollInfo,
   RollInfo,
   RoomInfo,
   topicCsInfo,
+  topicHandoutInfo,
   topicRollInfo,
   topicRollUpdate,
   topicRoomInfo,
@@ -106,6 +112,24 @@ const processCsInfo = (ctx: PublicationContext) => {
   }
 };
 
+const processHandoutInfo = (ctx: PublicationContext) => {
+  const data = ctx.data as CentMessage;
+  if (!data || data.sender == appSettings().userIdent) return;
+  const room = currentRoom();
+  if (!room || data.room !== room.id) return;
+  const info = data.data as HandoutInfo;
+  if (!info.shared) {
+    // sharing off
+    if (info.owner !== appSettings().userIdent) {
+      const ns = { ...appCs() };
+      delete ns[info.id];
+      saveToStorage(rollerHandoutKey, ns);
+    }
+  } else {
+    centLoadHandouts(room.id, [info.id]);
+  }
+};
+
 export const serverAddress = () => {
   // DEV version
   //const addr = "ws://localhost:5000/connection/websocket";
@@ -163,6 +187,11 @@ export const activateRoomSubscriptions = () => {
     enrollTask(() => processRollUpdate(ctx));
   });
   sub4.subscribe();
+  const sub5 = client.newSubscription(netTopic(topicHandoutInfo));
+  sub5.on("publication", (ctx) => {
+    enrollTask(() => processHandoutInfo(ctx));
+  });
+  sub5.subscribe();
 };
 
 export const centConnect = () => {
@@ -230,15 +259,21 @@ export const centPublish = (topic: string, payload: any) => {
   if (!client) {
     return;
   }
-  client
-    .publish(topic, centPack(appSettings().userIdent, payload))
-    .then((result: PublishResult) => {
-      // Message sent
-    })
-    .catch((err) => {
-      console.error("publish error", err);
-    });
+  try {
+    client
+      .publish(topic, centPack(appSettings().userIdent, payload))
+      .then((result: PublishResult) => {
+        // Message sent
+      })
+      .catch((err) => {
+        console.error("publish error", err);
+      });
+  } catch (err: any) {
+    console.error("publish error", err);
+  }
 };
+
+// Rooms
 
 export const centLoadRooms = (ids?: string[]) => {
   const client = centClient();
@@ -313,6 +348,8 @@ export const centUpdateRoom = (room: RoomInfo) => {
       console.error(err);
     });
 };
+
+// Charsheets
 
 export const centLoadCs = (roomId: string, ids?: string[]) => {
   const client = centClient();
@@ -402,6 +439,8 @@ export const centUpdateCs = (roomId: string, info: CsInfo) => {
     });
 };
 
+// Rolls
+
 export const centLoadRolls = (roomId: string) => {
   const client = centClient();
   if (!client) {
@@ -464,6 +503,94 @@ export const centUpdateRoll = (roomId: string, info: NetRollInfo) => {
       console.error(err);
     });
 };
+
+// Handouts
+export const centLoadHandouts = (roomId: string, ids?: string[]) => {
+  const client = centClient();
+  if (!client) {
+    return;
+  }
+  const msg = {
+    sender: appSettings().userIdent,
+    room: roomId,
+    data: ids ? ids : Object.values(appHandouts()).map((it) => it.id),
+  } as CentMessage;
+  client
+    .rpc("handout_list", msg)
+    .then((result) => {
+      const data = result.data as HandoutInfo[];
+      if (data) {
+        const newState = { ...appHandouts() };
+        data.forEach((r) => (newState[r.id] = r));
+
+        const receivedIds = data.map((r) => r.id);
+        const toCheck = ids
+          ? ids
+          : Object.values(appHandouts()).map((r) => r.id);
+        toCheck.forEach((id) => {
+          if (
+            !receivedIds.includes(id) &&
+            newState[id] &&
+            newState[id].shared &&
+            newState[id].owner !== appSettings().userIdent
+          ) {
+            delete newState[id]; // charsheet has been deleted
+          }
+        });
+        saveToStorage(rollerHandoutKey, newState);
+        const scs = { ...handoutShared() };
+        data.forEach((v) => {
+          if (v.shared) {
+            scs[v.id] = roomId;
+          }
+        });
+        setHandoutShared(scs);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
+
+export const centDeleteHandout = (roomId: string, info: HandoutInfo) => {
+  const client = centClient();
+  if (!client) {
+    return;
+  }
+  const msg = {
+    sender: appSettings().userIdent,
+    room: roomId,
+    data: info,
+  } as CentMessage;
+  client
+    .rpc("handout_delete", msg)
+    .then((result) => {
+      centLoadHandouts(roomId);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
+
+export const centUpdateHandouts = (roomId: string, info: CsInfo) => {
+  const client = centClient();
+  if (!client) {
+    return;
+  }
+  const msg = {
+    sender: appSettings().userIdent,
+    room: roomId,
+    data: info,
+  } as CentMessage;
+  client
+    .rpc("handout_update", msg)
+    .then((result) => {})
+    .catch((err) => {
+      console.error(err);
+    });
+};
+
+// Init
 
 export const netInit = () => {
   if (!centConnectionStatus()) centConnect();

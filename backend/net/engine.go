@@ -101,6 +101,13 @@ func (eng *Engine) PublishCallback(e centrifuge.PublishEvent) {
 		}
 		return
 	}
+	if strings.HasPrefix(e.Channel, "handout_info") {
+		err := eng.HandoutInfoPublishCallback(e)
+		if err != nil {
+			eng.Log.Error("handout info publish callback", zap.Error(err))
+		}
+		return
+	}
 }
 
 func (eng *Engine) RPCCallback(e centrifuge.RPCEvent) ([]byte, error) {
@@ -123,6 +130,12 @@ func (eng *Engine) RPCCallback(e centrifuge.RPCEvent) ([]byte, error) {
 		return eng.RpcRollUpdate(e)
 	case "roll_clear":
 		return eng.RpcRollClear(e)
+	case "handout_list":
+		return eng.RpcHandoutList(e)
+	case "handout_update":
+		return eng.RpcHandoutUpdate(e)
+	case "handout_delete":
+		return eng.RpcHandoutDelete(e)
 	}
 	return nil, nil
 }

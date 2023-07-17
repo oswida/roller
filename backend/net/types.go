@@ -27,3 +27,9 @@ type CsMessage struct {
 	Room   string    `json:"room"`
 	Data   db.CsInfo `json:"data"`
 }
+
+type HandoutMessage struct {
+	Sender string         `json:"sender"`
+	Room   string         `json:"room"`
+	Data   db.HandoutInfo `json:"data"`
+}

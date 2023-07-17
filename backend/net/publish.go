@@ -39,3 +39,21 @@ func (eng *Engine) CsInfoPublishCallback(e centrifuge.PublishEvent) error {
 		return eng.Db.ItemDelete(db.ItemPrefixCs, data.Room, data.Data)
 	}
 }
+
+func (eng *Engine) HandoutInfoPublishCallback(e centrifuge.PublishEvent) error {
+	eng.mux.Lock()
+	defer eng.mux.Unlock()
+
+	var data HandoutMessage
+	err := json.Unmarshal(e.Data, &data)
+	if err != nil {
+		return err
+	}
+
+	if data.Data.Shared {
+		return eng.Db.ItemUpdate(db.ItemPrefixHandout, data.Room, data.Data)
+	} else {
+		// delete if shared has been switched off
+		return eng.Db.ItemDelete(db.ItemPrefixHandout, data.Room, data.Data)
+	}
+}
