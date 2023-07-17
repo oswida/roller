@@ -25,7 +25,7 @@ import {
   centLoadRolls,
   centUpdateRoom,
   connectedUsers,
-  csPanelVisible,
+  currentRightPanel,
   currentRoom,
   emptyRoomInfo,
   generateSerialKeys,
@@ -33,7 +33,7 @@ import {
   rollerSettingsKey,
   rolling,
   saveToStorage,
-  setCsPanelVisible,
+  setCurrentRightPanel,
   storageSize,
 } from "~/common";
 import {
@@ -45,6 +45,9 @@ import {
   Select,
   SelectItem,
   Text,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
 } from "~/components";
 import {
   RoomConnectView,
@@ -52,6 +55,7 @@ import {
   UserSettingsView,
 } from "../Settings";
 import { topbarItemStyle, topbarStyle } from "./style.css";
+import { BiSolidNote } from "solid-icons/bi";
 
 export const TopBar: Component<RefProps> = ({ ref }) => {
   const [roomSettingOpen, setRoomSettingsOpen] = createSignal(false);
@@ -110,6 +114,16 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
       centLoadCs(room.id); // load shared charsheets
     })
   );
+
+  const toggleRightPanel = (panel: string) => {
+    const rp = currentRightPanel();
+    if (rp == panel) {
+      setCurrentRightPanel("");
+      return;
+    }
+    setCurrentRightPanel("");
+    setCurrentRightPanel(panel);
+  };
 
   return (
     <div class={topbarStyle} ref={ref}>
@@ -173,14 +187,36 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
 
         <Show when={!rolling()}>
           <Flex gap="medium" class={topbarItemStyle}>
-            <Button
-              variant="icon"
-              toggled={csPanelVisible}
-              onClick={() => setCsPanelVisible(!csPanelVisible())}
-            >
-              <BsPersonBadge size={25} />
-            </Button>
-            <Text>Charsheets</Text>
+            <Tooltip>
+              <TooltipTrigger>
+                <Button
+                  variant="icon"
+                  toggled={() => currentRightPanel() === "cs"}
+                  onClick={() => toggleRightPanel("cs")}
+                >
+                  <BsPersonBadge size={25} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Character sheets</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger>
+                <Button
+                  variant="icon"
+                  toggled={() => currentRightPanel() === "hd"}
+                  onClick={() => toggleRightPanel("hd")}
+                >
+                  <BiSolidNote size={25} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Handouts</TooltipContent>
+            </Tooltip>
+            <Show when={currentRightPanel() === "cs"}>
+              <Text colorSchema="accent"> Charsheets</Text>
+            </Show>
+            <Show when={currentRightPanel() === "hd"}>
+              <Text colorSchema="accent"> Handouts</Text>
+            </Show>
           </Flex>
         </Show>
       </Flex>

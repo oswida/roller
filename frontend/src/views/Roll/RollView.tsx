@@ -16,7 +16,7 @@ import {
   centPublish,
   centUpdateRoll,
   createRollInfo,
-  csPanelVisible,
+  currentRightPanel,
   currentRoom,
   diceBox,
   netTopic,
@@ -63,7 +63,7 @@ export const RollView: Component<RefProps> = ({ ref }) => {
   });
 
   createEffect(
-    on(csPanelVisible, () => {
+    on(currentRightPanel, () => {
       if (diceBox()) {
         diceBox().clearDice();
       }
@@ -137,7 +137,7 @@ export const RollView: Component<RefProps> = ({ ref }) => {
 
   return (
     <Switch>
-      <Match when={csPanelVisible()}>
+      <Match when={currentRightPanel() !== ""}>
         <div
           class={rollViewStyle({ expanded: false })}
           id="dice-table"
@@ -145,7 +145,7 @@ export const RollView: Component<RefProps> = ({ ref }) => {
           style={bkg()}
         ></div>
       </Match>
-      <Match when={!csPanelVisible()}>
+      <Match when={currentRightPanel() === ""}>
         <div
           class={rollViewStyle({ expanded: true })}
           id="dice-table"

@@ -47,7 +47,7 @@ export const [taskMutex, setTaskMutex] = createSignal<Mutex | undefined>(
 // Tab states
 export const [chatViewTab, setChatViewTab] = createSignal("rolls");
 export const [mainViewPanel, setMainViewPanel] = createSignal("dice");
-export const [csPanelVisible, setCsPanelVisible] = createSignal(false);
+export const [currentRightPanel, setCurrentRightPanel] = createSignal("");
 
 // Charsheets
 export type CallbackFunc = (value: string) => void;

@@ -22,6 +22,8 @@ import {
 } from "~/common";
 import {
   Alert,
+  AlertContent,
+  AlertTrigger,
   Button,
   Dialog,
   DialogContent,
@@ -142,19 +144,19 @@ export const DefsContent: Component<Props> = ({ ref, adjustSize }) => {
         <Flex>
           <Show when={selDef()}>
             <Flex style={{ "margin-right": "10px" }}>
-              <Alert
-                label="Delete definition"
-                open={delDlgOpen}
-                onOpenChange={setDelDlgOpen}
-                trigger={<FaSolidTrash />}
-              >
-                <Text>
-                  Delete {selDef()?.name} {"?"}
-                </Text>
-                <Flex gap="large" style={{ "margin-top": "10px" }}>
-                  <Button onClick={() => setDelDlgOpen(false)}>Cancel</Button>
-                  <Button onClick={deleteDef}>Delete</Button>
-                </Flex>
+              <Alert open={delDlgOpen()} onOpenChange={setDelDlgOpen}>
+                <AlertTrigger title="Delete definition">
+                  <FaSolidTrash />
+                </AlertTrigger>
+                <AlertContent title="Delete definition">
+                  <Text>
+                    Delete {selDef()?.name} {"?"}
+                  </Text>
+                  <Flex gap="large" style={{ "margin-top": "10px" }}>
+                    <Button onClick={() => setDelDlgOpen(false)}>Cancel</Button>
+                    <Button onClick={deleteDef}>Delete</Button>
+                  </Flex>
+                </AlertContent>
               </Alert>
 
               <Dialog open={editDlgOpen()} onOpenChange={setEditDlgOpen}>

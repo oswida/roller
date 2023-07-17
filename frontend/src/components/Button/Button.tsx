@@ -20,7 +20,6 @@ export const Button: ParentComponent<Props & ComponentProps<"button">> = ({
     <Btn.Root
       class={buttonStyle({
         variant: variant,
-        colorSchema: colorSchema,
         disabled: disabled ? disabled : false,
         toggled: toggled ? toggled() : undefined,
       })}

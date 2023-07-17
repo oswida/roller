@@ -102,7 +102,7 @@ export const appCs = () => {
 };
 
 export const appHandouts = () => {
-  let hd = appStore.cs as Record<string, HandoutInfo>;
+  let hd = appStore.handout as Record<string, HandoutInfo>;
   if (!hd) {
     hd = {};
     setAppStore(rollerHandoutKey, hd);

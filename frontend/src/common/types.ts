@@ -277,6 +277,14 @@ export type HandoutInfoType =
   | "image"
   | "container";
 
+export const HandoutInfoTypeList = [
+  "text",
+  "clock",
+  "track",
+  "image",
+  "container",
+];
+
 export type HandoutInfo = {
   id: string;
   owner: string;

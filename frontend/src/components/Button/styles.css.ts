@@ -78,20 +78,15 @@ export const buttonStyle = recipe({
     },
     toggled: {
       true: sprinkles({
-        backgroundColor: "primary400",
+        backgroundColor: "primary600",
+        color: "primary100",
       }),
-      false: sprinkles({ backgroundColor: "primary200" }),
-    },
-    colorSchema: {
-      primary: sprinkles({ color: "primary900" }),
-      secondary: sprinkles({ color: "primary800" }),
-      accent: sprinkles({ color: "primary400" }),
+      false: sprinkles({ backgroundColor: "primary200", color: "primary900" }),
     },
   },
   defaultVariants: {
     variant: "flat",
     disabled: false,
     toggled: false,
-    colorSchema: "primary",
   },
 });
