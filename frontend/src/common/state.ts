@@ -52,19 +52,11 @@ export const [csPanelVisible, setCsPanelVisible] = createSignal(false);
 // Charsheets
 export type CallbackFunc = (value: string) => void;
 export const [currentCs, setCurrentCs] = createSignal<CsInfo>();
-export const [currentCsPage, setCurrentCsPage] = createSignal(0);
-export const [csRollInputOpen, setCsRollInputOpen] = createSignal(false);
-export const [csRollInputTitle, setCsRollInputTitle] = createSignal("");
-export const [csRollInputCallback, setCsRollInputCallback] =
-  createSignal<CallbackFunc>((value: string) => {});
-export const [csCurrentZoom, setCsCurrentZoom] = createSignal(1.0);
-export const [csInfoOpen, setCsInfoOpen] = createSignal(false);
-export const [csInfoLabel, setCsInfoLabel] = createSignal("");
-export const [csInfoContent, setCsInfoContent] = createSignal("");
 export const [csExpanded, setCsExpanded] = createSignal<string[]>([]);
 export const [csOpenSections, setCsOpenSections] = createSignal<
   Record<string, string[]>
 >({});
+export const [csShared, setCsShared] = createSignal<Record<string, string>>({});
 
 export const updateCsOpenSections = (info: CsInfo, sections: string[]) => {
   const newState = { ...csOpenSections() };

@@ -18,16 +18,17 @@ import {
   onMount,
 } from "solid-js";
 import { Dynamic } from "solid-js/web";
-import toast from "solid-toast";
 import { v4 as uuid } from "uuid";
 import {
   CsInfo,
   TOPBAR_HEIGHT,
   appCs,
+  appRooms,
   appSettings,
   centPublish,
   csExpanded,
   csOpenSections,
+  csShared,
   currentCs,
   currentRoom,
   deleteCsStorage,
@@ -58,7 +59,6 @@ import {
 import {
   charTemplateGameItems,
   charTemplateGames,
-  charTemplateItems,
   charTemplates,
 } from "~/template";
 import { csPanelRootStyle } from "./styles.css";
@@ -99,9 +99,18 @@ export const CsPanel: Component = () => {
     return Object.values(appCs())
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((it) => {
+        let name = it.name;
+        if (it.shared) {
+          const roomId = csShared()[it.id];
+          if (roomId) {
+            name = `${it.name} (${appRooms()[roomId].name})`;
+          } else {
+            name = `${it.name} (*)`;
+          }
+        }
         return {
           id: it.id,
-          label: it.shared ? `${it.name} *` : it.name,
+          label: name,
         } as SelectItem;
       });
   });

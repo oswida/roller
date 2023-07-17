@@ -3,11 +3,13 @@ import {
   centClient,
   centConnectionStatus,
   connectedUsers,
+  csShared,
   currentCs,
   setAppRolls,
   setCentClient,
   setCentConnectionStatus,
   setConnectedUsers,
+  setCsShared,
   setCurrentCs,
   updateRolls,
 } from "./state";
@@ -343,6 +345,14 @@ export const centLoadCs = (roomId: string, ids?: string[]) => {
           }
         });
         saveToStorage(rollerCsKey, newState);
+        const scs = { ...csShared() };
+        data.forEach((v) => {
+          if (v.shared) {
+            scs[v.id] = roomId;
+          }
+        });
+        console.log(data, "scs", scs);
+        setCsShared(scs);
         if (ids?.length == 1 && ids[0] == currentCs()?.id) {
           setCurrentCs(undefined);
           setCurrentCs(newState[ids[0]]);
