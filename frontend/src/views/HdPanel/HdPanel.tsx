@@ -9,11 +9,15 @@ import {
   onMount,
 } from "solid-js";
 import {
+  HandoutInfoType,
   HandoutInfoTypeList,
   TOPBAR_HEIGHT,
   appHandouts,
+  appSettings,
   currentCs,
+  emptyHandoutInfo,
   isCsOwner,
+  updateHdStorage,
 } from "~/common";
 import {
   Accordion,
@@ -22,7 +26,6 @@ import {
   AlertContent,
   AlertTrigger,
   Button,
-  CsViewer,
   Dialog,
   DialogContent,
   DialogTrigger,
@@ -34,20 +37,21 @@ import {
 } from "~/components";
 import { csPanelRootStyle } from "../CsPanel/styles.css";
 import {
-  FaSolidBackward,
   FaSolidDeleteLeft,
   FaSolidFileExport,
   FaSolidFileImport,
-  FaSolidMagnifyingGlass,
   FaSolidPlus,
   FaSolidShareNodes,
   FaSolidTrash,
   FaSolidUserPen,
 } from "solid-icons/fa";
 import { BsArrowsExpand } from "solid-icons/bs";
+import { Dynamic } from "solid-js/web";
+import { HdItem } from "./HdItem";
 
 export const HdPanel: Component = () => {
   let listRef: HTMLDivElement;
+  let filterRef: HTMLInputElement;
   const [crDialogOpen, setCrDialogOpen] = createSignal(false);
   const [delDialogOpen, setDelDialogOpen] = createSignal(false);
   const [shareDialogOpen, setShareDialogOpen] = createSignal(false);
@@ -55,6 +59,7 @@ export const HdPanel: Component = () => {
   const [selHdName, setSelHdName] = createSignal("");
   const [editHdName, setEditHdName] = createSignal("");
   const [selHdType, setSelHdType] = createSignal("");
+  const [flt, setFlt] = createSignal("");
 
   const adjustSize = () => {
     if (!listRef) {
@@ -76,17 +81,26 @@ export const HdPanel: Component = () => {
     window.removeEventListener("resize", handler);
   });
 
-  const items = createMemo(() => {
-    const items = Object.values(appHandouts()).map(
-      (it) =>
-        ({
-          id: it.id,
-          title: it.name,
-          content: it.description,
-        } as AccordionOption)
-    );
-    return items;
-  });
+  const items = createMemo(
+    () => {
+      const hds = appHandouts();
+      return Object.values(hds)
+        .filter((it) => {
+          if (flt() === "") return true;
+          return it.name.includes(flt());
+        })
+        .map(
+          (it) =>
+            ({
+              id: it.id,
+              title: it.name,
+              content: <HdItem item={it} />,
+            } as AccordionOption)
+        );
+    },
+    undefined,
+    { equals: false }
+  );
 
   const expandAll = () => {
     // if (csExpanded().length <= 0)
@@ -103,7 +117,15 @@ export const HdPanel: Component = () => {
 
   const importHd = () => {};
 
-  const createHandout = () => {};
+  const createHandout = () => {
+    setCrDialogOpen(false);
+    const name = selHdName();
+    const ht = selHdType();
+    if (name.trim() === "" || !ht || ht.trim() === "") return;
+    const hd = emptyHandoutInfo(appSettings().userIdent, ht as HandoutInfoType);
+    hd.name = name;
+    updateHdStorage(hd);
+  };
 
   const deleteHandout = () => {};
 
@@ -111,13 +133,25 @@ export const HdPanel: Component = () => {
 
   const renameHandout = () => {};
 
+  const clearFlt = () => {
+    setFlt("");
+    if (!filterRef) return;
+    filterRef.value = "";
+  };
+
   return (
     <div class={csPanelRootStyle}>
       <Flex direction="column">
-        <Flex gap="medium" style={{ "justify-content": "space-between" }}>
+        <Flex
+          gap="medium"
+          style={{ "justify-content": "space-between", "margin-bottom": "5px" }}
+        >
           <Text>Handouts</Text>
-          <Input />
-          <Button>
+          <Input
+            onInput={(e: any) => setFlt(e.target.value)}
+            ref={(e) => (filterRef = e)}
+          />
+          <Button onClick={clearFlt}>
             <FaSolidDeleteLeft />
           </Button>
         </Flex>
@@ -127,7 +161,7 @@ export const HdPanel: Component = () => {
         <Accordion
           collapsible
           multiple
-          colorSchema="accent"
+          colorSchema="secondary"
           backgroundSchema="ghost"
         >
           {items()}

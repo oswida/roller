@@ -21,7 +21,6 @@ type Props = {
 };
 
 export const TplCheck: Component<Props> = ({ item, circle }) => {
-
   const checked = createMemo(() => {
     const info = currentCs();
     if (!info) return false;
@@ -38,7 +37,7 @@ export const TplCheck: Component<Props> = ({ item, circle }) => {
       info.values[item.id] = false;
     }
     updateCsStorage(info);
-    setCurrentCs(undefined);
+    // setCurrentCs(undefined);
     setCurrentCs(info);
     centPublish(netTopic(topicCsInfo), info);
   };
@@ -51,7 +50,8 @@ export const TplCheck: Component<Props> = ({ item, circle }) => {
           checked={checked}
           circle={circle}
           color={item.color}
-          onClick={isCsOwner(currentCs()) ? toggle : undefined} />
+          onClick={isCsOwner(currentCs()) ? toggle : undefined}
+        />
         <Text>{item.text}</Text>
         <TplHintBlock hint={item.hint} />
       </Flex>

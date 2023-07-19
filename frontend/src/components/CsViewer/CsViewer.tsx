@@ -163,7 +163,7 @@ export const CsViewer: Component<RefProps> = ({ ref }) => {
           multiple
           colorSchema="accent"
           backgroundSchema="ghost"
-          value={csExpanded}
+          value={csExpanded()}
           onChange={sectionChange}
         >
           {items()}

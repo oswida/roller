@@ -9,24 +9,42 @@ export const accordionRootStyle = style([
   }),
 ]);
 
-export const accordionTriggerStyle = style([
-  sprinkles({
-    display: "flex",
-    flexDirection: "row",
-    backgroundColor: { default: "none", hover: "primary300" },
-    color: { default: "primary100", hover: "primary900" },
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: "small",
-  }),
-  {
-    outline: "none",
-    border: "none",
-    cursor: "pointer",
-    width: "24px",
-    height: "24px",
+export const accordionTriggerStyle = recipe({
+  base: [
+    sprinkles({
+      display: "flex",
+      flexDirection: "row",
+      // backgroundColor: { default: "none", hover: "primary300" },
+      // color: { default: "primary100", hover: "primary900" },
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: "small",
+    }),
+    {
+      outline: "none",
+      border: "none",
+      cursor: "pointer",
+      width: "24px",
+      height: "24px",
+    },
+  ],
+  variants: {
+    colorSchema: {
+      primary: sprinkles({
+        color: "primary900",
+        backgroundColor: { default: "none", hover: "primary300" },
+      }),
+      secondary: sprinkles({
+        color: "primary700",
+        backgroundColor: { default: "none", hover: "primary200" },
+      }),
+      accent: sprinkles({
+        color: "primary200",
+        backgroundColor: { default: "none", hover: "primary600" },
+      }),
+    },
   },
-]);
+});
 
 export const accordionHeaderStyle = recipe({
   base: [

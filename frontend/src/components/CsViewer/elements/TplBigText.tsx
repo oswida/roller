@@ -65,7 +65,7 @@ export const TplBigText: Component<Props> = ({ item }) => {
     info.values[item.id] = v;
     updateCsStorage(info);
     setEditVal("");
-    setCurrentCs(undefined);
+    // setCurrentCs(undefined);
     setCurrentCs({ ...info });
     centPublish(netTopic(topicCsInfo), info);
   };

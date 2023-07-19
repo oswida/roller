@@ -298,10 +298,10 @@ export type HandoutInfo = {
   shared?: boolean;
 };
 
-export const emptyHandoutInfo = (id: string, htype: HandoutInfoType) => {
+export const emptyHandoutInfo = (owner: string, htype: HandoutInfoType) => {
   return {
     id: uuid(),
-    owner: id,
+    owner: owner,
     name: "handout",
     htype: htype,
     value: "",

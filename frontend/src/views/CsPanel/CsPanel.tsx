@@ -129,14 +129,14 @@ export const CsPanel: Component = () => {
     updateCsStorage(info);
     const flt = items().filter((it) => it.id == info.id);
     if (flt.length > 0) {
-      setCurrentCs(undefined);
+      // setCurrentCs(undefined);
       setCurrentCs(appCs()[flt[0].id]);
     }
   };
 
   const csChange = (item: SelectItem) => {
     if (item) {
-      setCurrentCs(undefined);
+      // setCurrentCs(undefined);
       const cs = appCs()[item.id];
       setCurrentCs(cs);
       const tpl = charTemplates[cs.template];
@@ -198,8 +198,6 @@ export const CsPanel: Component = () => {
       const e = data as CsInfo;
       updateCsStorage(e);
       const info = currentCs();
-      if (!info || info.id !== e.id) return;
-      setCurrentCs(undefined);
       setCurrentCs(e);
     });
   };

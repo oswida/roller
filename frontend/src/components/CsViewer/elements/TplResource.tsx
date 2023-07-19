@@ -55,7 +55,7 @@ export const TplResource: Component<Props> = ({ item, state, square }) => {
     }
 
     updateCsStorage(info);
-    setCurrentCs(undefined);
+    // setCurrentCs(undefined);
     setCurrentCs({ ...info });
     centPublish(netTopic(topicCsInfo), info);
   };

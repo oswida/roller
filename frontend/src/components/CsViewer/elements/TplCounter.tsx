@@ -68,7 +68,7 @@ export const TplCounter: Component<Props> = ({
 
     info.values[item.id] = { ...info.values[item.id], value: i };
     updateCsStorage(info);
-    setCurrentCs(undefined);
+    // setCurrentCs(undefined);
     setCurrentCs({ ...info });
     centPublish(netTopic(topicCsInfo), info);
   };
@@ -83,7 +83,7 @@ export const TplCounter: Component<Props> = ({
       value: item.initialValue,
     };
     updateCsStorage(info);
-    setCurrentCs(undefined);
+    // setCurrentCs(undefined);
     setCurrentCs({ ...info });
     centPublish(netTopic(topicCsInfo), info);
   };
@@ -97,7 +97,7 @@ export const TplCounter: Component<Props> = ({
     value.checked = !value.checked;
     info.values[item.id] = { ...value };
     updateCsStorage(info);
-    setCurrentCs(undefined);
+    // setCurrentCs(undefined);
     setCurrentCs({ ...info });
     centPublish(netTopic(topicCsInfo), info);
   };

@@ -133,6 +133,12 @@ export const updateCsStorage = (item: CsInfo) => {
   saveToStorage(rollerCsKey, newState);
 };
 
+export const updateHdStorage = (item: HandoutInfo) => {
+  const newState = { ...appHandouts() };
+  newState[item.id] = item;
+  saveToStorage(rollerHandoutKey, newState);
+};
+
 export const deleteCsStorage = (id: string) => {
   const newState = { ...appCs() };
   delete newState[id];

@@ -388,7 +388,6 @@ export const centLoadCs = (roomId: string, ids?: string[]) => {
             scs[v.id] = roomId;
           }
         });
-        console.log(data, "scs", scs);
         setCsShared(scs);
         if (ids?.length == 1 && ids[0] == currentCs()?.id) {
           setCurrentCs(undefined);

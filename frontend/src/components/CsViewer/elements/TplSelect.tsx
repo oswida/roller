@@ -38,7 +38,7 @@ export const TplSelect: Component<Props> = ({ item }) => {
     if (!cs || !cs.values) return undefined;
     cs.values[item.id] = it.id;
     updateCsStorage(cs);
-    setCurrentCs(undefined);
+    // setCurrentCs(undefined);
     setCurrentCs({ ...cs });
     centPublish(netTopic(topicCsInfo), cs);
   };

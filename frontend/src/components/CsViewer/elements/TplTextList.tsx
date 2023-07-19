@@ -52,7 +52,7 @@ export const TplTextList: Component<Props> = ({ item, checkable }) => {
     const v = cs.values[item.id] as TextListItem[];
     v.push({ text: "", checked: false } as TextListItem);
     updateCsStorage(cs);
-    setCurrentCs(undefined);
+    // setCurrentCs(undefined);
     setCurrentCs({ ...cs });
     centPublish(netTopic(topicCsInfo), cs);
   };
@@ -64,7 +64,7 @@ export const TplTextList: Component<Props> = ({ item, checkable }) => {
     let v = cs.values[item.id] as TextListItem[];
     v.splice(pos, 1);
     updateCsStorage(cs);
-    setCurrentCs(undefined);
+    // setCurrentCs(undefined);
     setCurrentCs({ ...cs });
     centPublish(netTopic(topicCsInfo), cs);
   };
@@ -89,7 +89,7 @@ export const TplTextList: Component<Props> = ({ item, checkable }) => {
     let v = cs.values[item.id] as TextListItem[];
     v[idx].checked = !v[idx].checked;
     updateCsStorage(cs);
-    setCurrentCs(undefined);
+    // setCurrentCs(undefined);
     setCurrentCs({ ...cs });
     centPublish(netTopic(topicCsInfo), cs);
   };
@@ -101,7 +101,7 @@ export const TplTextList: Component<Props> = ({ item, checkable }) => {
     const val = cs.values[item.id] as TextListItem[];
     val[editedItem()].text = v;
     updateCsStorage(cs);
-    setCurrentCs(undefined);
+    // setCurrentCs(undefined);
     setCurrentCs({ ...cs });
     centPublish(netTopic(topicCsInfo), cs);
   };

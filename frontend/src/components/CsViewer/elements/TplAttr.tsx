@@ -69,7 +69,7 @@ export const TplAttr: Component<Props> = ({ item, wide }) => {
     }
     updateCsStorage(info);
     setEditVal("");
-    setCurrentCs(undefined);
+    // setCurrentCs(undefined);
     setCurrentCs({ ...info });
     centPublish(netTopic(topicCsInfo), info);
   };

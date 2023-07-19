@@ -67,7 +67,7 @@ export const TplTextCheck: Component<Props> = ({ item, circle }) => {
       info.values[item.id] = { text: v, checked: false } as Value;
     else info.values[item.id].text = v;
     updateCsStorage(info);
-    setCurrentCs(undefined);
+    // setCurrentCs(undefined);
     setCurrentCs({ ...info });
     centPublish(netTopic(topicCsInfo), info);
   };
@@ -86,7 +86,7 @@ export const TplTextCheck: Component<Props> = ({ item, circle }) => {
       info.values[item.id] = { text: "", checked: true } as Value;
     else info.values[item.id].checked = !info.values[item.id].checked;
     updateCsStorage(info);
-    setCurrentCs(undefined);
+    // setCurrentCs(undefined);
     setCurrentCs({ ...info });
     centPublish(netTopic(topicCsInfo), info);
   };
