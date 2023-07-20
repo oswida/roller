@@ -267,9 +267,20 @@ export const createSpaceVariants = (name: string) => {
 };
 
 export const parseMarkdown = (data: string) => {
-  return DOMPurify.sanitize(
-    marked.parse(data, { headerIds: false, mangle: false })
+  const result = DOMPurify.sanitize(
+    marked.parse(data, {
+      headerIds: false,
+      mangle: false,
+      breaks: true,
+      gfm: true,
+    })
   )
-    .replaceAll("<p>", "")
-    .replaceAll("</p>", "");
+    .replaceAll("<a", '<a class="markdown-anchor" target="_blank"')
+    .replaceAll("<code", '<code class="markdown-code"')
+    .replaceAll("<p", '<p class="markdown-p"')
+    .replaceAll("<hr", '<hr class="markdown-hr"')
+    .replaceAll("<blockquote", '<blockquote class="markdown-blockquote"')
+    .replaceAll("<ul", '<ul class="markdown-ul"');
+  console.log("markdown", result);
+  return result;
 };

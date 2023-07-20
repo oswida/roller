@@ -12,7 +12,6 @@ import {
   currentCs,
   isCsOwner,
   netTopic,
-  parseMarkdown,
   setCurrentCs,
   topicCsInfo,
   updateCsStorage,

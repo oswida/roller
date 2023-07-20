@@ -18,12 +18,13 @@ export const hdItemTextStyle = style([
   sprinkles({
     color: "primary900",
     display: "flex",
+    flexDirection: "column",
+    gap: "small",
+    fontSize: "standard",
   }),
   {
     maxHeight: "250px",
     overflow: "auto",
     flex: 1,
-    whiteSpace: "pre-wrap",
-    textAlign: "left",
   },
 ]);

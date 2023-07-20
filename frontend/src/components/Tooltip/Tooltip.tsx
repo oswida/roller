@@ -1,6 +1,5 @@
 import { Tooltip as Ttip } from "@kobalte/core";
-import { ParentComponent, Show } from "solid-js";
-import { parseMarkdown } from "~/common";
+import { ParentComponent } from "solid-js";
 import { tooltipRootStyle, tooltipTriggerStyle } from "./styles.css";
 
 export const Tooltip = Ttip.Root;

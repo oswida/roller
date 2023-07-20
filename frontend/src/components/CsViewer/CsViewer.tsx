@@ -28,12 +28,12 @@ import { Text } from "../Text";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../Tooltip";
 import { CsSection } from "./CsSection";
 import { csViewerRootStyle } from "./styles.css";
+import { Dynamic } from "solid-js/web";
 
 const PORTRAIT_HEIGHT = 72;
 
 export const CsViewer: Component<RefProps> = ({ ref }) => {
   const [charPortrait, setCharPortrait] = createSignal("");
-  const [portraitOpen, setPortraitOpen] = createSignal(false);
 
   createEffect(() => {
     const cs = currentCs();
@@ -69,16 +69,6 @@ export const CsViewer: Component<RefProps> = ({ ref }) => {
     updateCsOpenSections(info, value);
   };
 
-  const hasPortrait = createMemo(() => {
-    const cs = currentCs();
-    if (!cs) return false;
-    return (
-      cs.portraitUrl !== undefined &&
-      cs.portraitUrl !== null &&
-      cs.portraitUrl.trim() !== ""
-    );
-  });
-
   const changePortrait = () => {
     importImage(
       (data: any) => {
@@ -100,6 +90,12 @@ export const CsViewer: Component<RefProps> = ({ ref }) => {
     updateCsStorage(cs);
     centPublish(netTopic(topicCsInfo), cs);
   };
+
+  const csName = createMemo(() => {
+    const cs = currentCs();
+    if (!cs) return "";
+    return cs.name;
+  });
 
   return (
     <div class={csViewerRootStyle} ref={(e) => ref(e)}>
@@ -154,9 +150,9 @@ export const CsViewer: Component<RefProps> = ({ ref }) => {
             <TooltipContent>Click to change character portrait</TooltipContent>
           </Tooltip>
 
-          <Text colorSchema="secondary" fontSize="bigger">
-            {currentCs()?.name}
-          </Text>
+          <Dynamic component={Text} colorSchema="secondary" fontSize="bigger">
+            {csName()}
+          </Dynamic>
         </Flex>
         <Accordion
           collapsible

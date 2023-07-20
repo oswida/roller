@@ -96,11 +96,13 @@ export const csTplWzm6: CharTemplate = {
   game: "Wyprawa za Mur",
   computeDeps: {
     siła: ["premia_sila"],
-    zręczność: ["premia_zrecznosc", "kp_premia"],
+    zręczność: ["premia_zrecznosc", "kp_premia", "inicjatywa_premia"],
     kondycja: ["premia_kondycja"],
     inteligencja: ["premia_inteligencja"],
     mądrość: ["premia_madrosc"],
     charyzma: ["premia_charyzma"],
+    inicjatywa: ["inicjatywa_premia"],
+    kp: ["kp_premia"],
   },
   sections: [
     {
@@ -133,8 +135,7 @@ export const csTplWzm6: CharTemplate = {
         {
           id: "inicjatywa",
           name: "Inicjatywa",
-          itype: "text",
-          limit: 1,
+          itype: "attr",
         },
         {
           id: "inicjatywa_premia",

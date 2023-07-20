@@ -17,7 +17,9 @@ export const TplHintBlock: Component<Props> = ({ hint }) => {
             <FaSolidCircleInfo class={tplHintIconStyle} />
           </div>
         </TooltipTrigger>
-        <TooltipContent>{hint ? parseMarkdown(hint) : ""}</TooltipContent>
+        <TooltipContent>
+          <div innerHTML={hint ? parseMarkdown(hint) : ""} />
+        </TooltipContent>
       </Tooltip>
     </Show>
   );

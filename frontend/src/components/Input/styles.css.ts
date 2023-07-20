@@ -25,5 +25,6 @@ export const inputFieldStyle = style([
     borderStyle: "solid",
     flex: 1,
     outline: "none",
+    whiteSpace: "pre-wrap",
   },
 ]);

@@ -1,4 +1,4 @@
-import { Component, Show, createSignal } from "solid-js";
+import { Component, Show, createEffect, createSignal } from "solid-js";
 import { HandoutInfo, parseMarkdown, updateHdStorage } from "~/common";
 import { hdItemTextStyle } from "../styles.css";
 import {
@@ -24,10 +24,14 @@ export const HdItemText: Component<Props> = ({ item }) => {
     item.value = editContent();
     updateHdStorage(item);
   };
+
+  createEffect(() => {
+    if (!descDlgOpen()) return;
+    setEditContent(item.value);
+  });
+
   return (
-    <Flex
-      style={{ "justify-content": "space-between", "align-items": "center" }}
-    >
+    <Flex direction="column">
       <Show when={item.value === ""}>
         <Text>...</Text>
       </Show>
@@ -35,28 +39,29 @@ export const HdItemText: Component<Props> = ({ item }) => {
         <div class={hdItemTextStyle} innerHTML={parseMarkdown(item.value)} />
       </Show>
 
-      <Flex>
-        <Dialog open={descDlgOpen()} onOpenChange={setDescDlgOpen}>
-          <DialogTrigger>
-            <FaSolidPen size="16px" fill="currentColor" />
-          </DialogTrigger>
-          <DialogContent title="Handout text">
-            <InputArea
-              currentValue={() => item.value}
-              style={{
-                width: "25rem",
-                "min-height": "15rem",
-                "font-size": "medium",
-              }}
-              onChange={(e: any) => setEditContent(e.target.value)}
-            />
-            <Flex gap="large" center>
-              <Button onClick={save}>Save</Button>
-              <Button onClick={() => setDescDlgOpen(false)}>Cancel</Button>
-            </Flex>
-          </DialogContent>
-        </Dialog>
-      </Flex>
+      <Dialog open={descDlgOpen()} onOpenChange={setDescDlgOpen}>
+        <DialogTrigger>
+          <Button style={{ height: "24px" }}>
+            <FaSolidPen size="12px" fill="currentColor" />
+            <Text fontSize="smaller">Edit</Text>
+          </Button>
+        </DialogTrigger>
+        <DialogContent title="Handout text">
+          <InputArea
+            currentValue={() => item.value}
+            style={{
+              width: "25rem",
+              "min-height": "15rem",
+              "font-size": "medium",
+            }}
+            onChange={(e: any) => setEditContent(e.target.value)}
+          />
+          <Flex gap="large" center>
+            <Button onClick={save}>Save</Button>
+            <Button onClick={() => setDescDlgOpen(false)}>Cancel</Button>
+          </Flex>
+        </DialogContent>
+      </Dialog>
     </Flex>
   );
 };
