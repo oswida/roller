@@ -43,6 +43,7 @@
     "marked": "^5.1.0",
     "marked-gfm-heading-id": "^3.0.4",
     "marked-mangle": "^1.0.1",
+    "panzoom": "^9.4.3",
     "queue": "^7.0.0",
     "solid-copy-to-clipboard": "^0.1.0",
     "solid-icons": "^1.0.8",

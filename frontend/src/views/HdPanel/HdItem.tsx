@@ -21,6 +21,7 @@ import {
 } from "~/components";
 import { FaSolidPen, FaSolidXmark } from "solid-icons/fa";
 import { HdItemText } from "./element/HdItemText";
+import { HdItemImage } from "./element/HdItemImage";
 
 type Props = {
   item: HandoutInfo;
@@ -108,6 +109,9 @@ export const HdItem: ParentComponent<Props> = ({ item }) => {
         <Match when={item.htype === "text"}>
           <HdItemText item={item} />
         </Match>
+        {/* <Match when={item.htype === "image"}>
+          <HdItemImage item={item} />
+        </Match> */}
       </Switch>
     </div>
   );

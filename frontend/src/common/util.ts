@@ -281,6 +281,5 @@ export const parseMarkdown = (data: string) => {
     .replaceAll("<hr", '<hr class="markdown-hr"')
     .replaceAll("<blockquote", '<blockquote class="markdown-blockquote"')
     .replaceAll("<ul", '<ul class="markdown-ul"');
-  console.log("markdown", result);
   return result;
 };
