@@ -33,6 +33,9 @@ import {
   RadioGroup,
   RadioItem,
   Text,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
 } from "~/components";
 import { DefItem } from "./DefItem";
 import { defListStyle, defTabStyle } from "./styles.css";
@@ -132,21 +135,25 @@ export const DefsContent: Component<Props> = ({ ref, adjustSize }) => {
 
   return (
     <>
-      <Flex gap="large" style={{ "justify-content": "space-between" }}>
-        <Flex style={{ "min-height": "35px" }}>
-          <div onClick={() => ct("rolls")} class={defTabStyle({})}>
-            <Text title="Roll list">Rolls</Text>
-          </div>
-          <div class={defTabStyle({ sel: true })}>
-            <Text colorSchema="secondary">Defs</Text>
-          </div>
+      <Flex gap="medium" justify="space">
+        <Flex style={{ "min-height": "35px" }} align="center">
+          <Button onClick={() => ct("rolls")} style={{ height: "30px" }}>
+            <Text fontSize="smaller" title="Roll list">
+              Rolls
+            </Text>
+          </Button>
+          <Button toggled={() => true} style={{ height: "30px" }}>
+            <Text fontSize="smaller">Defs</Text>
+          </Button>
         </Flex>
-        <Flex>
+        <Flex align="center" gap="small">
           <Show when={selDef()}>
-            <Flex style={{ "margin-right": "10px" }}>
+            <Flex>
               <Alert open={delDlgOpen()} onOpenChange={setDelDlgOpen}>
                 <AlertTrigger title="Delete definition">
-                  <FaSolidTrash />
+                  <Button>
+                    <FaSolidTrash />
+                  </Button>
                 </AlertTrigger>
                 <AlertContent title="Delete definition">
                   <Text>
@@ -160,8 +167,10 @@ export const DefsContent: Component<Props> = ({ ref, adjustSize }) => {
               </Alert>
 
               <Dialog open={editDlgOpen()} onOpenChange={setEditDlgOpen}>
-                <DialogTrigger>
-                  <FaSolidPen />
+                <DialogTrigger title="Edit definition">
+                  <Button>
+                    <FaSolidPen />
+                  </Button>
                 </DialogTrigger>
                 <DialogContent title="Edit definition">
                   <Show when={editDlgOpen()}>
@@ -225,15 +234,35 @@ export const DefsContent: Component<Props> = ({ ref, adjustSize }) => {
               </Dialog>
             </Flex>
           </Show>
-          <Button title="Import definitions" onClick={importDefs}>
-            <FaSolidFileImport />
-          </Button>
-          <Button title="Export definitions" onClick={exportDefs}>
-            <FaSolidFileExport />
-          </Button>
+
+          <Tooltip>
+            <TooltipTrigger>
+              <Button onClick={importDefs}>
+                <FaSolidFileImport />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Import definitions</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger>
+              <Button onClick={exportDefs}>
+                <FaSolidFileExport />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Export definitions</TooltipContent>
+          </Tooltip>
+
           <Dialog open={createDlgOpen()} onOpenChange={setCreateDlgOpen}>
             <DialogTrigger>
-              <FaSolidPlus />
+              <Tooltip>
+                <TooltipTrigger>
+                  <Button>
+                    <FaSolidPlus />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Create definition</TooltipContent>
+              </Tooltip>
             </DialogTrigger>
             <DialogContent title="Create definition">
               <Show when={createDlgOpen()}>

@@ -9,7 +9,15 @@ import {
   setAppRolls,
   topicRollInfo,
 } from "~/common";
-import { Alert, Button, DataBlock, Flex, Text } from "~/components";
+import {
+  Alert,
+  AlertContent,
+  AlertTrigger,
+  Button,
+  DataBlock,
+  Flex,
+  Text,
+} from "~/components";
 import {
   chatItemCommentStyle,
   chatItemContentStyle,
@@ -63,6 +71,7 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
 
   return (
     <Flex
+      grow
       gap="none"
       direction="column"
       class={chatItemRootStyle({ private: item.private && !item.revealed })}
@@ -80,8 +89,8 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
 
       <Show when={item.result.sets}>
         <div class={chatItemContentStyle({})}>
-          <Flex gap="medium" direction="column">
-            <Flex style={{ "justify-content": "space-between", flex: 1 }}>
+          <Flex gap="medium" direction="column" grow>
+            <Flex justify="space" align="center" style={{ width: "100%" }}>
               <Show when={appSettings().showRollTotal && item.result.total}>
                 <DataBlock
                   width="45%"
@@ -108,7 +117,11 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
                     rightBackground="accent"
                     leftBackground="accent"
                     left={
-                      <Flex center style={{ gap: "2px" }}>
+                      <Flex
+                        align="center"
+                        justify="center"
+                        style={{ gap: "2px" }}
+                      >
                         <BiRegularTargetLock fill="currentcolor" />
                         <Text colorSchema="background">
                           {item.successTarget}
@@ -136,10 +149,10 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
               </Show>
             </Flex>
 
-            <Flex gap="medium">
+            <Flex gap="medium" align="center">
               <For each={item.result.sets}>
                 {(set) => (
-                  <Flex>
+                  <Flex align="center" justify="evenly" grow>
                     <Text colorSchema="secondary">{`${set.num}${set.type}: `}</Text>
                     <DataBlock
                       right={set.rolls.map((r) => r.value).join(", ")}
@@ -150,25 +163,22 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
             </Flex>
           </Flex>
 
-          <Flex
-            style={{ "justify-content": "flex-end", "align-items": "center" }}
-          >
+          <Flex align="center" justify="end">
             <Show when={item.comment !== undefined && item.comment !== ""}>
               <div class={chatItemCommentStyle}>{item.comment}</div>
             </Show>
             <Show when={myPrivate()}>
-              <Alert
-                label="Reveal"
-                trigger={<FaSolidEyeSlash color={themeVars.info900} />}
-                triggerHint="Reveal private roll"
-                open={revOpen}
-                onOpenChange={setRevOpen}
-              >
-                <Text>Reveal {item.result.notation} roll?</Text>
-                <Flex gap="large">
-                  <Button onClick={() => setRevOpen(false)}>Cancel</Button>
-                  <Button onClick={reveal}>Accept</Button>
-                </Flex>
+              <Alert open={revOpen()} onOpenChange={setRevOpen}>
+                <AlertTrigger title="Reveal private roll">
+                  <FaSolidEyeSlash color={themeVars.info900} />
+                </AlertTrigger>
+                <AlertContent title="Reveal">
+                  <Text>Reveal {item.result.notation} roll?</Text>
+                  <Flex gap="large">
+                    <Button onClick={() => setRevOpen(false)}>Cancel</Button>
+                    <Button onClick={reveal}>Accept</Button>
+                  </Flex>
+                </AlertContent>
               </Alert>
             </Show>
           </Flex>

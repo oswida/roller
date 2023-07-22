@@ -9,6 +9,7 @@ export const csViewerRootStyle = style([
   {
     overflow: "auto",
     userSelect: "none",
+    width: "100%",
   },
 ]);
 
@@ -18,8 +19,7 @@ export const csTplIconStyle = style([
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: { default: "none", hover: "primary400" },
-    // color: { default: "primary900", hover: "primary100" },
+    backgroundColor: { default: "none", hover: "primary300" },
   }),
   {
     cursor: "pointer",
@@ -40,13 +40,18 @@ export const csTplAttrValueStyle = style([
   }),
   {
     cursor: "pointer",
+    fontWeight: "bolder",
   },
 ]);
 
 export const csTplAttrNameStyle = style([
   sprinkles({
     color: { default: "primary100" },
+    padding: "small",
   }),
+  {
+    fontWeight: "normal",
+  },
 ]);
 
 export const tplCheckItemStyle = recipe({

@@ -14,12 +14,29 @@ export const flexStyle = recipe({
       row: sprinkles({ flexDirection: "row" }),
       column: sprinkles({ flexDirection: "column" }),
     },
-    center: {
-      true: sprinkles({ justifyContent: "center", alignItems: "center" }),
+    align: {
+      center: sprinkles({ alignItems: "center" }),
+      start: sprinkles({ alignItems: "flex-start" }),
+      end: sprinkles({ alignItems: "flex-end" }),
+    },
+    justify: {
+      center: sprinkles({ justifyContent: "center" }),
+      space: sprinkles({ justifyContent: "space-between" }),
+      evenly: sprinkles({ justifyContent: "space-evenly" }),
+      start: sprinkles({ justifyContent: "flex-start" }),
+      end: sprinkles({ justifyContent: "flex-end" }),
+    },
+    grow: {
+      true: {
+        width: "100%",
+      },
     },
   },
   defaultVariants: {
     gap: "small",
     direction: "row",
+    align: "start",
+    justify: "start",
+    grow: false,
   },
 });

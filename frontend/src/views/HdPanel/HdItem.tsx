@@ -54,7 +54,7 @@ export const HdItem: ParentComponent<Props> = ({ item }) => {
           "padding-bottom": "5px",
         }}
       >
-        <Flex style={{ "justify-content": "space-between", flex: 1 }}>
+        <Flex justify="space" grow>
           <div>
             <Dialog open={descDlgOpen()} onOpenChange={setDescDlgOpen}>
               <DialogTrigger>
@@ -75,7 +75,7 @@ export const HdItem: ParentComponent<Props> = ({ item }) => {
                   }}
                   onChange={(e: any) => setEditContent(e.target.value)}
                 />
-                <Flex gap="large" center>
+                <Flex gap="large" align="center" justify="center">
                   <Button onClick={save}>Save</Button>
                   <Button onClick={() => setDescDlgOpen(false)}>Cancel</Button>
                 </Flex>
@@ -91,14 +91,14 @@ export const HdItem: ParentComponent<Props> = ({ item }) => {
             </AlertTrigger>
             <AlertContent>
               <Text>Delete {item.name}?</Text>
-              <Flex center gap="large">
+              <Flex align="center" justify="center" gap="large">
                 <Button onClick={() => setDelDlgOpen(false)}>Cancel</Button>
                 <Button onClick={remove}>Delete</Button>
               </Flex>
             </AlertContent>
           </Alert>
         </Flex>
-        <Flex style={{ "justify-content": "flex-end", flex: 1 }}>
+        <Flex justify="end" grow>
           <Text colorSchema="secondary" fontSize="smaller" style={{ flex: 1 }}>
             {item.description}
           </Text>

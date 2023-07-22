@@ -56,7 +56,7 @@ export const HdItemText: Component<Props> = ({ item }) => {
             }}
             onChange={(e: any) => setEditContent(e.target.value)}
           />
-          <Flex gap="large" center>
+          <Flex gap="large" align="center" justify="center">
             <Button onClick={save}>Save</Button>
             <Button onClick={() => setDescDlgOpen(false)}>Cancel</Button>
           </Flex>

@@ -34,7 +34,7 @@ import {
   PopoverContent,
 } from "~/components";
 import { ChatItem } from "./ChatItem";
-import { chatListStyle, defTabStyle } from "./styles.css";
+import { chatListStyle } from "./styles.css";
 import toast from "solid-toast";
 import { v4 as uuid } from "uuid";
 
@@ -113,22 +113,27 @@ export const RollsContent: Component<Props> = ({ ref, adjustSize }) => {
 
   return (
     <>
-      <Flex gap="medium" style={{ "justify-content": "space-between" }}>
-        <Flex style={{ "min-height": "35px" }}>
-          <div class={defTabStyle({ sel: true })}>
-            <Text colorSchema="secondary">Rolls</Text>
-          </div>
-          <div onClick={() => ct("cs")} class={defTabStyle({})}>
-            <Text title="Roll definitions">Defs</Text>
-          </div>
+      <Flex gap="medium" justify="space">
+        <Flex style={{ "min-height": "35px" }} align="center">
+          <Button toggled={() => true} style={{ height: "30px" }}>
+            <Text fontSize="smaller" title="Rolls">
+              Rolls
+            </Text>
+          </Button>
+
+          <Button onClick={() => ct("cs")} style={{ height: "30px" }}>
+            <Text fontSize="smaller" title="Roll definitions">
+              Defs
+            </Text>
+          </Button>
         </Flex>
 
-        <Flex>
+        <Flex justify="end">
           <Popover modal={true} onOpenChange={setCmOpen} open={cmOpen()}>
             <PopoverTrigger title="Send chat message">
               <FaSolidMessage />
             </PopoverTrigger>
-            <PopoverContent>
+            <PopoverContent title="Send chat message">
               <Input
                 id="chat-message"
                 onFocus={(e) => e.target.select()}
@@ -148,14 +153,9 @@ export const RollsContent: Component<Props> = ({ ref, adjustSize }) => {
           </Show>
         </Flex>
       </Flex>
+
       <div class={chatListStyle} ref={(e: any) => ref(e)}>
-        <For each={items()}>
-          {(it) => (
-            <Flex direction="column">
-              <ChatItem item={it} />
-            </Flex>
-          )}
-        </For>
+        <For each={items()}>{(it) => <ChatItem item={it} />}</For>
       </div>
     </>
   );

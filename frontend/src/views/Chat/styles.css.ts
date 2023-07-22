@@ -35,6 +35,7 @@ export const chatListStyle = style([
 export const chatItemRootStyle = recipe({
   base: {
     borderRadius: "5px",
+
     selectors: {
       "&:hover": {
         opacity: 1,
@@ -120,6 +121,7 @@ export const chatItemHeaderStyle = recipe({
     }),
     {
       userSelect: "none",
+      borderBottomStyle: "solid",
     },
   ],
   variants: {
@@ -133,12 +135,10 @@ export const chatItemHeaderStyle = recipe({
     },
     private: {
       false: sprinkles({
-        borderBottomStyle: "solid",
         borderBottomWidth: "thin",
         borderBottomColor: "primary600",
       }),
       true: sprinkles({
-        borderBottomStyle: "solid",
         borderBottomWidth: "thin",
         borderBottomColor: "primary400",
       }),
@@ -153,13 +153,13 @@ export const chatItemHeaderStyle = recipe({
 export const chatItemCommentStyle = style([
   sprinkles({
     borderTopColor: "primary400",
-    borderTopStyle: "dotted",
     borderTopWidth: "thin",
     paddingTop: "small",
   }),
   {
     fontStyle: "italic",
     flex: 1,
+    borderTopStyle: "dotted",
   },
 ]);
 
@@ -196,7 +196,7 @@ export const defItemStyle = recipe({
   ],
   variants: {
     sel: {
-      true: sprinkles({ backgroundColor: "primary800" }),
+      true: sprinkles({ backgroundColor: "primary500" }),
       false: sprinkles({ backgroundColor: "primary100" }),
     },
   },

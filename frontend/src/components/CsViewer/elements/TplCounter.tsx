@@ -103,22 +103,9 @@ export const TplCounter: Component<Props> = ({
   };
 
   return (
-    <Flex gap="medium" style={{ "align-items": "center" }}>
-      <Flex
-        style={{
-          "justify-content": "space-between",
-          "align-items": "center",
-          flex: 1,
-        }}
-      >
-        <Flex
-          gap="medium"
-          style={{
-            "justify-content": "space-between",
-            flex: 1,
-            "align-items": "center",
-          }}
-        >
+    <Flex gap="medium" align="center">
+      <Flex justify="space" align="center" grow>
+        <Flex gap="medium" justify="space" align="center" grow>
           <Flex>
             <Show when={checkable}>
               <TplCheckBlock

@@ -12,6 +12,7 @@ export const datablockStyle = recipe({
     {
       // width: "auto",
       minWidth: "3em",
+      minHeight: "2em",
     },
   ],
   variants: {
@@ -20,7 +21,7 @@ export const datablockStyle = recipe({
         backgroundColor: "primary300",
         color: "primary900",
       }),
-      accent: sprinkles({ backgroundColor: "primary600", color: "primary100" }),
+      accent: sprinkles({ backgroundColor: "primary700", color: "primary100" }),
       none: sprinkles({ backgroundColor: "none", color: "primary900" }),
     },
     position: {

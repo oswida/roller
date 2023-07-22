@@ -11,15 +11,22 @@ import {
   dialogTitleStyle,
   dialogTriggerStyle,
 } from "./styles.css";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../Tooltip";
 
 export const DialogTrigger: ParentComponent<Dlg.DialogTriggerProps> = ({
   children,
+  title,
   ...rest
 }) => {
   return (
-    <Dlg.Trigger class={dialogTriggerStyle({})} {...rest}>
-      {children}
-    </Dlg.Trigger>
+    <Tooltip>
+      <TooltipTrigger>
+        <Dlg.Trigger class={dialogTriggerStyle({})} {...rest}>
+          {children}
+        </Dlg.Trigger>
+      </TooltipTrigger>
+      <TooltipContent>{title}</TooltipContent>
+    </Tooltip>
   );
 };
 

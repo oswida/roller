@@ -23,7 +23,7 @@ export const TplLabel: Component<Props> = ({ item }) => {
   };
 
   return (
-    <Flex style={{ "justify-content": "space-between" }}>
+    <Flex justify="space">
       <Flex>
         <Text style={{ color: item.color ? item.color : themeVars.info900 }}>
           {item.text}

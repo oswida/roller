@@ -137,7 +137,7 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
             <PopoverTrigger title="User settings">
               <FaSolidUser style={{ height: "1.5em", width: "1.5em" }} />
             </PopoverTrigger>
-            <PopoverContent>
+            <PopoverContent title="User settings">
               <UserSettingsView onOpenChange={setUserSettingsOpen} />
             </PopoverContent>
           </Popover>
@@ -155,7 +155,7 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
                   style={{ height: "1.5em", width: "1.5em" }}
                 />
               </PopoverTrigger>
-              <PopoverContent>
+              <PopoverContent title="Rooms">
                 <RoomSettingsView onOpenChange={setRoomSettingsOpen} />
               </PopoverContent>
             </Popover>
@@ -179,7 +179,7 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
             <PopoverTrigger title="Connect to room">
               <FaSolidPlug style={{ height: "1.5em", width: "1.5em" }} />
             </PopoverTrigger>
-            <PopoverContent>
+            <PopoverContent title="Connect to room">
               <RoomConnectView onOpenChange={setRoomConnectOpen} />
             </PopoverContent>
           </Popover>
@@ -221,7 +221,7 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
         </Show>
       </Flex>
 
-      <Flex gap="large" center>
+      <Flex gap="large" align="center" justify="center">
         <Show when={centConnectionStatus()}>
           <Dynamic
             component={"div"}

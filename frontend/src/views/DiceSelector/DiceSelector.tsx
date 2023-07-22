@@ -89,7 +89,7 @@ const ModifierDialog = ({ priv }: { priv: boolean }) => {
       </DialogTrigger>
       <DialogContent title="Roll modifier">
         <Input id="dice-modifier" label="Value" />
-        <Flex gap="large" center>
+        <Flex gap="large" align="center" justify="center">
           <Button onClick={() => enrollTask(action)}>Roll</Button>
         </Flex>
       </DialogContent>
@@ -139,7 +139,7 @@ export const DiceSelector: Component<RefProps> = ({ ref }) => {
 
   return (
     <div class={diceSelectorStyle} ref={ref}>
-      <Flex style={{ "align-items": "center" }} gap="small">
+      <Flex align="center" gap="small">
         <Show when={!rolling()}>
           <Show when={!modRoll()}>
             <Switch>
@@ -207,7 +207,7 @@ export const DiceSelector: Component<RefProps> = ({ ref }) => {
       </Flex>
 
       <Show when={!appSettings().rightLayout}>
-        <Flex gap="medium" center>
+        <Flex gap="medium" align="center" justify="center">
           <Tooltip>
             <TooltipTrigger>
               <Button variant="ghost" onClick={resetPool}>

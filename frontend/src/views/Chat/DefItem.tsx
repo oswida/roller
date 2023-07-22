@@ -78,7 +78,7 @@ export const DefItem: Component<Props & ComponentProps<"div">> = ({
 
   return (
     <div class={defItemStyle({ sel: isSelected() })} {...rest}>
-      <Flex style={{ "justify-content": "space-between" }}>
+      <Flex justify="space">
         <Text fontSize="bigger">{item.name}</Text>
         <Show when={needsParam()}>
           <Dialog open={valOpen()} onOpenChange={setValOpen}>
@@ -106,14 +106,14 @@ export const DefItem: Component<Props & ComponentProps<"div">> = ({
           </Button>
         </Show>
       </Flex>
-      <Flex style={{ "justify-content": "space-between" }}>
+      <Flex justify="space">
         <Show when={item.successRule !== ""}>
           <Text colorSchema="secondary">
             <i>{item.successRule}</i>
           </Text>
         </Show>
         <Show when={item.successTarget && item.successTarget !== ""}>
-          <Flex center>
+          <Flex align="center" justify="center">
             <BiRegularTargetLock />{" "}
             <Text colorSchema="primary">{item.successTarget}</Text>
           </Flex>

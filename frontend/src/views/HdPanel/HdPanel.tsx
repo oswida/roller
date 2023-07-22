@@ -142,10 +142,7 @@ export const HdPanel: Component = () => {
   return (
     <div class={csPanelRootStyle}>
       <Flex direction="column">
-        <Flex
-          gap="medium"
-          style={{ "justify-content": "space-between", "margin-bottom": "5px" }}
-        >
+        <Flex gap="medium" justify="space" style={{ "margin-bottom": "5px" }}>
           <Text>Handouts</Text>
           <Input
             onInput={(e: any) => setFlt(e.target.value)}
@@ -168,7 +165,7 @@ export const HdPanel: Component = () => {
         </Accordion>
       </div>
 
-      <Flex gap="none" style={{ "justify-content": "space-between" }}>
+      <Flex gap="none" justify="space">
         <Flex>
           <Dialog open={crDialogOpen()} onOpenChange={setCrDialogOpen}>
             <DialogTrigger>

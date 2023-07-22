@@ -102,17 +102,17 @@ export const CsViewer: Component<RefProps> = ({ ref }) => {
       <Show when={currentCs() && tpl()}>
         <Flex
           gap="large"
+          align="center"
+          justify="evenly"
           style={{
             "min-height": "fit-content",
-            "align-items": "center",
-            "justify-content": "space-evenly",
             padding: "5px",
             "padding-right": "10px",
           }}
         >
           <Tooltip>
             <TooltipTrigger>
-              <Flex center>
+              <Flex align="center" justify="center">
                 <Switch>
                   <Match when={currentCs()?.portraitUrl}>
                     <div

@@ -67,7 +67,7 @@ const ModifierDialog = ({
           <For each={roll.labels}>
             {(it) => <Input id={`${item.name}-${it}`} label={it} />}
           </For>
-          <Flex gap="large" center>
+          <Flex gap="large" align="center" justify="center">
             <Button onClick={action}>Roll</Button>
           </Flex>
         </DialogContent>
@@ -85,7 +85,7 @@ export const TplRollBlock: Component<Props> = ({ item, value }) => {
 
   return (
     <Show when={item.rolls && item.rolls.length > 0 && isCsOwner(currentCs())}>
-      <Flex center>
+      <Flex align="center" justify="center">
         <For each={item.rolls}>
           {(r) => (
             <>

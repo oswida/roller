@@ -11,6 +11,7 @@ import { dialogHeaderStyle } from "../Dialog/styles.css";
 import { dialogOverlayStyle } from "../Dialog/styles.css";
 import { dialogContentStyle } from "../Dialog/styles.css";
 import { FaSolidXmark } from "solid-icons/fa";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../Tooltip";
 
 type Props = {
   onOpenChange: (value: boolean) => void;
@@ -22,11 +23,16 @@ type Props = {
 
 export const AlertTrigger: ParentComponent<
   AlertDialog.AlertDialogTriggerProps
-> = ({ children, ...rest }) => {
+> = ({ children, title, ...rest }) => {
   return (
-    <AlertDialog.Trigger class={dialogTriggerStyle({})} {...rest}>
-      {children}
-    </AlertDialog.Trigger>
+    <Tooltip>
+      <TooltipTrigger>
+        <AlertDialog.Trigger class={dialogTriggerStyle({})} {...rest}>
+          {children}{" "}
+        </AlertDialog.Trigger>
+      </TooltipTrigger>
+      <TooltipContent>{title}</TooltipContent>
+    </Tooltip>
   );
 };
 

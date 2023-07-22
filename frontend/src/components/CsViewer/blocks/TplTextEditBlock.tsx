@@ -49,13 +49,8 @@ export const TplTextEditBlock: Component<Props> = ({
   });
 
   return (
-    <Flex direction="column" gap="small" style={{ flex: 1 }}>
-      <Flex
-        style={{
-          "align-items": "center",
-          "justify-content": "space-between",
-        }}
-      >
+    <Flex direction="column" gap="small" grow>
+      <Flex align="center" justify="space">
         <Show when={!hideName}>
           <Flex>
             <Text fontSize="smaller" colorSchema="secondary">

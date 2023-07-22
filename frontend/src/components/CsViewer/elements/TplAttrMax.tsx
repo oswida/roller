@@ -104,13 +104,7 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
   return (
     <Flex gap="medium" style={{ "align-items": "center" }}>
       <Show when={!itemEdit()}>
-        <Flex
-          style={{
-            "justify-content": "space-between",
-            "align-items": "center",
-            flex: 1,
-          }}
-        >
+        <Flex align="center" justify="space" grow>
           <DataBlock
             width="50%"
             widthLeft="80%"

@@ -62,14 +62,14 @@ export const TplResource: Component<Props> = ({ item, state, square }) => {
 
   return (
     <Flex direction="column" gap="small">
-      <Flex style={{ "align-items": "center" }} gap="medium">
+      <Flex align="center" gap="medium">
         <Text fontSize="smaller" colorSchema="secondary">
           {item.name}
         </Text>
         <TplHintBlock hint={item.hint} />
       </Flex>
-      <Flex gap="small" style={{ "align-items": "center" }}>
-        <Flex direction="column" gap="small" center>
+      <Flex gap="small" align="center">
+        <Flex direction="column" gap="small" align="center" justify="center">
           <Show when={state && item.labels && item.labels[0]}>
             <Text fontSize="smaller">{item.labels ? item.labels[0] : ""}</Text>
           </Show>
@@ -88,7 +88,7 @@ export const TplResource: Component<Props> = ({ item, state, square }) => {
             />
           )}
         </For>
-        <Flex direction="column" gap="small" center>
+        <Flex direction="column" gap="small" align="center" justify="center">
           <Show when={state && item.labels && item.labels.length > 1}>
             <Text fontSize="smaller">{item.labels ? item.labels[1] : ""}</Text>
           </Show>

@@ -116,7 +116,7 @@ export const TplTextList: Component<Props> = ({ item, checkable }) => {
 
   return (
     <Flex direction="column">
-      <Flex style={{ "justify-content": "space-between" }}>
+      <Flex justify="space">
         <Flex>
           <Text colorSchema="secondary" fontSize="smaller">
             {item.name}
@@ -132,9 +132,9 @@ export const TplTextList: Component<Props> = ({ item, checkable }) => {
       <For each={values()}>
         {(it, idx) => (
           <Show when={it}>
-            <Flex style={{ "justify-content": "space-between" }}>
+            <Flex justify="space">
               <Show when={editedItem() !== idx()}>
-                <Flex style={{ "align-items": "center" }} gap="medium">
+                <Flex align="center" gap="medium">
                   <Show when={checkable}>
                     <TplCheckBlock
                       hint={item.labels ? item.labels[0] : undefined}

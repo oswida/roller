@@ -1,5 +1,13 @@
-import { Component, Show, createSignal, onCleanup, onMount } from "solid-js";
-import { TOPBAR_HEIGHT, appSettings } from "~/common";
+import {
+  Component,
+  Show,
+  createEffect,
+  createSignal,
+  on,
+  onCleanup,
+  onMount,
+} from "solid-js";
+import { TOPBAR_HEIGHT, appSettings, currentRightPanel } from "~/common";
 import { Flex } from "~/components";
 import { ChatView } from "../Chat";
 import { RollView } from "../Roll/RollView";
@@ -25,9 +33,10 @@ export const RollPanel: Component<Props> = ({ visible }) => {
       return;
     }
     const delta = TOPBAR_HEIGHT + selRef.getBoundingClientRect().height + 60; // 40 - button height
-    if (chatRef) chatRef.style.height = `calc(100vh - ${delta}px)`;
+    if (chatRef) chatRef.style.height = `calc(100vh - ${delta}px + 10px)`;
     if (csRef) csRef.style.height = `calc(100vh - ${delta}px)`;
     rollRef.style.height = `calc(100vh - ${delta}px + 60px)`;
+    console.log("adjust size", "delta", delta, rollRef.style.height);
   };
 
   const handler = (event: Event) => {
@@ -43,6 +52,12 @@ export const RollPanel: Component<Props> = ({ visible }) => {
   onCleanup(() => {
     window.removeEventListener("resize", handler);
   });
+
+  createEffect(
+    on(currentRightPanel, () => {
+      adjustSize();
+    })
+  );
 
   return (
     <div style={{ visibility: visible() ? "visible" : "hidden" }}>

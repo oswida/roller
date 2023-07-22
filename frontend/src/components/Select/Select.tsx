@@ -1,8 +1,6 @@
 import { Select as Sel } from "@kobalte/core";
 import { Component, Show } from "solid-js";
-import {
-  FaSolidCircleCheck,
-} from "solid-icons/fa";
+import { FaSolidCircleCheck } from "solid-icons/fa";
 import {
   selectItemStyle,
   selectLabelStyle,
@@ -15,7 +13,7 @@ import { Flex } from "../Flex";
 export type SelectItem = {
   id: string;
   label: string;
-}
+};
 
 type Props = {
   options: () => SelectItem[];
@@ -26,7 +24,14 @@ type Props = {
   modal?: boolean;
 };
 
-export const Select: Component<Props> = ({ options, selected, onChange, label, modal, labelLeft }) => {
+export const Select: Component<Props> = ({
+  options,
+  selected,
+  onChange,
+  label,
+  modal,
+  labelLeft,
+}) => {
   return (
     <Sel.Root
       modal={modal}
@@ -45,13 +50,20 @@ export const Select: Component<Props> = ({ options, selected, onChange, label, m
         </Sel.Item>
       )}
     >
-      <Flex direction={labelLeft ? "row" : "column"} gap="small" center={labelLeft ? true : undefined}>
+      <Flex
+        direction={labelLeft ? "row" : "column"}
+        gap="small"
+        align={labelLeft ? "center" : undefined}
+        justify={labelLeft ? "center" : undefined}
+      >
         <Show when={label}>
           <Sel.Label class={selectLabelStyle}>{label}</Sel.Label>
         </Show>
         <Sel.Trigger class={selectTriggerStyle}>
           <Sel.Value<SelectItem>>
-            {state => state.selectedOption() ? state.selectedOption().label : "---"}
+            {(state) =>
+              state.selectedOption() ? state.selectedOption().label : "---"
+            }
           </Sel.Value>
         </Sel.Trigger>
       </Flex>

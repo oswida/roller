@@ -111,6 +111,13 @@ const themeBorderStyle = {
   none: "none",
   solid: "solid",
   dotted: "dotted",
+  dashed: "dashed",
+  double: "double",
+  groove: "groove",
+  hidden: "hidden",
+  inset: "inset",
+  outset: "outset",
+  ridge: "ridge",
 };
 
 const themeBorderStylePartial = {
@@ -130,7 +137,13 @@ const themeProperties = defineProperties({
   properties: {
     display: ["none", "flex", "inline", "block", "inline-flex"],
     flexDirection: ["row", "column"],
-    justifyContent: ["center", "flex-end", "flex-start", "space-between"],
+    justifyContent: [
+      "center",
+      "flex-end",
+      "flex-start",
+      "space-between",
+      "space-evenly",
+    ],
     alignItems: ["center", "flex-start", "flex-end"],
     paddingTop: themeSpace,
     paddingBottom: themeSpace,
@@ -151,8 +164,6 @@ const themeProperties = defineProperties({
     borderStyle: themeBorderStyle,
     borderBottomWidth: themeBorderSize,
     borderTopWidth: themeBorderSize,
-    borderBottomStyle: themeBorderStyle,
-    borderTopStyle: themeBorderStyle,
   },
   shorthands: {
     padding: ["paddingTop", "paddingBottom", "paddingLeft", "paddingRight"],

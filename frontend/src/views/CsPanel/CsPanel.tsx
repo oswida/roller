@@ -55,6 +55,9 @@ import {
   Select,
   SelectItem,
   Text,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
 } from "~/components";
 import {
   charTemplateGameItems,
@@ -223,7 +226,7 @@ export const CsPanel: Component = () => {
   return (
     <div class={csPanelRootStyle}>
       <Flex direction="column">
-        <Flex gap="small" style={{ "justify-content": "space-between" }}>
+        <Flex gap="small" justify="space">
           <Dynamic
             component={Select}
             labelLeft
@@ -234,11 +237,11 @@ export const CsPanel: Component = () => {
           />
         </Flex>
         <CsViewer ref={(e: any) => (listRef = e)} />
-        <Flex gap="none" style={{ "justify-content": "space-between" }}>
+        <Flex justify="space" align="center" grow>
           <Flex>
             <Dialog open={crDialogOpen()} onOpenChange={setCrDialogOpen}>
-              <DialogTrigger>
-                <Button>
+              <DialogTrigger title="Create charsheet">
+                <Button variant="ghost">
                   <FaSolidPlus />
                 </Button>
               </DialogTrigger>
@@ -267,17 +270,23 @@ export const CsPanel: Component = () => {
                 </Flex>
               </DialogContent>
             </Dialog>
-            <Button title="Import charsheet" onClick={importCs} variant="ghost">
-              <FaSolidFileImport />
-            </Button>
+
+            <Tooltip>
+              <TooltipTrigger>
+                <Button onClick={importCs} variant="ghost">
+                  <FaSolidFileImport />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Import charsheet</TooltipContent>
+            </Tooltip>
           </Flex>
 
           <Show when={currentCs()}>
             <Flex>
               <Show when={isCsOwner(currentCs())}>
                 <Alert open={delDialogOpen()} onOpenChange={setDelDialogOpen}>
-                  <AlertTrigger>
-                    <Button>
+                  <AlertTrigger title="Delete charsheet">
+                    <Button variant="ghost">
                       <FaSolidTrash />
                     </Button>
                   </AlertTrigger>
@@ -298,8 +307,8 @@ export const CsPanel: Component = () => {
                   open={shareDialogOpen()}
                   onOpenChange={setShareDialogOpen}
                 >
-                  <AlertTrigger>
-                    <Button>
+                  <AlertTrigger title="Share charsheet">
+                    <Button variant="ghost">
                       <FaSolidShareNodes />
                     </Button>
                   </AlertTrigger>
@@ -330,8 +339,8 @@ export const CsPanel: Component = () => {
                   open={renameDialogOpen()}
                   onOpenChange={setRenameDialogOpen}
                 >
-                  <DialogTrigger>
-                    <Button>
+                  <DialogTrigger title="Rename charsheet">
+                    <Button variant="ghost">
                       <FaSolidUserPen />
                     </Button>
                   </DialogTrigger>
@@ -351,20 +360,23 @@ export const CsPanel: Component = () => {
                 </Dialog>
               </Show>
 
-              <Button
-                title="Export charsheet"
-                onClick={exportCs}
-                variant="ghost"
-              >
-                <FaSolidFileExport />
-              </Button>
-              <Button
-                title="Toggle expand all"
-                onClick={expandAll}
-                variant="ghost"
-              >
-                <BsArrowsExpand />
-              </Button>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Button onClick={exportCs} variant="ghost">
+                    <FaSolidFileExport />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Export charsheet</TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger>
+                  <Button onClick={expandAll} variant="ghost">
+                    <BsArrowsExpand />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Toggle expand all</TooltipContent>
+              </Tooltip>
             </Flex>
           </Show>
         </Flex>

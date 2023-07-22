@@ -80,12 +80,7 @@ export const TplBigText: Component<Props> = ({ item }) => {
   return (
     <div class={tplTextItemStyle}>
       <Flex direction="column" gap="small">
-        <Flex
-          style={{
-            "align-items": "center",
-            "justify-content": "space-between",
-          }}
-        >
+        <Flex align="center" justify="space">
           <Flex>
             <Text fontSize="smaller" colorSchema="secondary">
               {item.name}

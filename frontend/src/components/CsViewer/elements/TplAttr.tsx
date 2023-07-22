@@ -91,15 +91,9 @@ export const TplAttr: Component<Props> = ({ item, wide }) => {
   };
 
   return (
-    <Flex gap="medium" style={{ "align-items": "center" }}>
+    <Flex gap="medium" align="center" grow>
       <Show when={!itemEdit()}>
-        <Flex
-          style={{
-            "justify-content": "space-between",
-            "align-items": "center",
-            flex: 1,
-          }}
-        >
+        <Flex justify="space" align="center" grow>
           <DataBlock
             width={wide ? "70%" : "50%"}
             widthLeft="80%"
@@ -111,11 +105,7 @@ export const TplAttr: Component<Props> = ({ item, wide }) => {
             }
             leftBackground="accent"
             rightFunc={() => (
-              <Text
-                fontSize="bigger"
-                class={csTplAttrValueStyle}
-                onClick={startEdit}
-              >
+              <Text class={csTplAttrValueStyle} onClick={startEdit}>
                 {value()}
               </Text>
             )}

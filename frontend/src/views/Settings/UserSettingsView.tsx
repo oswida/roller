@@ -155,9 +155,7 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
 
   return (
     <Flex direction="column" gap="medium">
-      <Flex
-        style={{ "justify-content": "space-between", "align-items": "end" }}
-      >
+      <Flex justify="space" align="end">
         <Input
           label="User name"
           title="User name"
@@ -180,7 +178,7 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
           </div>
         </CopyToClipboard>
       </Flex>
-      <Flex style={{ "justify-content": "space-evenly" }}>
+      <Flex justify="evenly" grow>
         <Select
           modal={true}
           label="UI Color Theme"
@@ -199,7 +197,7 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
         />
       </Flex>
 
-      <Flex style={{ "justify-content": "space-evenly" }}>
+      <Flex justify="evenly" grow>
         <Select
           modal={true}
           label="Dice color"
@@ -217,7 +215,7 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
         />
       </Flex>
 
-      <Flex style={{ "justify-content": "space-between" }}>
+      <Flex justify="space" grow>
         <Switch
           label="Stronger roll"
           checked={strongerRoll}
@@ -229,7 +227,7 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
           setChecked={setSmalldice}
         />
       </Flex>
-      <Flex style={{ "justify-content": "space-between" }}>
+      <Flex justify="space">
         <Switch label="Show roll total" checked={total} setChecked={setTotal} />
         <Switch
           label="Show roll success"

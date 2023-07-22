@@ -119,7 +119,7 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
         onChange={(e) => updateRoom("bkguri", e.target.value)}
         style={{ width: "20em" }}
       />
-      <Flex style={{ "justify-content": "space-between" }}>
+      <Flex justify="space" grow>
         <CopyToClipboard
           text={roomId()}
           options={{ debug: true }}
@@ -139,19 +139,25 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
         <Show when={appSettings().userIdent == currentRoom()?.owner}>
           <Alert onOpenChange={setDelConfirmOpen} open={delConfirmOpen()}>
             <AlertTrigger>
-              <Flex gap="medium" center>
-                <Tooltip>
-                  <TooltipTrigger>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Button>
                     <FaSolidTrash style={{ fill: themeVars.danger600 }} />
-                  </TooltipTrigger>
-                  <TooltipContent>Delete room</TooltipContent>
-                </Tooltip>
-              </Flex>
+                    <Text>Delete room</Text>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Delete room</TooltipContent>
+              </Tooltip>
             </AlertTrigger>
             <AlertContent title="Delete room">
               <Text>Are you sure? </Text>
               <Text>Delete room {currentRoom()?.name}?</Text>
-              <Flex center gap="large" style={{ "margin-top": "10px" }}>
+              <Flex
+                align="center"
+                justify="center"
+                gap="large"
+                style={{ "margin-top": "10px" }}
+              >
                 <Button onClick={() => setDelConfirmOpen(false)}>Cancel</Button>
                 <Button onClick={deleteRoom}>Delete</Button>
               </Flex>
@@ -160,13 +166,13 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
         </Show>
       </Flex>
       <Show when={appSettings().userIdent == currentRoom()?.owner}>
-        <Flex center>
+        <Flex align="end" justify="space" grow>
           <Input
             label="Pass ownership to user"
             style={{ flex: 1, width: "16em" }}
             ref={(e) => (passRef = e)}
           />
-          <Button variant="icon" onClick={passOwnership}>
+          <Button onClick={passOwnership}>
             <FaSolidArrowRight />
           </Button>
         </Flex>

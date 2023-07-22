@@ -37,7 +37,7 @@ export const HdItemImage: Component<Props> = ({ item }) => {
   });
 
   return (
-    <Flex center direction="column">
+    <Flex align="center" justify="center" direction="column">
       <Dialog open={urlDlgOpen()} onOpenChange={setUrlDlgOpen}>
         <DialogTrigger>
           <Show when={item.value !== ""}>
@@ -54,7 +54,7 @@ export const HdItemImage: Component<Props> = ({ item }) => {
             value={item.value}
             onChange={(e: any) => setUrl(e.target.value)}
           />
-          <Flex center gap="large">
+          <Flex align="center" justify="center" gap="large">
             <Button onClick={() => setUrlDlgOpen(false)}>Cancel</Button>
             <Button onClick={save}>Save</Button>
           </Flex>
