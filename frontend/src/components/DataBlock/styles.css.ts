@@ -1,7 +1,11 @@
 import { style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
 
-import { createBackgroundVariants, createColorVariants } from "~/common";
+import {
+  createBackgroundVariants,
+  createColorVariants,
+  createFlexVariants,
+} from "~/common";
 import { sprinkles } from "~/common/theme.css";
 
 export const dataLabelStyle = recipe({
@@ -14,22 +18,22 @@ export const dataLabelStyle = recipe({
       borderBottomLeftRadius: "medium",
       borderTopLeftRadius: "medium",
       justifyContent: "flex-start",
-      paddingRight: "small",
-      paddingLeft: "medium",
+      paddingX: "medium",
     }),
     {
       minWidth: "3em",
       minHeight: "2em",
-      flex: 1,
     },
   ],
   variants: {
     colorSchema: createColorVariants(),
     backgroundSchema: createBackgroundVariants(),
+    scale: createFlexVariants(),
   },
   defaultVariants: {
     colorSchema: "primary900",
     backgroundSchema: "primary100",
+    scale: "flex10",
   },
 });
 
@@ -49,16 +53,17 @@ export const dataValueStyle = recipe({
     {
       minWidth: "3em",
       minHeight: "2em",
-      flex: 1,
     },
   ],
   variants: {
     colorSchema: createColorVariants(),
     backgroundSchema: createBackgroundVariants(),
+    scale: createFlexVariants(),
   },
   defaultVariants: {
     colorSchema: "primary900",
     backgroundSchema: "primary100",
+    scale: "flex10",
   },
 });
 

@@ -65,12 +65,12 @@ export const TplCompute: Component<Props> = ({ item }) => {
   };
 
   return (
-    <Flex align="center" justify="space">
-      <Flex gap="medium">
+    <Flex align="center" justify="space" grow>
+      <Flex gap="medium" align="center">
         <Text>{item.name}</Text>
         <TplHintBlock hint={item.hint} />
       </Flex>
-      <Flex>
+      <Flex align="center">
         <Text class={tplComputedValueStyle}>{value()}</Text>
         <Show when={isCsOwner(currentCs())}>
           <div class={csTplIconStyle} onClick={recompute} title="Recompute">

@@ -100,12 +100,20 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
       <Show when={!itemEdit()}>
         <Flex align="center" justify="space" grow>
           <DataBlock style={{ width: "50%" }}>
-            <DataLabel backgroundSchema="primary700" colorSchema="primary100">
+            <DataLabel
+              backgroundSchema="primary600"
+              colorSchema="primary100"
+              scale="flex7"
+            >
               <Text title={item.hint} class={csTplAttrNameStyle}>
                 {item.name}
               </Text>
             </DataLabel>
-            <DataValue backgroundSchema="primary700" colorSchema="primary100">
+            <DataValue
+              backgroundSchema="primary600"
+              colorSchema="primary100"
+              scale="flex3"
+            >
               <>
                 <Text
                   fontSize="bigger"
@@ -136,12 +144,12 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
           <FaSolidXmark style={{ fill: themeVars.danger600 }} />
         </div>
         <DataBlock>
-          <DataLabel>
+          <DataLabel scale="flex7">
             <Text style={{ color: "inherit" }} class={csTplAttrNameStyle}>
               {item.name}
             </Text>
           </DataLabel>
-          <DataValue>
+          <DataValue scale="flex3">
             <Flex align="center">
               <Input
                 value={value()[0]}

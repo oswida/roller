@@ -1,22 +1,22 @@
 import { ComponentProps, JSX, ParentComponent } from "solid-js";
 import { dataLabelStyle, dataValueStyle, dataBlockStyle } from "./styles.css";
 import { themeTokenType } from "~/common/theme.css";
-
-// type Props = {
-//   left?: JSX.Element;
-//   leftFunc?: () => JSX.Element;
-//   right?: JSX.Element;
-//   rightFunc?: () => JSX.Element;
-//   leftBackground?: "secondary" | "none" | "accent";
-//   rightBackground?: "secondary" | "none" | "accent";
-//   widthLeft?: string;
-//   widthRight?: string;
-//   width?: string;
-// };
+import { createFlexVariants } from "~/common";
 
 type DataLabelProps = {
   colorSchema?: themeTokenType;
   backgroundSchema?: themeTokenType;
+  scale?:
+    | "flex1"
+    | "flex2"
+    | "flex3"
+    | "flex4"
+    | "flex5"
+    | "flex6"
+    | "flex7"
+    | "flex8"
+    | "flex9"
+    | "flex10";
 };
 
 export const DataLabel: ParentComponent<DataLabelProps> = (props) => {
@@ -25,6 +25,7 @@ export const DataLabel: ParentComponent<DataLabelProps> = (props) => {
       class={dataLabelStyle({
         colorSchema: props.colorSchema,
         backgroundSchema: props.backgroundSchema,
+        scale: props.scale,
       })}
     >
       {props.children}
@@ -35,6 +36,17 @@ export const DataLabel: ParentComponent<DataLabelProps> = (props) => {
 type DataValueProps = {
   colorSchema?: themeTokenType;
   backgroundSchema?: themeTokenType;
+  scale?:
+    | "flex1"
+    | "flex2"
+    | "flex3"
+    | "flex4"
+    | "flex5"
+    | "flex6"
+    | "flex7"
+    | "flex8"
+    | "flex9"
+    | "flex10";
 };
 
 export const DataValue: ParentComponent<DataValueProps> = (props) => {
@@ -43,6 +55,7 @@ export const DataValue: ParentComponent<DataValueProps> = (props) => {
       class={dataValueStyle({
         colorSchema: props.colorSchema,
         backgroundSchema: props.backgroundSchema,
+        scale: props.scale,
       })}
     >
       {props.children}

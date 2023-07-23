@@ -29,7 +29,7 @@ export const CsItem: Component<Props> = ({ item }) => {
   return (
     <Switch>
       <Match when={item.itype === "row"}>
-        <Flex gap="medium">
+        <Flex gap="medium" grow>
           <For each={item.items}>{(it) => <CsItem item={it} />}</For>
         </Flex>
       </Match>

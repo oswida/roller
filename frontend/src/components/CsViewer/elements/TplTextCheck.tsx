@@ -105,8 +105,8 @@ export const TplTextCheck: Component<Props> = ({ item, circle }) => {
       </Show>
       <Show when={!itemEdit()}>
         <Flex direction="column" gap="small" grow>
-          <Flex align="center" justify="space">
-            <Flex gap="medium">
+          <Flex align="center" justify="space" grow>
+            <Flex gap="medium" align="center" grow>
               <TplCheckBlock
                 hint={item.labels ? item.labels[0] : undefined}
                 checked={value_checked}

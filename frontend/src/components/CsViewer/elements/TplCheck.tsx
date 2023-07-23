@@ -43,7 +43,7 @@ export const TplCheck: Component<Props> = ({ item, circle }) => {
   };
 
   return (
-    <Flex justify="space">
+    <Flex justify="space" grow>
       <Flex gap="medium" align="center">
         <TplCheckBlock
           hint={item.labels ? item.labels[0] : undefined}

@@ -1,4 +1,4 @@
-import { FaSolidEye, FaSolidImage } from "solid-icons/fa";
+import { FaSolidImage, FaSolidPen } from "solid-icons/fa";
 import { Component, Show, createEffect, createSignal } from "solid-js";
 import { HandoutInfo, updateHdStorage } from "~/common";
 import {
@@ -32,20 +32,17 @@ export const HdItemImage: Component<Props> = ({ item }) => {
     if (!previewOpen()) return;
     setTimeout(() => {
       const element = document.getElementById("preview");
-      //   if (element) panzoom(element);
-    }, 1000);
+      if (element) panzoom(element);
+    }, 200);
   });
 
   return (
-    <Flex align="center" justify="center" direction="column">
+    <Flex align="center" justify="center">
       <Dialog open={urlDlgOpen()} onOpenChange={setUrlDlgOpen}>
         <DialogTrigger>
-          <Show when={item.value !== ""}>
-            <img src={item.value} style={{ "max-width": "150px" }} />
-          </Show>
-          <Show when={item.value === ""}>
-            <FaSolidImage fill="currentColor" size={24} />
-          </Show>
+          <Button>
+            <FaSolidPen fill="currentColor" />
+          </Button>
         </DialogTrigger>
         <DialogContent title="Image">
           <Input
@@ -60,23 +57,28 @@ export const HdItemImage: Component<Props> = ({ item }) => {
           </Flex>
         </DialogContent>
       </Dialog>
-      {/* <Show when={item.value !== ""}> */}
+
       <Alert open={previewOpen()} onOpenChange={setPreviewOpen}>
         <AlertTrigger>
-          <Button>
-            <FaSolidEye fill="currentColor" />
-          </Button>
+          <Show when={item.value !== ""}>
+            <img src={item.value} style={{ "max-width": "150px" }} />
+          </Show>
+          <Show when={item.value === ""}>
+            <FaSolidImage fill="currentColor" size={24} />
+          </Show>
         </AlertTrigger>
         <AlertContent title={item.name}>
           <div
-            style={{ "max-height": "500px", overflow: "hidden" }}
-            id="preview"
+            style={{
+              "max-height": "500px",
+              overflow: "hidden",
+              "max-width": "70vw",
+            }}
           >
-            <img src={item.value} />
+            <img src={item.value} id="preview" />
           </div>
         </AlertContent>
       </Alert>
-      {/* </Show> */}
     </Flex>
   );
 };

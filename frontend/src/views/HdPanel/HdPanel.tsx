@@ -195,7 +195,7 @@ export const HdPanel: Component = () => {
               </Flex>
             </DialogContent>
           </Dialog>
-          <Button title="Import charsheet" onClick={importHd} >
+          <Button title="Import charsheet" onClick={importHd}>
             <FaSolidFileImport />
           </Button>
         </Flex>
@@ -228,7 +228,7 @@ export const HdPanel: Component = () => {
                     <FaSolidShareNodes />
                   </Button>
                 </AlertTrigger>
-                <AlertContent title="Share charsheet">
+                <AlertContent title="Share handout">
                   <Switch>
                     <Match when={currentCs()?.shared}>
                       <Text>
@@ -276,14 +276,10 @@ export const HdPanel: Component = () => {
               </Dialog>
             </Show>
 
-            <Button title="Export charsheet" onClick={exportHd} >
+            <Button title="Export charsheet" onClick={exportHd}>
               <FaSolidFileExport />
             </Button>
-            <Button
-              title="Toggle expand all"
-              onClick={expandAll}
-              
-            >
+            <Button title="Toggle expand all" onClick={expandAll}>
               <BsArrowsExpand />
             </Button>
           </Flex>

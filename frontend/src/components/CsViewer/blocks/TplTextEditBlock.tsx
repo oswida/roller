@@ -50,7 +50,7 @@ export const TplTextEditBlock: Component<Props> = ({
 
   return (
     <Flex direction="column" gap="small" grow>
-      <Flex align="center" justify="evenly" grow>
+      <Flex align="center" justify="space" grow>
         <Show when={!hideName}>
           <Flex grow>
             <Text fontSize="smaller" colorSchema="secondary">
@@ -85,7 +85,7 @@ export const TplTextEditBlock: Component<Props> = ({
           onKeyPress={keyPress}
           value={value()}
           style={{
-            width: "310px",
+            width: "365px",
           }}
         />
       </Show>
@@ -98,7 +98,7 @@ export const TplTextEditBlock: Component<Props> = ({
           style={{
             "min-height": "10em",
             "font-size": "medium",
-            width: "310px",
+            width: "365px",
           }}
         />
       </Show>

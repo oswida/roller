@@ -41,7 +41,7 @@ const genSavingThrows = () => {
       ({
         id: it.toLowerCase().normalize(),
         name: it,
-        itype: "attr",
+        itype: it !== "Magiczne przedmioty" ? "attr" : "attr_wide",
         rolls: [
           {
             valType: "target_plus_mod",
@@ -159,7 +159,7 @@ export const csTplWzm6: CharTemplate = {
         {
           id: "kp",
           name: "Klasa pancerza",
-          itype: "attr",
+          itype: "attr_wide",
         },
         {
           id: "kp_premia",

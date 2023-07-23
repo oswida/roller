@@ -74,13 +74,14 @@ export const TplBigText: Component<Props> = ({ item }) => {
     if (!editOpen()) return;
     setTimeout(() => {
       document.getElementById("text-value")?.focus();
+      setEditVal(value());
     }, 200);
   });
 
   return (
     <div class={tplTextItemStyle}>
-      <Flex direction="column" gap="small">
-        <Flex align="center" justify="space">
+      <Flex direction="column" gap="small" grow>
+        <Flex align="center" justify="space" grow>
           <Flex>
             <Text fontSize="smaller" colorSchema="secondary">
               {item.name}

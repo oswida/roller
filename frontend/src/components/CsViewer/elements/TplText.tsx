@@ -67,8 +67,8 @@ export const TplText: Component<Props> = ({ item }) => {
         />
       </Show>
       <Show when={!itemEdit()}>
-        <Flex direction="column" gap="small">
-          <Flex align="center" justify="space">
+        <Flex direction="column" gap="small" grow>
+          <Flex align="center" justify="space" grow>
             <Flex>
               <Text fontSize="smaller" colorSchema="secondary">
                 {item.name}

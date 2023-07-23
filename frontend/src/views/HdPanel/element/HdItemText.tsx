@@ -41,7 +41,7 @@ export const HdItemText: Component<Props> = ({ item }) => {
 
       <Dialog open={descDlgOpen()} onOpenChange={setDescDlgOpen}>
         <DialogTrigger>
-          <Button style={{ height: "24px" }}>
+          <Button>
             <FaSolidPen size="12px" fill="currentColor" />
             <Text fontSize="smaller">Edit</Text>
           </Button>

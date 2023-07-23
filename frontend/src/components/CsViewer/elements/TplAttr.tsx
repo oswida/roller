@@ -95,18 +95,24 @@ export const TplAttr: Component<Props> = ({ item, wide }) => {
       <Show when={!itemEdit()}>
         <Flex justify="space" align="center" grow>
           <DataBlock style={{ width: wide ? "70%" : "50%" }}>
-            <DataLabel backgroundSchema="primary700" colorSchema="primary100">
-              <Text title={item.hint} class={csTplAttrNameStyle}>
-                {item.name}
-              </Text>
+            <DataLabel
+              backgroundSchema="primary600"
+              colorSchema="primary100"
+              scale="flex8"
+            >
+              <Text class={csTplAttrNameStyle}>{item.name}</Text>
             </DataLabel>
-            <DataValue backgroundSchema="primary700" colorSchema="primary100">
+            <DataValue
+              backgroundSchema="primary600"
+              colorSchema="primary100"
+              scale="flex2"
+            >
               <Text class={csTplAttrValueStyle} onClick={startEdit}>
                 {value()}
               </Text>
             </DataValue>
           </DataBlock>
-          <Flex gap="medium">
+          <Flex gap="medium" align="center">
             <TplRollBlock item={item} value={value} />
             <TplHintBlock hint={item.hint} />
           </Flex>
@@ -116,13 +122,13 @@ export const TplAttr: Component<Props> = ({ item, wide }) => {
         <div class={csTplIconStyle} onClick={() => setItemEdit(false)}>
           <FaSolidXmark style={{ fill: themeVars.danger600 }} />
         </div>
-        <DataBlock style={{ width: "50%" }}>
-          <DataLabel>
+        <DataBlock style={{ width: wide ? "70%" : "50%" }}>
+          <DataLabel scale="flex8">
             <Text style={{ color: "inherit" }} class={csTplAttrNameStyle}>
               {item.name}
             </Text>
           </DataLabel>
-          <DataValue>
+          <DataValue scale="flex2">
             <Input
               id={item.id}
               onFocus={(e) => e.target.select()}

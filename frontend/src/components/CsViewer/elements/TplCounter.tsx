@@ -103,7 +103,7 @@ export const TplCounter: Component<Props> = ({
   };
 
   return (
-    <Flex gap="medium" align="center">
+    <Flex gap="medium" align="center" grow>
       <Flex justify="space" align="center" grow>
         <Flex gap="medium" justify="space" align="center" grow>
           <Flex>

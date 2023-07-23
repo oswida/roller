@@ -16,21 +16,15 @@ type Props = {
 };
 
 export const TplLabel: Component<Props> = ({ item }) => {
-  const value = (roll: CharTemplateItemRoll) => {
-    const cs = currentCs();
-    if (!cs || !cs.values || !roll.valField) return 0;
-    return cs.values[roll.valField];
-  };
-
   return (
-    <Flex justify="space">
-      <Flex>
+    <Flex justify="space" align="center" grow>
+      <Flex align="center" grow>
         <Text style={{ color: item.color ? item.color : themeVars.info900 }}>
           {item.text}
         </Text>
         <TplHintBlock hint={item.hint} />
       </Flex>
-      <Flex>
+      <Flex align="center">
         <TplRollBlock
           item={item}
           value={() => (item.initialValue ? item.initialValue : "0")}

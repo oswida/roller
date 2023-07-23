@@ -287,6 +287,19 @@ export const createBackgroundVariants = () => {
   return result;
 };
 
+export const createFlexVariants = () => {
+  const result: Record<string, any> = {};
+  let x = 0.1;
+  for (let i = 1; i <= 10; i++) {
+    const y = Number.parseFloat(x.toFixed(2));
+    result[`flex${i}`] = { flex: y };
+    x += 0.1;
+  }
+  return result;
+};
+
+console.log(createFlexVariants());
+
 export const parseMarkdown = (data: string) => {
   const result = DOMPurify.sanitize(
     marked.parse(data, {

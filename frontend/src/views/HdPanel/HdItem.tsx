@@ -85,7 +85,7 @@ export const HdItem: ParentComponent<Props> = ({ item }) => {
 
           <Alert open={delDlgOpen()} onOpenChange={setDelDlgOpen} modal>
             <AlertTrigger title="Delete item">
-              <Button style={{ width: "20px", height: "20px" }}>
+              <Button variant="icon">
                 <FaSolidXmark fill="currentColor" size="16px" />
               </Button>
             </AlertTrigger>
@@ -109,9 +109,9 @@ export const HdItem: ParentComponent<Props> = ({ item }) => {
         <Match when={item.htype === "text"}>
           <HdItemText item={item} />
         </Match>
-        {/* <Match when={item.htype === "image"}>
+        <Match when={item.htype === "image"}>
           <HdItemImage item={item} />
-        </Match> */}
+        </Match>
       </Switch>
     </div>
   );

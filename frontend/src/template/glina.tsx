@@ -8,7 +8,7 @@ const genAttrs = () => {
         ({
           id: it.toLowerCase().normalize(),
           name: it,
-          itype: "attr",
+          itype: "attr_wide",
           rolls: [
             {
               notation: "2d10+1d6",
@@ -22,7 +22,7 @@ const genAttrs = () => {
     ),
     {
       id: "stopien",
-      name: "Stopień służbowy",
+      name: "Stop. służb.",
       itype: "attr_wide",
       rolls: [
         {
