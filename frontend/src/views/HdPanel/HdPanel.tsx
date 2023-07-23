@@ -195,7 +195,7 @@ export const HdPanel: Component = () => {
               </Flex>
             </DialogContent>
           </Dialog>
-          <Button title="Import charsheet" onClick={importHd} variant="ghost">
+          <Button title="Import charsheet" onClick={importHd} >
             <FaSolidFileImport />
           </Button>
         </Flex>
@@ -276,13 +276,13 @@ export const HdPanel: Component = () => {
               </Dialog>
             </Show>
 
-            <Button title="Export charsheet" onClick={exportHd} variant="ghost">
+            <Button title="Export charsheet" onClick={exportHd} >
               <FaSolidFileExport />
             </Button>
             <Button
               title="Toggle expand all"
               onClick={expandAll}
-              variant="ghost"
+              
             >
               <BsArrowsExpand />
             </Button>

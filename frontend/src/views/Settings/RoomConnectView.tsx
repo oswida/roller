@@ -31,9 +31,7 @@ export const RoomConnectView = ({
   return (
     <Flex direction="column" gap="medium" align="center">
       <Input label="Room identifier" ref={(e) => (inputRef = e)} />
-      <Button variant="ghost" onClick={connectRoom}>
-        Connect
-      </Button>
+      <Button onClick={connectRoom}>Connect</Button>
     </Flex>
   );
 };

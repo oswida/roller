@@ -35,21 +35,21 @@ export const csTplAttrValueStyle = style([
   sprinkles({
     padding: "small",
     borderRadius: "small",
-    backgroundColor: { hover: "primary300" },
-    color: { hover: "primary900", default: "primary100" },
+    backgroundColor: { hover: "primary600" },
   }),
   {
     cursor: "pointer",
     fontWeight: "bolder",
+    color: "inherit",
   },
 ]);
 
 export const csTplAttrNameStyle = style([
   sprinkles({
-    color: { default: "primary100" },
     padding: "small",
   }),
   {
+    color: "inherit",
     fontWeight: "normal",
   },
 ]);
@@ -89,6 +89,7 @@ export const tplTextItemStyle = style([
   {
     borderBottomStyle: "solid",
     borderBottomWidth: 1,
+    width: "100%",
   },
 ]);
 

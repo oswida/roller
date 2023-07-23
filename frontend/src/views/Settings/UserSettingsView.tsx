@@ -172,7 +172,7 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
           }}
           eventTrigger="onClick"
         >
-          <div class={buttonStyle({ variant: "ghost" })} title="Copy user id">
+          <div class={buttonStyle({})} title="Copy user id">
             <FaSolidShareNodes style={{ fill: "currentcolor" }} />
             <Text>Copy user ID </Text>
           </div>

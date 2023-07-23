@@ -1,12 +1,6 @@
-import {
-  FaSolidCheck,
-  FaSolidCircleInfo,
-  FaSolidDice,
-  FaSolidXmark,
-} from "solid-icons/fa";
+import { FaSolidCheck, FaSolidXmark } from "solid-icons/fa";
 import {
   Component,
-  For,
   Show,
   createEffect,
   createMemo,
@@ -23,11 +17,11 @@ import {
   updateCsStorage,
 } from "~/common";
 import { charTemplates } from "~/template";
-import { DataBlock } from "../../DataBlock";
+import { DataBlock, DataLabel, DataValue } from "../../DataBlock";
 import { Flex } from "../../Flex";
 import { Input } from "../../Input";
 import { Text } from "../../Text";
-import { actionCompute, actionRoll } from "../actions";
+import { actionCompute } from "../actions";
 import {
   csTplAttrNameStyle,
   csTplAttrValueStyle,
@@ -102,20 +96,16 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
   };
 
   return (
-    <Flex gap="medium" style={{ "align-items": "center" }}>
+    <Flex gap="medium" align="center" grow>
       <Show when={!itemEdit()}>
         <Flex align="center" justify="space" grow>
-          <DataBlock
-            width="50%"
-            widthLeft="80%"
-            widthRight="20%"
-            left={
+          <DataBlock style={{ width: "50%" }}>
+            <DataLabel backgroundSchema="primary700" colorSchema="primary100">
               <Text title={item.hint} class={csTplAttrNameStyle}>
                 {item.name}
               </Text>
-            }
-            leftBackground="accent"
-            rightFunc={() => (
+            </DataLabel>
+            <DataValue backgroundSchema="primary700" colorSchema="primary100">
               <>
                 <Text
                   fontSize="bigger"
@@ -124,7 +114,7 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
                 >
                   {value()[0]}
                 </Text>
-                <Text>|</Text>
+                <Text style={{ color: "inherit" }}>|</Text>
                 <Text
                   fontSize="bigger"
                   class={csTplAttrValueStyle}
@@ -133,10 +123,8 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
                   {value()[1]}
                 </Text>
               </>
-            )}
-            rightBackground="accent"
-          />
-
+            </DataValue>
+          </DataBlock>
           <Flex gap="medium">
             <TplRollBlock item={item} value={() => value()[0]} />
             <TplHintBlock hint={item.hint} />
@@ -145,16 +133,16 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
       </Show>
       <Show when={itemEdit()}>
         <div class={csTplIconStyle} onClick={() => setItemEdit(false)}>
-          <FaSolidXmark style={{ fill: themeVars.danger900 }} />
+          <FaSolidXmark style={{ fill: themeVars.danger600 }} />
         </div>
-        <DataBlock
-          width="50%"
-          widthLeft="80%"
-          widthRight="20%"
-          left={<Text style={{ color: "inherit" }}>{item.name}</Text>}
-          leftBackground="accent"
-          right={
-            <Flex>
+        <DataBlock>
+          <DataLabel>
+            <Text style={{ color: "inherit" }} class={csTplAttrNameStyle}>
+              {item.name}
+            </Text>
+          </DataLabel>
+          <DataValue>
+            <Flex align="center">
               <Input
                 value={value()[0]}
                 id={item.id}
@@ -164,6 +152,7 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
                   width: "3em",
                   "text-align": "center",
                   "user-select": "all",
+                  height: "1.9em",
                 }}
                 onChange={(e: any) => setEditVal(e.target.value)}
               />
@@ -171,17 +160,18 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
                 value={value()[1]}
                 style={{
                   width: "3em",
+                  height: "1.9em",
                   "text-align": "center",
                   "user-select": "all",
                 }}
                 onChange={(e: any) => setEditValMax(e.target.value)}
               />
             </Flex>
-          }
-          rightBackground="accent"
-        />
+          </DataValue>
+        </DataBlock>
+
         <div class={csTplIconStyle} onClick={applyValue}>
-          <FaSolidCheck style={{ fill: "currentcolor" }} />
+          <FaSolidCheck style={{ fill: themeVars.success600 }} />
         </div>
       </Show>
     </Flex>

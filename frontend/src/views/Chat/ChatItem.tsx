@@ -15,6 +15,8 @@ import {
   AlertTrigger,
   Button,
   DataBlock,
+  DataLabel,
+  DataValue,
   Flex,
   Text,
 } from "~/components";
@@ -92,15 +94,20 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
           <Flex gap="medium" direction="column" grow>
             <Flex justify="space" align="center" style={{ width: "100%" }}>
               <Show when={appSettings().showRollTotal && item.result.total}>
-                <DataBlock
-                  width="45%"
-                  widthLeft="80%"
-                  widthRight="20%"
-                  left={<Text colorSchema="secondary">Total {modValue()}</Text>}
-                  right={<div>{item.result.total}</div>}
-                  leftBackground="secondary"
-                  rightBackground="secondary"
-                />
+                <DataBlock style={{ width: "45%" }}>
+                  <DataLabel
+                    backgroundSchema="primary300"
+                    colorSchema="primary900"
+                  >
+                    <Text colorSchema="secondary">Total {modValue()}</Text>
+                  </DataLabel>
+                  <DataValue
+                    backgroundSchema="primary300"
+                    colorSchema="primary900"
+                  >
+                    <div>{item.result.total}</div>
+                  </DataValue>
+                </DataBlock>
               </Show>
               <Show
                 when={
@@ -110,13 +117,11 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
                 }
               >
                 <Show when={item.successTarget && item.successTarget !== 0}>
-                  <DataBlock
-                    width="57%"
-                    widthLeft="35%"
-                    widthRight="70%"
-                    rightBackground="accent"
-                    leftBackground="accent"
-                    left={
+                  <DataBlock style={{ width: "57%" }}>
+                    <DataLabel
+                      backgroundSchema="primary700"
+                      colorSchema="primary100"
+                    >
                       <Flex
                         align="center"
                         justify="center"
@@ -127,24 +132,28 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
                           {item.successTarget}
                         </Text>
                       </Flex>
-                    }
-                    right={
+                    </DataLabel>
+                    <DataValue
+                      backgroundSchema="primary700"
+                      colorSchema="primary100"
+                    >
                       <Text colorSchema="background" title={item.successRule}>
                         {succValue()}
                       </Text>
-                    }
-                  />
+                    </DataValue>
+                  </DataBlock>
                 </Show>
                 <Show when={!item.successTarget || item.successTarget == 0}>
-                  <DataBlock
-                    rightBackground="accent"
-                    leftBackground="accent"
-                    right={
+                  <DataBlock>
+                    <DataValue
+                      backgroundSchema="primary700"
+                      colorSchema="primary100"
+                    >
                       <Text colorSchema="background" title={item.successRule}>
                         {succValue()}
                       </Text>
-                    }
-                  />
+                    </DataValue>
+                  </DataBlock>
                 </Show>
               </Show>
             </Flex>
@@ -153,10 +162,14 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
               <For each={item.result.sets}>
                 {(set) => (
                   <Flex align="center" justify="evenly" grow>
-                    <Text colorSchema="secondary">{`${set.num}${set.type}: `}</Text>
-                    <DataBlock
-                      right={set.rolls.map((r) => r.value).join(", ")}
-                    />
+                    <DataBlock>
+                      <DataLabel>
+                        <Text colorSchema="secondary">{`${set.num}${set.type}: `}</Text>
+                      </DataLabel>
+                      <DataValue>
+                        {set.rolls.map((r) => r.value).join(", ")}
+                      </DataValue>
+                    </DataBlock>
                   </Flex>
                 )}
               </For>

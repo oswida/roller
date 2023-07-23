@@ -77,7 +77,7 @@ const ModifierDialog = ({ priv }: { priv: boolean }) => {
   return (
     <Dialog open={mdOpen()} onOpenChange={setMdOpen} modal>
       <DialogTrigger>
-        <Button variant="ghost" colorSchema={priv ? "secondary" : undefined}>
+        <Button>
           <Show when={priv}>
             <FaSolidEyeSlash fill="currentColor" />
           </Show>
@@ -144,17 +144,13 @@ export const DiceSelector: Component<RefProps> = ({ ref }) => {
           <Show when={!modRoll()}>
             <Switch>
               <Match when={privateRoll()}>
-                <Button
-                  variant="ghost"
-                  colorSchema="secondary"
-                  onClick={() => enrollTask(roll)}
-                >
+                <Button onClick={() => enrollTask(roll)}>
                   <FaSolidEyeSlash />
                   <Text colorSchema="secondary">Roll</Text>
                 </Button>
               </Match>
               <Match when={!privateRoll()}>
-                <Button variant="ghost" onClick={() => enrollTask(roll)}>
+                <Button onClick={() => enrollTask(roll)}>
                   <ImDice />
                   <Text>Roll</Text>
                 </Button>
@@ -168,7 +164,7 @@ export const DiceSelector: Component<RefProps> = ({ ref }) => {
           <Tooltip>
             <TooltipTrigger>
               <Button
-                toggled={privateRoll}
+                toggled={privateRoll()}
                 onClick={() => setPrivateRoll(!privateRoll())}
               >
                 <FaSolidEyeSlash />
@@ -178,7 +174,10 @@ export const DiceSelector: Component<RefProps> = ({ ref }) => {
           </Tooltip>
           <Tooltip>
             <TooltipTrigger>
-              <Button toggled={modRoll} onClick={() => setModRoll(!modRoll())}>
+              <Button
+                toggled={modRoll()}
+                onClick={() => setModRoll(!modRoll())}
+              >
                 <BiSolidAddToQueue fill="currentColor" />
               </Button>
             </TooltipTrigger>
@@ -198,7 +197,7 @@ export const DiceSelector: Component<RefProps> = ({ ref }) => {
           </Tooltip>
         </Show>
         <Show when={rolling()}>
-          <Button variant="ghost">
+          <Button>
             <FaSolidHourglass />
             <Text>Rolling...</Text>
           </Button>
@@ -210,7 +209,7 @@ export const DiceSelector: Component<RefProps> = ({ ref }) => {
         <Flex gap="medium" align="center" justify="center">
           <Tooltip>
             <TooltipTrigger>
-              <Button variant="ghost" onClick={resetPool}>
+              <Button onClick={resetPool}>
                 <IoReload />
               </Button>
             </TooltipTrigger>
@@ -221,7 +220,7 @@ export const DiceSelector: Component<RefProps> = ({ ref }) => {
 
           <Tooltip>
             <TooltipTrigger>
-              <Button variant="ghost" onClick={clearTable}>
+              <Button onClick={clearTable}>
                 <AiOutlineClear />
               </Button>
             </TooltipTrigger>

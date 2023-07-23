@@ -22,6 +22,8 @@ import { csTplIconStyle, tplTextItemStyle } from "../styles.css";
 import { TplHintBlock } from "../blocks/TplHintBlock";
 import { TplTextEditBlock } from "../blocks/TplTextEditBlock";
 import { TplCheckBlock } from "../blocks/TplCheckBlock";
+import { Button } from "~/components/Button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 
 type Props = {
   item: CharTemplateItem;
@@ -102,7 +104,7 @@ export const TplTextCheck: Component<Props> = ({ item, circle }) => {
         />
       </Show>
       <Show when={!itemEdit()}>
-        <Flex direction="column" gap="small">
+        <Flex direction="column" gap="small" grow>
           <Flex align="center" justify="space">
             <Flex gap="medium">
               <TplCheckBlock
@@ -119,13 +121,18 @@ export const TplTextCheck: Component<Props> = ({ item, circle }) => {
             </Flex>
             <Show when={isCsOwner(currentCs()) && value_checked()}>
               <Flex>
-                <div
-                  onClick={() => setItemEdit(true)}
-                  title="Edit"
-                  class={csTplIconStyle}
-                >
-                  <FaSolidPen style={{ fill: "currentcolor" }} />
-                </div>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Button variant="icon" onClick={() => setItemEdit(true)}>
+                      <FaSolidPen
+                        style={{
+                          fill: "currentcolor",
+                        }}
+                      />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Edit</TooltipContent>
+                </Tooltip>
               </Flex>
             </Show>
           </Flex>

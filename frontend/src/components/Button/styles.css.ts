@@ -4,9 +4,6 @@ import { sprinkles } from "~/common/theme.css";
 export const buttonStyle = recipe({
   base: [
     sprinkles({
-      backgroundColor: { default: "primary200", hover: "primary300" },
-      paddingX: "medium",
-      paddingY: "small",
       gap: "medium",
       alignItems: "center",
       justifyContent: "center",
@@ -24,69 +21,110 @@ export const buttonStyle = recipe({
   ],
   variants: {
     variant: {
-      flat: [
+      full: [
         sprinkles({
           borderColor: "primary400",
           borderStyle: "solid",
           borderWidth: "thin",
+          paddingX: "medium",
+          paddingY: "small",
         }),
         {
-          height: "35px",
           width: "auto",
+          minHeight: "35px",
         },
       ],
-      ghost: [
+      icon: [
         sprinkles({
-          borderColor: "primary400",
-          borderStyle: "solid",
-          borderWidth: "thin",
+          paddingX: "none",
+          paddingY: "none",
+          borderStyle: "none",
+          fill: "primary900",
         }),
         {
+          width: "35px",
           height: "35px",
-          width: "auto",
-          backgroundColor: "transparent",
         },
       ],
-      underline: {
-        border: "none",
-        borderBottom: "solid 1px",
-      },
-      icon: {
-        width: 40,
-        height: 40,
-        border: "none",
-        borderRadius: sprinkles({ borderRadius: "small" }),
-      },
-      bigicon: {
-        width: 50,
-        height: 50,
-        border: "none",
-      },
-      smallicon: {
-        width: 25,
-        height: 25,
-        paddingLeft: 0,
-      },
-    },
-    disabled: {
-      true: {
-        opacity: 0.5,
-      },
-      false: {
-        opacity: 1,
-      },
     },
     toggled: {
       true: sprinkles({
-        backgroundColor: "primary600",
-        color: "primary100",
+        color: { default: "primary100", hover: "primary700" },
+        fill: { default: "primary100", hover: "primary100" },
+        backgroundColor: { default: "primary700", hover: "primary300" },
       }),
-      false: sprinkles({ backgroundColor: "primary200", color: "primary900" }),
+      false: sprinkles({
+        color: { default: "primary900", hover: "primary700" },
+        fill: { default: "primary900", hover: "primary700" },
+        backgroundColor: { default: "primary200", hover: "primary300" },
+      }),
     },
   },
   defaultVariants: {
-    variant: "flat",
-    disabled: false,
+    variant: "full",
     toggled: false,
   },
+  // variants: {
+  //   variant: {
+  //     flat: [
+  //       sprinkles({
+  //         borderColor: "primary400",
+  //         borderStyle: "solid",
+  //         borderWidth: "thin",
+  //       }),
+  //       {
+  //         height: "35px",
+  //         width: "auto",
+  //       },
+  //     ],
+  //     ghost: [
+  //       sprinkles({
+  //         borderColor: "primary400",
+  //         borderStyle: "solid",
+  //         borderWidth: "thin",
+  //       }),
+  //       {
+  //         height: "35px",
+  //         width: "auto",
+  //         backgroundColor: "transparent",
+  //       },
+  //     ],
+  //     icon: {
+  //       width: 40,
+  //       height: 40,
+  //       border: "none",
+  //       borderRadius: sprinkles({ borderRadius: "small" }),
+  //     },
+  //     bigicon: {
+  //       width: 50,
+  //       height: 50,
+  //       border: "none",
+  //     },
+  //     smallicon: {
+  //       width: 25,
+  //       height: 25,
+  //       paddingLeft: 0,
+  //     },
+  //   },
+  //   disabled: {
+  //     true: {
+  //       opacity: 0.5,
+  //     },
+  //     false: {
+  //       opacity: 1,
+  //     },
+  //   },
+  //   toggled: {
+  //     true: sprinkles({
+  //       backgroundColor: "primary600",
+  //       color: "primary100",
+  //     }),
+  //     false: sprinkles({ backgroundColor: "primary200", color: "primary900" }),
+  //   },
+  // },
+  // defaultVariants: {
+  //   variant: "flat",
+  //   disabled: false,
+  //   toggled: false,
+  // },
 });

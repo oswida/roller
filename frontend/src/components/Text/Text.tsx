@@ -1,4 +1,10 @@
-import { ComponentProps, Match, ParentComponent, Switch } from "solid-js";
+import {
+  ComponentProps,
+  Match,
+  ParentComponent,
+  Switch,
+  splitProps,
+} from "solid-js";
 import { textStyle } from "./styles.css";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../Tooltip";
 
@@ -8,43 +14,43 @@ type Props = {
   preserveLines?: boolean;
 };
 
-export const Text: ParentComponent<Props & ComponentProps<"div">> = ({
-  children,
-  colorSchema,
-  fontSize,
-  preserveLines,
-  title,
-  ...rest
-}) => {
+export const Text: ParentComponent<Props & ComponentProps<"div">> = (props) => {
+  const [local, rest] = splitProps(props, [
+    "children",
+    "colorSchema",
+    "fontSize",
+    "preserveLines",
+    "title",
+  ]);
   return (
     <Switch>
-      <Match when={title}>
+      <Match when={local.title}>
         <Tooltip>
           <TooltipTrigger>
             <div
               class={textStyle({
-                colorSchema: colorSchema,
-                fontSize: fontSize,
-                preserveLines: preserveLines,
+                colorSchema: local.colorSchema,
+                fontSize: local.fontSize,
+                preserveLines: local.preserveLines,
               })}
               {...rest}
             >
-              {children}
+              {local.children}
             </div>
           </TooltipTrigger>
-          <TooltipContent>{title}</TooltipContent>
+          <TooltipContent>{local.title}</TooltipContent>
         </Tooltip>
       </Match>
-      <Match when={!title}>
+      <Match when={!local.title}>
         <div
           class={textStyle({
-            colorSchema: colorSchema,
-            fontSize: fontSize,
-            preserveLines: preserveLines,
+            colorSchema: local.colorSchema,
+            fontSize: local.fontSize,
+            preserveLines: local.preserveLines,
           })}
           {...rest}
         >
-          {children}
+          {local.children}
         </div>
       </Match>
     </Switch>

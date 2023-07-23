@@ -62,6 +62,8 @@ export const themeTokens = {
   danger900: "",
 };
 
+export type themeTokenType = keyof typeof themeTokens;
+
 export const themeVars = createGlobalTheme(":root", themeTokens);
 
 export const themeFontSize = {

@@ -131,7 +131,7 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
           }}
           eventTrigger="onClick"
         >
-          <div class={buttonStyle({ variant: "ghost" })} title="Copy room id">
+          <div class={buttonStyle({})} title="Copy room id">
             <FaSolidShareNodes style={{ fill: "currentcolor" }} />
             <Text>Copy room ID </Text>
           </div>

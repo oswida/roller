@@ -241,7 +241,7 @@ export const CsPanel: Component = () => {
           <Flex>
             <Dialog open={crDialogOpen()} onOpenChange={setCrDialogOpen}>
               <DialogTrigger title="Create charsheet">
-                <Button variant="ghost">
+                <Button>
                   <FaSolidPlus />
                 </Button>
               </DialogTrigger>
@@ -273,7 +273,7 @@ export const CsPanel: Component = () => {
 
             <Tooltip>
               <TooltipTrigger>
-                <Button onClick={importCs} variant="ghost">
+                <Button onClick={importCs}>
                   <FaSolidFileImport />
                 </Button>
               </TooltipTrigger>
@@ -286,7 +286,7 @@ export const CsPanel: Component = () => {
               <Show when={isCsOwner(currentCs())}>
                 <Alert open={delDialogOpen()} onOpenChange={setDelDialogOpen}>
                   <AlertTrigger title="Delete charsheet">
-                    <Button variant="ghost">
+                    <Button>
                       <FaSolidTrash />
                     </Button>
                   </AlertTrigger>
@@ -308,7 +308,7 @@ export const CsPanel: Component = () => {
                   onOpenChange={setShareDialogOpen}
                 >
                   <AlertTrigger title="Share charsheet">
-                    <Button variant="ghost">
+                    <Button>
                       <FaSolidShareNodes />
                     </Button>
                   </AlertTrigger>
@@ -340,7 +340,7 @@ export const CsPanel: Component = () => {
                   onOpenChange={setRenameDialogOpen}
                 >
                   <DialogTrigger title="Rename charsheet">
-                    <Button variant="ghost">
+                    <Button>
                       <FaSolidUserPen />
                     </Button>
                   </DialogTrigger>
@@ -362,7 +362,7 @@ export const CsPanel: Component = () => {
 
               <Tooltip>
                 <TooltipTrigger>
-                  <Button onClick={exportCs} variant="ghost">
+                  <Button onClick={exportCs}>
                     <FaSolidFileExport />
                   </Button>
                 </TooltipTrigger>
@@ -371,7 +371,7 @@ export const CsPanel: Component = () => {
 
               <Tooltip>
                 <TooltipTrigger>
-                  <Button onClick={expandAll} variant="ghost">
+                  <Button onClick={expandAll}>
                     <BsArrowsExpand />
                   </Button>
                 </TooltipTrigger>

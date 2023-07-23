@@ -115,8 +115,8 @@ export const RollsContent: Component<Props> = ({ ref, adjustSize }) => {
     <>
       <Flex gap="medium" justify="space">
         <Flex style={{ "min-height": "35px" }} align="center">
-          <Button toggled={() => true} style={{ height: "30px" }}>
-            <Text fontSize="smaller" title="Rolls">
+          <Button toggled style={{ height: "30px" }}>
+            <Text colorSchema="background" fontSize="smaller" title="Rolls">
               Rolls
             </Text>
           </Button>

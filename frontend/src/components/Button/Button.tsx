@@ -1,32 +1,25 @@
-import { ComponentProps, ParentComponent } from "solid-js";
+import { ComponentProps, ParentComponent, splitProps } from "solid-js";
 import { Button as Btn } from "@kobalte/core";
 import { buttonStyle } from "./styles.css";
 
 type Props = {
-  variant?: "ghost" | "flat" | "icon" | "bigicon" | "smallicon";
-  colorSchema?: "primary" | "secondary" | "accent";
-  toggled?: () => boolean;
+  variant?: "full" | "icon";
+  toggled?: boolean;
 };
 
-export const Button: ParentComponent<Props & ComponentProps<"button">> = ({
-  children,
-  variant,
-  disabled,
-  toggled,
-  colorSchema,
-  ...rest
-}) => {
+export const Button: ParentComponent<Props & ComponentProps<"button">> = (
+  props
+) => {
+  const [local, rest] = splitProps(props, ["variant", "children", "toggled"]);
   return (
     <Btn.Root
       class={buttonStyle({
-        variant: variant,
-        disabled: disabled ? disabled : false,
-        toggled: toggled ? toggled() : undefined,
+        variant: local.variant,
+        toggled: local.toggled,
       })}
       {...rest}
-      disabled={disabled}
     >
-      {children}
+      {local.children}
     </Btn.Root>
   );
 };

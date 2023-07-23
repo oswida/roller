@@ -16,7 +16,12 @@ import {
   taskQueue,
 } from "./state";
 import { appSettings, currentRoom } from "./storage";
-import { sprinkles, themeSpace } from "./theme.css";
+import {
+  sprinkles,
+  themeSpace,
+  themeTokenType,
+  themeTokens,
+} from "./theme.css";
 import { CsInfo, NetRollInfo, RollInfo, RollResult, RollSet } from "./types";
 import DOMPurify from "dompurify";
 import { marked } from "marked";
@@ -262,6 +267,22 @@ export const createSpaceVariants = (name: string) => {
   const result: Record<string, any> = {};
   Object.keys(themeSpace).forEach((it) => {
     result[it] = sprinkles({ [name]: it });
+  });
+  return result;
+};
+
+export const createColorVariants = () => {
+  const result: Record<string, any> = {};
+  Object.keys(themeTokens).forEach((it) => {
+    result[it] = sprinkles({ color: it as themeTokenType });
+  });
+  return result;
+};
+
+export const createBackgroundVariants = () => {
+  const result: Record<string, any> = {};
+  Object.keys(themeTokens).forEach((it) => {
+    result[it] = sprinkles({ backgroundColor: it as themeTokenType });
   });
   return result;
 };

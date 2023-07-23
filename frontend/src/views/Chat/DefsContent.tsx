@@ -142,8 +142,10 @@ export const DefsContent: Component<Props> = ({ ref, adjustSize }) => {
               Rolls
             </Text>
           </Button>
-          <Button toggled={() => true} style={{ height: "30px" }}>
-            <Text fontSize="smaller">Defs</Text>
+          <Button toggled style={{ height: "30px" }}>
+            <Text fontSize="smaller" colorSchema="background">
+              Defs
+            </Text>
           </Button>
         </Flex>
         <Flex align="center" gap="small">

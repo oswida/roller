@@ -17,7 +17,7 @@ import {
   updateCsStorage,
 } from "~/common";
 import { charTemplates } from "~/template";
-import { DataBlock } from "../../DataBlock";
+import { DataBlock, DataLabel, DataValue } from "../../DataBlock";
 import { Flex } from "../../Flex";
 import { Input } from "../../Input";
 import { Text } from "../../Text";
@@ -94,24 +94,18 @@ export const TplAttr: Component<Props> = ({ item, wide }) => {
     <Flex gap="medium" align="center" grow>
       <Show when={!itemEdit()}>
         <Flex justify="space" align="center" grow>
-          <DataBlock
-            width={wide ? "70%" : "50%"}
-            widthLeft="80%"
-            widthRight="20%"
-            left={
+          <DataBlock style={{ width: wide ? "70%" : "50%" }}>
+            <DataLabel backgroundSchema="primary700" colorSchema="primary100">
               <Text title={item.hint} class={csTplAttrNameStyle}>
                 {item.name}
               </Text>
-            }
-            leftBackground="accent"
-            rightFunc={() => (
+            </DataLabel>
+            <DataValue backgroundSchema="primary700" colorSchema="primary100">
               <Text class={csTplAttrValueStyle} onClick={startEdit}>
                 {value()}
               </Text>
-            )}
-            rightBackground="accent"
-          />
-
+            </DataValue>
+          </DataBlock>
           <Flex gap="medium">
             <TplRollBlock item={item} value={value} />
             <TplHintBlock hint={item.hint} />
@@ -122,13 +116,13 @@ export const TplAttr: Component<Props> = ({ item, wide }) => {
         <div class={csTplIconStyle} onClick={() => setItemEdit(false)}>
           <FaSolidXmark style={{ fill: themeVars.danger600 }} />
         </div>
-        <DataBlock
-          width="50%"
-          widthLeft="80%"
-          widthRight="20%"
-          left={<Text style={{ color: "inherit" }}>{item.name}</Text>}
-          leftBackground="accent"
-          right={
+        <DataBlock style={{ width: "50%" }}>
+          <DataLabel>
+            <Text style={{ color: "inherit" }} class={csTplAttrNameStyle}>
+              {item.name}
+            </Text>
+          </DataLabel>
+          <DataValue>
             <Input
               id={item.id}
               onFocus={(e) => e.target.select()}
@@ -141,9 +135,9 @@ export const TplAttr: Component<Props> = ({ item, wide }) => {
               }}
               onChange={(e: any) => setEditVal(e.target.value)}
             />
-          }
-          rightBackground="accent"
-        />
+          </DataValue>
+        </DataBlock>
+
         <div class={csTplIconStyle} onClick={applyValue}>
           <FaSolidCheck style={{ fill: themeVars.success600 }} />
         </div>

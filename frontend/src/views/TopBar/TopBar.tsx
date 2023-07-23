@@ -127,7 +127,7 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
 
   return (
     <div class={topbarStyle} ref={ref}>
-      <Flex gap="large">
+      <Flex gap="large" align="center">
         <Flex class={topbarItemStyle}>
           <Popover
             modal={true}
@@ -186,15 +186,15 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
         </Flex>
 
         <Show when={!rolling()}>
-          <Flex gap="medium" class={topbarItemStyle}>
+          <Flex gap="medium" align="center" class={topbarItemStyle}>
             <Tooltip>
               <TooltipTrigger>
                 <Button
                   variant="icon"
-                  toggled={() => currentRightPanel() === "cs"}
+                  toggled={currentRightPanel() === "cs"}
                   onClick={() => toggleRightPanel("cs")}
                 >
-                  <BsPersonBadge size={25} />
+                  <BsPersonBadge size={24} />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>Character sheets</TooltipContent>
@@ -203,10 +203,10 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
               <TooltipTrigger>
                 <Button
                   variant="icon"
-                  toggled={() => currentRightPanel() === "hd"}
+                  toggled={currentRightPanel() === "hd"}
                   onClick={() => toggleRightPanel("hd")}
                 >
-                  <BiSolidNote size={25} />
+                  <BiSolidNote size={24} />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>Handouts</TooltipContent>

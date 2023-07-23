@@ -6,8 +6,8 @@ import { csTplIconStyle } from "../styles.css";
 import { TplHintBlock } from "./TplHintBlock";
 import { Flex } from "../../Flex";
 import { Text } from "../../Text";
-import { debounce } from "@solid-primitives/scheduled";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../Tooltip";
+import { Button } from "../../Button";
 
 type Props = {
   item: CharTemplateItem;
@@ -50,9 +50,9 @@ export const TplTextEditBlock: Component<Props> = ({
 
   return (
     <Flex direction="column" gap="small" grow>
-      <Flex align="center" justify="space">
+      <Flex align="center" justify="evenly" grow>
         <Show when={!hideName}>
-          <Flex>
+          <Flex grow>
             <Text fontSize="smaller" colorSchema="secondary">
               {item.name}
             </Text>
@@ -62,17 +62,17 @@ export const TplTextEditBlock: Component<Props> = ({
         <Flex>
           <Tooltip>
             <TooltipTrigger>
-              <div onClick={() => onEditToggle(false)} class={csTplIconStyle}>
+              <Button onClick={() => onEditToggle(false)} variant="icon">
                 <FaSolidXmark style={{ fill: "currentcolor" }} />
-              </div>
+              </Button>
             </TooltipTrigger>
             <TooltipContent>Cancel</TooltipContent>
           </Tooltip>
           <Tooltip>
             <TooltipTrigger>
-              <div onClick={applyValue} class={csTplIconStyle}>
+              <Button variant="icon" onClick={applyValue}>
                 <FaSolidFloppyDisk style={{ fill: "currentcolor" }} />
-              </div>
+              </Button>
             </TooltipTrigger>
             <TooltipContent>Save</TooltipContent>
           </Tooltip>
