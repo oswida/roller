@@ -60,12 +60,6 @@ export const tplCheckItemStyle = recipe({
       padding: "small",
     }),
     {
-      width: "1.1em",
-      height: "1.1em",
-      maxWidth: "1.1em",
-      minWidth: "1.1em",
-      maxHeight: "1.1em",
-      minHeight: "1.1em",
       cursor: "pointer",
       outline: "none",
     },
@@ -75,9 +69,28 @@ export const tplCheckItemStyle = recipe({
       circle: sprinkles({ borderRadius: "circle" }),
       square: sprinkles({ borderRadius: "none" }),
     },
+    size: {
+      standard: {
+        width: "1.1em",
+        height: "1.1em",
+        maxWidth: "1.1em",
+        minWidth: "1.1em",
+        maxHeight: "1.1em",
+        minHeight: "1.1em",
+      },
+      big: {
+        width: "2em",
+        height: "2em",
+        maxWidth: "2em",
+        minWidth: "2em",
+        maxHeight: "2em",
+        minHeight: "2em",
+      },
+    },
   },
   defaultVariants: {
     shape: "circle",
+    size: "standard",
   },
 });
 

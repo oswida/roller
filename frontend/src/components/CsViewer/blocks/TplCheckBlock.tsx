@@ -8,6 +8,7 @@ type Props = {
   color?: string;
   onClick?: () => void;
   hint?: string;
+  size?: "standard" | "big";
 };
 
 export const TplCheckBlock: Component<Props> = (props) => {
@@ -19,6 +20,7 @@ export const TplCheckBlock: Component<Props> = (props) => {
             <div
               class={tplCheckItemStyle({
                 shape: props.circle ? "circle" : "square",
+                size: props.size,
               })}
               style={{
                 "background-color": props.color ? props.color : "currentcolor",
@@ -31,7 +33,7 @@ export const TplCheckBlock: Component<Props> = (props) => {
               {" "}
             </div>
           </TooltipTrigger>
-          <TooltipContent>{props.hint}</TooltipContent>
+          <TooltipContent>{props.hint ? props.hint : " "}</TooltipContent>
         </Tooltip>
       </Show>
       <Show when={!props.checked()}>
@@ -40,6 +42,7 @@ export const TplCheckBlock: Component<Props> = (props) => {
             <div
               class={tplCheckItemStyle({
                 shape: props.circle ? "circle" : "square",
+                size: props.size,
               })}
               style={{
                 border: `solid 2px ${
@@ -52,7 +55,7 @@ export const TplCheckBlock: Component<Props> = (props) => {
               {" "}
             </div>
           </TooltipTrigger>
-          <TooltipContent>{props.hint}</TooltipContent>
+          <TooltipContent>{props.hint ? props.hint : " "}</TooltipContent>
         </Tooltip>
       </Show>
     </>

@@ -78,6 +78,7 @@ export const dialogTriggerStyle = recipe({
   base: [
     sprinkles({
       display: "flex",
+      flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
       borderRadius: "small",

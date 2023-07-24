@@ -142,7 +142,13 @@ export const HdPanel: Component = () => {
   return (
     <div class={csPanelRootStyle}>
       <Flex direction="column">
-        <Flex gap="medium" justify="space" style={{ "margin-bottom": "5px" }}>
+        <Flex
+          gap="small"
+          align="center"
+          justify="space"
+          style={{ "margin-bottom": "5px" }}
+          grow
+        >
           <Text>Handouts</Text>
           <Input
             onInput={(e: any) => setFlt(e.target.value)}

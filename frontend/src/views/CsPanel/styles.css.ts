@@ -4,7 +4,8 @@ import { sprinkles } from "~/common/theme.css";
 export const csPanelRootStyle = style([
   sprinkles({
     backgroundColor: "primary100",
-    padding: "small",
+    paddingX: "small",
+    paddingY: "medium",
     borderColor: "primary400",
     borderRadius: "small",
     borderStyle: "solid",
