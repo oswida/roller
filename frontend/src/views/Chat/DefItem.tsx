@@ -18,6 +18,9 @@ import {
   Flex,
   Input,
   Text,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
 } from "~/components";
 import { defItemStyle } from "./styles.css";
 import { themeVars } from "~/common/theme.css";
@@ -81,7 +84,21 @@ export const DefItem: Component<Props & ComponentProps<"div">> = (props) => {
         <Show when={needsParam()}>
           <Dialog open={valOpen()} onOpenChange={setValOpen}>
             <DialogTrigger>
-              <Text fontSize="bigger">{notation()}</Text>
+              <Show when={local.item.comment}>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Button>
+                      <Text fontSize="bigger">{notation()}</Text>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>{local.item.comment}</TooltipContent>
+                </Tooltip>
+              </Show>
+              <Show when={!local.item.comment}>
+                <Button>
+                  <Text fontSize="bigger">{notation()}</Text>
+                </Button>
+              </Show>
             </DialogTrigger>
             <DialogContent title="Target value">
               <Input
@@ -107,7 +124,7 @@ export const DefItem: Component<Props & ComponentProps<"div">> = (props) => {
       </Flex>
       <Flex justify="space">
         <Show when={local.item.successRule !== ""}>
-          <Text colorSchema="secondary">
+          <Text colorSchema="secondary" fontSize="small">
             <i>{local.item.successRule}</i>
           </Text>
         </Show>
@@ -115,7 +132,7 @@ export const DefItem: Component<Props & ComponentProps<"div">> = (props) => {
           when={local.item.successTarget && local.item.successTarget !== ""}
         >
           <Flex align="center" justify="center">
-            <BiRegularTargetLock />{" "}
+            <BiRegularTargetLock fill="currentColor" />{" "}
             <Text colorSchema="primary">{local.item.successTarget}</Text>
           </Flex>
         </Show>

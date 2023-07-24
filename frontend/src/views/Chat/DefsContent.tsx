@@ -52,6 +52,10 @@ export const SuccessRules: RadioItem[] = [
   { id: "pio3s:hard", label: "Pio 3S Hard" },
   { id: "total:ueq", label: "Total under/equal" },
   { id: "total:oeq", label: "Total over/equal" },
+  { id: "cairn:standard", label: "Cairn/ItO standard" },
+  { id: "cairn:hard", label: "Cairn/ItO hard" },
+  { id: "ironsworn:standard", label: "Ironsworn" },
+  { id: "ironsworn:glina", label: "Glina RPG" },
 ];
 
 export const DefsContent: Component<Props> = (props) => {
@@ -94,7 +98,13 @@ export const DefsContent: Component<Props> = (props) => {
 
   const updateField = (
     info: RollDefInfo | undefined,
-    field: "dice" | "modifier" | "successRule" | "name" | "successTarget",
+    field:
+      | "dice"
+      | "modifier"
+      | "successRule"
+      | "name"
+      | "successTarget"
+      | "comment",
     value: string
   ) => {
     if (!info) return;
@@ -176,55 +186,66 @@ export const DefsContent: Component<Props> = (props) => {
                 </DialogTrigger>
                 <DialogContent title="Edit definition">
                   <Show when={editDlgOpen()}>
-                    <Input
-                      label="Name"
-                      style={{ width: "17em" }}
-                      value={selDef()?.name}
-                      onChange={(e) =>
-                        updateField(selDef(), "name", e.target.value)
-                      }
-                    />
-                    <Flex direction="row" gap="large">
-                      <Flex direction="column">
-                        <Input
-                          label="Dice"
-                          style={{ width: "6em" }}
-                          onChange={(e) =>
-                            updateField(selDef(), "dice", e.target.value)
-                          }
-                          value={selDef()?.dice}
-                        />
-                        <Input
-                          label="Modifier"
-                          style={{ width: "6em" }}
-                          onChange={(e) =>
-                            updateField(selDef(), "modifier", e.target.value)
-                          }
-                          value={selDef()?.modifier}
-                        />
-                        <Input
-                          label="Success target"
-                          style={{ width: "6em" }}
-                          onChange={(e) =>
-                            updateField(
-                              selDef(),
-                              "successTarget",
-                              e.target.value
-                            )
-                          }
-                          value={selDef()?.successTarget}
-                        />
-                      </Flex>
-                      <RadioGroup
-                        label="Success rule"
-                        items={SuccessRules}
-                        variant="list"
-                        selected={() => selDef()?.successRule}
+                    <Flex>
+                      <Input
+                        label="Name"
+                        style={{ width: "14em" }}
+                        value={selDef()?.name}
                         onChange={(e) =>
-                          updateField(selDef(), "successRule", e)
+                          updateField(selDef(), "name", e.target.value)
+                        }
+                      />
+                      <Input
+                        label="Comment"
+                        style={{ width: "14em" }}
+                        onChange={(e) =>
+                          updateField(editDef(), "comment", e.target.value)
                         }
                       />
                     </Flex>
+                    <Flex direction="row" gap="large">
+                      <Input
+                        label="Dice"
+                        style={{ width: "6em" }}
+                        onChange={(e) =>
+                          updateField(selDef(), "dice", e.target.value)
+                        }
+                        value={selDef()?.dice}
+                      />
+                      <Input
+                        label="Modifier"
+                        style={{ width: "6em" }}
+                        onChange={(e) =>
+                          updateField(selDef(), "modifier", e.target.value)
+                        }
+                        value={selDef()?.modifier}
+                      />
+                      <Input
+                        label="Success target"
+                        style={{ width: "6em" }}
+                        onChange={(e) =>
+                          updateField(selDef(), "successTarget", e.target.value)
+                        }
+                        value={selDef()?.successTarget}
+                      />
+                    </Flex>
+                    <RadioGroup
+                      label="Success rule"
+                      items={SuccessRules}
+                      variant="list"
+                      selected={() => selDef()?.successRule}
+                      onChange={(e: any) =>
+                        updateField(selDef(), "successRule", e)
+                      }
+                      style={{
+                        "flex-wrap": "wrap",
+                        "flex-grow": 1,
+                        "max-height": "150px",
+                        "min-width": "400px",
+                        "align-self": "start",
+                        flex: 1,
+                      }}
+                    />
                     <Flex gap="large" style={{ "margin-top": "10px" }}>
                       <Button onClick={() => setEditDlgOpen(false)}>
                         Cancel
@@ -266,47 +287,66 @@ export const DefsContent: Component<Props> = (props) => {
                 <TooltipContent>Create definition</TooltipContent>
               </Tooltip>
             </DialogTrigger>
-            <DialogContent title="Create definition">
+            <DialogContent title="Create definition" style={{ width: "500px" }}>
               <Show when={createDlgOpen()}>
-                <Input
-                  label="Name"
-                  style={{ width: "17em" }}
-                  onChange={(e) =>
-                    updateField(editDef(), "name", e.target.value)
-                  }
-                />
-                <Flex direction="row" gap="large">
-                  <Flex direction="column">
-                    <Input
-                      label="Dice"
-                      style={{ width: "6em" }}
-                      onChange={(e) =>
-                        updateField(editDef(), "dice", e.target.value)
-                      }
-                    />
-                    <Input
-                      label="Modifier"
-                      style={{ width: "6em" }}
-                      onChange={(e) =>
-                        updateField(editDef(), "modifier", e.target.value)
-                      }
-                    />
-                    <Input
-                      label="Success target"
-                      style={{ width: "6em" }}
-                      onChange={(e) =>
-                        updateField(editDef(), "successTarget", e.target.value)
-                      }
-                    />
-                  </Flex>
-                  <RadioGroup
-                    label="Success rule"
-                    items={SuccessRules}
-                    variant="list"
-                    selected={() => ""}
-                    onChange={(e) => updateField(editDef(), "successRule", e)}
+                <Flex>
+                  <Input
+                    label="Name"
+                    style={{ width: "14em" }}
+                    onChange={(e) =>
+                      updateField(editDef(), "name", e.target.value)
+                    }
+                  />
+                  <Input
+                    label="Comment"
+                    style={{ width: "14em" }}
+                    onChange={(e) =>
+                      updateField(editDef(), "comment", e.target.value)
+                    }
                   />
                 </Flex>
+                <Flex direction="row">
+                  <Input
+                    label="Dice"
+                    style={{ width: "6em" }}
+                    onChange={(e) =>
+                      updateField(editDef(), "dice", e.target.value)
+                    }
+                  />
+                  <Input
+                    label="Modifier"
+                    style={{ width: "6em" }}
+                    onChange={(e) =>
+                      updateField(editDef(), "modifier", e.target.value)
+                    }
+                  />
+                  <Input
+                    label="Success target"
+                    style={{ width: "6em" }}
+                    onChange={(e) =>
+                      updateField(editDef(), "successTarget", e.target.value)
+                    }
+                  />
+                </Flex>
+
+                <RadioGroup
+                  label="Success rule"
+                  items={SuccessRules}
+                  variant="list"
+                  selected={() => ""}
+                  onChange={(e: any) =>
+                    updateField(editDef(), "successRule", e)
+                  }
+                  style={{
+                    "flex-wrap": "wrap",
+                    "flex-grow": 1,
+                    "max-height": "150px",
+                    "min-width": "400px",
+                    "align-self": "start",
+                    flex: 1,
+                  }}
+                />
+
                 <Flex gap="large" style={{ "margin-top": "10px" }}>
                   <Button onClick={() => setCreateDlgOpen(false)}>
                     Cancel

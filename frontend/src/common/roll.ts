@@ -29,6 +29,8 @@ export const rollDef = async (
   setSuccessTarget(st);
   if (comment) {
     setRollComment(comment);
+  } else if (item.comment) {
+    setRollComment(item.comment);
   }
   setRolling(true);
   const s = appSettings();
@@ -171,13 +173,13 @@ export const ironswornRollSuccessInfo = (result: RollResult, rule: string) => {
   const t2 = tens[0].rolls[1].value;
   switch (rule) {
     case "standard":
-      if (action > t1 && action > t2) return `(${modstr}) Strong Hit`;
-      if (action <= t1 && action <= t2) return `(${modstr}) Miss`;
-      return `(${modstr}) Weak Hit`;
+      if (action > t1 && action > t2) return `${modstr} Strong Hit`;
+      if (action <= t1 && action <= t2) return `${modstr} Miss`;
+      return `${modstr} Weak Hit`;
     case "glina":
-      if (action > t1 && action > t2) return `(${modstr}) Triumf`;
-      if (action <= t1 && action <= t2) return `(${modstr}) Skucha`;
-      return `(${modstr}) Fuks`;
+      if (action > t1 && action > t2) return `${modstr} Triumf`;
+      if (action <= t1 && action <= t2) return `${modstr} Skucha`;
+      return `${modstr} Fuks`;
   }
   return "";
 };

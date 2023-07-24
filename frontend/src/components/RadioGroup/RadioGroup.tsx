@@ -7,7 +7,7 @@ import {
   rgRadioLabelStyle,
   rgRootStyle,
 } from "./styles.css";
-import { Component, For, Show } from "solid-js";
+import { Component, ComponentProps, For, Show, splitProps } from "solid-js";
 import { Text } from "../Text";
 import { Flex } from "../Flex";
 
@@ -24,24 +24,32 @@ type Props = {
   onChange?: (value: string) => void;
 };
 
-export const RadioGroup: Component<Props> = (props) => {
+export const RadioGroup: Component<Props & ComponentProps<"div">> = (props) => {
+  const [local, rest] = splitProps(props, [
+    "variant",
+    "label",
+    "items",
+    "selected",
+    "onChange",
+  ]);
   return (
     <RG.Root
       class={rgRootStyle}
-      defaultValue={props.selected ? props.selected() : undefined}
-      onChange={props.onChange}
+      defaultValue={local.selected ? local.selected() : undefined}
+      onChange={local.onChange}
     >
-      <Show when={props.label}>
+      <Show when={local.label}>
         <RG.Label class={rgLabelStyle}>
-          <Text colorSchema="secondary">{props.label}</Text>
+          <Text colorSchema="secondary">{local.label}</Text>
         </RG.Label>
       </Show>
       <Flex
         gap="medium"
         style={{ "flex-wrap": "wrap" }}
-        direction={props.variant == "line" ? "row" : "column"}
+        direction={local.variant == "line" ? "row" : "column"}
+        {...rest}
       >
-        <For each={props.items}>
+        <For each={local.items}>
           {(it) => (
             <RG.Item value={it.id} class={rgItemStyle}>
               <RG.ItemInput />

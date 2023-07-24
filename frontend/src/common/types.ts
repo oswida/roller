@@ -107,6 +107,7 @@ export type RollDefInfo = {
   modifier: number;
   successRule: string;
   successTarget: string;
+  comment?: string;
 };
 
 export const emptyRollDefInfo = () => {

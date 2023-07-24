@@ -140,6 +140,7 @@ export const ChatItem: Component<Props> = (props) => {
                     <DataLabel
                       backgroundSchema="primary700"
                       colorSchema="primary100"
+                      scale="flex2"
                     >
                       <Flex
                         align="center"
@@ -147,7 +148,7 @@ export const ChatItem: Component<Props> = (props) => {
                         style={{ gap: "2px" }}
                       >
                         <BiRegularTargetLock fill="currentcolor" />
-                        <Text colorSchema="background">
+                        <Text colorSchema="background" fontSize="smaller">
                           {props.item.successTarget}
                         </Text>
                       </Flex>
@@ -155,6 +156,7 @@ export const ChatItem: Component<Props> = (props) => {
                     <DataValue
                       backgroundSchema="primary700"
                       colorSchema="primary100"
+                      scale="flex8"
                     >
                       <Text
                         colorSchema="background"

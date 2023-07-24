@@ -13,6 +13,7 @@ export const dialogRootStyle = style([
   }),
   {
     minWidth: "300px",
+    width: "fit-content",
   },
 ]);
 
