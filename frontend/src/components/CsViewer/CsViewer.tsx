@@ -32,7 +32,7 @@ import { Dynamic } from "solid-js/web";
 
 const PORTRAIT_HEIGHT = 72;
 
-export const CsViewer: Component<RefProps> = ({ ref }) => {
+export const CsViewer: Component<RefProps> = (props) => {
   const [charPortrait, setCharPortrait] = createSignal("");
 
   createEffect(() => {
@@ -98,7 +98,7 @@ export const CsViewer: Component<RefProps> = ({ ref }) => {
   });
 
   return (
-    <div class={csViewerRootStyle} ref={(e) => ref(e)}>
+    <div class={csViewerRootStyle} ref={(e) => props.ref(e)}>
       <Show when={currentCs() && tpl()}>
         <Flex
           gap="large"

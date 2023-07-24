@@ -54,7 +54,7 @@ export const SuccessRules: RadioItem[] = [
   { id: "total:oeq", label: "Total over/equal" },
 ];
 
-export const DefsContent: Component<Props> = ({ ref, adjustSize }) => {
+export const DefsContent: Component<Props> = (props) => {
   const [createDlgOpen, setCreateDlgOpen] = createSignal(false);
   const [editDlgOpen, setEditDlgOpen] = createSignal(false);
   const [delDlgOpen, setDelDlgOpen] = createSignal(false);
@@ -63,7 +63,7 @@ export const DefsContent: Component<Props> = ({ ref, adjustSize }) => {
 
   const ct = (val: string) => {
     setChatViewTab(val);
-    adjustSize();
+    props.adjustSize();
   };
 
   const items = createMemo(() => {
@@ -318,14 +318,14 @@ export const DefsContent: Component<Props> = ({ ref, adjustSize }) => {
           </Dialog>
         </Flex>
       </Flex>
-      <div class={defListStyle} ref={(e: any) => ref(e)}>
+      <div class={defListStyle} ref={(e: any) => props.ref(e)}>
         <For each={items()}>
           {(it) => (
             <DefItem
               item={it}
               onClick={() => setSelDef(it)}
               selected={selDef}
-              adjustSize={adjustSize}
+              adjustSize={props.adjustSize}
             />
           )}
         </For>

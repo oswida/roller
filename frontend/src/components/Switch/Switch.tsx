@@ -13,17 +13,21 @@ type Props = {
   setChecked: (value: boolean) => void;
 };
 
-export const Switch: Component<Props> = ({ label, checked, setChecked }) => {
+export const Switch: Component<Props> = (props) => {
   return (
-    <Sw.Root class={switchRootStyle} checked={checked()} onChange={setChecked}>
+    <Sw.Root
+      class={switchRootStyle}
+      checked={props.checked()}
+      onChange={props.setChecked}
+    >
       <Sw.Label>
         <Text fontSize="smaller" colorSchema="secondary">
-          {label}
+          {props.label}
         </Text>
       </Sw.Label>
       <Sw.Input />
-      <Sw.Control class={switchControlStyle({ checked: checked() })}>
-        <Sw.Thumb class={switchThumbStyle({ checked: checked() })} />
+      <Sw.Control class={switchControlStyle({ checked: props.checked() })}>
+        <Sw.Thumb class={switchThumbStyle({ checked: props.checked() })} />
       </Sw.Control>
     </Sw.Root>
   );

@@ -220,12 +220,6 @@ export const centConnect = () => {
         processRoomInfo(ctx);
       });
       sub.subscribe();
-    } else {
-      console.log(
-        "subscripton to ",
-        topicRoomInfo,
-        " already present, skipping."
-      );
     }
   });
   centrifuge.on("disconnected", () => {

@@ -57,7 +57,7 @@ import {
 import { topbarItemStyle, topbarStyle } from "./style.css";
 import { BiSolidNote } from "solid-icons/bi";
 
-export const TopBar: Component<RefProps> = ({ ref }) => {
+export const TopBar: Component<RefProps> = (props) => {
   const [roomSettingOpen, setRoomSettingsOpen] = createSignal(false);
   const [roomConnectOpen, setRoomConnectOpen] = createSignal(false);
   const [userSettingOpen, setUserSettingsOpen] = createSignal(false);
@@ -126,7 +126,7 @@ export const TopBar: Component<RefProps> = ({ ref }) => {
   };
 
   return (
-    <div class={topbarStyle} ref={ref}>
+    <div class={topbarStyle} ref={props.ref}>
       <Flex gap="large" align="center">
         <Flex class={topbarItemStyle}>
           <Popover

@@ -1,4 +1,9 @@
-import { Component, ComponentProps, ParentComponent } from "solid-js";
+import {
+  Component,
+  ComponentProps,
+  ParentComponent,
+  splitProps,
+} from "solid-js";
 import { flexStyle } from "./styles.css";
 import { themeSpaceType } from "~/common/theme.css";
 
@@ -10,27 +15,27 @@ type Props = {
   grow?: boolean;
 };
 
-export const Flex: ParentComponent<Props & ComponentProps<"div">> = ({
-  children,
-  direction,
-  gap,
-  justify,
-  align,
-  grow,
-  ...rest
-}) => {
+export const Flex: ParentComponent<Props & ComponentProps<"div">> = (props) => {
+  const [local, rest] = splitProps(props, [
+    "children",
+    "direction",
+    "gap",
+    "justify",
+    "align",
+    "grow",
+  ]);
   return (
     <div
       class={flexStyle({
-        direction: direction,
-        gap: gap,
-        justify: justify,
-        align: align,
-        grow: grow,
+        direction: local.direction,
+        gap: local.gap,
+        justify: local.justify,
+        align: local.align,
+        grow: local.grow,
       })}
       {...rest}
     >
-      {children}
+      {local.children}
     </div>
   );
 };

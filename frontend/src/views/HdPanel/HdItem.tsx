@@ -27,20 +27,20 @@ type Props = {
   item: HandoutInfo;
 };
 
-export const HdItem: ParentComponent<Props> = ({ item }) => {
+export const HdItem: ParentComponent<Props> = (props) => {
   const [descDlgOpen, setDescDlgOpen] = createSignal(false);
   const [editContent, setEditContent] = createSignal("");
   const [delDlgOpen, setDelDlgOpen] = createSignal(false);
 
   const save = () => {
-    item.description = editContent();
-    updateHdStorage(item);
+    props.item.description = editContent();
+    updateHdStorage(props.item);
   };
 
   const remove = () => {
     setDelDlgOpen(false);
     const newState = { ...appHandouts() };
-    delete newState[item.id];
+    delete newState[props.item.id];
     saveToStorage(rollerHandoutKey, newState);
   };
 
@@ -65,9 +65,7 @@ export const HdItem: ParentComponent<Props> = ({ item }) => {
               </DialogTrigger>
               <DialogContent title="Handout description">
                 <InputArea
-                  currentValue={() =>
-                    item.description ? item.description : ""
-                  }
+                  value={props.item.description ? props.item.description : ""}
                   style={{
                     width: "25rem",
                     "min-height": "15rem",
@@ -90,7 +88,7 @@ export const HdItem: ParentComponent<Props> = ({ item }) => {
               </Button>
             </AlertTrigger>
             <AlertContent>
-              <Text>Delete {item.name}?</Text>
+              <Text>Delete {props.item.name}?</Text>
               <Flex align="center" justify="center" gap="large">
                 <Button onClick={() => setDelDlgOpen(false)}>Cancel</Button>
                 <Button onClick={remove}>Delete</Button>
@@ -100,17 +98,17 @@ export const HdItem: ParentComponent<Props> = ({ item }) => {
         </Flex>
         <Flex justify="end" grow>
           <Text colorSchema="secondary" fontSize="smaller" style={{ flex: 1 }}>
-            {item.description}
+            {props.item.description}
           </Text>
         </Flex>
       </Flex>
 
       <Switch>
-        <Match when={item.htype === "text"}>
-          <HdItemText item={item} />
+        <Match when={props.item.htype === "text"}>
+          <HdItemText item={props.item} />
         </Match>
-        <Match when={item.htype === "image"}>
-          <HdItemImage item={item} />
+        <Match when={props.item.htype === "image"}>
+          <HdItemImage item={props.item} />
         </Match>
       </Switch>
     </div>

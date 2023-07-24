@@ -1,44 +1,36 @@
 import { TextField } from "@kobalte/core";
-import { Component, ComponentProps, Show } from "solid-js";
+import { Component, ComponentProps, Show, splitProps } from "solid-js";
 import { inputFieldStyle, inputRootStyle } from "./styles.css";
 import { Flex } from "../Flex";
 import { Text } from "../Text";
 
 type Props = {
   label?: string;
-  dynamicLabel?: () => string;
   tooltip?: string;
   placeholder?: string;
-  currentValue?: () => string;
 };
 
-export const Input: Component<Props & ComponentProps<"input">> = ({
-  label,
-  tooltip,
-  placeholder,
-  dynamicLabel,
-  currentValue,
-  ...rest
-}) => {
+export const Input: Component<Props & ComponentProps<"input">> = (props) => {
+  const [local, rest] = splitProps(props, [
+    "label",
+    "tooltip",
+    "placeholder",
+  ]);
   return (
     <TextField.Root class={inputRootStyle}>
       <Flex direction="column" gap="small">
-        <Show when={label || dynamicLabel}>
+        <Show when={local.label}>
           <TextField.Label>
             <Text fontSize="smaller" colorSchema="secondary">
-              <Show when={label}>{label}</Show>
-              <Show when={dynamicLabel}>
-                {dynamicLabel ? dynamicLabel() : ""}
-              </Show>
+              <Show when={local.label}>{local.label}</Show>
             </Text>
           </TextField.Label>
         </Show>
         <TextField.Input
           class={inputFieldStyle}
-          title={tooltip}
-          placeholder={placeholder}
+          title={local.tooltip}
+          placeholder={local.placeholder}
           {...rest}
-          value={currentValue ? currentValue() : undefined}
         />
       </Flex>
     </TextField.Root>

@@ -1,4 +1,4 @@
-import { JSXElement, ParentComponent } from "solid-js";
+import { JSXElement, ParentComponent, splitProps } from "solid-js";
 import { AlertDialog } from "@kobalte/core";
 import {
   dialogCloseButtonStyle,
@@ -13,32 +13,26 @@ import { dialogContentStyle } from "../Dialog/styles.css";
 import { FaSolidXmark } from "solid-icons/fa";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../Tooltip";
 
-type Props = {
-  onOpenChange: (value: boolean) => void;
-  open: () => boolean;
-  label: string;
-  trigger?: JSXElement;
-  triggerHint?: string;
-};
-
 export const AlertTrigger: ParentComponent<
   AlertDialog.AlertDialogTriggerProps
-> = ({ children, title, ...rest }) => {
+> = (props) => {
+  const [local, rest] = splitProps(props, ["children", "title"]);
   return (
     <Tooltip>
       <TooltipTrigger>
         <AlertDialog.Trigger class={dialogTriggerStyle({})} {...rest}>
-          {children}{" "}
+          {local.children}
         </AlertDialog.Trigger>
       </TooltipTrigger>
-      <TooltipContent>{title}</TooltipContent>
+      <TooltipContent>{local.title}</TooltipContent>
     </Tooltip>
   );
 };
 
 export const AlertContent: ParentComponent<
   AlertDialog.AlertDialogContentProps
-> = ({ title, children, ...rest }) => {
+> = (props) => {
+  const [local, rest] = splitProps(props, ["title", "children"]);
   return (
     <AlertDialog.Portal>
       <AlertDialog.Overlay class={dialogOverlayStyle} />
@@ -46,14 +40,14 @@ export const AlertContent: ParentComponent<
         <AlertDialog.Content class={dialogRootStyle} {...rest}>
           <div class={dialogHeaderStyle}>
             <AlertDialog.Title class={dialogTitleStyle}>
-              {title}
+              {props.title}
             </AlertDialog.Title>
             <AlertDialog.CloseButton class={dialogCloseButtonStyle}>
               <FaSolidXmark />
             </AlertDialog.CloseButton>
           </div>
           <AlertDialog.Description class={dialogContentStyle}>
-            {children}
+            {props.children}
           </AlertDialog.Description>
         </AlertDialog.Content>
       </div>

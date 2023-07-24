@@ -1,4 +1,4 @@
-import { ComponentProps, JSX, ParentComponent } from "solid-js";
+import { ComponentProps, JSX, ParentComponent, splitProps } from "solid-js";
 import { dataLabelStyle, dataValueStyle, dataBlockStyle } from "./styles.css";
 import { themeTokenType } from "~/common/theme.css";
 import { createFlexVariants } from "~/common";
@@ -63,81 +63,11 @@ export const DataValue: ParentComponent<DataValueProps> = (props) => {
   );
 };
 
-export const DataBlock: ParentComponent<ComponentProps<"div">> = ({
-  children,
-  ...rest
-}) => {
+export const DataBlock: ParentComponent<ComponentProps<"div">> = (props) => {
+  const [local, rest] = splitProps(props, ["children"]);
   return (
     <div class={dataBlockStyle} {...rest}>
-      {children}
+      {local.children}
     </div>
   );
 };
-
-// export const DataBlock: Component<Props> = ({
-//   left,
-//   right,
-//   leftBackground,
-//   rightBackground,
-//   leftFunc,
-//   rightFunc,
-//   widthLeft,
-//   widthRight,
-//   width,
-// }) => {
-//   const leftElement = createMemo(() => {
-//     if (left) return left;
-//     if (leftFunc) return leftFunc();
-//     return undefined;
-//   });
-
-//   const rightElement = createMemo(() => {
-//     if (right) return right;
-//     if (rightFunc) return rightFunc();
-//     return undefined;
-//   });
-
-//   return (
-//     <Flex
-//       justify="space"
-//       align="center"
-//       style={{ width: width, "min-height": "fit-content" }}
-//       gap="none"
-//     >
-//       <Show when={left || leftFunc}>
-//         <div
-//           style={{
-//             width: widthLeft
-//               ? widthLeft
-//               : right || rightFunc
-//               ? "50%"
-//               : undefined,
-//           }}
-//           class={datablockStyle({
-//             position: "left",
-//             background: leftBackground,
-//           })}
-//         >
-//           {leftElement()}
-//         </div>
-//       </Show>
-//       <Show when={right || rightFunc}>
-//         <div
-//           style={{
-//             width: widthRight
-//               ? widthRight
-//               : left || leftFunc
-//               ? "50%"
-//               : undefined,
-//           }}
-//           class={datablockStyle({
-//             position: "right",
-//             background: rightBackground,
-//           })}
-//         >
-//           {rightElement()}
-//         </div>
-//       </Show>
-//     </Flex>
-//   );
-// };

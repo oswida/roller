@@ -43,7 +43,7 @@ type Props = {
   adjustSize: () => void;
 };
 
-export const RollsContent: Component<Props> = ({ ref, adjustSize }) => {
+export const RollsContent: Component<Props> = (props) => {
   const [cmOpen, setCmOpen] = createSignal(false);
   let msgInput: HTMLInputElement;
 
@@ -77,7 +77,7 @@ export const RollsContent: Component<Props> = ({ ref, adjustSize }) => {
 
   const ct = (val: string) => {
     setChatViewTab(val);
-    adjustSize();
+    props.adjustSize();
   };
 
   const sendChatMessage = (e: any) => {
@@ -154,7 +154,7 @@ export const RollsContent: Component<Props> = ({ ref, adjustSize }) => {
         </Flex>
       </Flex>
 
-      <div class={chatListStyle} ref={(e: any) => ref(e)}>
+      <div class={chatListStyle} ref={(e: any) => props.ref(e)}>
         <For each={items()}>{(it) => <ChatItem item={it} />}</For>
       </div>
     </>

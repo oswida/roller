@@ -10,47 +10,49 @@ type Props = {
   hint?: string;
 };
 
-export const TplCheckBlock: Component<Props> = ({
-  checked,
-  circle,
-  color,
-  onClick,
-  hint,
-}) => {
+export const TplCheckBlock: Component<Props> = (props) => {
   return (
     <>
-      <Show when={checked()}>
+      <Show when={props.checked()}>
         <Tooltip>
           <TooltipTrigger>
             <div
-              class={tplCheckItemStyle({ shape: circle ? "circle" : "square" })}
+              class={tplCheckItemStyle({
+                shape: props.circle ? "circle" : "square",
+              })}
               style={{
-                "background-color": color ? color : "currentcolor",
-                border: `solid 2px ${color ? color : "currentcolor"}`,
+                "background-color": props.color ? props.color : "currentcolor",
+                border: `solid 2px ${
+                  props.color ? props.color : "currentcolor"
+                }`,
               }}
-              onClick={onClick}
+              onClick={props.onClick}
             >
               {" "}
             </div>
           </TooltipTrigger>
-          <TooltipContent>{hint}</TooltipContent>
+          <TooltipContent>{props.hint}</TooltipContent>
         </Tooltip>
       </Show>
-      <Show when={!checked()}>
+      <Show when={!props.checked()}>
         <Tooltip>
           <TooltipTrigger>
             <div
-              class={tplCheckItemStyle({ shape: circle ? "circle" : "square" })}
+              class={tplCheckItemStyle({
+                shape: props.circle ? "circle" : "square",
+              })}
               style={{
-                border: `solid 2px ${color ? color : "currentcolor"}`,
+                border: `solid 2px ${
+                  props.color ? props.color : "currentcolor"
+                }`,
                 "background-color": "transparent",
               }}
-              onClick={onClick}
+              onClick={props.onClick}
             >
               {" "}
             </div>
           </TooltipTrigger>
-          <TooltipContent>{hint}</TooltipContent>
+          <TooltipContent>{props.hint}</TooltipContent>
         </Tooltip>
       </Show>
     </>

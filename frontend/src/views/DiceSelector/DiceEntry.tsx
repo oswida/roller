@@ -10,9 +10,9 @@ type Props = {
 
 export const MAX_DICE_POOL = 15;
 
-export const DiceEntry: Component<Props> = ({ face, label }) => {
+export const DiceEntry: Component<Props> = (props) => {
   const inc = (e: any) => {
-    let value = dicePool()[face];
+    let value = dicePool()[props.face];
     if (!value) {
       value = 0;
     }
@@ -26,11 +26,11 @@ export const DiceEntry: Component<Props> = ({ face, label }) => {
       value = MAX_DICE_POOL;
       toast(`Maximum dice pool size for a dice face is ${MAX_DICE_POOL}.`);
     }
-    setDicePool((prev) => ({ ...prev, [face]: value }));
+    setDicePool((prev) => ({ ...prev, [props.face]: value }));
   };
 
   const diceNum = createMemo(() => {
-    const v = dicePool()[face];
+    const v = dicePool()[props.face];
     if (!v) return 0;
     return v;
   });
@@ -41,7 +41,7 @@ export const DiceEntry: Component<Props> = ({ face, label }) => {
       onClick={(e) => inc(e)}
       title="Click to increase dice pool. Shift+click to decrease."
     >
-      <div>{label}</div>
+      <div>{props.label}</div>
       <Show when={diceNum() > 0}>
         <div class={diceNumberStyle}>{diceNum()}</div>
       </Show>

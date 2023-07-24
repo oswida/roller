@@ -16,27 +16,30 @@ type Props = {
   item: HandoutInfo;
 };
 
-export const HdItemText: Component<Props> = ({ item }) => {
+export const HdItemText: Component<Props> = (props) => {
   const [descDlgOpen, setDescDlgOpen] = createSignal(false);
   const [editContent, setEditContent] = createSignal("");
 
   const save = () => {
-    item.value = editContent();
-    updateHdStorage(item);
+    props.item.value = editContent();
+    updateHdStorage(props.item);
   };
 
   createEffect(() => {
     if (!descDlgOpen()) return;
-    setEditContent(item.value);
+    setEditContent(props.item.value);
   });
 
   return (
     <Flex direction="column">
-      <Show when={item.value === ""}>
+      <Show when={props.item.value === ""}>
         <Text>...</Text>
       </Show>
-      <Show when={item.value !== ""}>
-        <div class={hdItemTextStyle} innerHTML={parseMarkdown(item.value)} />
+      <Show when={props.item.value !== ""}>
+        <div
+          class={hdItemTextStyle}
+          innerHTML={parseMarkdown(props.item.value)}
+        />
       </Show>
 
       <Dialog open={descDlgOpen()} onOpenChange={setDescDlgOpen}>
@@ -48,7 +51,7 @@ export const HdItemText: Component<Props> = ({ item }) => {
         </DialogTrigger>
         <DialogContent title="Handout text">
           <InputArea
-            currentValue={() => item.value}
+            value={props.item.value}
             style={{
               width: "25rem",
               "min-height": "15rem",

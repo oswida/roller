@@ -10,14 +10,14 @@ type Props = {
   adjustSize: () => void;
 };
 
-export const ChatView: Component<Props> = ({ chatRef, csRef, adjustSize }) => {
+export const ChatView: Component<Props> = (props) => {
   return (
     <div class={chatRootStyle}>
       <Show when={chatViewTab() == "rolls"}>
-        <RollsContent ref={chatRef} adjustSize={adjustSize} />
+        <RollsContent ref={props.chatRef} adjustSize={props.adjustSize} />
       </Show>
       <Show when={chatViewTab() == "cs"}>
-        <DefsContent ref={csRef} adjustSize={adjustSize} />
+        <DefsContent ref={props.csRef} adjustSize={props.adjustSize} />
       </Show>
     </div>
   );

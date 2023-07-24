@@ -18,14 +18,14 @@ type Props = {
   item: HandoutInfo;
 };
 
-export const HdItemImage: Component<Props> = ({ item }) => {
+export const HdItemImage: Component<Props> = (props) => {
   const [url, setUrl] = createSignal("");
   const [urlDlgOpen, setUrlDlgOpen] = createSignal(false);
   const [previewOpen, setPreviewOpen] = createSignal(false);
 
   const save = () => {
-    item.value = url();
-    updateHdStorage(item);
+    props.item.value = url();
+    updateHdStorage(props.item);
   };
 
   createEffect(() => {
@@ -48,7 +48,7 @@ export const HdItemImage: Component<Props> = ({ item }) => {
           <Input
             style={{ "min-width": "15em" }}
             label="Image URL"
-            value={item.value}
+            value={props.item.value}
             onChange={(e: any) => setUrl(e.target.value)}
           />
           <Flex align="center" justify="center" gap="large">
@@ -60,14 +60,14 @@ export const HdItemImage: Component<Props> = ({ item }) => {
 
       <Alert open={previewOpen()} onOpenChange={setPreviewOpen}>
         <AlertTrigger>
-          <Show when={item.value !== ""}>
-            <img src={item.value} style={{ "max-width": "150px" }} />
+          <Show when={props.item.value !== ""}>
+            <img src={props.item.value} style={{ "max-width": "150px" }} />
           </Show>
-          <Show when={item.value === ""}>
+          <Show when={props.item.value === ""}>
             <FaSolidImage fill="currentColor" size={24} />
           </Show>
         </AlertTrigger>
-        <AlertContent title={item.name}>
+        <AlertContent title={props.item.name}>
           <div
             style={{
               "max-height": "500px",
@@ -75,7 +75,7 @@ export const HdItemImage: Component<Props> = ({ item }) => {
               "max-width": "70vw",
             }}
           >
-            <img src={item.value} id="preview" />
+            <img src={props.item.value} id="preview" />
           </div>
         </AlertContent>
       </Alert>

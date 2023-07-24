@@ -76,7 +76,7 @@ const ModifierDialog = ({
   );
 };
 
-export const TplRollBlock: Component<Props> = ({ item, value }) => {
+export const TplRollBlock: Component<Props> = (props) => {
   const fieldValue = (roll: CharTemplateItemRoll) => {
     const cs = currentCs();
     if (!cs || !cs.values || !roll.valField) return 0;
@@ -84,9 +84,15 @@ export const TplRollBlock: Component<Props> = ({ item, value }) => {
   };
 
   return (
-    <Show when={item.rolls && item.rolls.length > 0 && isCsOwner(currentCs())}>
+    <Show
+      when={
+        props.item.rolls &&
+        props.item.rolls.length > 0 &&
+        isCsOwner(currentCs())
+      }
+    >
       <Flex align="center" justify="center">
-        <For each={item.rolls}>
+        <For each={props.item.rolls}>
           {(r) => (
             <>
               <Show when={r.valType === "modifier" || r.valType === "target"}>
@@ -97,7 +103,7 @@ export const TplRollBlock: Component<Props> = ({ item, value }) => {
                         actionRoll(
                           currentCs()?.name,
                           r,
-                          value ? value() : fieldValue(r)
+                          props.value ? props.value() : fieldValue(r)
                         )
                       }
                       class={csTplIconStyle}
@@ -120,8 +126,8 @@ export const TplRollBlock: Component<Props> = ({ item, value }) => {
               >
                 <ModifierDialog
                   roll={r}
-                  item={item}
-                  value={value ? value() : fieldValue(r)}
+                  item={props.item}
+                  value={props.value ? props.value() : fieldValue(r)}
                 />
               </Show>
             </>

@@ -6,6 +6,7 @@ import {
   createEffect,
   createMemo,
   createSignal,
+  splitProps,
 } from "solid-js";
 import toast from "solid-toast";
 import { RollDefInfo, enrollTask, rollDef, setChatViewTab } from "~/common";
@@ -27,19 +28,15 @@ type Props = {
   adjustSize: () => void;
 };
 
-export const DefItem: Component<Props & ComponentProps<"div">> = ({
-  item,
-  selected,
-  adjustSize,
-  ...rest
-}) => {
+export const DefItem: Component<Props & ComponentProps<"div">> = (props) => {
+  const [local, rest] = splitProps(props, ["item", "selected", "adjustSize"]);
   const [valOpen, setValOpen] = createSignal(false);
   let valRef: HTMLInputElement;
 
   const isSelected = createMemo(() => {
-    const sel = selected();
+    const sel = local.selected();
     if (!sel) return false;
-    return sel.id == item.id;
+    return sel.id == local.item.id;
   });
 
   const rollWithValue = async () => {
@@ -49,24 +46,25 @@ export const DefItem: Component<Props & ComponentProps<"div">> = ({
 
   const roll = async () => {
     setChatViewTab("rolls");
-    adjustSize();
-    const res = await rollDef(item, needsParam());
+    local.adjustSize();
+    const res = await rollDef(local.item, needsParam());
     if (res) toast(JSON.stringify(res));
   };
 
   const notation = createMemo(() => {
-    if (!item.modifier) return item.dice;
+    if (!local.item.modifier) return local.item.dice;
     const mod =
-      item.modifier && item.modifier > 0
-        ? `+${item.modifier}`
-        : `${item.modifier}`;
-    return `${item.dice}${mod}`;
+      local.item.modifier && local.item.modifier > 0
+        ? `+${local.item.modifier}`
+        : `${local.item.modifier}`;
+    return `${local.item.dice}${mod}`;
   });
 
   const needsParam = createMemo(() => {
-    if (item.successTarget && item.successTarget.trim() !== "") return false;
-    if (!item.successRule || item.successRule == "") return false;
-    if (item.successRule == "pbta:standard") return false;
+    if (local.item.successTarget && local.item.successTarget.trim() !== "")
+      return false;
+    if (!local.item.successRule || local.item.successRule == "") return false;
+    if (local.item.successRule == "pbta:standard") return false;
     return true;
   });
 
@@ -79,7 +77,7 @@ export const DefItem: Component<Props & ComponentProps<"div">> = ({
   return (
     <div class={defItemStyle({ sel: isSelected() })} {...rest}>
       <Flex justify="space">
-        <Text fontSize="bigger">{item.name}</Text>
+        <Text fontSize="bigger">{local.item.name}</Text>
         <Show when={needsParam()}>
           <Dialog open={valOpen()} onOpenChange={setValOpen}>
             <DialogTrigger>
@@ -90,8 +88,8 @@ export const DefItem: Component<Props & ComponentProps<"div">> = ({
                 id="valInput"
                 ref={(e) => (valRef = e)}
                 style={{ width: "5em" }}
-                value={item.successTarget}
-                onChange={(e) => (item.successTarget = e.target.value)}
+                value={local.item.successTarget}
+                onChange={(e) => (local.item.successTarget = e.target.value)}
               />
               <Button onClick={() => enrollTask(rollWithValue)}>Roll</Button>
             </DialogContent>
@@ -108,15 +106,17 @@ export const DefItem: Component<Props & ComponentProps<"div">> = ({
         </Show>
       </Flex>
       <Flex justify="space">
-        <Show when={item.successRule !== ""}>
+        <Show when={local.item.successRule !== ""}>
           <Text colorSchema="secondary">
-            <i>{item.successRule}</i>
+            <i>{local.item.successRule}</i>
           </Text>
         </Show>
-        <Show when={item.successTarget && item.successTarget !== ""}>
+        <Show
+          when={local.item.successTarget && local.item.successTarget !== ""}
+        >
           <Flex align="center" justify="center">
             <BiRegularTargetLock />{" "}
-            <Text colorSchema="primary">{item.successTarget}</Text>
+            <Text colorSchema="primary">{local.item.successTarget}</Text>
           </Flex>
         </Show>
       </Flex>

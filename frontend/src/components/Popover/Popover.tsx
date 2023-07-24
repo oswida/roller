@@ -1,6 +1,6 @@
 import { Popover as Pop } from "@kobalte/core";
 import { FaSolidXmark } from "solid-icons/fa";
-import { JSX, ParentComponent, Show } from "solid-js";
+import { JSX, ParentComponent, Show, splitProps } from "solid-js";
 import {
   popoverCloseButtonStyle,
   popoverContentStyle,
@@ -13,19 +13,19 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../Tooltip";
 
 export const Popover = Pop.Root;
 
-export const PopoverTrigger: ParentComponent<Pop.PopoverTriggerProps> = ({
-  children,
-  title,
-  ...rest
-}) => {
+export const PopoverTrigger: ParentComponent<Pop.PopoverTriggerProps> = (
+  props
+) => {
+  const [local, rest] = splitProps(props, ["children", "title"]);
+
   return (
     <Tooltip>
       <TooltipTrigger>
         <Pop.Trigger class={popoverTriggerStyle} {...rest}>
-          {children}
+          {local.children}
         </Pop.Trigger>
       </TooltipTrigger>
-      <TooltipContent>{title}</TooltipContent>
+      <TooltipContent>{local.title}</TooltipContent>
     </Tooltip>
   );
 };
@@ -36,23 +36,28 @@ type Props = {
 
 export const PopoverContent: ParentComponent<
   Pop.PopoverContentProps & Props
-> = ({ children, title, headerActions, ...rest }) => {
+> = (props) => {
+  const [local, rest] = splitProps(props, [
+    "children",
+    "title",
+    "headerActions",
+  ]);
   return (
     <Pop.Portal>
       <Pop.Content class={popoverContentStyle}>
         <Pop.Arrow />
         <div class={popoverHeaderStyle}>
           <Text>
-            <b>{title}</b>
+            <b>{local.title}</b>
           </Text>
           <Flex gap="medium">
-            <Show when={headerActions}>{headerActions}</Show>
+            <Show when={local.headerActions}>{local.headerActions}</Show>
             <Pop.CloseButton class={popoverCloseButtonStyle}>
               <FaSolidXmark />
             </Pop.CloseButton>
           </Flex>
         </div>
-        <Pop.Description>{children}</Pop.Description>
+        <Pop.Description {...rest}>{local.children}</Pop.Description>
       </Pop.Content>
     </Pop.Portal>
   );

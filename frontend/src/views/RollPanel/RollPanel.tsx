@@ -17,7 +17,7 @@ type Props = {
   visible: () => boolean;
 };
 
-export const RollPanel: Component<Props> = ({ visible }) => {
+export const RollPanel: Component<Props> = (props) => {
   let selRef: HTMLDivElement;
   let chatRef: HTMLDivElement | undefined;
   let csRef: HTMLDivElement | undefined;
@@ -36,7 +36,6 @@ export const RollPanel: Component<Props> = ({ visible }) => {
     if (chatRef) chatRef.style.height = `calc(100vh - ${delta}px + 10px)`;
     if (csRef) csRef.style.height = `calc(100vh - ${delta}px)`;
     rollRef.style.height = `calc(100vh - ${delta}px + 60px)`;
-    console.log("adjust size", "delta", delta, rollRef.style.height);
   };
 
   const handler = (event: Event) => {
@@ -60,7 +59,7 @@ export const RollPanel: Component<Props> = ({ visible }) => {
   );
 
   return (
-    <div style={{ visibility: visible() ? "visible" : "hidden" }}>
+    <div style={{ visibility: props.visible() ? "visible" : "hidden" }}>
       <Flex>
         <Show when={!appSettings().rightLayout}>
           <ChatView

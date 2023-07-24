@@ -52,7 +52,7 @@ const diceConfig = {
   onRollComplete: () => {},
 };
 
-export const RollView: Component<RefProps> = ({ ref }) => {
+export const RollView: Component<RefProps> = (props) => {
   createEffect(async () => {
     const box = diceBox();
     if (!box) return;
@@ -141,7 +141,7 @@ export const RollView: Component<RefProps> = ({ ref }) => {
         <div
           class={rollViewStyle({ expanded: false })}
           id="dice-table"
-          ref={ref}
+          ref={props.ref}
           style={bkg()}
         ></div>
       </Match>
@@ -149,7 +149,7 @@ export const RollView: Component<RefProps> = ({ ref }) => {
         <div
           class={rollViewStyle({ expanded: true })}
           id="dice-table"
-          ref={ref}
+          ref={props.ref}
           style={bkg()}
         ></div>
       </Match>

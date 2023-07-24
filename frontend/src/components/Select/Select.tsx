@@ -24,23 +24,16 @@ type Props = {
   modal?: boolean;
 };
 
-export const Select: Component<Props> = ({
-  options,
-  selected,
-  onChange,
-  label,
-  modal,
-  labelLeft,
-}) => {
+export const Select: Component<Props> = (props) => {
   return (
     <Sel.Root
-      modal={modal}
+      modal={props.modal}
       placeholder="--- select ---"
-      onChange={onChange}
+      onChange={props.onChange}
       optionValue="id"
       optionTextValue="label"
-      value={selected ? selected() : undefined}
-      options={options()}
+      value={props.selected ? props.selected() : undefined}
+      options={props.options()}
       itemComponent={(props) => (
         <Sel.Item item={props.item} class={selectItemStyle}>
           <Sel.ItemLabel>{props.item.rawValue.label}</Sel.ItemLabel>
@@ -51,13 +44,13 @@ export const Select: Component<Props> = ({
       )}
     >
       <Flex
-        direction={labelLeft ? "row" : "column"}
+        direction={props.labelLeft ? "row" : "column"}
         gap="small"
-        align={labelLeft ? "center" : undefined}
-        justify={labelLeft ? "center" : undefined}
+        align={props.labelLeft ? "center" : undefined}
+        justify={props.labelLeft ? "center" : undefined}
       >
-        <Show when={label}>
-          <Sel.Label class={selectLabelStyle}>{label}</Sel.Label>
+        <Show when={props.label}>
+          <Sel.Label class={selectLabelStyle}>{props.label}</Sel.Label>
         </Show>
         <Sel.Trigger class={selectTriggerStyle}>
           <Sel.Value<SelectItem>>

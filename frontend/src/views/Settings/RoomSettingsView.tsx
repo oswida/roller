@@ -41,7 +41,7 @@ type Props = {
   onOpenChange: (value: boolean) => void;
 };
 
-export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
+export const RoomSettingsView: Component<Props> = (props) => {
   let passRef: HTMLInputElement;
   const [delConfirmOpen, setDelConfirmOpen] = createSignal(false);
 
@@ -59,7 +59,7 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
   const passOwnership = () => {
     if (!passRef || !passRef.value || passRef.value.trim() == "") return;
     updateRoom("owner", passRef.value);
-    onOpenChange(false);
+    props.onOpenChange(false);
   };
 
   const roomName = createMemo(() => {
@@ -92,7 +92,7 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
       ns.currentRoom = Object.values(newState)[0].id;
     }
     saveToStorage(rollerSettingsKey, ns);
-    onOpenChange(false);
+    props.onOpenChange(false);
     centDeleteRoom(room);
     setAppRolls({});
   };
@@ -108,14 +108,14 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
       <Show when={appSettings().userIdent == currentRoom()?.owner}>
         <Input
           label="Room name"
-          currentValue={() => roomName()}
+          value={roomName()}
           onChange={(e) => updateRoom("name", e.target.value)}
           style={{ width: "20em" }}
         />
       </Show>
       <Input
         label="Room background URI"
-        currentValue={() => roomBkg()}
+        value={roomBkg()}
         onChange={(e) => updateRoom("bkguri", e.target.value)}
         style={{ width: "20em" }}
       />
@@ -127,7 +127,7 @@ export const RoomSettingsView: Component<Props> = ({ onOpenChange }) => {
             toast("Room ID copied to clipboard", {
               icon: <FaSolidCircleInfo />,
             });
-            onOpenChange(false);
+            props.onOpenChange(false);
           }}
           eventTrigger="onClick"
         >

@@ -97,7 +97,7 @@ const ModifierDialog = ({ priv }: { priv: boolean }) => {
   );
 };
 
-export const DiceSelector: Component<RefProps> = ({ ref }) => {
+export const DiceSelector: Component<RefProps> = (props) => {
   let inputRef: HTMLInputElement;
 
   const resetPool = () => {
@@ -138,7 +138,7 @@ export const DiceSelector: Component<RefProps> = ({ ref }) => {
   };
 
   return (
-    <div class={diceSelectorStyle} ref={ref}>
+    <div class={diceSelectorStyle} ref={props.ref}>
       <Flex align="center" gap="small">
         <Show when={!rolling()}>
           <Show when={!modRoll()}>

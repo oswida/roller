@@ -1,8 +1,7 @@
 import { FaSolidXmark, FaSolidFloppyDisk } from "solid-icons/fa";
-import { Component, Show, createEffect, createSignal } from "solid-js";
+import { Component, Show, createEffect } from "solid-js";
 import { CharTemplateItem } from "~/common";
 import { Input, InputArea } from "../../Input";
-import { csTplIconStyle } from "../styles.css";
 import { TplHintBlock } from "./TplHintBlock";
 import { Flex } from "../../Flex";
 import { Text } from "../../Text";
@@ -18,31 +17,24 @@ type Props = {
   useId?: string;
 };
 
-export const TplTextEditBlock: Component<Props> = ({
-  item,
-  onEditToggle,
-  value,
-  setValue,
-  hideName,
-  useId,
-}) => {
+export const TplTextEditBlock: Component<Props> = (props) => {
   const keyPress = (e: any) => {
-    if ((e.code == "Enter" || e.key == "Enter") && item.limit == 1) {
+    if ((e.code == "Enter" || e.key == "Enter") && props.item.limit == 1) {
       applyValue();
     }
   };
 
   const applyValue = () => {
-    const id = useId ? useId : item.id;
+    const id = props.useId ? props.useId : props.item.id;
     const el = document.getElementById(id) as any;
     if (!el) return;
     const v = el.value;
-    setValue(v);
-    onEditToggle(false);
+    props.setValue(v);
+    props.onEditToggle(false);
   };
 
   createEffect(() => {
-    const id = useId ? useId : item.id;
+    const id = props.useId ? props.useId : props.item.id;
     setTimeout(() => {
       document.getElementById(id)?.focus();
     }, 200);
@@ -51,18 +43,18 @@ export const TplTextEditBlock: Component<Props> = ({
   return (
     <Flex direction="column" gap="small" grow>
       <Flex align="center" justify="space" grow>
-        <Show when={!hideName}>
+        <Show when={!props.hideName}>
           <Flex grow>
             <Text fontSize="smaller" colorSchema="secondary">
-              {item.name}
+              {props.item.name}
             </Text>
-            <TplHintBlock hint={item.hint} />
+            <TplHintBlock hint={props.item.hint} />
           </Flex>
         </Show>
         <Flex>
           <Tooltip>
             <TooltipTrigger>
-              <Button onClick={() => onEditToggle(false)} variant="icon">
+              <Button onClick={() => props.onEditToggle(false)} variant="icon">
                 <FaSolidXmark style={{ fill: "currentcolor" }} />
               </Button>
             </TooltipTrigger>
@@ -78,23 +70,23 @@ export const TplTextEditBlock: Component<Props> = ({
           </Tooltip>
         </Flex>
       </Flex>
-      <Show when={item.limit && item.limit == 1}>
+      <Show when={props.item.limit && props.item.limit == 1}>
         <Input
-          id={useId ? useId : item.id}
+          id={props.useId ? props.useId : props.item.id}
           onFocus={(e) => e.target.select()}
           onKeyPress={keyPress}
-          value={value()}
+          value={props.value()}
           style={{
             width: "365px",
           }}
         />
       </Show>
-      <Show when={!item.limit || item.limit != 1}>
+      <Show when={!props.item.limit || props.item.limit != 1}>
         <InputArea
-          id={useId ? useId : item.id}
+          id={props.useId ? props.useId : props.item.id}
           onFocus={(e) => e.target.select()}
           onKeyPress={keyPress}
-          value={value()}
+          value={props.value()}
           style={{
             "min-height": "10em",
             "font-size": "medium",

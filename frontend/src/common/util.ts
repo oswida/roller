@@ -298,8 +298,6 @@ export const createFlexVariants = () => {
   return result;
 };
 
-console.log(createFlexVariants());
-
 export const parseMarkdown = (data: string) => {
   const result = DOMPurify.sanitize(
     marked.parse(data, {

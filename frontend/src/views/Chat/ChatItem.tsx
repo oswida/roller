@@ -1,4 +1,4 @@
-import { For, Show, createMemo, createSignal } from "solid-js";
+import { Component, For, Show, createMemo, createSignal } from "solid-js";
 import {
   Host2NetRollInfo,
   RollInfo,
@@ -31,44 +31,51 @@ import { BiRegularTargetLock } from "solid-icons/bi";
 import { FaSolidEyeSlash } from "solid-icons/fa";
 import { themeVars } from "~/common/theme.css";
 
-export const ChatItem = ({ item }: { item: RollInfo }) => {
+type Props = {
+  item: RollInfo;
+};
+
+export const ChatItem: Component<Props> = (props) => {
   const [revOpen, setRevOpen] = createSignal(false);
 
   const itemHour = createMemo(() => {
-    const parts = item.tstamp.split("__");
+    const parts = props.item.tstamp.split("__");
     if (parts && parts.length == 2) return parts[1];
-    return item.tstamp;
+    return props.item.tstamp;
   });
 
   const oldTime = 15 * 60 * 1000;
 
   const myPrivate = createMemo(() => {
     return (
-      item.private && item.userId == appSettings().userIdent && !item.revealed
+      props.item.private &&
+      props.item.userId == appSettings().userIdent &&
+      !props.item.revealed
     );
   });
 
   const modValue = createMemo(() => {
-    if (!item.result.modifier || item.result.modifier == 0) return ``;
-    if (item.result.modifier > 0) return `+${item.result.modifier}`;
-    return `${item.result.modifier}`;
+    if (!props.item.result.modifier || props.item.result.modifier == 0)
+      return ``;
+    if (props.item.result.modifier > 0) return `+${props.item.result.modifier}`;
+    return `${props.item.result.modifier}`;
   });
 
   const succValue = createMemo(() => {
     const r = rollSuccessInfo(
-      item.result,
-      item.successRule,
-      item.successTarget
+      props.item.result,
+      props.item.successRule,
+      props.item.successTarget
     );
     return r;
   });
 
   const reveal = () => {
     setRevOpen(false);
-    const newItem = { ...item };
-    newItem.revealed = true;
+    const newItem = { ...props.item };
+    props.item.revealed = true;
     centPublish(netTopic(topicRollInfo), Host2NetRollInfo(newItem));
-    setAppRolls((prev) => ({ ...prev, [item.id]: newItem }));
+    setAppRolls((prev) => ({ ...prev, [props.item.id]: newItem }));
   };
 
   return (
@@ -76,24 +83,32 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
       grow
       gap="none"
       direction="column"
-      class={chatItemRootStyle({ private: item.private && !item.revealed })}
+      class={chatItemRootStyle({
+        private: props.item.private && !props.item.revealed,
+      })}
     >
       <div
-        class={chatItemHeaderStyle({ private: item.private && !item.revealed })}
+        class={chatItemHeaderStyle({
+          private: props.item.private && !props.item.revealed,
+        })}
       >
-        <div>{item.user}</div>
-        <Flex title={item.tstamp}>{itemHour()}</Flex>
+        <div>{props.item.user}</div>
+        <Flex title={props.item.tstamp}>{itemHour()}</Flex>
       </div>
 
-      <Show when={!item.result.sets}>
-        <div class={chatItemContentStyle({ old: true })}>{item.comment}</div>
+      <Show when={!props.item.result.sets}>
+        <div class={chatItemContentStyle({ old: true })}>
+          {props.item.comment}
+        </div>
       </Show>
 
-      <Show when={item.result.sets}>
+      <Show when={props.item.result.sets}>
         <div class={chatItemContentStyle({})}>
           <Flex gap="medium" direction="column" grow>
             <Flex justify="space" align="center" style={{ width: "100%" }}>
-              <Show when={appSettings().showRollTotal && item.result.total}>
+              <Show
+                when={appSettings().showRollTotal && props.item.result.total}
+              >
                 <DataBlock style={{ width: "45%" }}>
                   <DataLabel
                     backgroundSchema="primary300"
@@ -105,18 +120,22 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
                     backgroundSchema="primary300"
                     colorSchema="primary900"
                   >
-                    <div>{item.result.total}</div>
+                    <div>{props.item.result.total}</div>
                   </DataValue>
                 </DataBlock>
               </Show>
               <Show
                 when={
-                  item.successRule &&
+                  props.item.successRule &&
                   appSettings().showRollSuccess &&
                   succValue() !== ""
                 }
               >
-                <Show when={item.successTarget && item.successTarget !== 0}>
+                <Show
+                  when={
+                    props.item.successTarget && props.item.successTarget !== 0
+                  }
+                >
                   <DataBlock style={{ width: "57%" }}>
                     <DataLabel
                       backgroundSchema="primary700"
@@ -129,7 +148,7 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
                       >
                         <BiRegularTargetLock fill="currentcolor" />
                         <Text colorSchema="background">
-                          {item.successTarget}
+                          {props.item.successTarget}
                         </Text>
                       </Flex>
                     </DataLabel>
@@ -137,19 +156,29 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
                       backgroundSchema="primary700"
                       colorSchema="primary100"
                     >
-                      <Text colorSchema="background" title={item.successRule}>
+                      <Text
+                        colorSchema="background"
+                        title={props.item.successRule}
+                      >
                         {succValue()}
                       </Text>
                     </DataValue>
                   </DataBlock>
                 </Show>
-                <Show when={!item.successTarget || item.successTarget == 0}>
+                <Show
+                  when={
+                    !props.item.successTarget || props.item.successTarget == 0
+                  }
+                >
                   <DataBlock>
                     <DataValue
                       backgroundSchema="primary700"
                       colorSchema="primary100"
                     >
-                      <Text colorSchema="background" title={item.successRule}>
+                      <Text
+                        colorSchema="background"
+                        title={props.item.successRule}
+                      >
                         {succValue()}
                       </Text>
                     </DataValue>
@@ -159,7 +188,7 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
             </Flex>
 
             <Flex gap="medium" align="center">
-              <For each={item.result.sets}>
+              <For each={props.item.result.sets}>
                 {(set) => (
                   <Flex align="center" justify="evenly" grow>
                     <DataBlock>
@@ -177,8 +206,12 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
           </Flex>
 
           <Flex align="center" justify="end">
-            <Show when={item.comment !== undefined && item.comment !== ""}>
-              <div class={chatItemCommentStyle}>{item.comment}</div>
+            <Show
+              when={
+                props.item.comment !== undefined && props.item.comment !== ""
+              }
+            >
+              <div class={chatItemCommentStyle}>{props.item.comment}</div>
             </Show>
             <Show when={myPrivate()}>
               <Alert open={revOpen()} onOpenChange={setRevOpen}>
@@ -186,7 +219,7 @@ export const ChatItem = ({ item }: { item: RollInfo }) => {
                   <FaSolidEyeSlash color={themeVars.info900} />
                 </AlertTrigger>
                 <AlertContent title="Reveal">
-                  <Text>Reveal {item.result.notation} roll?</Text>
+                  <Text>Reveal {props.item.result.notation} roll?</Text>
                   <Flex gap="large">
                     <Button onClick={() => setRevOpen(false)}>Cancel</Button>
                     <Button onClick={reveal}>Accept</Button>
