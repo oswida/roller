@@ -5,25 +5,30 @@ import { Flex } from "~/components";
 import { CsPanel, RollPanel, TopBar } from "~/views";
 import { appStyle, mainStyle } from "./styles.css";
 import { HdPanel } from "~/views/HdPanel";
+import { ifvisible } from "@rosskevin/ifvisible";
 
 export default function Home() {
   let mainRef: HTMLDivElement;
   let barRef: HTMLDivElement;
 
   const visibilityHandler = () => {
-    let state = document.visibilityState;
     const room = currentRoom();
     if (!room) return;
-    if (state === "visible") centLoadRolls(room.id);
+    console.log("Loading rolls for ", room.name);
+    centLoadRolls(room.id);
   };
 
-  onMount(() => {
-    document.addEventListener("visibilitychange", visibilityHandler);
+  ifvisible.on("wakeup", () => {
+    visibilityHandler();
   });
 
-  onCleanup(() => {
-    document.removeEventListener("visibilitychange", visibilityHandler);
-  });
+  // onMount(() => {
+  //   document.addEventListener("visibilitychange", visibilityHandler, false);
+  // });
+
+  // onCleanup(() => {
+  //   document.removeEventListener("visibilitychange", visibilityHandler);
+  // });
 
   return (
     <main class={appStyle}>

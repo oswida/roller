@@ -19,16 +19,25 @@ type DataLabelProps = {
     | "flex10";
 };
 
-export const DataLabel: ParentComponent<DataLabelProps> = (props) => {
+export const DataLabel: ParentComponent<
+  DataLabelProps & ComponentProps<"div">
+> = (props) => {
+  const [local, rest] = splitProps(props, [
+    "colorSchema",
+    "backgroundSchema",
+    "scale",
+    "children",
+  ]);
   return (
     <div
       class={dataLabelStyle({
-        colorSchema: props.colorSchema,
-        backgroundSchema: props.backgroundSchema,
-        scale: props.scale,
+        colorSchema: local.colorSchema,
+        backgroundSchema: local.backgroundSchema,
+        scale: local.scale,
       })}
+      {...rest}
     >
-      {props.children}
+      {local.children}
     </div>
   );
 };
@@ -49,16 +58,25 @@ type DataValueProps = {
     | "flex10";
 };
 
-export const DataValue: ParentComponent<DataValueProps> = (props) => {
+export const DataValue: ParentComponent<
+  DataValueProps & ComponentProps<"div">
+> = (props) => {
+  const [local, rest] = splitProps(props, [
+    "colorSchema",
+    "backgroundSchema",
+    "scale",
+    "children",
+  ]);
   return (
     <div
       class={dataValueStyle({
-        colorSchema: props.colorSchema,
-        backgroundSchema: props.backgroundSchema,
-        scale: props.scale,
+        colorSchema: local.colorSchema,
+        backgroundSchema: local.backgroundSchema,
+        scale: local.scale,
       })}
+      {...rest}
     >
-      {props.children}
+      {local.children}
     </div>
   );
 };

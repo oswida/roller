@@ -14,6 +14,9 @@ dependencies:
   '@kobalte/core':
     specifier: ^0.9.8
     version: 0.9.8(solid-js@1.7.8)
+  '@rosskevin/ifvisible':
+    specifier: ^3.3.3
+    version: 3.3.3
   '@solid-primitives/scheduled':
     specifier: ^1.4.0
     version: 1.4.0(solid-js@1.7.8)
@@ -2085,6 +2088,10 @@ packages:
       estree-walker: 2.0.2
       picomatch: 2.3.1
       rollup: 3.26.3
+
+  /@rosskevin/ifvisible@3.3.3:
+    resolution: {integrity: sha512-SC2n1wO6ku55eITSmiRFEZ4J/cLjwKSy5d7r88HwPsPQqT8z+2z3USrrhjv2hvIaZvuXcGlcsArGiIS+o3sd5A==}
+    dev: false
 
   /@sideway/address@4.1.4:
     resolution: {integrity: sha512-7vwq+rOHVWjyXxVlR76Agnvhy8I9rpzjosTESvmhNeXOXdZZB15Fl+TI9x1SiHZH5Jv2wTGduSxFDIaq0m3DUw==}

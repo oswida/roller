@@ -189,19 +189,34 @@ export const ChatItem: Component<Props> = (props) => {
               </Show>
             </Flex>
 
-            <Flex gap="medium" align="center">
+            <Flex
+              align="center"
+              grow
+              style={{ "flex-wrap": "wrap", gap: "0px" }}
+            >
               <For each={props.item.result.sets}>
                 {(set) => (
-                  <Flex align="center" justify="evenly" grow>
-                    <DataBlock>
-                      <DataLabel>
-                        <Text colorSchema="secondary">{`${set.num}${set.type}: `}</Text>
-                      </DataLabel>
-                      <DataValue>
-                        {set.rolls.map((r) => r.value).join(", ")}
-                      </DataValue>
-                    </DataBlock>
-                  </Flex>
+                  <DataBlock style={{ flex: 1 }}>
+                    <DataLabel
+                      scale="flex3"
+                      style={{
+                        "padding-bottom": "0px",
+                        "padding-top": "0px",
+                      }}
+                    >
+                      <Text colorSchema="secondary">{`${set.num}${set.type}: `}</Text>
+                    </DataLabel>
+                    <DataValue
+                      scale="flex7"
+                      style={{
+                        "justify-content": "start",
+                        "padding-bottom": "0px",
+                        "padding-top": "0px",
+                      }}
+                    >
+                      <Text>{set.rolls.map((r) => r.value).join(", ")}</Text>
+                    </DataValue>
+                  </DataBlock>
                 )}
               </For>
             </Flex>

@@ -199,7 +199,7 @@ export const TopBar: Component<RefProps> = (props) => {
               </TooltipTrigger>
               <TooltipContent>Character sheets</TooltipContent>
             </Tooltip>
-            <Tooltip>
+            {/* <Tooltip>
               <TooltipTrigger>
                 <Button
                   variant="icon"
@@ -210,7 +210,7 @@ export const TopBar: Component<RefProps> = (props) => {
                 </Button>
               </TooltipTrigger>
               <TooltipContent>Handouts</TooltipContent>
-            </Tooltip>
+            </Tooltip> */}
             <Show when={currentRightPanel() === "cs"}>
               <Text colorSchema="accent"> Charsheets</Text>
             </Show>

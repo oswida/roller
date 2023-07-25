@@ -30,11 +30,13 @@ export default function Root() {
 
   createEffect(() => {
     if (!centConnectionStatus()) {
+      console.log("Not connected, connecting...");
       centConnect();
       return;
     }
     const room = currentRoom();
     if (!room) return;
+    console.log("Loading room", room.name);
     centLoadRolls(room.id);
   });
 

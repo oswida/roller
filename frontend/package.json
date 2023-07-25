@@ -28,6 +28,7 @@
     "@3d-dice/dice-box-threejs": "^0.0.12",
     "@eonasdan/lz-string": "^1.0.3",
     "@kobalte/core": "^0.9.8",
+    "@rosskevin/ifvisible": "^3.3.3",
     "@solid-primitives/scheduled": "^1.4.0",
     "@solid-primitives/storage": "^2.0.0",
     "@solidjs/meta": "^0.28.5",
