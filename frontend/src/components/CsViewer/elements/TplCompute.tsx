@@ -63,7 +63,6 @@ export const TplCompute: Component<Props> = (props) => {
     const v = data().compute(props.item, info.values);
     info.values[props.item.id] = v;
     updateCsStorage(info);
-    setCurrentCs({ ...info });
     centPublish(netTopic(topicCsInfo), info);
   };
 

@@ -1,5 +1,5 @@
 import { createLocalStorage } from "@solid-primitives/storage";
-import { setStorageSize } from "./state";
+import { setCurrentCs, setStorageSize } from "./state";
 import {
   AppSettings,
   CsInfo,

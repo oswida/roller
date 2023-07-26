@@ -69,7 +69,6 @@ export const TplTextCheck: Component<Props> = (props) => {
       info.values[props.item.id] = { text: v, checked: false } as Value;
     else info.values[props.item.id].text = v;
     updateCsStorage(info);
-    setCurrentCs({ ...info });
     centPublish(netTopic(topicCsInfo), info);
   };
 
@@ -88,12 +87,19 @@ export const TplTextCheck: Component<Props> = (props) => {
     else
       info.values[props.item.id].checked = !info.values[props.item.id].checked;
     updateCsStorage(info);
-    setCurrentCs({ ...info });
     centPublish(netTopic(topicCsInfo), info);
   };
 
   const data = createMemo(() => {
     return props.item.data as CTITextData;
+  });
+
+  const is_text_visible = createMemo(() => {
+    const d = data();
+    if (!d) return false;
+    if (value_checked() && !d.reverseHide) return true;
+    if (!value_checked() && d.reverseHide) return true;
+    return false;
   });
 
   return (
@@ -124,7 +130,7 @@ export const TplTextCheck: Component<Props> = (props) => {
                 <TplHintBlock hint={props.item.hint} />
               </Flex>
             </Flex>
-            <Show when={isCsOwner(currentCs()) && value_checked()}>
+            <Show when={isCsOwner(currentCs()) && is_text_visible()}>
               <Flex>
                 <Tooltip>
                   <TooltipTrigger>
@@ -141,7 +147,7 @@ export const TplTextCheck: Component<Props> = (props) => {
               </Flex>
             </Show>
           </Flex>
-          <Show when={value_checked()}>
+          <Show when={is_text_visible()}>
             <Text preserveLines>{value_text()}</Text>
           </Show>
         </Flex>

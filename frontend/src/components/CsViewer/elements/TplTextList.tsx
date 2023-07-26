@@ -58,6 +58,7 @@ export const TplTextList: Component<Props> = (props) => {
     const v = cs.values[props.item.id] as TextListItem[];
     v.push({ text: "", checked: false } as TextListItem);
     updateCsStorage(cs);
+    setCurrentCs(cs);
     centPublish(netTopic(topicCsInfo), cs);
   };
 
@@ -113,6 +114,16 @@ export const TplTextList: Component<Props> = (props) => {
     }, 200);
   });
 
+  const is_text_visible = (idx: number) => {
+    const d = data();
+    if (!d) return true;
+    const ch = values()[idx].checked;
+    if (!d.check) return true;
+    if (ch && !d.reverseHide) return true;
+    if (!ch && d.reverseHide) return true;
+    return false;
+  };
+
   return (
     <Flex direction="column" grow>
       <Flex justify="space" align="center" grow>
@@ -149,7 +160,9 @@ export const TplTextList: Component<Props> = (props) => {
                       }
                     />
                   </Show>
-                  <Text preserveLines>{it.text}</Text>
+                  <Show when={is_text_visible(idx())}>
+                    <Text preserveLines>{it.text}</Text>
+                  </Show>
                 </Flex>
               </Show>
               <Show when={isCsOwner(currentCs()) && editedItem() !== idx()}>

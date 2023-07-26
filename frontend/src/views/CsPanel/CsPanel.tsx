@@ -81,7 +81,7 @@ export const CsPanel: Component = () => {
     if (!listRef) {
       return;
     }
-    listRef.style.height = `calc(100vh - ${TOPBAR_HEIGHT + 90}px)`;
+    listRef.style.height = `calc(100vh - ${TOPBAR_HEIGHT + 100}px)`;
   };
 
   const handler = (event: Event) => {

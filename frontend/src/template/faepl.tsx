@@ -1,4 +1,10 @@
-import { CharTemplate, CharTemplateItem } from "~/common";
+import {
+  CTIAttrData,
+  CTIContainerData,
+  CTITextData,
+  CharTemplate,
+  CharTemplateItem,
+} from "~/common";
 
 const genApproaches = () => {
   const a = [
@@ -22,8 +28,11 @@ const genApproaches = () => {
       ({
         id: it.toLowerCase().normalize(),
         name: it,
-        itype: "attr_wide",
+        itype: "attr",
         hint: h[idx],
+        data: {
+          wide: true,
+        } as CTIAttrData,
         rolls: [
           {
             valType: "modifier",
@@ -50,55 +59,72 @@ export const csTplFAEPL: CharTemplate = {
         {
           id: "odwiezanie",
           name: "Odświeżanie",
-          itype: "attr_wide",
+          itype: "attr",
+          data: {
+            wide: true,
+          } as CTIAttrData,
         },
         {
           id: "pkt_losu",
           name: "Punkty losu",
-          itype: "attr_wide",
+          itype: "attr",
+          data: {
+            wide: true,
+          } as CTIAttrData,
         },
         {
           id: "presja",
           name: "presja",
           itype: "row",
-          items: [
-            {
-              id: "presja_1",
-              name: "Presja (1)",
-              text: "Presja (1)",
-              itype: "check",
-            },
-            {
-              id: "presja_2",
-              name: "Presja (2)",
-              text: "Presja (2)",
-              itype: "check",
-            },
-            {
-              id: "presja_3",
-              name: "Presja (3)",
-              text: "Presja (3)",
-              itype: "check",
-            },
-          ],
+          data: {
+            items: [
+              {
+                id: "presja_1",
+                name: "Presja (1)",
+                description: "Presja (1)",
+                itype: "check",
+              },
+              {
+                id: "presja_2",
+                name: "Presja (2)",
+                description: "Presja (2)",
+                itype: "check",
+              },
+              {
+                id: "presja_3",
+                name: "Presja (3)",
+                description: "Presja (3)",
+                itype: "check",
+              },
+            ],
+          } as CTIContainerData,
         },
         {
           id: "konsekwencja_lagodna",
           name: "Łagodna konsekwencja (2)",
-          itype: "text_check",
-          limit: 1,
+          itype: "text",
+          data: {
+            check: true,
+            maxLines: 1,
+          } as CTITextData,
         },
         {
           id: "konsekwencja_umiarkowana",
           name: "Umiarkowana konsekwencja (4)",
-          itype: "text_check",
-          limit: 1,
+          itype: "text",
+          data: {
+            check: true,
+            maxLines: 1,
+          } as CTITextData,
         },
         {
           id: "konsekwencja_dotkliwa",
           name: "Dotkliwa konsekwencja (6)",
-          itype: "text_check",
-          limit: 1,
+          itype: "text",
+          data: {
+            check: true,
+            maxLines: 1,
+          } as CTITextData,
         },
       ],
     },
@@ -139,7 +165,7 @@ export const csTplFAEPL: CharTemplate = {
       items: [
         {
           id: "sztuczki",
-          itype: "big_text",
+          itype: "list",
           name: "Sztuczki",
         },
       ],
@@ -149,8 +175,11 @@ export const csTplFAEPL: CharTemplate = {
       items: [
         {
           id: "rozne",
-          itype: "big_text",
+          itype: "text",
           name: "Różne",
+          data: {
+            large: true,
+          } as CTITextData,
         },
       ],
     },

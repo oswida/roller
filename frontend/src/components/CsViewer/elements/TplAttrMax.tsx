@@ -77,8 +77,6 @@ export const TplAttrMax: Component<Props> = (props) => {
     updateCsStorage(info);
     setEditVal("");
     setEditValMax("");
-    setCurrentCs(undefined);
-    setCurrentCs({ ...info });
     centPublish(netTopic(topicCsInfo), info);
   };
 

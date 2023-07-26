@@ -16,7 +16,7 @@ export const TplLabel: Component<Props> = (props) => {
       <Flex align="center" grow>
         <Text
           style={{
-            color: props.item.color ? props.item.color : themeVars.info900,
+            color: props.item.color ? props.item.color : "inherit",
           }}
         >
           {props.item.description}

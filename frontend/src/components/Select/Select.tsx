@@ -48,6 +48,7 @@ export const Select: Component<Props> = (props) => {
         gap="small"
         align={props.labelLeft ? "center" : undefined}
         justify={props.labelLeft ? "center" : undefined}
+        grow
       >
         <Show when={props.label}>
           <Sel.Label class={selectLabelStyle}>{props.label}</Sel.Label>

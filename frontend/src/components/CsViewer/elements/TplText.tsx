@@ -49,7 +49,6 @@ export const TplText: Component<Props> = (props) => {
     }
     info.values[props.item.id] = v;
     updateCsStorage(info);
-    setCurrentCs({ ...info });
     centPublish(netTopic(topicCsInfo), info);
   };
 

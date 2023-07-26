@@ -197,6 +197,7 @@ export type CTITextData = {
   checkLabel?: string;
   large?: boolean;
   maxLines?: number;
+  reverseHide?: boolean; // set if you want to hide text when selected
 };
 
 export type CTIAttrData = {

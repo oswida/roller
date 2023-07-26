@@ -40,11 +40,6 @@ export const TplAttr: Component<Props> = (props) => {
   const [itemEdit, setItemEdit] = createSignal(false);
   const [editVal, setEditVal] = createSignal("");
 
-  // const data = createMemo(() => {
-  //   if (!props.item.data) return undefined;
-  //   return props.item.data as CTIAttrData;
-  // });
-
   const value = createMemo(() => {
     const info = currentCs();
     if (!info) return "-";
@@ -75,7 +70,6 @@ export const TplAttr: Component<Props> = (props) => {
     }
     updateCsStorage(info);
     setEditVal("");
-    setCurrentCs({ ...info });
     centPublish(netTopic(topicCsInfo), info);
   };
 
