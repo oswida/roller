@@ -43,11 +43,12 @@ export const TplAttrMax: Component<Props> = (props) => {
 
   const value = createMemo(() => {
     const info = currentCs();
-    if (!info) return ["-", "-"];
+    if (!info) return [0, 0];
     if (!info.values[props.item.id])
-      if (props.item.initialValue)
-        info.values[props.item.id] = props.item.initialValue;
-      else info.values[props.item.id] = [0, 0];
+      info.values[props.item.id] = [
+        0,
+        props.item.initialValue ? props.item.initialValue : 0,
+      ];
     return info.values[props.item.id];
   });
 
@@ -61,7 +62,7 @@ export const TplAttrMax: Component<Props> = (props) => {
     }
     let values = info.values[props.item.id];
     if (!values || values.length !== 2) {
-      values = ["", ""];
+      values = [0, props.item.initialValue ? props.item.initialValue : 0];
     }
     if (v.trim() === "") v = values[0];
     if (vMax.trim() === "") vMax = values[1];

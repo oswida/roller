@@ -19,6 +19,9 @@ export const TooltipContent: ParentComponent<Ttip.TooltipContentProps> = (
   props
 ) => {
   const [local, rest] = splitProps(props, ["children"]);
+
+  if (!local.children) return <></>;
+
   return (
     <Ttip.Portal>
       <Ttip.Content class={tooltipRootStyle} {...rest}>

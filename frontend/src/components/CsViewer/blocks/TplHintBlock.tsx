@@ -8,17 +8,17 @@ type Props = {
   hint: string | undefined;
 };
 
-export const TplHintBlock: Component<Props> = ({ hint }) => {
+export const TplHintBlock: Component<Props> = (props) => {
   return (
-    <Show when={hint && hint !== ""}>
+    <Show when={props.hint && props.hint !== ""}>
       <Tooltip>
         <TooltipTrigger>
           <div style={{ cursor: "help" }}>
-            <FaSolidCircleInfo class={tplHintIconStyle} />
+            <FaSolidCircleInfo class={tplHintIconStyle} size={20} />
           </div>
         </TooltipTrigger>
         <TooltipContent>
-          <div innerHTML={hint ? parseMarkdown(hint) : ""} />
+          <div innerHTML={props.hint ? parseMarkdown(props.hint) : ""} />
         </TooltipContent>
       </Tooltip>
     </Show>

@@ -22,6 +22,7 @@ import { Text } from "../../Text";
 import { csTplIconStyle, tplTextItemStyle } from "../styles.css";
 import { TplHintBlock } from "../blocks/TplHintBlock";
 import { TplTextEditBlock } from "../blocks/TplTextEditBlock";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 
 type Props = {
   item: CharTemplateItem;
@@ -71,9 +72,22 @@ export const TplText: Component<Props> = (props) => {
         <Flex direction="column" gap="small" grow>
           <Flex align="center" justify="space" grow>
             <Flex>
-              <Text fontSize="smaller" colorSchema="secondary">
-                {props.item.name}
-              </Text>
+              <Show when={props.item.description}>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Text fontSize="smaller" colorSchema="secondary">
+                      {props.item.name}
+                    </Text>
+                  </TooltipTrigger>
+                  <TooltipContent>{props.item.description}</TooltipContent>
+                </Tooltip>
+              </Show>
+              <Show when={!props.item.description}>
+                <Text fontSize="smaller" colorSchema="secondary">
+                  {props.item.name}
+                </Text>
+              </Show>
+
               <TplHintBlock hint={props.item.hint} />
             </Flex>
             <Show when={isCsOwner(currentCs())}>

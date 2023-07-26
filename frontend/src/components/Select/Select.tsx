@@ -55,7 +55,9 @@ export const Select: Component<Props> = (props) => {
         <Sel.Trigger class={selectTriggerStyle}>
           <Sel.Value<SelectItem>>
             {(state) =>
-              state.selectedOption() ? state.selectedOption().label : "---"
+              state.selectedOption()
+                ? state.selectedOption().label
+                : "--- select ---"
             }
           </Sel.Value>
         </Sel.Trigger>

@@ -56,7 +56,8 @@ export const TplCounter: Component<Props> = (props) => {
     if (!info) {
       return;
     }
-    const labels = data().options;
+    if (!data()) return;
+    const labels = data()?.options;
     if (!labels) return;
     let i = 0;
     const value = info.values[props.item.id] as CounterItem;
@@ -99,22 +100,24 @@ export const TplCounter: Component<Props> = (props) => {
     centPublish(netTopic(topicCsInfo), info);
   };
 
+  if (!data() || !data()?.options) return <></>;
+
   return (
     <Flex gap="medium" align="center" grow>
       <Flex justify="space" align="center" grow>
         <Flex gap="medium" justify="space" align="center" grow>
-          <Flex>
-            <Show when={data().check}>
+          <Flex align="center">
+            <Show when={data()?.check}>
               <TplCheckBlock
                 checked={() => value().checked}
-                circle={data().checkShape && data().checkShape === "circle"}
+                circle={data()?.checkShape && data()?.checkShape === "circle"}
                 color={props.item.color}
                 onClick={isCsOwner(currentCs()) ? toggle : undefined}
               />
             </Show>
             <Text>{props.item.name}</Text>
           </Flex>
-          <Show when={!data().check || (data().check && value().checked)}>
+          <Show when={!data()?.check || (data()?.check && value().checked)}>
             <Flex>
               <Show when={isCsOwner(currentCs())}>
                 <div
@@ -126,7 +129,7 @@ export const TplCounter: Component<Props> = (props) => {
                 </div>
               </Show>
               <Text class={tplCounterStyle}>
-                {data().options ? data().options[value().value] : ""}
+                {data()?.options ? data()?.options[value().value] : ""}
               </Text>
               <Show when={isCsOwner(currentCs())}>
                 <div
@@ -136,13 +139,15 @@ export const TplCounter: Component<Props> = (props) => {
                 >
                   <FaSolidPlus fill="currentColor" />
                 </div>
-                <div
-                  class={csTplIconStyle}
-                  onClick={resetValue}
-                  title="Reset to default"
-                >
-                  <IoReload fill="currentColor" />
-                </div>
+                <Show when={props.item.initialValue}>
+                  <div
+                    class={csTplIconStyle}
+                    onClick={resetValue}
+                    title="Reset to default"
+                  >
+                    <IoReload fill="currentColor" />
+                  </div>
+                </Show>
               </Show>
             </Flex>
           </Show>

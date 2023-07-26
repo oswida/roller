@@ -33,7 +33,7 @@ export const TplCheckBlock: Component<Props> = (props) => {
               {" "}
             </div>
           </TooltipTrigger>
-          <TooltipContent>{props.hint ? props.hint : " "}</TooltipContent>
+          <TooltipContent>{props.hint ? props.hint : ""}</TooltipContent>
         </Tooltip>
       </Show>
       <Show when={!props.checked()}>
@@ -55,7 +55,7 @@ export const TplCheckBlock: Component<Props> = (props) => {
               {" "}
             </div>
           </TooltipTrigger>
-          <TooltipContent>{props.hint ? props.hint : " "}</TooltipContent>
+          <TooltipContent>{props.hint ? props.hint : ""}</TooltipContent>
         </Tooltip>
       </Show>
     </>

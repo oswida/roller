@@ -21,20 +21,27 @@ export const TplSelect: Component<Props> = (props) => {
   const data = createMemo(() => {
     return props.item.data as CTISelectData;
   });
+
   const items = createMemo(() => {
-    const labels = data().options;
+    if (!data()) return [];
+    const labels = data()?.options;
     if (!labels) return [] as SelectItem[];
     return labels.map((it) => ({ id: it, label: it } as SelectItem));
   });
 
   const selected = createMemo(() => {
     const cs = currentCs();
-    if (!cs || !cs.values) return undefined;
+    let sel = {
+      id: props.item.initialValue,
+      label: props.item.initialValue,
+    } as SelectItem;
+    if (!cs) return undefined;
     const val = cs.values[props.item.id];
-    if (!val) return undefined;
-    const flt = items().filter((it) => it.id === val);
-    if (flt.length == 0) return undefined;
-    return flt[0];
+    if (val) {
+      const flt = items().filter((it) => it.id === val);
+      if (flt.length > 0) sel = flt[0];
+    }
+    return sel;
   });
 
   const change = (it: SelectItem) => {
@@ -46,8 +53,10 @@ export const TplSelect: Component<Props> = (props) => {
     centPublish(netTopic(topicCsInfo), cs);
   };
 
+  if (!data() || !data().options) return <></>;
+
   return (
-    <Flex>
+    <Flex align="center" justify="space" grow>
       <Select
         options={items}
         label={props.item.name}

@@ -58,8 +58,6 @@ export const TplTextList: Component<Props> = (props) => {
     const v = cs.values[props.item.id] as TextListItem[];
     v.push({ text: "", checked: false } as TextListItem);
     updateCsStorage(cs);
-    // setCurrentCs(undefined);
-    setCurrentCs({ ...cs });
     centPublish(netTopic(topicCsInfo), cs);
   };
 
@@ -70,7 +68,6 @@ export const TplTextList: Component<Props> = (props) => {
     let v = cs.values[props.item.id] as TextListItem[];
     v.splice(pos, 1);
     updateCsStorage(cs);
-    setCurrentCs({ ...cs });
     centPublish(netTopic(topicCsInfo), cs);
   };
 
@@ -94,7 +91,6 @@ export const TplTextList: Component<Props> = (props) => {
     let v = cs.values[props.item.id] as TextListItem[];
     v[idx].checked = !v[idx].checked;
     updateCsStorage(cs);
-    setCurrentCs({ ...cs });
     centPublish(netTopic(topicCsInfo), cs);
   };
 
@@ -105,7 +101,6 @@ export const TplTextList: Component<Props> = (props) => {
     const val = cs.values[props.item.id] as TextListItem[];
     val[editedItem()].text = v;
     updateCsStorage(cs);
-    setCurrentCs({ ...cs });
     centPublish(netTopic(topicCsInfo), cs);
   };
 
@@ -139,11 +134,13 @@ export const TplTextList: Component<Props> = (props) => {
             <Flex justify="space" align="center" grow>
               <Show when={editedItem() !== idx()}>
                 <Flex align="center" gap="medium" grow>
-                  <Show when={data().check}>
+                  <Show when={data()?.check}>
                     <TplCheckBlock
-                      hint={data().checkLabel ? data().checkLabel : undefined}
+                      hint={data()?.checkLabel ? data()?.checkLabel : undefined}
                       checked={() => it.checked}
-                      circle={false}
+                      circle={
+                        data()?.checkShape && data()?.checkShape === "circle"
+                      }
                       color={props.item.color}
                       onClick={
                         isCsOwner(currentCs())

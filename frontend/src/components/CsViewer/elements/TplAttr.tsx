@@ -40,6 +40,11 @@ export const TplAttr: Component<Props> = (props) => {
   const [itemEdit, setItemEdit] = createSignal(false);
   const [editVal, setEditVal] = createSignal("");
 
+  // const data = createMemo(() => {
+  //   if (!props.item.data) return undefined;
+  //   return props.item.data as CTIAttrData;
+  // });
+
   const value = createMemo(() => {
     const info = currentCs();
     if (!info) return "-";
@@ -95,9 +100,9 @@ export const TplAttr: Component<Props> = (props) => {
       <Show when={!itemEdit()}>
         <Flex justify="space" align="center" grow>
           <DataBlock
-            style={{
-              width: (props.item.data as CTIAttrData).wide ? "70%" : "50%",
-            }}
+          // style={{
+          //   width: data()?.wide ? "70%" : "50%",
+          // }}
           >
             <DataLabel
               backgroundSchema="primary600"
@@ -127,9 +132,9 @@ export const TplAttr: Component<Props> = (props) => {
           <FaSolidXmark style={{ fill: themeVars.danger600 }} />
         </div>
         <DataBlock
-          style={{
-            width: (props.item.data as CTIAttrData).wide ? "70%" : "50%",
-          }}
+        // style={{
+        //   width: data()?.wide ? "70%" : "50%",
+        // }}
         >
           <DataLabel scale="flex8">
             <Text style={{ color: "inherit" }} class={csTplAttrNameStyle}>

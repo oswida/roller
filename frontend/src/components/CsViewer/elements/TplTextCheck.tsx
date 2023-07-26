@@ -69,7 +69,6 @@ export const TplTextCheck: Component<Props> = (props) => {
       info.values[props.item.id] = { text: v, checked: false } as Value;
     else info.values[props.item.id].text = v;
     updateCsStorage(info);
-    // setCurrentCs(undefined);
     setCurrentCs({ ...info });
     centPublish(netTopic(topicCsInfo), info);
   };
@@ -89,7 +88,6 @@ export const TplTextCheck: Component<Props> = (props) => {
     else
       info.values[props.item.id].checked = !info.values[props.item.id].checked;
     updateCsStorage(info);
-    // setCurrentCs(undefined);
     setCurrentCs({ ...info });
     centPublish(netTopic(topicCsInfo), info);
   };

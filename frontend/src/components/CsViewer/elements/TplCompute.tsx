@@ -67,6 +67,8 @@ export const TplCompute: Component<Props> = (props) => {
     centPublish(netTopic(topicCsInfo), info);
   };
 
+  if (!data() || !data().compute) return <></>;
+
   return (
     <Flex align="center" justify="space" grow>
       <Flex gap="medium" align="center">
@@ -74,7 +76,9 @@ export const TplCompute: Component<Props> = (props) => {
         <TplHintBlock hint={props.item.hint} />
       </Flex>
       <Flex align="center">
-        <Text class={tplComputedValueStyle}>{value()}</Text>
+        <Show when={value() && value().trim() !== ""}>
+          <Text class={tplComputedValueStyle}>{value()}</Text>
+        </Show>
         <Show when={isCsOwner(currentCs())}>
           <div class={csTplIconStyle} onClick={recompute} title="Recompute">
             <IoReload fill="currentColor" />

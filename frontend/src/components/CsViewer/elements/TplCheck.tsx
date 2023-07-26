@@ -49,9 +49,9 @@ export const TplCheck: Component<Props> = (props) => {
     <Flex justify="space" grow>
       <Flex gap="medium" align="center">
         <TplCheckBlock
-          hint={data().dotLabel ? data().dotLabel : undefined}
+          hint={data()?.dotLabel ? data()?.dotLabel : undefined}
           checked={checked}
-          circle={data().shape && data().shape == "circle"}
+          circle={data()?.shape && data()?.shape == "circle"}
           color={props.item.color}
           onClick={isCsOwner(currentCs()) ? toggle : undefined}
         />

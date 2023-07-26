@@ -18,6 +18,7 @@ import { TplSelect } from "./elements/TplSelect";
 import { TplText } from "./elements/TplText";
 import { TplTextCheck } from "./elements/TplTextCheck";
 import { TplTextList } from "./elements/TplTextList";
+import { wrap } from "module";
 
 type Props = {
   item: CharTemplateItem;
@@ -38,40 +39,42 @@ export const CsItem: Component<Props> = (props) => {
     return false;
   });
 
+  const is_attr_max = createMemo(() => {
+    const d = props.item.data as CTIAttrData;
+    if (!d) return false;
+    if (d.withMax) return true;
+    return false;
+  });
+
+  const container_items = createMemo(() => {
+    const data = props.item.data as CTIContainerData;
+    if (!data) return [];
+    return data.items;
+  });
+
   return (
     <Switch>
       <Match when={props.item.itype === "row"}>
         <Flex gap="medium" grow>
-          <For each={(props.item.data as CTIContainerData).items}>
-            {(it) => <CsItem item={it} />}
-          </For>
+          <For each={container_items()}>{(it) => <CsItem item={it} />}</For>
         </Flex>
       </Match>
 
       <Match when={props.item.itype === "column"}>
         <Flex gap="medium" direction="column" grow>
-          <For each={(props.item.data as CTIContainerData).items}>
-            {(it) => <CsItem item={it} />}
-          </For>
+          <For each={container_items()}>{(it) => <CsItem item={it} />}</For>
         </Flex>
       </Match>
 
-      <Match
-        when={
-          props.item.itype === "attr" &&
-          !(props.item.data as CTIAttrData).withMax
-        }
-      >
-        <TplAttr item={props.item} />
-      </Match>
-
-      <Match
-        when={
-          props.item.itype === "attr" &&
-          !(props.item.data as CTIAttrData).withMax
-        }
-      >
-        <TplAttrMax item={props.item} />
+      <Match when={props.item.itype === "attr"}>
+        <Switch>
+          <Match when={is_attr_max()}>
+            <TplAttrMax item={props.item} />
+          </Match>
+          <Match when={!is_attr_max()}>
+            <TplAttr item={props.item} />
+          </Match>
+        </Switch>
       </Match>
 
       <Match when={props.item.itype === "resource"}>
