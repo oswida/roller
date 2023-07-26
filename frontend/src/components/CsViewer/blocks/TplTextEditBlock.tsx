@@ -1,12 +1,12 @@
-import { FaSolidXmark, FaSolidFloppyDisk } from "solid-icons/fa";
-import { Component, Show, createEffect } from "solid-js";
-import { CharTemplateItem } from "~/common";
-import { Input, InputArea } from "../../Input";
-import { TplHintBlock } from "./TplHintBlock";
+import { FaSolidFloppyDisk, FaSolidXmark } from "solid-icons/fa";
+import { Component, Show, createEffect, createMemo } from "solid-js";
+import { CTITextData, CharTemplateItem } from "~/common";
+import { Button } from "../../Button";
 import { Flex } from "../../Flex";
+import { Input, InputArea } from "../../Input";
 import { Text } from "../../Text";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../Tooltip";
-import { Button } from "../../Button";
+import { TplHintBlock } from "./TplHintBlock";
 
 type Props = {
   item: CharTemplateItem;
@@ -18,8 +18,12 @@ type Props = {
 };
 
 export const TplTextEditBlock: Component<Props> = (props) => {
+  const data = createMemo(() => {
+    return props.item.data as CTITextData;
+  });
+
   const keyPress = (e: any) => {
-    if ((e.code == "Enter" || e.key == "Enter") && props.item.limit == 1) {
+    if ((e.code == "Enter" || e.key == "Enter") && data()?.maxLines == 1) {
       applyValue();
     }
   };
@@ -70,7 +74,7 @@ export const TplTextEditBlock: Component<Props> = (props) => {
           </Tooltip>
         </Flex>
       </Flex>
-      <Show when={props.item.limit && props.item.limit == 1}>
+      <Show when={data()?.maxLines == 1}>
         <Input
           id={props.useId ? props.useId : props.item.id}
           onFocus={(e) => e.target.select()}
@@ -81,7 +85,7 @@ export const TplTextEditBlock: Component<Props> = (props) => {
           }}
         />
       </Show>
-      <Show when={!props.item.limit || props.item.limit != 1}>
+      <Show when={!data()?.maxLines || data()?.maxLines != 1}>
         <InputArea
           id={props.useId ? props.useId : props.item.id}
           onFocus={(e) => e.target.select()}

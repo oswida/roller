@@ -7,6 +7,7 @@ import {
   createSignal,
 } from "solid-js";
 import {
+  CTIAttrData,
   CharTemplateItem,
   centPublish,
   currentCs,
@@ -16,26 +17,26 @@ import {
   topicCsInfo,
   updateCsStorage,
 } from "~/common";
+import { themeVars } from "~/common/theme.css";
 import { charTemplates } from "~/template";
 import { DataBlock, DataLabel, DataValue } from "../../DataBlock";
 import { Flex } from "../../Flex";
 import { Input } from "../../Input";
 import { Text } from "../../Text";
 import { actionCompute } from "../actions";
+import { TplHintBlock } from "../blocks/TplHintBlock";
+import { TplRollBlock } from "../blocks/TplRollBlock";
 import {
   csTplAttrNameStyle,
   csTplAttrValueStyle,
   csTplIconStyle,
 } from "../styles.css";
-import { TplHintBlock } from "../blocks/TplHintBlock";
-import { TplRollBlock } from "../blocks/TplRollBlock";
-import { themeVars } from "~/common/theme.css";
 
 type Props = {
   item: CharTemplateItem;
 };
 
-export const TplAttrMax: Component<Props> = ({ item }) => {
+export const TplAttrMax: Component<Props> = (props) => {
   const [itemEdit, setItemEdit] = createSignal(false);
   const [editVal, setEditVal] = createSignal("");
   const [editValMax, setEditValMax] = createSignal("");
@@ -43,10 +44,11 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
   const value = createMemo(() => {
     const info = currentCs();
     if (!info) return ["-", "-"];
-    if (!info.values[item.id])
-      if (item.initialValue) info.values[item.id] = item.initialValue;
-      else info.values[item.id] = [0, 0];
-    return info.values[item.id];
+    if (!info.values[props.item.id])
+      if (props.item.initialValue)
+        info.values[props.item.id] = props.item.initialValue;
+      else info.values[props.item.id] = [0, 0];
+    return info.values[props.item.id];
   });
 
   const applyValue = () => {
@@ -57,17 +59,17 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
     if (!info) {
       return;
     }
-    let values = info.values[item.id];
+    let values = info.values[props.item.id];
     if (!values || values.length !== 2) {
       values = ["", ""];
     }
     if (v.trim() === "") v = values[0];
     if (vMax.trim() === "") vMax = values[1];
 
-    info.values[item.id] = [v, vMax];
+    info.values[props.item.id] = [v, vMax];
     const tpl = charTemplates[info.template];
-    if (tpl?.computeDeps && tpl?.computeDeps[item.id]) {
-      const v = actionCompute(item.id, info);
+    if (tpl?.computeDeps && tpl?.computeDeps[props.item.id]) {
+      const v = actionCompute(props.item.id, info);
       info.values = { ...info.values, ...v };
     }
 
@@ -86,7 +88,7 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
 
   createEffect(() => {
     if (!itemEdit()) return;
-    document.getElementById(item.id)?.focus();
+    document.getElementById(props.item.id)?.focus();
   });
 
   const keyPress = (e: any) => {
@@ -99,14 +101,18 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
     <Flex gap="medium" align="center" grow>
       <Show when={!itemEdit()}>
         <Flex align="center" justify="space" grow>
-          <DataBlock style={{ width: "50%" }}>
+          <DataBlock
+            style={{
+              width: (props.item.data as CTIAttrData).wide ? "70%" : "50%",
+            }}
+          >
             <DataLabel
               backgroundSchema="primary600"
               colorSchema="primary100"
               scale="flex7"
             >
-              <Text title={item.hint} class={csTplAttrNameStyle}>
-                {item.name}
+              <Text title={props.item.hint} class={csTplAttrNameStyle}>
+                {props.item.name}
               </Text>
             </DataLabel>
             <DataValue
@@ -134,8 +140,8 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
             </DataValue>
           </DataBlock>
           <Flex gap="medium">
-            <TplRollBlock item={item} value={() => value()[0]} />
-            <TplHintBlock hint={item.hint} />
+            <TplRollBlock item={props.item} value={() => value()[0]} />
+            <TplHintBlock hint={props.item.hint} />
           </Flex>
         </Flex>
       </Show>
@@ -143,17 +149,21 @@ export const TplAttrMax: Component<Props> = ({ item }) => {
         <div class={csTplIconStyle} onClick={() => setItemEdit(false)}>
           <FaSolidXmark style={{ fill: themeVars.danger600 }} />
         </div>
-        <DataBlock>
+        <DataBlock
+          style={{
+            width: (props.item.data as CTIAttrData).wide ? "70%" : "50%",
+          }}
+        >
           <DataLabel scale="flex7">
             <Text style={{ color: "inherit" }} class={csTplAttrNameStyle}>
-              {item.name}
+              {props.item.name}
             </Text>
           </DataLabel>
           <DataValue scale="flex3">
             <Flex align="center">
               <Input
                 value={value()[0]}
-                id={item.id}
+                id={props.item.id}
                 onFocus={(e) => e.target.select()}
                 onKeyPress={keyPress}
                 style={{

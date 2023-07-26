@@ -174,41 +174,81 @@ export type CharTemplateItemRoll = {
 };
 
 type CharTemplateItemType =
-  | "row"
-  | "text"
-  | "text_check"
-  | "text_check_circle"
-  | "attr"
-  | "attr_wide"
-  | "check"
-  | "check_circle"
-  | "resource"
-  | "state_resource"
-  | "state_resource_square"
-  | "resource_square"
-  | "attr_max"
-  | "label"
-  | "computed"
-  | "big_text"
-  | "text_list"
-  | "text_list_check"
-  | "select"
-  | "counter"
-  | "counter_check";
+  | "row" // container for other items
+  | "column" // container for other items
+  | "text" // text input,  variants: check, circle_check, document (big text)
+  | "attr" // attribute, variants: wide,max
+  | "check" // checkbox, variants: circle
+  | "resource" // inc/dec resource, variants: circle
+  | "label" // text label
+  | "computed" // auto-computed field
+  | "list" // expandable list of texts, variants: check
+  | "select" // list selection
+  | "counter"; // counter, variants: check
+
+export type CTIContainerData = {
+  items?: CharTemplateItem[]; // children items
+};
+
+// for text and list
+export type CTITextData = {
+  check?: boolean;
+  checkShape?: "circle" | "square";
+  checkLabel?: string;
+  large?: boolean;
+  maxLines?: number;
+};
+
+export type CTIAttrData = {
+  wide?: boolean;
+  withMax?: boolean;
+};
+
+export type CTICheckData = {
+  shape?: "circle" | "square";
+  dotLabel?: string;
+};
+
+export type CTIResourceData = {
+  max: number;
+  leftLabel?: string;
+  rightLabel?: string;
+  shape?: "circle" | "square";
+  dotLabels?: string[];
+};
+
+export type CTIComputedData = {
+  compute: (item: CharTemplateItem, values: Record<string, any>) => string; // function for 'computed' type
+};
+
+export type CTISelectData = {
+  options: string[];
+};
+
+export type CTICounterData = {
+  options: string[];
+  check?: boolean;
+  checkShape?: "circle" | "square";
+};
 
 export type CharTemplateItem = {
   id: string; // item unique id
   name?: string; // item name
+  description?: string; // item description used to show some texts
   itype: CharTemplateItemType; // control type
-  text?: string;
-  limit?: number; // limit for resource controls and text lines
+  hint?: string; // item info shown as a tooltip
+  initialValue?: any; // starting value
   rolls?: CharTemplateItemRoll[]; // rolls to perform, creates roll icons
-  color?: string;
-  hint?: string;
-  labels?: string[]; // additional labels: resource, list of choices: select
-  compute?: (item: CharTemplateItem, values: Record<string, any>) => string; // function for 'computed' type
-  items?: CharTemplateItem[]; // children items
-  initialValue?: any;
+  color?: string; // item color
+  data?: // specific item data
+  | CTIAttrData
+    | CTICheckData
+    | CTIComputedData
+    | CTIContainerData
+    | CTICounterData
+    | CTIResourceData
+    | CTISelectData
+    | CTITextData;
 };
 
 export type CharTemplateSection = {

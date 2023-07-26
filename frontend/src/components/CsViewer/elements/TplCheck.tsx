@@ -1,5 +1,6 @@
 import { Component, Show, createMemo } from "solid-js";
 import {
+  CTICheckData,
   CharTemplateItem,
   centPublish,
   currentCs,
@@ -17,47 +18,49 @@ import { TplCheckBlock } from "../blocks/TplCheckBlock";
 
 type Props = {
   item: CharTemplateItem;
-  circle?: boolean;
 };
 
-export const TplCheck: Component<Props> = ({ item, circle }) => {
+export const TplCheck: Component<Props> = (props) => {
   const checked = createMemo(() => {
     const info = currentCs();
     if (!info) return false;
-    return info.values[item.id];
+    return info.values[props.item.id];
   });
 
   const toggle = () => {
     const info = currentCs();
     if (!isCsOwner(info)) return;
     if (!info) return false;
-    if (!info.values[item.id]) {
-      info.values[item.id] = true;
+    if (!info.values[props.item.id]) {
+      info.values[props.item.id] = true;
     } else {
-      info.values[item.id] = false;
+      info.values[props.item.id] = false;
     }
     updateCsStorage(info);
-    // setCurrentCs(undefined);
     setCurrentCs(info);
     centPublish(netTopic(topicCsInfo), info);
   };
+
+  const data = createMemo(() => {
+    return props.item.data as CTICheckData;
+  });
 
   return (
     <Flex justify="space" grow>
       <Flex gap="medium" align="center">
         <TplCheckBlock
-          hint={item.labels ? item.labels[0] : undefined}
+          hint={data().dotLabel ? data().dotLabel : undefined}
           checked={checked}
-          circle={circle}
-          color={item.color}
+          circle={data().shape && data().shape == "circle"}
+          color={props.item.color}
           onClick={isCsOwner(currentCs()) ? toggle : undefined}
         />
-        <Text>{item.text}</Text>
-        <TplHintBlock hint={item.hint} />
+        <Text>{props.item.description}</Text>
+        <TplHintBlock hint={props.item.hint} />
       </Flex>
       <Show when={checked()}>
         <Flex>
-          <TplRollBlock item={item} />
+          <TplRollBlock item={props.item} />
         </Flex>
       </Show>
     </Flex>

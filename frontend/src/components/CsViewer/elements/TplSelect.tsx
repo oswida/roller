@@ -1,5 +1,6 @@
 import { Component, createMemo } from "solid-js";
 import {
+  CTISelectData,
   CharTemplateItem,
   centPublish,
   currentCs,
@@ -16,9 +17,12 @@ type Props = {
   item: CharTemplateItem;
 };
 
-export const TplSelect: Component<Props> = ({ item }) => {
+export const TplSelect: Component<Props> = (props) => {
+  const data = createMemo(() => {
+    return props.item.data as CTISelectData;
+  });
   const items = createMemo(() => {
-    const labels = item.labels;
+    const labels = data().options;
     if (!labels) return [] as SelectItem[];
     return labels.map((it) => ({ id: it, label: it } as SelectItem));
   });
@@ -26,7 +30,7 @@ export const TplSelect: Component<Props> = ({ item }) => {
   const selected = createMemo(() => {
     const cs = currentCs();
     if (!cs || !cs.values) return undefined;
-    const val = cs.values[item.id];
+    const val = cs.values[props.item.id];
     if (!val) return undefined;
     const flt = items().filter((it) => it.id === val);
     if (flt.length == 0) return undefined;
@@ -36,9 +40,8 @@ export const TplSelect: Component<Props> = ({ item }) => {
   const change = (it: SelectItem) => {
     const cs = currentCs();
     if (!cs || !cs.values) return undefined;
-    cs.values[item.id] = it.id;
+    cs.values[props.item.id] = it.id;
     updateCsStorage(cs);
-    // setCurrentCs(undefined);
     setCurrentCs({ ...cs });
     centPublish(netTopic(topicCsInfo), cs);
   };
@@ -47,12 +50,12 @@ export const TplSelect: Component<Props> = ({ item }) => {
     <Flex>
       <Select
         options={items}
-        label={item.name}
+        label={props.item.name}
         modal={true}
         selected={selected}
         onChange={change}
       />
-      <TplHintBlock hint={item.hint} />
+      <TplHintBlock hint={props.item.hint} />
     </Flex>
   );
 };

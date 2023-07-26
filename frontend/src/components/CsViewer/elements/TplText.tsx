@@ -7,6 +7,7 @@ import {
   createSignal,
 } from "solid-js";
 import {
+  CTITextData,
   CharTemplateItem,
   centPublish,
   currentCs,
@@ -26,17 +27,18 @@ type Props = {
   item: CharTemplateItem;
 };
 
-export const TplText: Component<Props> = ({ item }) => {
+export const TplText: Component<Props> = (props) => {
   const [itemEdit, setItemEdit] = createSignal(false);
 
   const value = createMemo(() => {
     const info = currentCs();
     if (!info) return "";
-    if (!info.values[item.id]) {
-      if (item.initialValue) info.values[item.id] = item.initialValue;
-      else info.values[item.id] = "";
+    if (!info.values[props.item.id]) {
+      if (props.item.initialValue)
+        info.values[props.item.id] = props.item.initialValue;
+      else info.values[props.item.id] = "";
     }
-    return info.values[item.id];
+    return info.values[props.item.id];
   });
 
   const applyValue = (v: string) => {
@@ -44,23 +46,22 @@ export const TplText: Component<Props> = ({ item }) => {
     if (!info) {
       return;
     }
-    info.values[item.id] = v;
+    info.values[props.item.id] = v;
     updateCsStorage(info);
-    // setCurrentCs(undefined);
     setCurrentCs({ ...info });
     centPublish(netTopic(topicCsInfo), info);
   };
 
   createEffect(() => {
     if (!itemEdit()) return;
-    document.getElementById(item.id)?.focus();
+    document.getElementById(props.item.id)?.focus();
   });
 
   return (
     <div class={tplTextItemStyle}>
       <Show when={itemEdit()}>
         <TplTextEditBlock
-          item={item}
+          item={props.item}
           onEditToggle={setItemEdit}
           value={value}
           setValue={applyValue}
@@ -71,9 +72,9 @@ export const TplText: Component<Props> = ({ item }) => {
           <Flex align="center" justify="space" grow>
             <Flex>
               <Text fontSize="smaller" colorSchema="secondary">
-                {item.name}
+                {props.item.name}
               </Text>
-              <TplHintBlock hint={item.hint} />
+              <TplHintBlock hint={props.item.hint} />
             </Flex>
             <Show when={isCsOwner(currentCs())}>
               <Flex>

@@ -1,5 +1,8 @@
-import { Component, For, Match, Switch } from "solid-js";
+import { Component, For, Match, Switch, createMemo } from "solid-js";
 import {
+  CTIAttrData,
+  CTIContainerData,
+  CTITextData,
   CharTemplateItem,
 } from "~/common";
 import { Flex } from "../Flex";
@@ -8,36 +11,66 @@ import { TplAttrMax } from "./elements/TplAttrMax";
 import { TplBigText } from "./elements/TplBigText";
 import { TplCheck } from "./elements/TplCheck";
 import { TplCompute } from "./elements/TplCompute";
+import { TplCounter } from "./elements/TplCounter";
 import { TplLabel } from "./elements/TplLabel";
 import { TplResource } from "./elements/TplResource";
 import { TplSelect } from "./elements/TplSelect";
 import { TplText } from "./elements/TplText";
 import { TplTextCheck } from "./elements/TplTextCheck";
 import { TplTextList } from "./elements/TplTextList";
-import { TplCounter } from "./elements/TplCounter";
 
 type Props = {
   item: CharTemplateItem;
 };
 
 export const CsItem: Component<Props> = (props) => {
+  const is_large_text = createMemo(() => {
+    const d = props.item.data as CTITextData;
+    if (!d) return false;
+    if (d.large) return true;
+    return false;
+  });
+
+  const is_check_text = createMemo(() => {
+    const d = props.item.data as CTITextData;
+    if (!d) return false;
+    if (d.check) return true;
+    return false;
+  });
+
   return (
     <Switch>
       <Match when={props.item.itype === "row"}>
         <Flex gap="medium" grow>
-          <For each={props.item.items}>{(it) => <CsItem item={it} />}</For>
+          <For each={(props.item.data as CTIContainerData).items}>
+            {(it) => <CsItem item={it} />}
+          </For>
         </Flex>
       </Match>
 
-      <Match when={props.item.itype === "attr"}>
+      <Match when={props.item.itype === "column"}>
+        <Flex gap="medium" direction="column" grow>
+          <For each={(props.item.data as CTIContainerData).items}>
+            {(it) => <CsItem item={it} />}
+          </For>
+        </Flex>
+      </Match>
+
+      <Match
+        when={
+          props.item.itype === "attr" &&
+          !(props.item.data as CTIAttrData).withMax
+        }
+      >
         <TplAttr item={props.item} />
       </Match>
 
-      <Match when={props.item.itype === "attr_wide"}>
-        <TplAttr item={props.item} wide />
-      </Match>
-
-      <Match when={props.item.itype === "attr_max"}>
+      <Match
+        when={
+          props.item.itype === "attr" &&
+          !(props.item.data as CTIAttrData).withMax
+        }
+      >
         <TplAttrMax item={props.item} />
       </Match>
 
@@ -45,36 +78,22 @@ export const CsItem: Component<Props> = (props) => {
         <TplResource item={props.item} />
       </Match>
 
-      <Match when={props.item.itype === "resource_square"}>
-        <TplResource item={props.item} square />
-      </Match>
-
-      <Match when={props.item.itype === "state_resource"}>
-        <TplResource item={props.item} state />
-      </Match>
-
-      <Match when={props.item.itype === "state_resource_square"}>
-        <TplResource item={props.item} state square />
-      </Match>
-
       <Match when={props.item.itype === "text"}>
-        <TplText item={props.item} />
-      </Match>
-
-      <Match when={props.item.itype === "text_check"}>
-        <TplTextCheck item={props.item} />
-      </Match>
-
-      <Match when={props.item.itype === "text_check_circle"}>
-        <TplTextCheck item={props.item} circle />
+        <Switch>
+          <Match when={is_check_text()}>
+            <TplTextCheck item={props.item} />
+          </Match>
+          <Match when={is_large_text()}>
+            <TplBigText item={props.item} />
+          </Match>
+          <Match when={!is_large_text() && !is_check_text()}>
+            <TplText item={props.item} />
+          </Match>
+        </Switch>
       </Match>
 
       <Match when={props.item.itype === "check"}>
         <TplCheck item={props.item} />
-      </Match>
-
-      <Match when={props.item.itype === "check_circle"}>
-        <TplCheck item={props.item} circle />
       </Match>
 
       <Match when={props.item.itype === "label"}>
@@ -85,16 +104,8 @@ export const CsItem: Component<Props> = (props) => {
         <TplCompute item={props.item} />
       </Match>
 
-      <Match when={props.item.itype === "big_text"}>
-        <TplBigText item={props.item} />
-      </Match>
-
-      <Match when={props.item.itype === "text_list"}>
+      <Match when={props.item.itype === "list"}>
         <TplTextList item={props.item} />
-      </Match>
-
-      <Match when={props.item.itype === "text_list_check"}>
-        <TplTextList item={props.item} checkable />
       </Match>
 
       <Match when={props.item.itype === "select"}>
@@ -105,9 +116,9 @@ export const CsItem: Component<Props> = (props) => {
         <TplCounter item={props.item} />
       </Match>
 
-      <Match when={props.item.itype === "counter_check"}>
+      {/* <Match when={props.item.itype === "counter_check"}>
         <TplCounter item={props.item} checkable />
-      </Match>
+      </Match> */}
     </Switch>
   );
 };

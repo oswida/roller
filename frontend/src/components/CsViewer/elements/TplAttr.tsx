@@ -7,6 +7,7 @@ import {
   createSignal,
 } from "solid-js";
 import {
+  CTIAttrData,
   CharTemplateItem,
   centPublish,
   currentCs,
@@ -16,38 +17,38 @@ import {
   topicCsInfo,
   updateCsStorage,
 } from "~/common";
+import { themeVars } from "~/common/theme.css";
 import { charTemplates } from "~/template";
 import { DataBlock, DataLabel, DataValue } from "../../DataBlock";
 import { Flex } from "../../Flex";
 import { Input } from "../../Input";
 import { Text } from "../../Text";
 import { actionCompute } from "../actions";
+import { TplHintBlock } from "../blocks/TplHintBlock";
+import { TplRollBlock } from "../blocks/TplRollBlock";
 import {
   csTplAttrNameStyle,
   csTplAttrValueStyle,
   csTplIconStyle,
 } from "../styles.css";
-import { TplHintBlock } from "../blocks/TplHintBlock";
-import { TplRollBlock } from "../blocks/TplRollBlock";
-import { themeVars } from "~/common/theme.css";
 
 type Props = {
   item: CharTemplateItem;
-  wide?: boolean;
 };
 
-export const TplAttr: Component<Props> = ({ item, wide }) => {
+export const TplAttr: Component<Props> = (props) => {
   const [itemEdit, setItemEdit] = createSignal(false);
   const [editVal, setEditVal] = createSignal("");
 
   const value = createMemo(() => {
     const info = currentCs();
     if (!info) return "-";
-    if (!info.values[item.id]) {
-      if (item.initialValue) info.values[item.id] = item.initialValue;
-      else info.values[item.id] = 0;
+    if (!info.values[props.item.id]) {
+      if (props.item.initialValue)
+        info.values[props.item.id] = props.item.initialValue;
+      else info.values[props.item.id] = 0;
     }
-    return info.values[item.id];
+    return info.values[props.item.id];
   });
 
   const applyValue = () => {
@@ -62,14 +63,13 @@ export const TplAttr: Component<Props> = ({ item, wide }) => {
       return;
     }
     const tpl = charTemplates[info.template];
-    info.values[item.id] = v;
-    if (tpl?.computeDeps && tpl?.computeDeps[item.id]) {
-      const v = actionCompute(item.id, info);
+    info.values[props.item.id] = v;
+    if (tpl?.computeDeps && tpl?.computeDeps[props.item.id]) {
+      const v = actionCompute(props.item.id, info);
       info.values = { ...info.values, ...v };
     }
     updateCsStorage(info);
     setEditVal("");
-    // setCurrentCs(undefined);
     setCurrentCs({ ...info });
     centPublish(netTopic(topicCsInfo), info);
   };
@@ -81,7 +81,7 @@ export const TplAttr: Component<Props> = ({ item, wide }) => {
 
   createEffect(() => {
     if (!itemEdit()) return;
-    document.getElementById(item.id)?.focus();
+    document.getElementById(props.item.id)?.focus();
   });
 
   const keyPress = (e: any) => {
@@ -94,13 +94,17 @@ export const TplAttr: Component<Props> = ({ item, wide }) => {
     <Flex gap="medium" align="center" grow>
       <Show when={!itemEdit()}>
         <Flex justify="space" align="center" grow>
-          <DataBlock style={{ width: wide ? "70%" : "50%" }}>
+          <DataBlock
+            style={{
+              width: (props.item.data as CTIAttrData).wide ? "70%" : "50%",
+            }}
+          >
             <DataLabel
               backgroundSchema="primary600"
               colorSchema="primary100"
               scale="flex8"
             >
-              <Text class={csTplAttrNameStyle}>{item.name}</Text>
+              <Text class={csTplAttrNameStyle}>{props.item.name}</Text>
             </DataLabel>
             <DataValue
               backgroundSchema="primary600"
@@ -113,8 +117,8 @@ export const TplAttr: Component<Props> = ({ item, wide }) => {
             </DataValue>
           </DataBlock>
           <Flex gap="medium" align="center">
-            <TplRollBlock item={item} value={value} />
-            <TplHintBlock hint={item.hint} />
+            <TplRollBlock item={props.item} value={value} />
+            <TplHintBlock hint={props.item.hint} />
           </Flex>
         </Flex>
       </Show>
@@ -122,15 +126,19 @@ export const TplAttr: Component<Props> = ({ item, wide }) => {
         <div class={csTplIconStyle} onClick={() => setItemEdit(false)}>
           <FaSolidXmark style={{ fill: themeVars.danger600 }} />
         </div>
-        <DataBlock style={{ width: wide ? "70%" : "50%" }}>
+        <DataBlock
+          style={{
+            width: (props.item.data as CTIAttrData).wide ? "70%" : "50%",
+          }}
+        >
           <DataLabel scale="flex8">
             <Text style={{ color: "inherit" }} class={csTplAttrNameStyle}>
-              {item.name}
+              {props.item.name}
             </Text>
           </DataLabel>
           <DataValue scale="flex2">
             <Input
-              id={item.id}
+              id={props.item.id}
               onFocus={(e) => e.target.select()}
               onKeyPress={keyPress}
               value={value()}

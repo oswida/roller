@@ -1,5 +1,7 @@
+import { IoReload } from "solid-icons/io";
 import { Component, Show, createMemo } from "solid-js";
 import {
+  CTIComputedData,
   CharTemplateItem,
   centPublish,
   currentCs,
@@ -9,13 +11,11 @@ import {
   topicCsInfo,
   updateCsStorage,
 } from "~/common";
+import { charTemplates } from "~/template";
 import { Flex } from "../../Flex";
 import { Text } from "../../Text";
-import { csTplIconStyle, tplComputedValueStyle } from "../styles.css";
 import { TplHintBlock } from "../blocks/TplHintBlock";
-import { IoReload } from "solid-icons/io";
-import { charTemplates } from "~/template";
-import { actionCompute } from "../actions";
+import { csTplIconStyle, tplComputedValueStyle } from "../styles.css";
 
 type Props = {
   item: CharTemplateItem;
@@ -44,22 +44,25 @@ type Props = {
 //   },
 
 // Value computed automatically from another fields
-export const TplCompute: Component<Props> = ({ item }) => {
+export const TplCompute: Component<Props> = (props) => {
+  const data = createMemo(() => {
+    return props.item.data as CTIComputedData;
+  });
+
   const value = createMemo(() => {
     const info = currentCs();
     if (!info || !info.values) return "";
-    return info.values[item.id];
+    return info.values[props.item.id];
   });
 
   const recompute = () => {
     const info = currentCs();
     if (!info || !info.values) return "";
     const tpl = charTemplates[info.template];
-    if (!item.compute) return;
-    const v = item.compute(item, info.values);
-    info.values[item.id] = v;
+    if (!data().compute) return;
+    const v = data().compute(props.item, info.values);
+    info.values[props.item.id] = v;
     updateCsStorage(info);
-    // setCurrentCs(undefined);
     setCurrentCs({ ...info });
     centPublish(netTopic(topicCsInfo), info);
   };
@@ -67,8 +70,8 @@ export const TplCompute: Component<Props> = ({ item }) => {
   return (
     <Flex align="center" justify="space" grow>
       <Flex gap="medium" align="center">
-        <Text>{item.name}</Text>
-        <TplHintBlock hint={item.hint} />
+        <Text>{props.item.name}</Text>
+        <TplHintBlock hint={props.item.hint} />
       </Flex>
       <Flex align="center">
         <Text class={tplComputedValueStyle}>{value()}</Text>

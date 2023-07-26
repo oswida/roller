@@ -1,6 +1,7 @@
 import { FaSolidMinus, FaSolidPlus } from "solid-icons/fa";
 import { Component, For, Show, createMemo } from "solid-js";
 import {
+  CTIResourceData,
   CharTemplateItem,
   centPublish,
   currentCs,
@@ -14,25 +15,28 @@ import { charTemplates } from "~/template";
 import { Flex } from "../../Flex";
 import { Text } from "../../Text";
 import { actionCompute } from "../actions";
-import { csTplIconStyle } from "../styles.css";
-import { TplHintBlock } from "../blocks/TplHintBlock";
 import { TplCheckBlock } from "../blocks/TplCheckBlock";
+import { TplHintBlock } from "../blocks/TplHintBlock";
+import { csTplIconStyle } from "../styles.css";
 
 type Props = {
   item: CharTemplateItem;
-  state?: boolean;
-  square?: boolean;
 };
 
-export const TplResource: Component<Props> = ({ item, state, square }) => {
+export const TplResource: Component<Props> = (props) => {
+  const data = createMemo(() => {
+    return props.item.data as CTIResourceData;
+  });
+
   const numValue = createMemo(() => {
     const info = currentCs();
     if (!info) return 0;
-    if (!info.values[item.id]) {
-      if (item.initialValue) info.values[item.id] = item.initialValue;
-      else info.values[item.id] = 0;
+    if (!info.values[props.item.id]) {
+      if (props.item.initialValue)
+        info.values[props.item.id] = props.item.initialValue;
+      else info.values[props.item.id] = 0;
     }
-    const num = Number.parseInt(info.values[item.id]);
+    const num = Number.parseInt(info.values[props.item.id]);
     if (Number.isNaN(num)) return 0;
     return num;
   });
@@ -46,16 +50,15 @@ export const TplResource: Component<Props> = ({ item, state, square }) => {
     if (up) v += 1;
     else v -= 1;
     if (v < 0) v = 0;
-    if (v > (item.limit ? item.limit : 1)) v = item.limit ? item.limit : 1;
-    info.values[item.id] = v;
+    if (v > (data().max ? data().max : 1)) v = data().max ? data().max : 1;
+    info.values[props.item.id] = v;
     const tpl = charTemplates[info.template];
-    if (tpl?.computeDeps && tpl?.computeDeps[item.id]) {
-      const v = actionCompute(item.id, info);
+    if (tpl?.computeDeps && tpl?.computeDeps[props.item.id]) {
+      const v = actionCompute(props.item.id, info);
       info.values = { ...info.values, ...v };
     }
 
     updateCsStorage(info);
-    // setCurrentCs(undefined);
     setCurrentCs({ ...info });
     centPublish(netTopic(topicCsInfo), info);
   };
@@ -64,14 +67,14 @@ export const TplResource: Component<Props> = ({ item, state, square }) => {
     <Flex direction="column" gap="small">
       <Flex align="center" gap="medium">
         <Text fontSize="smaller" colorSchema="secondary">
-          {item.name}
+          {props.item.name}
         </Text>
-        <TplHintBlock hint={item.hint} />
+        <TplHintBlock hint={props.item.hint} />
       </Flex>
       <Flex gap="small" align="center">
         <Flex direction="column" gap="small" align="center" justify="center">
-          <Show when={state && item.labels && item.labels[0]}>
-            <Text fontSize="smaller">{item.labels ? item.labels[0] : ""}</Text>
+          <Show when={data().leftLabel}>
+            <Text fontSize="smaller">{data().leftLabel}</Text>
           </Show>
           <Show when={isCsOwner(currentCs())}>
             <div class={csTplIconStyle} onClick={() => incNumValue(false)}>
@@ -79,18 +82,18 @@ export const TplResource: Component<Props> = ({ item, state, square }) => {
             </div>
           </Show>
         </Flex>
-        <For each={new Array(item.limit).fill(" ")}>
+        <For each={new Array(data().max).fill(" ")}>
           {(it, idx) => (
             <TplCheckBlock
               checked={() => idx() < numValue()}
-              circle={!square}
-              color={item.color}
+              circle={data().shape && data().shape == "circle"}
+              color={props.item.color}
             />
           )}
         </For>
         <Flex direction="column" gap="small" align="center" justify="center">
-          <Show when={state && item.labels && item.labels.length > 1}>
-            <Text fontSize="smaller">{item.labels ? item.labels[1] : ""}</Text>
+          <Show when={data().rightLabel}>
+            <Text fontSize="smaller">{data().rightLabel}</Text>
           </Show>
           <Show when={isCsOwner(currentCs())}>
             <div class={csTplIconStyle} onClick={() => incNumValue(true)}>

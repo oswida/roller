@@ -1,10 +1,5 @@
-import { Component, Show } from "solid-js";
-import {
-  CharTemplateItem,
-  CharTemplateItemRoll,
-  currentCs,
-  isCsOwner,
-} from "~/common";
+import { Component } from "solid-js";
+import { CharTemplateItem } from "~/common";
 import { Flex } from "../../Flex";
 import { Text } from "../../Text";
 import { TplHintBlock } from "../blocks/TplHintBlock";
@@ -15,19 +10,25 @@ type Props = {
   item: CharTemplateItem;
 };
 
-export const TplLabel: Component<Props> = ({ item }) => {
+export const TplLabel: Component<Props> = (props) => {
   return (
     <Flex justify="space" align="center" grow>
       <Flex align="center" grow>
-        <Text style={{ color: item.color ? item.color : themeVars.info900 }}>
-          {item.text}
+        <Text
+          style={{
+            color: props.item.color ? props.item.color : themeVars.info900,
+          }}
+        >
+          {props.item.description}
         </Text>
-        <TplHintBlock hint={item.hint} />
+        <TplHintBlock hint={props.item.hint} />
       </Flex>
       <Flex align="center">
         <TplRollBlock
-          item={item}
-          value={() => (item.initialValue ? item.initialValue : "0")}
+          item={props.item}
+          value={() =>
+            props.item.initialValue ? props.item.initialValue : "0"
+          }
         />
       </Flex>
     </Flex>

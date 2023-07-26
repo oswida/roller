@@ -7,6 +7,7 @@ import {
   createSignal,
 } from "solid-js";
 import {
+  CTITextData,
   CharTemplateItem,
   centPublish,
   currentCs,
@@ -16,18 +17,17 @@ import {
   topicCsInfo,
   updateCsStorage,
 } from "~/common";
-import { Flex } from "../../Flex";
-import { Text } from "../../Text";
-import { csTplIconStyle, tplTextItemStyle } from "../styles.css";
-import { TplHintBlock } from "../blocks/TplHintBlock";
-import { TplTextEditBlock } from "../blocks/TplTextEditBlock";
-import { TplCheckBlock } from "../blocks/TplCheckBlock";
 import { Button } from "~/components/Button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
+import { Flex } from "../../Flex";
+import { Text } from "../../Text";
+import { TplCheckBlock } from "../blocks/TplCheckBlock";
+import { TplHintBlock } from "../blocks/TplHintBlock";
+import { TplTextEditBlock } from "../blocks/TplTextEditBlock";
+import { tplTextItemStyle } from "../styles.css";
 
 type Props = {
   item: CharTemplateItem;
-  circle?: boolean;
 };
 
 type Value = {
@@ -35,28 +35,28 @@ type Value = {
   checked: boolean;
 };
 
-export const TplTextCheck: Component<Props> = ({ item, circle }) => {
+export const TplTextCheck: Component<Props> = (props) => {
   const [itemEdit, setItemEdit] = createSignal(false);
 
   const value_text = createMemo(() => {
     const info = currentCs();
     if (!info) return "";
-    if (!info.values[item.id]) {
-      if (item.initialValue)
-        info.values[item.id] = {
-          text: item.initialValue,
+    if (!info.values[props.item.id]) {
+      if (props.item.initialValue)
+        info.values[props.item.id] = {
+          text: props.item.initialValue,
           checked: false,
         } as Value;
-      else info.values[item.id] = { text: "", checked: false } as Value;
+      else info.values[props.item.id] = { text: "", checked: false } as Value;
     }
-    const v = info.values[item.id] as Value;
+    const v = info.values[props.item.id] as Value;
     return v.text;
   });
 
   const value_checked = createMemo(() => {
     const info = currentCs();
-    if (!info || !info.values[item.id]) return false;
-    const v = info.values[item.id] as Value;
+    if (!info || !info.values[props.item.id]) return false;
+    const v = info.values[props.item.id] as Value;
     return v.checked;
   });
 
@@ -65,9 +65,9 @@ export const TplTextCheck: Component<Props> = ({ item, circle }) => {
     if (!info) {
       return;
     }
-    if (!info.values[item.id])
-      info.values[item.id] = { text: v, checked: false } as Value;
-    else info.values[item.id].text = v;
+    if (!info.values[props.item.id])
+      info.values[props.item.id] = { text: v, checked: false } as Value;
+    else info.values[props.item.id].text = v;
     updateCsStorage(info);
     // setCurrentCs(undefined);
     setCurrentCs({ ...info });
@@ -76,7 +76,7 @@ export const TplTextCheck: Component<Props> = ({ item, circle }) => {
 
   createEffect(() => {
     if (!itemEdit()) return;
-    document.getElementById(item.id)?.focus();
+    document.getElementById(props.item.id)?.focus();
   });
 
   const toggle = () => {
@@ -84,20 +84,25 @@ export const TplTextCheck: Component<Props> = ({ item, circle }) => {
     if (!info) {
       return;
     }
-    if (!info.values[item.id])
-      info.values[item.id] = { text: "", checked: true } as Value;
-    else info.values[item.id].checked = !info.values[item.id].checked;
+    if (!info.values[props.item.id])
+      info.values[props.item.id] = { text: "", checked: true } as Value;
+    else
+      info.values[props.item.id].checked = !info.values[props.item.id].checked;
     updateCsStorage(info);
     // setCurrentCs(undefined);
     setCurrentCs({ ...info });
     centPublish(netTopic(topicCsInfo), info);
   };
 
+  const data = createMemo(() => {
+    return props.item.data as CTITextData;
+  });
+
   return (
     <div class={tplTextItemStyle}>
       <Show when={itemEdit()}>
         <TplTextEditBlock
-          item={item}
+          item={props.item}
           onEditToggle={setItemEdit}
           value={value_text}
           setValue={applyText}
@@ -108,15 +113,17 @@ export const TplTextCheck: Component<Props> = ({ item, circle }) => {
           <Flex align="center" justify="space" grow>
             <Flex gap="medium" align="center" grow>
               <TplCheckBlock
-                hint={item.labels ? item.labels[0] : undefined}
+                hint={data().checkLabel ? data().checkLabel : undefined}
                 checked={value_checked}
-                circle={circle}
-                color={item.color}
+                circle={
+                  data().checkShape ? data().checkShape == "circle" : false
+                }
+                color={props.item.color}
                 onClick={isCsOwner(currentCs()) ? toggle : undefined}
               />
               <Flex>
-                <Text>{item.name}</Text>
-                <TplHintBlock hint={item.hint} />
+                <Text>{props.item.name}</Text>
+                <TplHintBlock hint={props.item.hint} />
               </Flex>
             </Flex>
             <Show when={isCsOwner(currentCs()) && value_checked()}>

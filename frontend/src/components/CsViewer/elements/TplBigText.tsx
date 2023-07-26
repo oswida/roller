@@ -1,9 +1,4 @@
-import {
-  FaSolidCircleInfo,
-  FaSolidEye,
-  FaSolidFloppyDisk,
-  FaSolidPen,
-} from "solid-icons/fa";
+import { FaSolidEye, FaSolidFloppyDisk, FaSolidPen } from "solid-icons/fa";
 import {
   Component,
   Show,
@@ -22,28 +17,28 @@ import {
   topicCsInfo,
   updateCsStorage,
 } from "~/common";
+import { Button } from "../../Button";
+import { Dialog, DialogContent, DialogTrigger } from "../../Dialog";
 import { Flex } from "../../Flex";
 import { InputArea } from "../../Input";
-import { Text } from "../../Text";
-import { csTplIconStyle, tplTextItemStyle } from "../styles.css";
 import { Popover, PopoverContent, PopoverTrigger } from "../../Popover";
-import { Dialog, DialogContent, DialogTrigger } from "../../Dialog";
-import { Button } from "../../Button";
+import { Text } from "../../Text";
 import { TplHintBlock } from "../blocks/TplHintBlock";
+import { csTplIconStyle, tplTextItemStyle } from "../styles.css";
 
 type Props = {
   item: CharTemplateItem;
 };
 
-export const TplBigText: Component<Props> = ({ item }) => {
+export const TplBigText: Component<Props> = (props) => {
   const [editVal, setEditVal] = createSignal("");
   const [editOpen, setEditOpen] = createSignal(false);
   const [viewOpen, setViewOpen] = createSignal(false);
 
   const value = createMemo(() => {
     const info = currentCs();
-    if (!info || !info.values[item.id]) return "";
-    return info.values[item.id] as string;
+    if (!info || !info.values[props.item.id]) return "";
+    return info.values[props.item.id] as string;
   });
 
   const shortValue = createMemo(() => {
@@ -62,7 +57,7 @@ export const TplBigText: Component<Props> = ({ item }) => {
     if (!info) {
       return;
     }
-    info.values[item.id] = v;
+    info.values[props.item.id] = v;
     updateCsStorage(info);
     setEditVal("");
     // setCurrentCs(undefined);
@@ -84,9 +79,9 @@ export const TplBigText: Component<Props> = ({ item }) => {
         <Flex align="center" justify="space" grow>
           <Flex>
             <Text fontSize="smaller" colorSchema="secondary">
-              {item.name}
+              {props.item.name}
             </Text>
-            <TplHintBlock hint={item.hint} />
+            <TplHintBlock hint={props.item.hint} />
           </Flex>
           <Flex>
             <Show when={isCsOwner(currentCs())}>
@@ -99,7 +94,7 @@ export const TplBigText: Component<Props> = ({ item }) => {
                   <FaSolidPen style={{ fill: "currentcolor" }} />
                 </PopoverTrigger>
                 <PopoverContent
-                  title={item.name}
+                  title={props.item.name}
                   headerActions={
                     <Button title="Save" onClick={applyValue}>
                       <FaSolidFloppyDisk fill="currentColor" />
@@ -127,7 +122,7 @@ export const TplBigText: Component<Props> = ({ item }) => {
                 </div>
               </DialogTrigger>
               <DialogContent
-                title={item.name ? item.name : ""}
+                title={props.item.name ? props.item.name : ""}
                 style={{ "max-width": "80%" }}
               >
                 <div

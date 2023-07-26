@@ -1,3 +1,4 @@
+import { FaSolidPen, FaSolidPlus, FaSolidTrash } from "solid-icons/fa";
 import {
   Component,
   For,
@@ -7,6 +8,7 @@ import {
   createSignal,
 } from "solid-js";
 import {
+  CTITextData,
   CharTemplateItem,
   centPublish,
   currentCs,
@@ -18,11 +20,10 @@ import {
 } from "~/common";
 import { Flex } from "../../Flex";
 import { Text } from "../../Text";
-import { FaSolidPen, FaSolidPlus, FaSolidTrash } from "solid-icons/fa";
-import { csTplIconStyle } from "../styles.css";
-import { TplTextEditBlock } from "../blocks/TplTextEditBlock";
 import { TplCheckBlock } from "../blocks/TplCheckBlock";
 import { TplHintBlock } from "../blocks/TplHintBlock";
+import { TplTextEditBlock } from "../blocks/TplTextEditBlock";
+import { csTplIconStyle } from "../styles.css";
 
 type TextListItem = {
   text: string;
@@ -31,24 +32,30 @@ type TextListItem = {
 
 type Props = {
   item: CharTemplateItem;
-  checkable?: boolean;
 };
 
-export const TplTextList: Component<Props> = ({ item, checkable }) => {
+// This should have CTITextData as a data param
+
+export const TplTextList: Component<Props> = (props) => {
   const [editedItem, setEditedItem] = createSignal(-1);
   const [editVal, setEditVal] = createSignal("");
+
+  const data = createMemo(() => {
+    return props.item.data as CTITextData;
+  });
 
   const values = createMemo(() => {
     const cs = currentCs();
     if (!cs) return [] as TextListItem[];
-    return cs.values[item.id] as TextListItem[];
+    return cs.values[props.item.id] as TextListItem[];
   });
 
   const addItem = () => {
     const cs = currentCs();
     if (!cs) return [] as TextListItem[];
-    if (!cs.values[item.id]) cs.values[item.id] = [] as TextListItem[];
-    const v = cs.values[item.id] as TextListItem[];
+    if (!cs.values[props.item.id])
+      cs.values[props.item.id] = [] as TextListItem[];
+    const v = cs.values[props.item.id] as TextListItem[];
     v.push({ text: "", checked: false } as TextListItem);
     updateCsStorage(cs);
     // setCurrentCs(undefined);
@@ -60,10 +67,9 @@ export const TplTextList: Component<Props> = ({ item, checkable }) => {
     if (pos >= values().length) return;
     const cs = currentCs();
     if (!cs) return;
-    let v = cs.values[item.id] as TextListItem[];
+    let v = cs.values[props.item.id] as TextListItem[];
     v.splice(pos, 1);
     updateCsStorage(cs);
-    // setCurrentCs(undefined);
     setCurrentCs({ ...cs });
     centPublish(netTopic(topicCsInfo), cs);
   };
@@ -76,7 +82,7 @@ export const TplTextList: Component<Props> = ({ item, checkable }) => {
     }
     const cs = currentCs();
     if (!cs) return [] as TextListItem[];
-    const v = cs.values[item.id] as TextListItem[];
+    const v = cs.values[props.item.id] as TextListItem[];
     setEditVal(v[idx].text);
     setEditedItem(idx);
   };
@@ -85,10 +91,9 @@ export const TplTextList: Component<Props> = ({ item, checkable }) => {
     if (idx >= values().length) return;
     const cs = currentCs();
     if (!cs) return;
-    let v = cs.values[item.id] as TextListItem[];
+    let v = cs.values[props.item.id] as TextListItem[];
     v[idx].checked = !v[idx].checked;
     updateCsStorage(cs);
-    // setCurrentCs(undefined);
     setCurrentCs({ ...cs });
     centPublish(netTopic(topicCsInfo), cs);
   };
@@ -97,17 +102,16 @@ export const TplTextList: Component<Props> = ({ item, checkable }) => {
     if (editedItem() < 0) return;
     const cs = currentCs();
     if (!cs) return [] as TextListItem[];
-    const val = cs.values[item.id] as TextListItem[];
+    const val = cs.values[props.item.id] as TextListItem[];
     val[editedItem()].text = v;
     updateCsStorage(cs);
-    // setCurrentCs(undefined);
     setCurrentCs({ ...cs });
     centPublish(netTopic(topicCsInfo), cs);
   };
 
   createEffect(() => {
     if (editedItem() == -1) return;
-    const id = `${item.id}${editedItem()}`;
+    const id = `${props.item.id}${editedItem()}`;
     setTimeout(() => {
       document.getElementById(id)?.focus();
       setEditVal(values()[editedItem()].text);
@@ -119,9 +123,9 @@ export const TplTextList: Component<Props> = ({ item, checkable }) => {
       <Flex justify="space" align="center" grow>
         <Flex align="center" grow>
           <Text colorSchema="secondary" fontSize="smaller">
-            {item.name}
+            {props.item.name}
           </Text>
-          <TplHintBlock hint={item.hint} />
+          <TplHintBlock hint={props.item.hint} />
         </Flex>
         <Show when={isCsOwner(currentCs())}>
           <div class={csTplIconStyle} title="Add item" onClick={addItem}>
@@ -135,12 +139,12 @@ export const TplTextList: Component<Props> = ({ item, checkable }) => {
             <Flex justify="space" align="center" grow>
               <Show when={editedItem() !== idx()}>
                 <Flex align="center" gap="medium" grow>
-                  <Show when={checkable}>
+                  <Show when={data().check}>
                     <TplCheckBlock
-                      hint={item.labels ? item.labels[0] : undefined}
+                      hint={data().checkLabel ? data().checkLabel : undefined}
                       checked={() => it.checked}
                       circle={false}
-                      color={item.color}
+                      color={props.item.color}
                       onClick={
                         isCsOwner(currentCs())
                           ? () => toggleCheck(idx())
@@ -171,9 +175,9 @@ export const TplTextList: Component<Props> = ({ item, checkable }) => {
               </Show>
               <Show when={isCsOwner(currentCs()) && editedItem() === idx()}>
                 <TplTextEditBlock
-                  useId={`${item.id}${idx()}`}
+                  useId={`${props.item.id}${idx()}`}
                   hideName
-                  item={item}
+                  item={props.item}
                   value={editVal}
                   setValue={applyValue}
                   onEditToggle={(value: boolean) => toggleEdit(idx(), value)}

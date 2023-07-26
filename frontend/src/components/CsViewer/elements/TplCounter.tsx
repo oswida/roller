@@ -2,6 +2,7 @@ import { FaSolidMinus, FaSolidPlus } from "solid-icons/fa";
 import { IoReload } from "solid-icons/io";
 import { Component, Show, createMemo } from "solid-js";
 import {
+  CTICounterData,
   CharTemplateItem,
   centPublish,
   currentCs,
@@ -13,11 +14,10 @@ import {
 } from "~/common";
 import { Flex } from "../../Flex";
 import { Text } from "../../Text";
-import { csTplIconStyle, tplCounterStyle } from "../styles.css";
+import { TplCheckBlock } from "../blocks/TplCheckBlock";
 import { TplHintBlock } from "../blocks/TplHintBlock";
 import { TplRollBlock } from "../blocks/TplRollBlock";
-import { TplCheckBlock } from "../blocks/TplCheckBlock";
-import { charTemplates } from "~/template";
+import { csTplIconStyle, tplCounterStyle } from "../styles.css";
 
 type CounterItem = {
   value: number;
@@ -26,29 +26,29 @@ type CounterItem = {
 
 type Props = {
   item: CharTemplateItem;
-  wide?: boolean;
-  checkable?: boolean;
-  circle?: boolean;
 };
 
-export const TplCounter: Component<Props> = ({
-  item,
-  wide,
-  checkable,
-  circle,
-}) => {
+export const TplCounter: Component<Props> = (props) => {
+  const data = createMemo(() => {
+    return props.item.data as CTICounterData;
+  });
+
   const value = createMemo(() => {
     const info = currentCs();
     if (!info) return { value: 0, checked: false } as CounterItem;
-    if (!info.values[item.id]) {
-      if (item.initialValue)
-        info.values[item.id] = {
-          value: item.initialValue,
+    if (!info.values[props.item.id]) {
+      if (props.item.initialValue)
+        info.values[props.item.id] = {
+          value: props.item.initialValue,
           checked: false,
         } as CounterItem;
-      else info.values[item.id] = { value: 0, checked: false } as CounterItem;
+      else
+        info.values[props.item.id] = {
+          value: 0,
+          checked: false,
+        } as CounterItem;
     }
-    return info.values[item.id] as CounterItem;
+    return info.values[props.item.id] as CounterItem;
   });
 
   const applyValue = (inc: boolean) => {
@@ -56,19 +56,18 @@ export const TplCounter: Component<Props> = ({
     if (!info) {
       return;
     }
-    const labels = item.labels;
+    const labels = data().options;
     if (!labels) return;
     let i = 0;
-    const value = info.values[item.id] as CounterItem;
+    const value = info.values[props.item.id] as CounterItem;
     i = value.value;
     if (inc) i++;
     else i--;
     if (i < 0) i = 0;
     if (i >= labels.length) i = labels.length - 1;
 
-    info.values[item.id] = { ...info.values[item.id], value: i };
+    info.values[props.item.id] = { ...info.values[props.item.id], value: i };
     updateCsStorage(info);
-    // setCurrentCs(undefined);
     setCurrentCs({ ...info });
     centPublish(netTopic(topicCsInfo), info);
   };
@@ -78,12 +77,11 @@ export const TplCounter: Component<Props> = ({
     if (!info) {
       return;
     }
-    info.values[item.id] = {
-      ...info.values[item.id],
-      value: item.initialValue,
+    info.values[props.item.id] = {
+      ...info.values[props.item.id],
+      value: props.item.initialValue,
     };
     updateCsStorage(info);
-    // setCurrentCs(undefined);
     setCurrentCs({ ...info });
     centPublish(netTopic(topicCsInfo), info);
   };
@@ -93,11 +91,10 @@ export const TplCounter: Component<Props> = ({
     if (!info) {
       return;
     }
-    const value = info.values[item.id] as CounterItem;
+    const value = info.values[props.item.id] as CounterItem;
     value.checked = !value.checked;
-    info.values[item.id] = { ...value };
+    info.values[props.item.id] = { ...value };
     updateCsStorage(info);
-    // setCurrentCs(undefined);
     setCurrentCs({ ...info });
     centPublish(netTopic(topicCsInfo), info);
   };
@@ -107,17 +104,17 @@ export const TplCounter: Component<Props> = ({
       <Flex justify="space" align="center" grow>
         <Flex gap="medium" justify="space" align="center" grow>
           <Flex>
-            <Show when={checkable}>
+            <Show when={data().check}>
               <TplCheckBlock
                 checked={() => value().checked}
-                circle={circle}
-                color={item.color}
+                circle={data().checkShape && data().checkShape === "circle"}
+                color={props.item.color}
                 onClick={isCsOwner(currentCs()) ? toggle : undefined}
               />
             </Show>
-            <Text>{item.name}</Text>
+            <Text>{props.item.name}</Text>
           </Flex>
-          <Show when={!checkable || (checkable && value().checked)}>
+          <Show when={!data().check || (data().check && value().checked)}>
             <Flex>
               <Show when={isCsOwner(currentCs())}>
                 <div
@@ -129,7 +126,7 @@ export const TplCounter: Component<Props> = ({
                 </div>
               </Show>
               <Text class={tplCounterStyle}>
-                {item.labels ? item.labels[value().value] : ""}
+                {data().options ? data().options[value().value] : ""}
               </Text>
               <Show when={isCsOwner(currentCs())}>
                 <div
@@ -151,8 +148,8 @@ export const TplCounter: Component<Props> = ({
           </Show>
         </Flex>
         <Flex gap="medium">
-          <TplRollBlock item={item} value={value} />
-          <TplHintBlock hint={item.hint} />
+          <TplRollBlock item={props.item} value={value} />
+          <TplHintBlock hint={props.item.hint} />
         </Flex>
       </Flex>
     </Flex>
