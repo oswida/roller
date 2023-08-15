@@ -18,8 +18,10 @@ import { TplCheckBlock } from "../blocks/TplCheckBlock";
 import { TplHintBlock } from "../blocks/TplHintBlock";
 import { TplRollBlock } from "../blocks/TplRollBlock";
 import { csTplIconStyle, tplCounterStyle } from "../styles.css";
+import { charTemplates } from "~/template";
+import { actionCompute } from "../actions";
 
-type CounterItem = {
+export type CounterItem = {
   value: number;
   checked: boolean;
 };
@@ -57,17 +59,20 @@ export const TplCounter: Component<Props> = (props) => {
       return;
     }
     if (!data()) return;
-    const labels = data()?.options;
-    if (!labels) return;
     let i = 0;
     const value = info.values[props.item.id] as CounterItem;
     i = value.value;
-    if (inc) i++;
-    else i--;
-    if (i < 0) i = 0;
-    if (i >= labels.length) i = labels.length - 1;
-
+    const step = data()?.step;
+    if (inc) i = i + (step ? step : 1);
+    else i = i - (step ? step : 1);
+    if (i < data()?.min) i = data()?.min;
+    if (i > data()?.max) i = data()?.max;
     info.values[props.item.id] = { ...info.values[props.item.id], value: i };
+    const tpl = charTemplates[info.template];
+    if (tpl?.computeDeps && tpl?.computeDeps[props.item.id]) {
+      const v = actionCompute(props.item.id, info);
+      info.values = { ...info.values, ...v };
+    }
     updateCsStorage(info);
     centPublish(netTopic(topicCsInfo), info);
   };
@@ -93,11 +98,16 @@ export const TplCounter: Component<Props> = (props) => {
     const value = info.values[props.item.id] as CounterItem;
     value.checked = !value.checked;
     info.values[props.item.id] = { ...value };
+    const tpl = charTemplates[info.template];
+    if (tpl?.computeDeps && tpl?.computeDeps[props.item.id]) {
+      const v = actionCompute(props.item.id, info);
+      info.values = { ...info.values, ...v };
+    }
     updateCsStorage(info);
     centPublish(netTopic(topicCsInfo), info);
   };
 
-  if (!data() || !data()?.options) return <></>;
+  if (!data()) return <></>;
 
   return (
     <Flex gap="medium" align="center" grow>
@@ -125,9 +135,7 @@ export const TplCounter: Component<Props> = (props) => {
                   <FaSolidMinus fill="currentColor" />
                 </div>
               </Show>
-              <Text class={tplCounterStyle}>
-                {data()?.options ? data()?.options[value().value] : ""}
-              </Text>
+              <Text class={tplCounterStyle}>{value().value}</Text>
               <Show when={isCsOwner(currentCs())}>
                 <div
                   class={csTplIconStyle}
@@ -136,7 +144,7 @@ export const TplCounter: Component<Props> = (props) => {
                 >
                   <FaSolidPlus fill="currentColor" />
                 </div>
-                <Show when={props.item.initialValue}>
+                <Show when={props.item.initialValue !== undefined}>
                   <div
                     class={csTplIconStyle}
                     onClick={resetValue}

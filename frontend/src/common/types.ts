@@ -173,7 +173,7 @@ export type CharTemplateItemRoll = {
   labels?: string[]; // additional labels, used in _plus_mod as a modifier input
 };
 
-type CharTemplateItemType =
+export type CharTemplateItemType =
   | "row" // container for other items
   | "column" // container for other items
   | "text" // text input,  variants: check, circle_check, document (big text)
@@ -227,7 +227,9 @@ export type CTISelectData = {
 };
 
 export type CTICounterData = {
-  options: string[];
+  min: number;
+  max: number;
+  step?: number;
   check?: boolean;
   checkShape?: "circle" | "square";
 };

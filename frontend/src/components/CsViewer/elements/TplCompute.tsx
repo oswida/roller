@@ -51,7 +51,8 @@ export const TplCompute: Component<Props> = (props) => {
 
   const value = createMemo(() => {
     const info = currentCs();
-    if (!info || !info.values) return "";
+    if (!info || !info.values || info.values[props.item.id] === undefined)
+      return "";
     return info.values[props.item.id];
   });
 
@@ -75,7 +76,7 @@ export const TplCompute: Component<Props> = (props) => {
         <TplHintBlock hint={props.item.hint} />
       </Flex>
       <Flex align="center">
-        <Show when={value() && value().trim() !== ""}>
+        <Show when={value() && value().toString().trim() !== ""}>
           <Text class={tplComputedValueStyle}>{value()}</Text>
         </Show>
         <Show when={isCsOwner(currentCs())}>

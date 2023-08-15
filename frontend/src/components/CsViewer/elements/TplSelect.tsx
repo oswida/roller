@@ -12,6 +12,8 @@ import {
 import { Flex } from "../../Flex";
 import { Select, SelectItem } from "../../Select";
 import { TplHintBlock } from "../blocks/TplHintBlock";
+import { charTemplates } from "~/template";
+import { actionCompute } from "../actions";
 
 type Props = {
   item: CharTemplateItem;
@@ -48,6 +50,11 @@ export const TplSelect: Component<Props> = (props) => {
     const cs = currentCs();
     if (!cs || !cs.values) return undefined;
     cs.values[props.item.id] = it.id;
+    const tpl = charTemplates[cs.template];
+    if (tpl?.computeDeps && tpl?.computeDeps[props.item.id]) {
+      const v = actionCompute(props.item.id, cs);
+      cs.values = { ...cs.values, ...v };
+    }
     updateCsStorage(cs);
     setCurrentCs({ ...cs });
     centPublish(netTopic(topicCsInfo), cs);

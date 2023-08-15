@@ -1,4 +1,9 @@
-import { CharTemplate, CharTemplateItem } from "~/common";
+import {
+  CTIResourceData,
+  CTITextData,
+  CharTemplate,
+  CharTemplateItem,
+} from "~/common";
 
 const genAttrs = () => {
   const a = ["Siła", "Walka", "Ruch", "Urok", "Rozum", "Duch"];
@@ -46,7 +51,7 @@ export const csTplRomancja: CharTemplate = {
         {
           id: "fortune_roll",
           name: "Rzut przeznaczenia (Fortune Roll)",
-          text: "Rzut przeznaczenia (Fortune Roll)",
+          description: "Rzut przeznaczenia (Fortune Roll)",
           itype: "label",
           hint: "Użyj tego rzutu aby rzucić 1k6",
           rolls: [
@@ -73,21 +78,30 @@ export const csTplRomancja: CharTemplate = {
           id: "zdrowie_fizyczne",
           name: "Zdrowie fizyczne",
           itype: "resource",
-          limit: 10,
+          data: {
+            max: 10,
+            shape: "circle",
+          } as CTIResourceData,
           color: "#ec3c3c",
         },
         {
           id: "zdrowie_psychiczne",
           name: "Zdrowie psychiczne",
           itype: "resource",
-          limit: 10,
+          data: {
+            max: 10,
+            shape: "circle",
+          } as CTIResourceData,
           color: "#6795f0",
         },
         {
           id: "laska_bogow",
           name: "Łaska bogów",
           itype: "resource",
-          limit: 5,
+          data: {
+            max: 5,
+            shape: "circle",
+          } as CTIResourceData,
           color: "#deba30",
         },
       ],
@@ -97,13 +111,19 @@ export const csTplRomancja: CharTemplate = {
       items: [
         {
           id: "talenty_ekwipunek",
-          itype: "big_text",
+          itype: "text",
           name: "Talenty i ekwipunek",
+          data: {
+            large: true,
+          } as CTITextData,
         },
         {
           id: "rozne",
-          itype: "big_text",
+          itype: "text",
           name: "Różne",
+          data: {
+            large: true,
+          } as CTITextData,
         },
       ],
     },

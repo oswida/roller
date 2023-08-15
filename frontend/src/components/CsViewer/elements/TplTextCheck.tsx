@@ -30,7 +30,7 @@ type Props = {
   item: CharTemplateItem;
 };
 
-type Value = {
+export type TextCheckItem = {
   text: string;
   checked: boolean;
 };
@@ -46,17 +46,21 @@ export const TplTextCheck: Component<Props> = (props) => {
         info.values[props.item.id] = {
           text: props.item.initialValue,
           checked: false,
-        } as Value;
-      else info.values[props.item.id] = { text: "", checked: false } as Value;
+        } as TextCheckItem;
+      else
+        info.values[props.item.id] = {
+          text: "",
+          checked: false,
+        } as TextCheckItem;
     }
-    const v = info.values[props.item.id] as Value;
+    const v = info.values[props.item.id] as TextCheckItem;
     return v.text;
   });
 
   const value_checked = createMemo(() => {
     const info = currentCs();
     if (!info || !info.values[props.item.id]) return false;
-    const v = info.values[props.item.id] as Value;
+    const v = info.values[props.item.id] as TextCheckItem;
     return v.checked;
   });
 
@@ -66,7 +70,10 @@ export const TplTextCheck: Component<Props> = (props) => {
       return;
     }
     if (!info.values[props.item.id])
-      info.values[props.item.id] = { text: v, checked: false } as Value;
+      info.values[props.item.id] = {
+        text: v,
+        checked: false,
+      } as TextCheckItem;
     else info.values[props.item.id].text = v;
     updateCsStorage(info);
     centPublish(netTopic(topicCsInfo), info);
@@ -83,7 +90,10 @@ export const TplTextCheck: Component<Props> = (props) => {
       return;
     }
     if (!info.values[props.item.id])
-      info.values[props.item.id] = { text: "", checked: true } as Value;
+      info.values[props.item.id] = {
+        text: "",
+        checked: true,
+      } as TextCheckItem;
     else
       info.values[props.item.id].checked = !info.values[props.item.id].checked;
     updateCsStorage(info);

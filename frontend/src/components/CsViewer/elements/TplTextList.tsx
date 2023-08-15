@@ -25,7 +25,7 @@ import { TplHintBlock } from "../blocks/TplHintBlock";
 import { TplTextEditBlock } from "../blocks/TplTextEditBlock";
 import { csTplIconStyle } from "../styles.css";
 
-type TextListItem = {
+export type TextListItem = {
   text: string;
   checked: boolean;
 };

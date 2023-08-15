@@ -1,4 +1,5 @@
 import {
+  CTIComputedData,
   CharTemplateItemRoll,
   CsInfo,
   RollDefInfo,
@@ -56,8 +57,11 @@ export const actionCompute = (changedId: string, cs: CsInfo) => {
     const items = tpl.sections
       .flatMap((s) => s.items)
       .filter((tt) => tt.id === it);
-    if (items.length > 0 && items[0].compute) {
-      const r = items[0].compute(items[0], cs.values);
+    if (items.length > 0) {
+      const data = items[0].data as CTIComputedData;
+      if (!data) return;
+      const r = data.compute(items[0], cs.values);
+      console.log("actionCompute", r);
       result[items[0].id] = r;
     }
   });
