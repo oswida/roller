@@ -103,7 +103,7 @@ export const TplRollBlock: Component<Props> = (props) => {
                         actionRoll(
                           currentCs()?.name,
                           r,
-                          props.value ? props.value() : fieldValue(r)
+                          props.value ? props.value().toString() : fieldValue(r)
                         )
                       }
                       class={csTplIconStyle}
@@ -127,7 +127,7 @@ export const TplRollBlock: Component<Props> = (props) => {
                 <ModifierDialog
                   roll={r}
                   item={props.item}
-                  value={props.value ? props.value() : fieldValue(r)}
+                  value={props.value ? props.value().toString() : fieldValue(r)}
                 />
               </Show>
             </>

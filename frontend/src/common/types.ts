@@ -245,13 +245,13 @@ export type CharTemplateItem = {
   color?: string; // item color
   data?: // specific item data
   | CTIAttrData
-    | CTICheckData
-    | CTIComputedData
-    | CTIContainerData
-    | CTICounterData
-    | CTIResourceData
-    | CTISelectData
-    | CTITextData;
+  | CTICheckData
+  | CTIComputedData
+  | CTIContainerData
+  | CTICounterData
+  | CTIResourceData
+  | CTISelectData
+  | CTITextData;
 };
 
 export type CharTemplateSection = {
@@ -291,6 +291,7 @@ export type RollResult = {
   sets: RollSet[];
   modifier: number;
   total: number;
+  targetModifier?: number;
 };
 
 // Storage

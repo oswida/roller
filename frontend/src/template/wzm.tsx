@@ -33,6 +33,38 @@ const ObronaTrucizna: Record<string, number[]> = {
   szelma: [13, 13, 13, 13, 12, 12, 12, 12, 11, 11],
 };
 
+const ObronaZioniecie: Record<string, number[]> = {
+  czarodziej: [15, 15, 15, 15, 15, 13, 13, 13, 13, 13],
+  czarodziejka: [15, 15, 15, 15, 15, 13, 13, 13, 13, 13],
+  wojownik: [17, 17, 16, 16, 14, 14, 13, 13, 11, 11],
+  wojowniczka: [17, 17, 16, 16, 14, 14, 13, 13, 11, 11],
+  szelma: [16, 16, 16, 16, 15, 15, 15, 15, 14, 14],
+};
+
+const ObronaPrzemiana: Record<string, number[]> = {
+  czarodziej: [13, 13, 13, 13, 13, 11, 11, 11, 11, 11],
+  czarodziejka: [13, 13, 13, 13, 13, 11, 11, 11, 11, 11],
+  wojownik: [15, 15, 14, 14, 12, 12, 11, 11, 9, 9],
+  wojowniczka: [15, 15, 14, 14, 12, 12, 11, 11, 9, 9],
+  szelma: [13, 13, 12, 12, 11, 11, 11, 11, 9, 9],
+};
+
+const ObronaCzary: Record<string, number[]> = {
+  czarodziej: [12, 12, 12, 12, 12, 10, 10, 10, 10, 10],
+  czarodziejka: [12, 12, 12, 12, 12, 10, 10, 10, 10, 10],
+  wojownik: [17, 17, 14, 14, 12, 12, 11, 11, 9, 9],
+  wojowniczka: [17, 17, 14, 14, 12, 12, 11, 11, 9, 9],
+  szelma: [15, 15, 15, 15, 13, 13, 13, 13, 11, 11],
+};
+
+const ObronaPrzedmioty: Record<string, number[]> = {
+  czarodziej: [11, 11, 11, 11, 11, 9, 9, 9, 9, 9],
+  czarodziejka: [11, 11, 11, 11, 11, 9, 9, 9, 9, 9],
+  wojownik: [16, 16, 15, 15, 13, 13, 12, 12, 10, 10],
+  wojowniczka: [16, 16, 15, 15, 13, 13, 12, 12, 10, 10],
+  szelma: [14, 14, 14, 14, 12, 12, 12, 12, 10, 10],
+};
+
 const genAttrs = () => {
   const a = [
     "Siła",
@@ -44,31 +76,41 @@ const genAttrs = () => {
   ];
   return a.map(
     (it) =>
-      ({
-        id: it.toLowerCase().normalize(),
-        name: it,
-        itype: "attr",
-        rolls: [
-          {
-            valType: "target_plus_mod",
-            notation: "1d20",
-            successRule: "total:ueq",
-            comment: `${it}`,
-            labels: ["Modyfikator rzutu"],
-          },
-        ],
-      } as CharTemplateItem)
+    ({
+      id: it.toLowerCase().normalize(),
+      name: it,
+      itype: "attr",
+      rolls: [
+        {
+          valType: "target",
+          notation: "1d20",
+          successRule: "total:ueq",
+          comment: `${it}`,
+        },
+        {
+          valType: "target_plus_mod",
+          notation: "1d20",
+          successRule: "total:ueq",
+          comment: `${it} + mod`,
+          iconColor: "#ED9702",
+          labels: ["Modyfikator rzutu"],
+        }
+      ],
+    } as CharTemplateItem)
   );
 };
 
+const savingValue = (item: CharTemplateItem, values: Record<string, any>, table: Record<string, number[]>) => {
+  const num = Number.parseInt(
+    getFieldValue("poziom", "counter", values)
+  );
+  if (Number.isNaN(num)) return "20";
+  const kl = getFieldValue("klasa", "select", values).toLowerCase();
+  const res = table[kl][num - 1];
+  return res ? res : "0";
+}
+
 const genSavingThrows = () => {
-  const a = [
-    "Trucizna",
-    "Zionięcie",
-    "Przemiana",
-    "Czary",
-    "Magiczne przedmioty",
-  ];
   return [
     {
       id: "trucizna",
@@ -76,36 +118,135 @@ const genSavingThrows = () => {
       itype: "computed",
       data: {
         compute: (item: CharTemplateItem, values: Record<string, any>) => {
-          const num = Number.parseInt(
-            getFieldValue("poziom", "counter", values)
-          );
-          if (Number.isNaN(num)) return "20";
-          const kl = getFieldValue("klasa", "select", values).toLowerCase();
-          const res = ObronaTrucizna[kl][num - 1];
-          console.log("trucizna", res);
-          return res ? res : "0";
+          return savingValue(item, values, ObronaTrucizna);
         },
       } as CTIComputedData,
+      rolls: [
+        {
+          valType: "target",
+          notation: "1d20",
+          successRule: "total:oeq",
+          comment: `Obrona: trucizna`,
+        },
+        {
+          valType: "target_plus_mod",
+          notation: "1d20",
+          successRule: "total:oeq",
+          iconColor: "#ED9702",
+          comment: `Obrona: trucizna + mod`,
+          labels: ["Modyfikator rzutu"],
+        }
+      ]
+    } as CharTemplateItem,
+    {
+      id: "zioniecie",
+      name: "Zionięcie",
+      itype: "computed",
+      data: {
+        compute: (item: CharTemplateItem, values: Record<string, any>) => {
+          return savingValue(item, values, ObronaZioniecie);
+        },
+      } as CTIComputedData,
+      rolls: [
+        {
+          valType: "target",
+          notation: "1d20",
+          successRule: "total:oeq",
+          comment: `Obrona: zionięcie`,
+          labels: ["Modyfikator rzutu"],
+        },
+        {
+          valType: "target_plus_mod",
+          notation: "1d20",
+          successRule: "total:oeq",
+          iconColor: "#ED9702",
+          comment: `Obrona: zionięcie + mod`,
+          labels: ["Modyfikator rzutu"],
+        }
+      ]
+    } as CharTemplateItem,
+    {
+      id: "przemiana",
+      name: "Przemiana",
+      itype: "computed",
+      data: {
+        compute: (item: CharTemplateItem, values: Record<string, any>) => {
+          return savingValue(item, values, ObronaPrzemiana);
+        },
+      } as CTIComputedData,
+      rolls: [
+        {
+          valType: "target",
+          notation: "1d20",
+          successRule: "total:oeq",
+          comment: `Obrona: przemiana`,
+          labels: ["Modyfikator rzutu"],
+        },
+        {
+          valType: "target_plus_mod",
+          notation: "1d20",
+          successRule: "total:oeq",
+          iconColor: "#ED9702",
+          comment: `Obrona: przemiana + mod`,
+          labels: ["Modyfikator rzutu"],
+        }
+      ]
+    } as CharTemplateItem,
+    {
+      id: "czary",
+      name: "Czary",
+      itype: "computed",
+      data: {
+        compute: (item: CharTemplateItem, values: Record<string, any>) => {
+          return savingValue(item, values, ObronaCzary);
+        },
+      } as CTIComputedData,
+      rolls: [
+        {
+          valType: "target",
+          notation: "1d20",
+          successRule: "total:oeq",
+          comment: `Obrona: czary`,
+          labels: ["Modyfikator rzutu"],
+        },
+        {
+          valType: "target_plus_mod",
+          notation: "1d20",
+          successRule: "total:oeq",
+          iconColor: "#ED9702",
+          comment: `Obrona: czary + mod`,
+          labels: ["Modyfikator rzutu"],
+        }
+      ]
+    } as CharTemplateItem,
+    {
+      id: "mag_przedmioty",
+      name: "Mag. przedmioty",
+      itype: "computed",
+      data: {
+        compute: (item: CharTemplateItem, values: Record<string, any>) => {
+          return savingValue(item, values, ObronaPrzedmioty);
+        },
+      } as CTIComputedData,
+      rolls: [
+        {
+          valType: "target",
+          notation: "1d20",
+          successRule: "total:oeq",
+          comment: `Obrona: mag. przedmioty`,
+          labels: ["Modyfikator rzutu"],
+        },
+        {
+          valType: "target_plus_mod",
+          notation: "1d20",
+          successRule: "total:oeq",
+          iconColor: "#ED9702",
+          comment: `Obrona: mag. przedmioty + mod`,
+          labels: ["Modyfikator rzutu"],
+        }
+      ]
     } as CharTemplateItem,
   ];
-
-  // return a.map(
-  //   (it) =>
-  //     ({
-  //       id: it.toLowerCase().normalize(),
-  //       name: it,
-  //       itype: it !== "Magiczne przedmioty" ? "attr" : "attr_wide",
-  //       rolls: [
-  //         {
-  //           valType: "target_plus_mod",
-  //           notation: "1d20",
-  //           successRule: "total:oeq",
-  //           comment: `Obrona: ${it}`,
-  //           labels: ["Modyfikator rzutu"],
-  //         },
-  //       ],
-  //     } as CharTemplateItem)
-  // );
 };
 
 const attrBonus = (value: string) => {
@@ -149,7 +290,7 @@ export const csTplWzm6: CharTemplate = {
   game: "Wyprawa za Mur",
   computeDeps: {
     siła: ["premia_sila"],
-    klasa: ["inicjatywa", "premia_atak", "trucizna"],
+    klasa: ["inicjatywa", "premia_atak", "trucizna", "zioniecie", "przemiana", "czary", "mag_przedmioty"],
     zręczność: ["premia_zrecznosc", "kp", "inicjatywa"],
     kondycja: ["premia_kondycja"],
     inteligencja: ["premia_inteligencja"],
@@ -157,7 +298,7 @@ export const csTplWzm6: CharTemplate = {
     charyzma: ["premia_charyzma"],
     inicjatywa: ["inicjatywa_premia"],
     kp: ["kp_premia"],
-    poziom: ["inicjatywa", "premia_atak", "trucizna"],
+    poziom: ["inicjatywa", "premia_atak", "trucizna", "zioniecie", "przemiana", "czary", "mag_przedmioty"],
     zbroja_premia: ["kp"],
   },
   sections: [
@@ -223,7 +364,7 @@ export const csTplWzm6: CharTemplate = {
               if (!Number.isNaN(num2)) bonus_zr = num2;
               const bonus_kl =
                 InicjatywaKlasa[
-                  getFieldValue("klasa", "select", values).toLowerCase()
+                getFieldValue("klasa", "select", values).toLowerCase()
                 ];
               return `${base + bonus_zr + bonus_kl}`;
             },

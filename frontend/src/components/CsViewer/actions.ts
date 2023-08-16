@@ -36,13 +36,14 @@ export const actionRoll = (
       const info2: RollDefInfo = {
         id: "",
         dice: roll.notation,
-        modifier: mods ? mods : 0,
+        modifier: 0,
         name: "",
         successRule: roll.successRule ? roll.successRule : "",
-        successTarget: `${num}`,
+        successTarget: mods ? `${num + mods}` : `${num}`,
+        comment: mods ? `${roll.comment} ${mods}` : roll.comment
       };
       setChatViewTab("rolls");
-      enrollTask(() => rollDef(info2, false, `${roll.comment} (${tplName})`));
+      enrollTask(() => rollDef(info2, false, `${info2.comment} (${tplName})`));
       break;
   }
 };

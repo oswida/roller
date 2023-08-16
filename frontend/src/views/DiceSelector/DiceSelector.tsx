@@ -49,7 +49,10 @@ const ModifierDialog = ({ priv }: { priv: boolean }) => {
     let n = Number.parseInt(el.value);
     setMdOpen(false);
     if (Number.isNaN(n)) n = 0;
-    if (rolling() || !currentRoom() || currentRoom()?.id == "") return;
+    if (rolling() || !currentRoom() || currentRoom()?.id == "") { 
+      toast('You need to select a room for a roll');
+      return;
+    }
     const db = diceBox();
     if (!db) return;
     const pool = dicePool();
@@ -105,7 +108,10 @@ export const DiceSelector: Component<RefProps> = (props) => {
   };
 
   const roll = async () => {
-    if (rolling() || !currentRoom() || currentRoom()?.id == "") return;
+    if (rolling() || !currentRoom() || currentRoom()?.id == "") {
+      toast('You need to select a room for a roll');
+      return;
+    }
     const db = diceBox();
     if (!db) return;
     const pool = dicePool();

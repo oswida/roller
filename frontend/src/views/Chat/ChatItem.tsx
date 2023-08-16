@@ -113,12 +113,14 @@ export const ChatItem: Component<Props> = (props) => {
                   <DataLabel
                     backgroundSchema="primary300"
                     colorSchema="primary900"
+                    scale="flex6"
                   >
                     <Text colorSchema="secondary">Total {modValue()}</Text>
                   </DataLabel>
                   <DataValue
                     backgroundSchema="primary300"
                     colorSchema="primary900"
+                    scale="flex4"
                   >
                     <div>{props.item.result.total}</div>
                   </DataValue>

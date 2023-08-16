@@ -16,6 +16,7 @@ import { Flex } from "../../Flex";
 import { Text } from "../../Text";
 import { TplHintBlock } from "../blocks/TplHintBlock";
 import { csTplIconStyle, tplComputedValueStyle } from "../styles.css";
+import { TplRollBlock } from "../blocks/TplRollBlock";
 
 type Props = {
   item: CharTemplateItem;
@@ -75,15 +76,18 @@ export const TplCompute: Component<Props> = (props) => {
         <Text>{props.item.name}</Text>
         <TplHintBlock hint={props.item.hint} />
       </Flex>
-      <Flex align="center">
-        <Show when={value() && value().toString().trim() !== ""}>
-          <Text class={tplComputedValueStyle}>{value()}</Text>
-        </Show>
-        <Show when={isCsOwner(currentCs())}>
-          <div class={csTplIconStyle} onClick={recompute} title="Recompute">
-            <IoReload fill="currentColor" />
-          </div>
-        </Show>
+      <Flex gap="medium">
+        <Flex align="center">
+          <Show when={value() && value().toString().trim() !== ""}>
+            <Text class={tplComputedValueStyle}>{value()}</Text>
+          </Show>
+          <Show when={isCsOwner(currentCs())}>
+            <div class={csTplIconStyle} onClick={recompute} title="Recompute">
+              <IoReload fill="currentColor" />
+            </div>
+          </Show>
+        </Flex>
+        <TplRollBlock item={props.item} value={value} />
       </Flex>
     </Flex>
   );
