@@ -3,4 +3,4 @@ rpgroll
 *.log
 data/
 *.zip
-
+*.db

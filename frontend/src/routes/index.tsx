@@ -1,11 +1,12 @@
 import { Show, onCleanup, onMount } from "solid-js";
 import { Toaster } from "solid-toast";
-import { centLoadRolls, currentRightPanel, currentRoom } from "~/common";
+import { centLoadRolls, currentRightPanel, currentRoom, loggedUser } from "~/common";
 import { Flex } from "~/components";
 import { CsPanel, RollPanel, TopBar } from "~/views";
 import { appStyle, mainStyle } from "./styles.css";
 import { HdPanel } from "~/views/HdPanel";
 import { ifvisible } from "@rosskevin/ifvisible";
+import { useNavigate } from "solid-start";
 
 export default function Home() {
   let mainRef: HTMLDivElement;
@@ -14,7 +15,6 @@ export default function Home() {
   const visibilityHandler = () => {
     const room = currentRoom();
     if (!room) return;
-    console.log("Loading rolls for ", room.name);
     centLoadRolls(room.id);
   };
 

@@ -1,5 +1,5 @@
 // @refresh reload
-import { Suspense, createEffect } from "solid-js";
+import { Show, Suspense, createEffect } from "solid-js";
 import {
   Body,
   ErrorBoundary,
@@ -19,26 +19,28 @@ import {
   centConnectionStatus,
   centLoadRolls,
   currentRoom,
+  loggedUser,
   queueInit,
   updateStoreSize,
 } from "./common";
 import { rootStyle } from "./root.css";
+import { Login } from "./views/Login/Login";
 
 export default function Root() {
   updateStoreSize();
   queueInit();
 
-  createEffect(() => {
-    if (!centConnectionStatus()) {
-      console.log("Not connected, connecting...");
-      centConnect();
-      return;
-    }
-    const room = currentRoom();
-    if (!room) return;
-    console.log("Loading room", room.name);
-    centLoadRolls(room.id);
-  });
+  // createEffect(() => {
+  //   if (!centConnectionStatus()) {
+  //     console.log("Not connected, connecting...");
+  //     centConnect();
+  //     return;
+  //   }
+  //   const room = currentRoom();
+  //   if (!room) return;
+  //   console.log("Loading room", room.name);
+  //   centLoadRolls(room.id);
+  // });
 
   return (
     <Html
@@ -91,9 +93,14 @@ export default function Root() {
       <Body>
         <Suspense>
           <ErrorBoundary>
-            <Routes>
-              <FileRoutes />
-            </Routes>
+            <Show when={loggedUser() !== undefined}>
+              <Routes>
+                <FileRoutes />
+              </Routes>
+            </Show>
+            <Show when={loggedUser() === undefined}>
+              <Login />
+            </Show>
           </ErrorBoundary>
         </Suspense>
         <Scripts />

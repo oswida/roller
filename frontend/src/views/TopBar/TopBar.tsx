@@ -1,6 +1,7 @@
 import { BsPersonBadge } from "solid-icons/bs";
 import {
   FaSolidChalkboardUser,
+  FaSolidDoorOpen,
   FaSolidNetworkWired,
   FaSolidPlug,
   FaSolidPlus,
@@ -21,6 +22,7 @@ import {
   appRooms,
   appSettings,
   centConnectionStatus,
+  centDisconnect,
   centLoadCs,
   centLoadRolls,
   centUpdateRoom,
@@ -29,11 +31,13 @@ import {
   currentRoom,
   emptyRoomInfo,
   generateSerialKeys,
+  loggedUser,
   rollerRoomsKey,
   rollerSettingsKey,
   rolling,
   saveToStorage,
   setCurrentRightPanel,
+  setLoggedUser,
   storageSize,
 } from "~/common";
 import {
@@ -55,7 +59,6 @@ import {
   UserSettingsView,
 } from "../Settings";
 import { topbarItemStyle, topbarStyle } from "./style.css";
-import { BiSolidNote } from "solid-icons/bi";
 
 export const TopBar: Component<RefProps> = (props) => {
   const [roomSettingOpen, setRoomSettingsOpen] = createSignal(false);
@@ -63,7 +66,9 @@ export const TopBar: Component<RefProps> = (props) => {
   const [userSettingOpen, setUserSettingsOpen] = createSignal(false);
 
   const username = createMemo(() => {
-    return appSettings().userName;
+    const lu = loggedUser();
+    if (!lu) return "";
+    return lu.name;
   });
 
   const createRoom = () => {
@@ -114,6 +119,11 @@ export const TopBar: Component<RefProps> = (props) => {
       centLoadCs(room.id); // load shared charsheets
     })
   );
+
+  const logout = () => {
+    setLoggedUser(undefined);
+    centDisconnect();
+  }
 
   const toggleRightPanel = (panel: string) => {
     const rp = currentRightPanel();
@@ -230,9 +240,9 @@ export const TopBar: Component<RefProps> = (props) => {
             <FaSolidNetworkWired style={{ fill: "currentcolor" }} />
           </Dynamic>
         </Show>
-        <Text colorSchema="secondary" fontSize="small">
-          {(storageSize() / 1000).toFixed(2)} kB
-        </Text>
+        <Button variant="icon" title="Logout" onClick={logout}>
+          <FaSolidDoorOpen />
+        </Button>
       </Flex>
     </div>
   );

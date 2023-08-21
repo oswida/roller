@@ -13,6 +13,7 @@ import {
   setCsShared,
   setCurrentCs,
   setHandoutShared,
+  setLoggedUser,
   updateRolls,
 } from "./state";
 import {
@@ -33,6 +34,7 @@ import {
   NetRollInfo,
   RollInfo,
   RoomInfo,
+  UserInfo,
   topicCsInfo,
   topicHandoutInfo,
   topicRollInfo,
@@ -194,22 +196,32 @@ export const activateRoomSubscriptions = () => {
   sub5.subscribe();
 };
 
-export const centConnect = () => {
+export const centConnect = (username: string, passwd: string) => {
   const s = appSettings();
   if (!appSettings) return;
 
   const centrifuge = new Centrifuge(serverAddress(), {
-    name: appSettings().userName,
-    data: appSettings().userIdent,
+    name: username,
+    data: passwd,
     maxReconnectDelay: 60000,
     minReconnectDelay: 60000,
     maxServerPingDelay: 10000,
   });
   if (!centrifuge) return;
   centrifuge.on("connecting", function (ctx) {
-    console.log("connecting to server", Date.now());
+    console.log("connecting to server", ctx);
   });
   centrifuge.on("connected", function (ctx) {
+    if (ctx.data) {
+      setLoggedUser(ctx.data.toString());
+      centrifuge.rpc("userinfo", "").then((resp: any) => {
+        const lu = { ...resp.data };
+        if (!lu.settings) lu.settings = {};
+        setLoggedUser(lu as UserInfo);
+      }).catch((err) => {
+        console.error(err);
+      })
+    }
     setCentClient(centrifuge);
     setCentConnectionStatus(true);
     centLoadRooms();
@@ -222,10 +234,11 @@ export const centConnect = () => {
       sub.subscribe();
     }
   });
-  centrifuge.on("disconnected", () => {
-    console.log("disconnected", Date.now());
+  centrifuge.on("disconnected", (ctx) => {
+    console.log("disconnected", ctx);
     setCentConnectionStatus(false);
     setConnectedUsers({});
+    setLoggedUser(undefined);
   });
   centrifuge.on("error", (err: any) => {
     console.error("centrifuge error", err, Date.now());
@@ -337,7 +350,7 @@ export const centUpdateRoom = (room: RoomInfo) => {
   } as CentMessage;
   client
     .rpc("room_update", msg)
-    .then((result) => {})
+    .then((result) => { })
     .catch((err) => {
       console.error(err);
     });
@@ -426,7 +439,7 @@ export const centUpdateCs = (roomId: string, info: CsInfo) => {
   } as CentMessage;
   client
     .rpc("cs_update", msg)
-    .then((result) => {})
+    .then((result) => { })
     .catch((err) => {
       console.error(err);
     });
@@ -491,7 +504,7 @@ export const centUpdateRoll = (roomId: string, info: NetRollInfo) => {
   } as CentMessage;
   client
     .rpc("roll_update", msg)
-    .then((result) => {})
+    .then((result) => { })
     .catch((err) => {
       console.error(err);
     });
@@ -577,7 +590,7 @@ export const centUpdateHandouts = (roomId: string, info: CsInfo) => {
   } as CentMessage;
   client
     .rpc("handout_update", msg)
-    .then((result) => {})
+    .then((result) => { })
     .catch((err) => {
       console.error(err);
     });
@@ -585,6 +598,23 @@ export const centUpdateHandouts = (roomId: string, info: CsInfo) => {
 
 // Init
 
-export const netInit = () => {
-  if (!centConnectionStatus()) centConnect();
+export const netInit = (username: string, passwd: string) => {
+  if (!centConnectionStatus()) centConnect(username, passwd);
+};
+
+export const netUpdateUser = (name: string, color: string, settings: Record<string, any>) => {
+  const client = centClient();
+  if (!client) {
+    return;
+  }
+  client
+    .rpc("user_update", {
+      name: name,
+      color: color,
+      settings: settings
+    })
+    .then((result) => { console.log("user_update", result) })
+    .catch((err) => {
+      console.error(err);
+    });
 };

@@ -3,6 +3,8 @@ package net
 import (
 	"context"
 	"errors"
+	"fmt"
+
 	"rpgroll/db"
 	"strings"
 	"sync"
@@ -31,12 +33,22 @@ func NewEngine(dbase *db.DB, log *zap.Logger) (*Engine, error) {
 	}
 
 	node.OnConnecting(func(ctx context.Context, ce centrifuge.ConnectEvent) (centrifuge.ConnectReply, error) {
-		return centrifuge.ConnectReply{
-			Credentials: &centrifuge.Credentials{UserID: ce.Name, Info: ce.Data},
-		}, nil
+		user, err := result.Login(ce.Name, strings.ReplaceAll(string(ce.Data), "\"", ""))
+		if err != nil {
+			user = ""
+		}
+		if user != "" {
+			cred := &centrifuge.Credentials{UserID: user}
+			return centrifuge.ConnectReply{
+				Credentials: cred,
+				Data:        []byte(fmt.Sprintf("\"%s\"", user)),
+			}, nil
+		}
+		return centrifuge.ConnectReply{}, errors.New("Rejected")
 	})
 
 	node.OnConnect(func(client *centrifuge.Client) {
+
 		client.OnPresence(func(e centrifuge.PresenceEvent, cb centrifuge.PresenceCallback) {
 			p, err := node.Presence(e.Channel)
 			cb(centrifuge.PresenceReply{
@@ -64,7 +76,7 @@ func NewEngine(dbase *db.DB, log *zap.Logger) (*Engine, error) {
 		})
 
 		client.OnRPC(func(e centrifuge.RPCEvent, cb centrifuge.RPCCallback) {
-			r, err := result.RPCCallback(e)
+			r, err := result.RPCCallback(e, client)
 			if err != nil {
 				result.Log.Error("rpc error", zap.Error(err))
 			}
@@ -110,7 +122,7 @@ func (eng *Engine) PublishCallback(e centrifuge.PublishEvent) {
 	}
 }
 
-func (eng *Engine) RPCCallback(e centrifuge.RPCEvent) ([]byte, error) {
+func (eng *Engine) RPCCallback(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
 	switch e.Method {
 	case "room_update":
 		return eng.RpcRoomUpdate(e)
@@ -130,12 +142,10 @@ func (eng *Engine) RPCCallback(e centrifuge.RPCEvent) ([]byte, error) {
 		return eng.RpcRollUpdate(e)
 	case "roll_clear":
 		return eng.RpcRollClear(e)
-	case "handout_list":
-		return eng.RpcHandoutList(e)
-	case "handout_update":
-		return eng.RpcHandoutUpdate(e)
-	case "handout_delete":
-		return eng.RpcHandoutDelete(e)
+	case "userinfo":
+		return eng.RpcUserinfo(e, client)
+	case "user_update":
+		return eng.RpcUserUpdate(e, client)
 	}
 	return nil, nil
 }

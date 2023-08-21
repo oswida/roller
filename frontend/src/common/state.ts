@@ -2,9 +2,11 @@ import { Mutex } from "async-mutex";
 import { Centrifuge } from "centrifuge";
 import Queue from "queue";
 import { createSignal } from "solid-js";
-import { CsInfo, RollInfo } from "./types";
+import { CsInfo, RollInfo, UserInfo } from "./types";
 
 export const [storageSize, setStorageSize] = createSignal(0);
+
+export const [loggedUser, setLoggedUser] = createSignal<UserInfo | undefined>(undefined);
 
 export const [dicePool, setDicePool] = createSignal<Record<string, number>>({});
 export const [diceBox, setDiceBox] = createSignal<any>(undefined);

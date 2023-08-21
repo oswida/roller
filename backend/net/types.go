@@ -4,6 +4,11 @@ import (
 	"rpgroll/db"
 )
 
+type LoginMessage struct {
+	Username string `json:"username"`
+	Passwd   string `json:"passwd"`
+}
+
 type RollMessage struct {
 	Sender string      `json:"sender"`
 	Room   string      `json:"room"`

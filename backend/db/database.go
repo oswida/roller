@@ -1,29 +1,65 @@
 package db
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
+	"rpgroll/ent"
+	"rpgroll/ent/user"
+
 	badger "github.com/dgraph-io/badger/v4"
+	"github.com/google/uuid"
+	_ "github.com/xiaoqidun/entps"
+	"golang.org/x/crypto/argon2"
+	// _ "modernc.org/sqlite"
 )
 
 type DB struct {
-	Db *badger.DB
+	Db     *badger.DB
+	Client *ent.Client
+}
+
+func createAdminUser(client *ent.Client) error {
+	_, err := client.User.Query().Where(user.LoginEQ("admin")).First(context.Background())
+	if err != nil {
+		hash := argon2.IDKey([]byte("admin"), []byte("anything"), 1, 64*1024, 4, 32)
+		return client.User.Create().
+			SetID(uuid.NewString()).
+			SetName("Admin").
+			SetLogin("admin").
+			SetPasswd(fmt.Sprintf("%x", hash)).
+			SetColor("#000000").
+			SetSettings(make(map[string]interface{})).Exec(context.Background())
+	}
+	return nil
 }
 
 func NewDatabase() (*DB, error) {
+	client, err := ent.Open("sqlite3", "file:./roller.db")
+	if err != nil {
+		return nil, err
+	}
+	if err := client.Schema.Create(context.Background()); err != nil {
+		return nil, err
+	}
+	if err := createAdminUser(client); err != nil {
+		return nil, err
+	}
 	opts := badger.DefaultOptions("data")
 	db, err := badger.Open(opts)
 	if err != nil {
 		return nil, err
 	}
 	return &DB{
-		Db: db,
+		Db:     db,
+		Client: client,
 	}, nil
 }
 
 func (d *DB) Close() {
 	d.Db.Close()
+	d.Client.Close()
 }
 
 func roomKey(id string) []byte {

@@ -17,7 +17,7 @@ func Build() error {
 	if err != nil {
 		return err
 	}
-	cmd := exec.Command("yarn", "build")
+	cmd := exec.Command("pnpm", "build")
 	err = cmd.Run()
 	if err != nil {
 		return err

@@ -1,6 +1,16 @@
 import { v4 as uuid } from "uuid";
 import { themeFontFamilyType } from "./theme.css";
 
+export type UserInfo = {
+  id: string;
+  name: string;
+  login: string;
+  color: string;
+  edges: any;
+  settings: Record<string, any>;
+}
+
+
 // Settings
 
 export type themeType = "blue" | "blueDark" | "teal";
@@ -10,15 +20,15 @@ export type AppSettings = {
   userName: string;
   userColor: string;
   currentRoom: string;
-  diceColor: string;
-  diceMaterial: string;
+  // diceColor: string;
+  // diceMaterial: string;
   rightLayout?: boolean;
   appTheme?: themeType;
   appFont?: themeFontFamilyType;
-  showRollSuccess?: boolean;
-  showRollTotal?: boolean;
-  smallerDice?: boolean;
-  strongerRoll?: boolean;
+  // showRollSuccess?: boolean;
+  // showRollTotal?: boolean;
+  // smallerDice?: boolean;
+  // strongerRoll?: boolean;
 };
 
 export const emptyAppSettings = () => {

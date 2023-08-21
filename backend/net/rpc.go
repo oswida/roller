@@ -1,14 +1,63 @@
 package net
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"rpgroll/db"
+
 	"time"
 
 	"github.com/centrifugal/centrifuge"
 	"go.uber.org/zap"
 )
+
+func (eng *Engine) Login(username, passwd string) (string, error) {
+	eng.mux.Lock()
+	defer eng.mux.Unlock()
+
+	u, err := eng.Db.Login(username, passwd)
+	if err != nil {
+		return "", err
+	}
+	return u.ID, nil
+}
+
+func (eng *Engine) RpcUserinfo(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
+	usr, err := eng.Db.Client.User.Get(context.Background(), client.UserID())
+	if err != nil {
+		return nil, err
+	}
+	usr.Passwd = "" // clear for transport
+	return json.Marshal(usr)
+}
+
+type UserUpdateData struct {
+	Name     string
+	Color    string
+	Settings map[string]any
+}
+
+func (eng *Engine) RpcUserUpdate(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
+	var data UserUpdateData
+	err := json.Unmarshal(e.Data, &data)
+	if err != nil {
+		return nil, err
+	}
+	err = eng.Db.Client.User.
+		UpdateOneID(client.UserID()).
+		SetName(data.Name).
+		SetColor(data.Color).
+		SetSettings(data.Settings).Exec(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	usr, err := eng.Db.Client.User.Get(context.Background(), client.UserID())
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(usr)
+}
 
 func (eng *Engine) RpcRoomUpdate(e centrifuge.RPCEvent) ([]byte, error) {
 	eng.mux.Lock()

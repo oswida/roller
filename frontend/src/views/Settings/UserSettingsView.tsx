@@ -1,13 +1,16 @@
 import { CopyToClipboard } from "solid-copy-to-clipboard";
 import { FaSolidCircleInfo, FaSolidShareNodes } from "solid-icons/fa";
-import { Component, createMemo } from "solid-js";
+import { Component, Show, createMemo } from "solid-js";
 import toast from "solid-toast";
 import {
   appSettings,
   diceColorSet,
   diceMaterialSet,
+  loggedUser,
+  netUpdateUser,
   rollerSettingsKey,
   saveToStorage,
+  setLoggedUser,
   themeType,
 } from "~/common";
 import { themeFontFamilyType } from "~/common/theme.css";
@@ -19,29 +22,39 @@ type Props = {
 };
 
 export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
+
   const updateName = (value: string) => {
-    const data = { ...appSettings() };
-    data.userName = value;
-    saveToStorage(rollerSettingsKey, data);
+    const lu = loggedUser();
+    if (!lu) return;
+    lu.name = value;
+    setLoggedUser({ ...lu });
+    netUpdateUser(lu.name, lu.color, lu.settings);
   };
 
-  const strongerRoll = createMemo(() => {
-    const rl = appSettings().strongerRoll;
+  const boolSetting = (name: string) => {
+    const lu = loggedUser();
+    if (!lu) return false;
+    const rl = lu.settings[name];
     if (!rl) return false;
-    return rl;
-  });
+    return rl as boolean;
+  }
 
-  const total = createMemo(() => {
-    const rl = appSettings().showRollTotal;
-    if (!rl) return false;
+  const valSetting = (name: string) => {
+    const lu = loggedUser();
+    if (!lu) return undefined;
+    const rl = lu.settings[name];
+    if (!rl) return undefined;
     return rl;
-  });
+  }
 
-  const success = createMemo(() => {
-    const rl = appSettings().showRollSuccess;
-    if (!rl) return false;
-    return rl;
-  });
+  const setSetting = (name: string, value: any) => {
+    const lu = loggedUser();
+    if (!lu) return;
+    lu.settings[name] = value;
+    setLoggedUser({ ...lu });
+    netUpdateUser(lu.name, lu.color, lu.settings);
+  };
+
 
   const colorList = createMemo(() => {
     return diceColorSet.map((it) => ({ id: it, label: it } as SelectItem));
@@ -52,56 +65,39 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
   });
 
   const currentDiceColor = createMemo(() => {
-    const r = colorList().filter((it) => it.id == appSettings().diceColor);
+    const lu = loggedUser();
+    if (!lu) return undefined;
+    const r = colorList().filter((it) => it.id == lu.settings.diceColor);
     if (r.length > 0) return r[0];
     return undefined;
   });
 
   const currentDiceMaterial = createMemo(() => {
+    const lu = loggedUser();
+    if (!lu) return undefined;
     const r = materialList().filter(
-      (it) => it.id == appSettings().diceMaterial
+      (it) => it.id == lu.settings.diceMaterial
     );
     if (r.length > 0) return r[0];
     return undefined;
   });
 
   const diceColorChange = (value: SelectItem) => {
-    const data = { ...appSettings() };
-    data.diceColor = value.id;
-    saveToStorage(rollerSettingsKey, data);
+    const lu = loggedUser();
+    if (!lu) return;
+    lu.settings.diceColor = value.id;
+    setLoggedUser({ ...lu });
+    netUpdateUser(lu.name, lu.color, lu.settings);
   };
 
   const diceMaterialChange = (value: SelectItem) => {
-    const data = { ...appSettings() };
-    data.diceMaterial = value.id;
-    saveToStorage(rollerSettingsKey, data);
+    const lu = loggedUser();
+    if (!lu) return;
+    lu.settings.diceMaterial = value.id;
+    setLoggedUser({ ...lu });
+    netUpdateUser(lu.name, lu.color, lu.settings);
   };
 
-  const smallerDice = createMemo(() => {
-    const rl = appSettings().smallerDice;
-    if (!rl) return false;
-    return rl;
-  });
-
-  const setStrongerRoll = (value: boolean) => {
-    const newState = { ...appSettings(), strongerRoll: value };
-    saveToStorage(rollerSettingsKey, newState);
-  };
-
-  const setTotal = (value: boolean) => {
-    const newState = { ...appSettings(), showRollTotal: value };
-    saveToStorage(rollerSettingsKey, newState);
-  };
-
-  const setSuccess = (value: boolean) => {
-    const newState = { ...appSettings(), showRollSuccess: value };
-    saveToStorage(rollerSettingsKey, newState);
-  };
-
-  const setSmalldice = (value: boolean) => {
-    const newState = { ...appSettings(), smallerDice: value };
-    saveToStorage(rollerSettingsKey, newState);
-  };
 
   const themes = createMemo(() => {
     return [
@@ -159,24 +155,26 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
         <Input
           label="User name"
           title="User name"
-          value={appSettings().userName}
+          value={loggedUser()?.name}
           onChange={(e) => updateName(e.target.value)}
         />
-        <CopyToClipboard
-          text={appSettings().userIdent}
-          onCopy={() => {
-            toast("User ID copied to clipboard", {
-              icon: <FaSolidCircleInfo />,
-            });
-            onOpenChange(false);
-          }}
-          eventTrigger="onClick"
-        >
-          <div class={buttonStyle({})} title="Copy user id">
-            <FaSolidShareNodes style={{ fill: "currentcolor" }} />
-            <Text>Copy user ID </Text>
-          </div>
-        </CopyToClipboard>
+        <Show when={loggedUser() !== undefined}>
+          <CopyToClipboard
+            text={loggedUser()!.id}
+            onCopy={() => {
+              toast("User ID copied to clipboard", {
+                icon: <FaSolidCircleInfo />,
+              });
+              onOpenChange(false);
+            }}
+            eventTrigger="onClick"
+          >
+            <div class={buttonStyle({})} title="Copy user id">
+              <FaSolidShareNodes style={{ fill: "currentcolor" }} />
+              <Text>Copy user ID </Text>
+            </div>
+          </CopyToClipboard>
+        </Show>
       </Flex>
       <Flex justify="evenly" grow>
         <Select
@@ -218,21 +216,24 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
       <Flex justify="space" grow>
         <Switch
           label="Stronger roll"
-          checked={strongerRoll}
-          setChecked={setStrongerRoll}
+          checked={() => boolSetting("strongerRoll")}
+          setChecked={(value: boolean) => setSetting("strongerRoll", value)}
         />
         <Switch
           label="Smaller dice"
-          checked={smallerDice}
-          setChecked={setSmalldice}
+          checked={() => boolSetting("smallerDice")}
+          setChecked={(value: boolean) => setSetting("smallerDice", value)}
         />
       </Flex>
       <Flex justify="space">
-        <Switch label="Show roll total" checked={total} setChecked={setTotal} />
+        <Switch label="Show roll total"
+          checked={() => boolSetting("showRollTotal")}
+          setChecked={(value: boolean) => setSetting("showRollTotal", value)}
+        />
         <Switch
           label="Show roll success"
-          checked={success}
-          setChecked={setSuccess}
+          checked={() => boolSetting("showRollSuccess")}
+          setChecked={(value: boolean) => setSetting("showRollSuccess", value)}
         />
       </Flex>
     </Flex>
