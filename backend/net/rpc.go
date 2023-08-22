@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"rpgroll/db"
+	"rpgroll/ent/room"
 
 	"time"
 
@@ -59,7 +60,7 @@ func (eng *Engine) RpcUserUpdate(e centrifuge.RPCEvent, client *centrifuge.Clien
 	return json.Marshal(usr)
 }
 
-func (eng *Engine) RpcRoomUpdate(e centrifuge.RPCEvent) ([]byte, error) {
+func (eng *Engine) RpcRoomUpdate(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
@@ -68,11 +69,28 @@ func (eng *Engine) RpcRoomUpdate(e centrifuge.RPCEvent) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = eng.Db.RoomUpdate(data.Data)
-	if err != nil {
-		return nil, err
+
+	room, _ := eng.Db.Client.Room.Get(context.Background(), data.Room)
+	if room == nil {
+		err := eng.Db.Client.Room.Create().
+			SetID(data.Room).
+			SetName(data.Data.Name).
+			SetBkg(data.Data.Bkguri).
+			SetOwnerID(client.UserID()).Exec(context.Background())
+		if err != nil {
+			fmt.Printf("%v", err)
+			return nil, err
+		}
+	} else {
+		err := eng.Db.Client.Room.UpdateOneID(data.Room).
+			SetName(data.Data.Name).
+			SetBkg(data.Data.Bkguri).
+			SetOwnerID(client.UserID()).Exec(context.Background())
+		if err != nil {
+			fmt.Printf("%v", err)
+			return nil, err
+		}
 	}
-	eng.Log.Debug("Updating room", zap.String("id", data.Data.Id))
 	return []byte{}, nil
 }
 
@@ -85,11 +103,11 @@ func (eng *Engine) RpcRoomDelete(e centrifuge.RPCEvent) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	eng.Log.Debug("Deleting room", zap.String("id", data.Data.Id))
-	return []byte{}, eng.Db.RoomDelete(data.Room)
+	_ = eng.Db.Client.Room.DeleteOneID(data.Data.Id).Exec(context.Background())
+	return []byte{}, nil
 }
 
-func (eng *Engine) RpcRoomList(e centrifuge.RPCEvent) ([]byte, error) {
+func (eng *Engine) RpcRoomList(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
@@ -98,11 +116,13 @@ func (eng *Engine) RpcRoomList(e centrifuge.RPCEvent) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	list, err := eng.Db.RoomList(data.Data)
+
+	rooms, err := eng.Db.Client.Room.Query().Where(room.IDIn(data.Data...)).All(context.Background())
+	fmt.Printf("rooms %v", rooms)
 	if err != nil {
 		return nil, err
 	}
-	bytes, err := json.Marshal(list)
+	bytes, err := json.Marshal(rooms)
 	if err != nil {
 		return nil, err
 	}

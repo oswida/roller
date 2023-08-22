@@ -275,9 +275,7 @@ export type RollResult = {
 
 // Storage
 
-export type StorageItem =
-  | Record<string, RoomInfo>
-  | Record<string, RollDefInfo>
+export type StorageItem = Record<string, RollDefInfo>
   | Record<string, CsInfo>
   | string;
 

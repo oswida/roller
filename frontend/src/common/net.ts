@@ -1,13 +1,16 @@
 import { Centrifuge, PublicationContext, PublishResult } from "centrifuge";
 import {
+  appRooms,
   centClient,
   centConnectionStatus,
   connectedUsers,
   csShared,
   currentCs,
+
   handoutShared,
   loggedUser,
   setAppRolls,
+  setAppRooms,
   setCentClient,
   setCentConnectionStatus,
   setConnectedUsers,
@@ -19,12 +22,13 @@ import {
 } from "./state";
 import {
   appCs,
-  appHandouts,
-  appRooms,
+
 
   currentRoom,
+
+
   rollerCsKey,
-  rollerHandoutKey,
+
   rollerRoomsKey,
   saveToStorage,
 } from "./storage";
@@ -199,13 +203,14 @@ export const centConnect = (username: string, passwd: string) => {
         if (!lu.settings.appTheme) lu.settings.appTheme = 'blue';
         if (!lu.settings.appFont) lu.settings.appFont = 'Lato';
         setLoggedUser(lu as UserInfo);
+        centLoadRooms(lu.settings.rooms);
       }).catch((err) => {
         console.error(err);
       })
     }
     setCentClient(centrifuge);
     setCentConnectionStatus(true);
-    centLoadRooms();
+
     const exists = centrifuge.getSubscription(topicRoomInfo);
     if (!exists) {
       const sub = centrifuge.newSubscription(topicRoomInfo);
@@ -289,7 +294,7 @@ export const centLoadRooms = (ids?: string[]) => {
           if (!receivedIds.includes(id)) delete newState[id]; // room has been deleted
         });
 
-        saveToStorage(rollerRoomsKey, newState);
+        setAppRooms(newState);
         const room = currentRoom();
         if (room) {
           centLoadCs(room.id);
@@ -314,7 +319,7 @@ export const centDeleteRoom = (room: RoomInfo) => {
   client
     .rpc("room_delete", msg)
     .then((result) => {
-      centLoadRooms();
+      centLoadRooms(loggedUser()?.settings.rooms);
     })
     .catch((err) => {
       console.error(err);
@@ -493,91 +498,7 @@ export const centUpdateRoll = (roomId: string, info: NetRollInfo) => {
     });
 };
 
-// Handouts
-export const centLoadHandouts = (roomId: string, ids?: string[]) => {
-  const client = centClient();
-  if (!client) {
-    return;
-  }
-  const msg = {
-    sender: loggedUser()?.id,
-    room: roomId,
-    data: ids ? ids : Object.values(appHandouts()).map((it) => it.id),
-  } as CentMessage;
-  client
-    .rpc("handout_list", msg)
-    .then((result) => {
-      const data = result.data as HandoutInfo[];
-      if (data) {
-        const newState = { ...appHandouts() };
-        data.forEach((r) => (newState[r.id] = r));
 
-        const receivedIds = data.map((r) => r.id);
-        const toCheck = ids
-          ? ids
-          : Object.values(appHandouts()).map((r) => r.id);
-        toCheck.forEach((id) => {
-          if (
-            !receivedIds.includes(id) &&
-            newState[id] &&
-            newState[id].shared &&
-            newState[id].owner !== loggedUser()?.id
-          ) {
-            delete newState[id]; // charsheet has been deleted
-          }
-        });
-        saveToStorage(rollerHandoutKey, newState);
-        const scs = { ...handoutShared() };
-        data.forEach((v) => {
-          if (v.shared) {
-            scs[v.id] = roomId;
-          }
-        });
-        setHandoutShared(scs);
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-};
-
-export const centDeleteHandout = (roomId: string, info: HandoutInfo) => {
-  const client = centClient();
-  if (!client) {
-    return;
-  }
-  const msg = {
-    sender: loggedUser()?.id,
-    room: roomId,
-    data: info,
-  } as CentMessage;
-  client
-    .rpc("handout_delete", msg)
-    .then((result) => {
-      centLoadHandouts(roomId);
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-};
-
-export const centUpdateHandouts = (roomId: string, info: CsInfo) => {
-  const client = centClient();
-  if (!client) {
-    return;
-  }
-  const msg = {
-    sender: loggedUser()?.id,
-    room: roomId,
-    data: info,
-  } as CentMessage;
-  client
-    .rpc("handout_update", msg)
-    .then((result) => { })
-    .catch((err) => {
-      console.error(err);
-    });
-};
 
 // Init
 

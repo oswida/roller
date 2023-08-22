@@ -1,5 +1,5 @@
 import { createLocalStorage } from "@solid-primitives/storage";
-import { loggedUser, setCurrentCs, setStorageSize } from "./state";
+import { appRooms, loggedUser, setCurrentCs, setStorageSize } from "./state";
 import {
   CsInfo,
   HandoutInfo,
@@ -8,12 +8,11 @@ import {
   StorageItem,
 } from "./types";
 import { compressData, decompressData } from "./util";
+import { createMemo } from "solid-js";
 
-export const rollerSettingsKey = "settings";
 export const rollerRoomsKey = "rooms";
 export const rollerDefsKey = "defs";
 export const rollerCsKey = "cs";
-export const rollerHandoutKey = "handout";
 
 const STORE_PREFIX = "roller3";
 
@@ -25,14 +24,10 @@ export const [appStore, setAppStore, { remove, clear, toJSON }] =
     },
     deserializer: (value: string, key: string) => {
       switch (key) {
-        case "rooms":
-          return decompressData(value) as Record<string, RoomInfo>;
         case "defs":
           return decompressData(value) as Record<string, RollDefInfo>;
         case "cs":
           return decompressData(value) as Record<string, CsInfo>;
-        case "handout":
-          return decompressData(value) as Record<string, HandoutInfo>;
         default:
           return decompressData(value) as string;
       }
@@ -47,11 +42,9 @@ export const saveToStorage = (key: string, data: any) => {
 export const updateStoreSize = () => {
   let size = 0;
   const keys = [
-    rollerSettingsKey,
     rollerRoomsKey,
     rollerCsKey,
     rollerDefsKey,
-    rollerHandoutKey,
   ];
   keys.forEach((k) => {
     const data = localStorage.getItem(`${STORE_PREFIX}.${k}`);
@@ -59,15 +52,6 @@ export const updateStoreSize = () => {
   });
   setStorageSize(size);
   return size;
-};
-
-export const appRooms = () => {
-  let rooms = appStore.rooms as Record<string, RoomInfo>;
-  if (!rooms) {
-    rooms = {};
-    setAppStore(rollerRoomsKey, rooms);
-  }
-  return rooms;
 };
 
 export const appDefs = () => {
@@ -88,14 +72,6 @@ export const appCs = () => {
   return cs;
 };
 
-export const appHandouts = () => {
-  let hd = appStore.handout as Record<string, HandoutInfo>;
-  if (!hd) {
-    hd = {};
-    setAppStore(rollerHandoutKey, hd);
-  }
-  return hd;
-};
 
 export const currentRoom = () => {
   const settings = loggedUser()?.settings;
@@ -108,11 +84,6 @@ export const currentRoom = () => {
 
 // --- mutations
 
-export const updateRoomStorage = (item: RoomInfo) => {
-  const newState = { ...appRooms() };
-  newState[item.id] = item;
-  saveToStorage(rollerRoomsKey, newState);
-};
 
 export const updateCsStorage = (item: CsInfo) => {
   const newState = { ...appCs() };
@@ -120,11 +91,7 @@ export const updateCsStorage = (item: CsInfo) => {
   saveToStorage(rollerCsKey, newState);
 };
 
-export const updateHdStorage = (item: HandoutInfo) => {
-  const newState = { ...appHandouts() };
-  newState[item.id] = item;
-  saveToStorage(rollerHandoutKey, newState);
-};
+
 
 export const deleteCsStorage = (id: string) => {
   const newState = { ...appCs() };

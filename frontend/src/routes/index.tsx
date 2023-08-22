@@ -4,7 +4,6 @@ import { centLoadRolls, currentRightPanel, currentRoom, loggedUser } from "~/com
 import { Flex } from "~/components";
 import { CsPanel, RollPanel, TopBar } from "~/views";
 import { appStyle, mainStyle } from "./styles.css";
-import { HdPanel } from "~/views/HdPanel";
 import { ifvisible } from "@rosskevin/ifvisible";
 import { useNavigate } from "solid-start";
 
@@ -39,9 +38,7 @@ export default function Home() {
           <Show when={currentRightPanel() === "cs"}>
             <CsPanel />
           </Show>
-          <Show when={currentRightPanel() === "hd"}>
-            <HdPanel />
-          </Show>
+
         </Flex>
         <Toaster />
       </div>

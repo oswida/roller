@@ -34,12 +34,11 @@ import {
   loggedUser,
   netUpdateUser,
   rollerRoomsKey,
-  rollerSettingsKey,
   rolling,
   saveToStorage,
+  setAppRooms,
   setCurrentRightPanel,
   setLoggedUser,
-  storageSize,
 } from "~/common";
 import {
   Button,
@@ -80,11 +79,16 @@ export const TopBar: Component<RefProps> = (props) => {
     room.owner = ident;
     const newState = { ...appRooms() };
     newState[room.id] = room;
-    saveToStorage(rollerRoomsKey, newState);
+    setAppRooms(newState);
     const lu = loggedUser();
     if (!lu) return;
     if (!lu.settings) lu.settings = {};
+    if (!lu.settings.rooms) lu.settings.rooms = [];
+    if (!lu.settings.rooms.includes(room.id)) {
+      lu.settings.rooms.push(room.id);
+    }
     lu.settings.currentRoom = room.id;
+    setLoggedUser({ ...lu });
     netUpdateUser(lu.name, lu.color, lu.settings);
     centUpdateRoom(room);
   };
@@ -95,8 +99,8 @@ export const TopBar: Component<RefProps> = (props) => {
     const list = Object.values(appRooms()).map(
       (v) => ({ id: v.id, label: v.name } as SelectItem)
     );
-    const rs = list.filter((r) => r.id == room.id);
-    if (rs.length > 0) return rs[0];
+    const rs = list.find((r) => r.id == room.id);
+    if (rs) return rs;
     return undefined;
   });
 
@@ -114,6 +118,7 @@ export const TopBar: Component<RefProps> = (props) => {
     if (!lu) return;
     if (!lu.settings) lu.settings = {};
     lu.settings.currentRoom = r.id;
+    setLoggedUser({ ...lu });
     netUpdateUser(lu.name, lu.color, lu.settings);
   };
 
@@ -219,9 +224,7 @@ export const TopBar: Component<RefProps> = (props) => {
             <Show when={currentRightPanel() === "cs"}>
               <Text colorSchema="accent"> Charsheets</Text>
             </Show>
-            <Show when={currentRightPanel() === "hd"}>
-              <Text colorSchema="accent"> Handouts</Text>
-            </Show>
+
           </Flex>
         </Show>
       </Flex>

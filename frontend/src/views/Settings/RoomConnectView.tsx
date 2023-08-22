@@ -3,8 +3,9 @@ import {
   centLoadRooms,
   emptyRoomInfo,
   loggedUser,
+  netUpdateUser,
   rollerRoomsKey,
-  rollerSettingsKey,
+
   saveToStorage,
 } from "~/common";
 import { Button, Flex, Input } from "~/components";
@@ -21,9 +22,12 @@ export const RoomConnectView = ({
     const newState = { ...appRooms() };
     newState[inputRef.value] = emptyRoomInfo(inputRef.value);
     saveToStorage(rollerRoomsKey, newState);
-    const sett = { ...loggedUser()?.settings };
-    sett.currentRoom = inputRef.value;
-    saveToStorage(rollerSettingsKey, sett);
+    const lu = loggedUser();
+    if (!lu) return;
+    if (!lu.settings) lu.settings = {};
+    if (!lu.settings.rooms) lu.settings.rooms = [];
+    lu.settings.currentRoom = inputRef.value;
+    netUpdateUser(lu.name, lu.color, lu.settings);
     centLoadRooms([inputRef.value]);
     onOpenChange(false);
   };

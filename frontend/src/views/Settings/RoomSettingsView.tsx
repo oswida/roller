@@ -17,8 +17,8 @@ import {
   currentRoom,
   loggedUser,
   netTopic,
+  netUpdateUser,
   rollerRoomsKey,
-  rollerSettingsKey,
   saveToStorage,
   setAppRolls,
   topicRoomInfo,
@@ -87,12 +87,15 @@ export const RoomSettingsView: Component<Props> = (props) => {
     const newState = { ...appRooms() };
     delete newState[room.id];
     saveToStorage(rollerRoomsKey, newState);
-    const ns = { ...loggedUser()?.settings };
-    ns.currentRoom = "";
+    const lu = loggedUser();
+    if (!lu) return;
+    if (!lu.settings) lu.settings = {};
+    if (!lu.settings.rooms) lu.settings.rooms = Object.keys(newState);
+    lu.settings.currentRoom = undefined;
     if (Object.values(newState).length > 0) {
-      ns.currentRoom = Object.values(newState)[0].id;
+      lu.settings.currentRoom = Object.values(newState)[0].id;
     }
-    saveToStorage(rollerSettingsKey, ns);
+    netUpdateUser(lu.name, lu.color, lu.settings);
     props.onOpenChange(false);
     centDeleteRoom(room);
     setAppRolls({});

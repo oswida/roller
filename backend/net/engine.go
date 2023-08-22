@@ -67,7 +67,7 @@ func NewEngine(dbase *db.DB, log *zap.Logger) (*Engine, error) {
 		})
 
 		client.OnPublish(func(e centrifuge.PublishEvent, cb centrifuge.PublishCallback) {
-			result.PublishCallback(e)
+			result.PublishCallback(e, client)
 			r, err := node.Publish(e.Channel, e.Data)
 			if err != nil {
 				result.Log.Error("publish error", zap.Error(err))
@@ -98,7 +98,7 @@ func (eng *Engine) Run() error {
 	return eng.Node.Run()
 }
 
-func (eng *Engine) PublishCallback(e centrifuge.PublishEvent) {
+func (eng *Engine) PublishCallback(e centrifuge.PublishEvent, client *centrifuge.Client) {
 	if strings.HasPrefix(e.Channel, "roll_info") {
 		err := eng.RollPublishCallback(e)
 		if err != nil {
@@ -125,11 +125,11 @@ func (eng *Engine) PublishCallback(e centrifuge.PublishEvent) {
 func (eng *Engine) RPCCallback(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
 	switch e.Method {
 	case "room_update":
-		return eng.RpcRoomUpdate(e)
+		return eng.RpcRoomUpdate(e, client)
 	case "room_delete":
 		return eng.RpcRoomDelete(e)
 	case "room_list":
-		return eng.RpcRoomList(e)
+		return eng.RpcRoomList(e, client)
 	case "cs_list":
 		return eng.RpcCsList(e)
 	case "cs_update":
