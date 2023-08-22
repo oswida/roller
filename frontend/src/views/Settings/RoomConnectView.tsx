@@ -1,8 +1,8 @@
 import {
   appRooms,
-  appSettings,
   centLoadRooms,
   emptyRoomInfo,
+  loggedUser,
   rollerRoomsKey,
   rollerSettingsKey,
   saveToStorage,
@@ -21,7 +21,7 @@ export const RoomConnectView = ({
     const newState = { ...appRooms() };
     newState[inputRef.value] = emptyRoomInfo(inputRef.value);
     saveToStorage(rollerRoomsKey, newState);
-    const sett = { ...appSettings() };
+    const sett = { ...loggedUser()?.settings };
     sett.currentRoom = inputRef.value;
     saveToStorage(rollerSettingsKey, sett);
     centLoadRooms([inputRef.value]);

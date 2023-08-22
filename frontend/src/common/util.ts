@@ -8,6 +8,7 @@ import { Mutex } from "async-mutex";
 import Queue from "queue";
 import {
   diceBox,
+  loggedUser,
   rolling,
   setAnimating,
   setTaskMutex,
@@ -15,7 +16,7 @@ import {
   taskMutex,
   taskQueue,
 } from "./state";
-import { appSettings, currentRoom } from "./storage";
+import { currentRoom } from "./storage";
 import {
   sprinkles,
   themeSpace,
@@ -192,7 +193,6 @@ export const animateRemoteRoll = async (info: RollInfo) => {
   setAnimating(true);
   const db = diceBox();
   if (!db) return;
-  const s = appSettings();
   await db.updateConfig({
     theme_colorset: info.diceColor,
     theme_texture: info.diceMaterial,
@@ -200,8 +200,8 @@ export const animateRemoteRoll = async (info: RollInfo) => {
   const notation = rollNotationWithResults(info.result);
   await db.add(notation);
   await db.updateConfig({
-    theme_colorset: s.diceColor,
-    theme_texture: s.diceMaterial,
+    theme_colorset: loggedUser()?.settings.diceColor,
+    theme_texture: loggedUser()?.settings.diceMaterial,
   });
   setAnimating(false);
 };
@@ -252,7 +252,7 @@ export const enrollTask = (f: () => void) => {
 
 export const isCsOwner = (cs: CsInfo | undefined) => {
   if (!cs) return false;
-  return appSettings().userIdent === cs.owner;
+  return loggedUser()?.id === cs.owner;
 };
 
 export const netTopic = (name: string) => {

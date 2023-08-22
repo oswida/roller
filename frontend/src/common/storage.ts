@@ -1,13 +1,11 @@
 import { createLocalStorage } from "@solid-primitives/storage";
-import { setCurrentCs, setStorageSize } from "./state";
+import { loggedUser, setCurrentCs, setStorageSize } from "./state";
 import {
-  AppSettings,
   CsInfo,
   HandoutInfo,
   RollDefInfo,
   RoomInfo,
   StorageItem,
-  emptyAppSettings,
 } from "./types";
 import { compressData, decompressData } from "./util";
 
@@ -27,8 +25,6 @@ export const [appStore, setAppStore, { remove, clear, toJSON }] =
     },
     deserializer: (value: string, key: string) => {
       switch (key) {
-        case "settings":
-          return decompressData(value) as AppSettings;
         case "rooms":
           return decompressData(value) as Record<string, RoomInfo>;
         case "defs":
@@ -63,15 +59,6 @@ export const updateStoreSize = () => {
   });
   setStorageSize(size);
   return size;
-};
-
-export const appSettings = () => {
-  let settings = appStore.settings as AppSettings;
-  if (!settings) {
-    settings = emptyAppSettings();
-    setAppStore(rollerSettingsKey, settings);
-  }
-  return settings;
 };
 
 export const appRooms = () => {
@@ -111,9 +98,9 @@ export const appHandouts = () => {
 };
 
 export const currentRoom = () => {
-  const settings = appSettings();
+  const settings = loggedUser()?.settings;
   if (!settings) return undefined;
-  if (settings.currentRoom == "") return undefined;
+  if (!settings.currentRoom || settings.currentRoom == "") return undefined;
   const rooms = appRooms();
   if (!rooms[settings.currentRoom]) return undefined;
   return rooms[settings.currentRoom];

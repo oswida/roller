@@ -20,7 +20,7 @@ import {
   RefProps,
   activateRoomSubscriptions,
   appRooms,
-  appSettings,
+
   centConnectionStatus,
   centDisconnect,
   centLoadCs,
@@ -32,6 +32,7 @@ import {
   emptyRoomInfo,
   generateSerialKeys,
   loggedUser,
+  netUpdateUser,
   rollerRoomsKey,
   rollerSettingsKey,
   rolling,
@@ -72,15 +73,19 @@ export const TopBar: Component<RefProps> = (props) => {
   });
 
   const createRoom = () => {
+    const ident = loggedUser()?.id;
+    if (!ident) return;
     const room = emptyRoomInfo();
     room.name = `room-${generateSerialKeys(4, "-")}`;
-    room.owner = appSettings().userIdent;
+    room.owner = ident;
     const newState = { ...appRooms() };
     newState[room.id] = room;
     saveToStorage(rollerRoomsKey, newState);
-    const na = { ...appSettings() };
-    na.currentRoom = room.id;
-    saveToStorage(rollerSettingsKey, na);
+    const lu = loggedUser();
+    if (!lu) return;
+    if (!lu.settings) lu.settings = {};
+    lu.settings.currentRoom = room.id;
+    netUpdateUser(lu.name, lu.color, lu.settings);
     centUpdateRoom(room);
   };
 
@@ -103,11 +108,13 @@ export const TopBar: Component<RefProps> = (props) => {
 
   const changeRoom = (item: SelectItem) => {
     if (!item) return;
-    const r = Object.values(appRooms()).filter((it) => it.id == item.id);
-    if (r.length <= 0) return;
-    const na = { ...appSettings() };
-    na.currentRoom = r[0].id;
-    saveToStorage(rollerSettingsKey, na);
+    const r = Object.values(appRooms()).find((it) => it.id == item.id);
+    if (!r) return;
+    const lu = loggedUser();
+    if (!lu) return;
+    if (!lu.settings) lu.settings = {};
+    lu.settings.currentRoom = r.id;
+    netUpdateUser(lu.name, lu.color, lu.settings);
   };
 
   createEffect(
@@ -209,18 +216,6 @@ export const TopBar: Component<RefProps> = (props) => {
               </TooltipTrigger>
               <TooltipContent>Character sheets</TooltipContent>
             </Tooltip>
-            {/* <Tooltip>
-              <TooltipTrigger>
-                <Button
-                  variant="icon"
-                  toggled={currentRightPanel() === "hd"}
-                  onClick={() => toggleRightPanel("hd")}
-                >
-                  <BiSolidNote size={24} />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Handouts</TooltipContent>
-            </Tooltip> */}
             <Show when={currentRightPanel() === "cs"}>
               <Text colorSchema="accent"> Charsheets</Text>
             </Show>

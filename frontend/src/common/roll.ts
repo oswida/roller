@@ -1,6 +1,7 @@
 import { v4 as uuid } from "uuid";
 import {
   diceBox,
+  loggedUser,
   privateRoll,
   rolling,
   setRollComment,
@@ -8,7 +9,7 @@ import {
   setSuccessRule,
   setSuccessTarget,
 } from "./state";
-import { appSettings, currentRoom } from "./storage";
+import { currentRoom } from "./storage";
 import { RollDefInfo, RollDetail, RollInfo, RollResult } from "./types";
 import { prettyToday } from "./util";
 
@@ -33,10 +34,9 @@ export const rollDef = async (
     setRollComment(item.comment);
   }
   setRolling(true);
-  const s = appSettings();
   await db.updateConfig({
-    theme_colorset: s.diceColor,
-    theme_texture: s.diceMaterial,
+    theme_colorset: loggedUser()?.settings.diceColor,
+    theme_texture: loggedUser()?.settings.diceMaterial,
   });
   const mod =
     item.modifier && item.modifier > 0
@@ -62,12 +62,12 @@ export const createRollInfo = (result: any, comment?: string) => {
   });
   return {
     id: uuid(),
-    userId: appSettings().userIdent,
-    user: appSettings().userName,
-    userColor: appSettings().userColor,
+    userId: loggedUser()?.id,
+    user: loggedUser()?.name,
+    userColor: loggedUser()?.color,
     result: result,
-    diceColor: appSettings().diceColor,
-    diceMaterial: appSettings().diceMaterial,
+    diceColor: loggedUser()?.settings.diceColor,
+    diceMaterial: loggedUser()?.settings.diceMaterial,
     tstamp: prettyToday(),
     comment: comment,
     realtstamp: Date.now(),

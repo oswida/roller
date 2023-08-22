@@ -12,10 +12,10 @@ import {
   RollInfo,
   appRolls,
   appRooms,
-  appSettings,
   centClearRolls,
   centPublish,
   currentRoom,
+  loggedUser,
   netTopic,
   prettyToday,
   setAppRolls,
@@ -49,8 +49,8 @@ export const RollsContent: Component<Props> = (props) => {
 
   const items = createMemo(() => {
     const data = appRooms();
-    const settings = appSettings();
-    if (!data || settings.currentRoom === "" || !data[settings.currentRoom])
+    const settings = loggedUser()?.settings;
+    if (!data || !settings || settings.currentRoom === "" || !data[settings.currentRoom])
       return [];
     return Object.values(appRolls())
       .sort((a, b) => b.realtstamp - a.realtstamp)
@@ -58,7 +58,7 @@ export const RollsContent: Component<Props> = (props) => {
         if (
           it.private &&
           !it.revealed &&
-          it.userId !== appSettings().userIdent
+          it.userId !== loggedUser()?.id
         ) {
           return false;
         }
@@ -86,12 +86,12 @@ export const RollsContent: Component<Props> = (props) => {
       setCmOpen(false);
       const info = {
         id: uuid(),
-        userId: appSettings().userIdent,
-        user: appSettings().userName,
-        userColor: appSettings().userColor,
+        userId: loggedUser()?.id,
+        user: loggedUser()?.name,
+        userColor: loggedUser()?.color,
         result: {},
-        diceColor: appSettings().diceColor,
-        diceMaterial: appSettings().diceMaterial,
+        diceColor: loggedUser()?.settings.diceColor,
+        diceMaterial: loggedUser()?.settings.diceMaterial,
         tstamp: prettyToday(),
         comment: msgInput.value,
         realtstamp: Date.now(),
@@ -144,7 +144,7 @@ export const RollsContent: Component<Props> = (props) => {
               />
             </PopoverContent>
           </Popover>
-          <Show when={appSettings().userIdent == currentRoom()?.owner}>
+          <Show when={loggedUser()?.id == currentRoom()?.owner}>
             <Flex>
               <Button title="Clear rolls" onClick={clearRolls}>
                 <FaSolidTrash />

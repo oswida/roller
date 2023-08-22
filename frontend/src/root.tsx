@@ -1,5 +1,5 @@
 // @refresh reload
-import { Show, Suspense, createEffect } from "solid-js";
+import { Show, Suspense, createEffect, createMemo } from "solid-js";
 import {
   Body,
   ErrorBoundary,
@@ -14,11 +14,6 @@ import {
   Title,
 } from "solid-start";
 import {
-  appSettings,
-  centConnect,
-  centConnectionStatus,
-  centLoadRolls,
-  currentRoom,
   loggedUser,
   queueInit,
   updateStoreSize,
@@ -30,24 +25,28 @@ export default function Root() {
   updateStoreSize();
   queueInit();
 
-  // createEffect(() => {
-  //   if (!centConnectionStatus()) {
-  //     console.log("Not connected, connecting...");
-  //     centConnect();
-  //     return;
-  //   }
-  //   const room = currentRoom();
-  //   if (!room) return;
-  //   console.log("Loading room", room.name);
-  //   centLoadRolls(room.id);
-  // });
+  const theme = createMemo(() => {
+    const lu = loggedUser();
+    if (!lu || !lu.settings.appTheme) return "blue";
+    return lu.settings.appTheme;
+  });
+
+  const font = createMemo(() => {
+    const lu = loggedUser();
+    if (!lu || !lu.settings.appFont) return "Lato";
+    return lu.settings.appFont;
+  })
+
+  createEffect(() => {
+    console.log("lu", loggedUser()?.settings)
+  });
 
   return (
     <Html
       lang="en"
       class={rootStyle({
-        theme: appSettings().appTheme ? appSettings().appTheme : "blue",
-        font: appSettings().appFont ? appSettings().appFont : "Lato",
+        theme: theme(),
+        font: font(),
       })}
     >
       <Head>

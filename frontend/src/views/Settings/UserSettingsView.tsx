@@ -3,17 +3,13 @@ import { FaSolidCircleInfo, FaSolidShareNodes } from "solid-icons/fa";
 import { Component, Show, createMemo } from "solid-js";
 import toast from "solid-toast";
 import {
-  appSettings,
+
   diceColorSet,
   diceMaterialSet,
   loggedUser,
   netUpdateUser,
-  rollerSettingsKey,
-  saveToStorage,
   setLoggedUser,
-  themeType,
 } from "~/common";
-import { themeFontFamilyType } from "~/common/theme.css";
 import { Flex, Input, Select, SelectItem, Switch, Text } from "~/components";
 import { buttonStyle } from "~/components/Button/styles.css";
 
@@ -37,14 +33,6 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
     const rl = lu.settings[name];
     if (!rl) return false;
     return rl as boolean;
-  }
-
-  const valSetting = (name: string) => {
-    const lu = loggedUser();
-    if (!lu) return undefined;
-    const rl = lu.settings[name];
-    if (!rl) return undefined;
-    return rl;
   }
 
   const setSetting = (name: string, value: any) => {
@@ -115,13 +103,15 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
   });
 
   const themeChange = (value: SelectItem) => {
-    const data = { ...appSettings() };
-    data.appTheme = value.id as themeType;
-    saveToStorage(rollerSettingsKey, data);
+    const lu = loggedUser();
+    if (!lu) return;
+    lu.settings.appTheme = value.id;
+    setLoggedUser({ ...lu });
+    netUpdateUser(lu.name, lu.color, lu.settings);
   };
 
   const currentTheme = createMemo(() => {
-    const r = themes().filter((it) => it.id == appSettings().appTheme);
+    const r = themes().filter((it) => it.id == loggedUser()?.settings.appTheme);
     if (r.length > 0) return r[0];
     return undefined;
   });
@@ -138,13 +128,15 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
   });
 
   const fontChange = (value: SelectItem) => {
-    const data = { ...appSettings() };
-    data.appFont = value.id as themeFontFamilyType;
-    saveToStorage(rollerSettingsKey, data);
+    const lu = loggedUser();
+    if (!lu) return;
+    lu.settings.appFont = value.id;
+    setLoggedUser({ ...lu });
+    netUpdateUser(lu.name, lu.color, lu.settings);
   };
 
   const currentFont = createMemo(() => {
-    const r = fonts().filter((it) => it.id == appSettings().appFont);
+    const r = fonts().filter((it) => it.id == loggedUser()?.settings.appFont);
     if (r.length > 0) return r[0];
     return undefined;
   });

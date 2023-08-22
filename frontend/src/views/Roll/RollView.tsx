@@ -12,13 +12,14 @@ import {
   Host2NetRollInfo,
   RefProps,
   animating,
-  appSettings,
+
   centPublish,
   centUpdateRoll,
   createRollInfo,
   currentRightPanel,
   currentRoom,
   diceBox,
+  loggedUser,
   netTopic,
   rollComment,
   setDiceBox,
@@ -49,16 +50,16 @@ const diceConfig = {
   light_intensity: 0.8,
   baseScale: 100,
   strength: 2, // toss strength of dice
-  onRollComplete: () => {},
+  onRollComplete: () => { },
 };
 
 export const RollView: Component<RefProps> = (props) => {
   createEffect(async () => {
     const box = diceBox();
     if (!box) return;
-    const sr = appSettings().strongerRoll;
+    const sr = loggedUser()?.settings.strongerRoll;
     await box.updateConfig({
-      gravity_multiplier: appSettings().strongerRoll ? 300 : 400,
+      gravity_multiplier: loggedUser()?.settings.strongerRoll ? 300 : 400,
     });
   });
 
@@ -78,15 +79,14 @@ export const RollView: Component<RefProps> = (props) => {
       }
       const Box = new DiceBox("#dice-table", {
         ...diceConfig,
-        baseScale: appSettings().smallerDice ? 75 : 95,
-        gravity_multiplier: appSettings().strongerRoll ? 300 : 400,
+        baseScale: loggedUser()?.settings.smallerDice ? 75 : 95,
+        gravity_multiplier: loggedUser()?.settings.strongerRoll ? 300 : 400,
       });
       setDiceBox(Box);
       Box.initialize().then(() => {
-        const s = appSettings();
         Box.loadTheme({
-          colorset: s.diceColor,
-          texture: s.diceMaterial,
+          colorset: loggedUser()?.settings.diceColor,
+          texture: loggedUser()?.settings.diceMaterial,
           material: "none",
         });
       });
@@ -117,10 +117,9 @@ export const RollView: Component<RefProps> = (props) => {
   createEffect(async () => {
     const box = diceBox();
     if (!box) return;
-    const s = appSettings();
     await box.updateConfig({
-      theme_colorset: s.diceColor,
-      theme_texture: s.diceMaterial,
+      theme_colorset: loggedUser()?.settings.diceColor,
+      theme_texture: loggedUser()?.settings.diceMaterial,
     });
   });
 

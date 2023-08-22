@@ -24,7 +24,6 @@ import {
   TOPBAR_HEIGHT,
   appCs,
   appRooms,
-  appSettings,
   centPublish,
   csExpanded,
   csOpenSections,
@@ -35,6 +34,7 @@ import {
   exportData,
   importData,
   isCsOwner,
+  loggedUser,
   netTopic,
   setCsExpanded,
   setCurrentCs,
@@ -121,12 +121,14 @@ export const CsPanel: Component = () => {
   const createCharsheet = () => {
     setCrDialogOpen(false);
     if (selCsType().trim() == "" || selCsName().trim() == "") return;
+    const ident = loggedUser()?.id;
+    if (!ident) return;
     const info: CsInfo = {
       id: uuid(),
       name: selCsName(),
       template: selCsType(),
       values: {},
-      owner: appSettings().userIdent,
+      owner: ident,
       shared: false,
     };
     updateCsStorage(info);

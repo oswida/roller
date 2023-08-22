@@ -6,6 +6,7 @@ import {
   csShared,
   currentCs,
   handoutShared,
+  loggedUser,
   setAppRolls,
   setCentClient,
   setCentConnectionStatus,
@@ -20,7 +21,7 @@ import {
   appCs,
   appHandouts,
   appRooms,
-  appSettings,
+
   currentRoom,
   rollerCsKey,
   rollerHandoutKey,
@@ -67,7 +68,7 @@ const processRollUpdate = (ctx: PublicationContext) => {
   const data = ctx.data as CentMessage;
   if (
     !data ||
-    data.sender == appSettings().userIdent ||
+    data.sender == loggedUser()?.id ||
     data.room !== currentRoom()?.id
   )
     return;
@@ -78,7 +79,7 @@ const processRollInfo = (ctx: PublicationContext) => {
   const data = ctx.data as CentMessage;
   if (
     !data ||
-    data.sender == appSettings().userIdent ||
+    data.sender == loggedUser()?.id ||
     data.room !== currentRoom()?.id
   )
     return;
@@ -89,7 +90,7 @@ const processRollInfo = (ctx: PublicationContext) => {
 
 const processRoomInfo = (ctx: PublicationContext) => {
   const data = ctx.data as CentMessage;
-  if (!data || data.sender == appSettings().userIdent) return;
+  if (!data || data.sender == loggedUser()?.id) return;
   const info = data.data as RoomInfo;
   if (!appRooms()[info.id]) return;
   centLoadRooms([info.id]);
@@ -97,13 +98,13 @@ const processRoomInfo = (ctx: PublicationContext) => {
 
 const processCsInfo = (ctx: PublicationContext) => {
   const data = ctx.data as CentMessage;
-  if (!data || data.sender == appSettings().userIdent) return;
+  if (!data || data.sender == loggedUser()?.id) return;
   const room = currentRoom();
   if (!room || data.room !== room.id) return;
   const info = data.data as CsInfo;
   if (!info.shared) {
     // sharing off
-    if (info.owner !== appSettings().userIdent) {
+    if (info.owner !== loggedUser()?.id) {
       const ns = { ...appCs() };
       delete ns[info.id];
       saveToStorage(rollerCsKey, ns);
@@ -114,23 +115,7 @@ const processCsInfo = (ctx: PublicationContext) => {
   }
 };
 
-const processHandoutInfo = (ctx: PublicationContext) => {
-  const data = ctx.data as CentMessage;
-  if (!data || data.sender == appSettings().userIdent) return;
-  const room = currentRoom();
-  if (!room || data.room !== room.id) return;
-  const info = data.data as HandoutInfo;
-  if (!info.shared) {
-    // sharing off
-    if (info.owner !== appSettings().userIdent) {
-      const ns = { ...appCs() };
-      delete ns[info.id];
-      saveToStorage(rollerHandoutKey, ns);
-    }
-  } else {
-    centLoadHandouts(room.id, [info.id]);
-  }
-};
+
 
 export const serverAddress = () => {
   // DEV version
@@ -189,17 +174,9 @@ export const activateRoomSubscriptions = () => {
     enrollTask(() => processRollUpdate(ctx));
   });
   sub4.subscribe();
-  const sub5 = client.newSubscription(netTopic(topicHandoutInfo));
-  sub5.on("publication", (ctx) => {
-    enrollTask(() => processHandoutInfo(ctx));
-  });
-  sub5.subscribe();
 };
 
 export const centConnect = (username: string, passwd: string) => {
-  const s = appSettings();
-  if (!appSettings) return;
-
   const centrifuge = new Centrifuge(serverAddress(), {
     name: username,
     data: passwd,
@@ -213,10 +190,14 @@ export const centConnect = (username: string, passwd: string) => {
   });
   centrifuge.on("connected", function (ctx) {
     if (ctx.data) {
-      setLoggedUser(ctx.data.toString());
       centrifuge.rpc("userinfo", "").then((resp: any) => {
         const lu = { ...resp.data };
-        if (!lu.settings) lu.settings = {};
+        if (!lu.settings) lu.settings = {
+          appTheme: 'blue',
+          appFont: 'Lato',
+        };
+        if (!lu.settings.appTheme) lu.settings.appTheme = 'blue';
+        if (!lu.settings.appFont) lu.settings.appFont = 'Lato';
         setLoggedUser(lu as UserInfo);
       }).catch((err) => {
         console.error(err);
@@ -266,9 +247,11 @@ export const centPublish = (topic: string, payload: any) => {
   if (!client) {
     return;
   }
+  const ident = loggedUser()?.id;
+  if (!ident) return;
   try {
     client
-      .publish(topic, centPack(appSettings().userIdent, payload))
+      .publish(topic, centPack(ident, payload))
       .then((result: PublishResult) => {
         // Message sent
       })
@@ -288,7 +271,7 @@ export const centLoadRooms = (ids?: string[]) => {
     return;
   }
   const msg = {
-    sender: appSettings().userIdent,
+    sender: loggedUser()?.id,
     room: "",
     data: ids ? ids : Object.values(appRooms()).map((it) => it.id),
   } as CentMessage;
@@ -320,11 +303,11 @@ export const centLoadRooms = (ids?: string[]) => {
 
 export const centDeleteRoom = (room: RoomInfo) => {
   const client = centClient();
-  if (!client || room.owner !== appSettings().userIdent) {
+  if (!client || room.owner !== loggedUser()?.id) {
     return;
   }
   const msg = {
-    sender: appSettings().userIdent,
+    sender: loggedUser()?.id,
     room: room.id,
     data: room,
   } as CentMessage;
@@ -344,7 +327,7 @@ export const centUpdateRoom = (room: RoomInfo) => {
     return;
   }
   const msg = {
-    sender: appSettings().userIdent,
+    sender: loggedUser()?.id,
     room: room.id,
     data: room,
   } as CentMessage;
@@ -364,7 +347,7 @@ export const centLoadCs = (roomId: string, ids?: string[]) => {
     return;
   }
   const msg = {
-    sender: appSettings().userIdent,
+    sender: loggedUser()?.id,
     room: roomId,
     data: ids ? ids : Object.values(appCs()).map((it) => it.id),
   } as CentMessage;
@@ -383,7 +366,7 @@ export const centLoadCs = (roomId: string, ids?: string[]) => {
             !receivedIds.includes(id) &&
             newState[id] &&
             newState[id].shared &&
-            newState[id].owner !== appSettings().userIdent
+            newState[id].owner !== loggedUser()?.id
           ) {
             delete newState[id]; // charsheet has been deleted
           }
@@ -413,7 +396,7 @@ export const centDeleteCs = (roomId: string, info: CsInfo) => {
     return;
   }
   const msg = {
-    sender: appSettings().userIdent,
+    sender: loggedUser()?.id,
     room: roomId,
     data: info,
   } as CentMessage;
@@ -433,7 +416,7 @@ export const centUpdateCs = (roomId: string, info: CsInfo) => {
     return;
   }
   const msg = {
-    sender: appSettings().userIdent,
+    sender: loggedUser()?.id,
     room: roomId,
     data: info,
   } as CentMessage;
@@ -453,7 +436,7 @@ export const centLoadRolls = (roomId: string) => {
     return;
   }
   const msg = {
-    sender: appSettings().userIdent,
+    sender: loggedUser()?.id,
     room: roomId,
     data: [],
   } as CentMessage;
@@ -478,7 +461,7 @@ export const centClearRolls = (roomId: string) => {
     return;
   }
   const msg = {
-    sender: appSettings().userIdent,
+    sender: loggedUser()?.id,
     room: roomId,
     data: [],
   } as CentMessage;
@@ -498,7 +481,7 @@ export const centUpdateRoll = (roomId: string, info: NetRollInfo) => {
     return;
   }
   const msg = {
-    sender: appSettings().userIdent,
+    sender: loggedUser()?.id,
     room: roomId,
     data: info,
   } as CentMessage;
@@ -517,7 +500,7 @@ export const centLoadHandouts = (roomId: string, ids?: string[]) => {
     return;
   }
   const msg = {
-    sender: appSettings().userIdent,
+    sender: loggedUser()?.id,
     room: roomId,
     data: ids ? ids : Object.values(appHandouts()).map((it) => it.id),
   } as CentMessage;
@@ -538,7 +521,7 @@ export const centLoadHandouts = (roomId: string, ids?: string[]) => {
             !receivedIds.includes(id) &&
             newState[id] &&
             newState[id].shared &&
-            newState[id].owner !== appSettings().userIdent
+            newState[id].owner !== loggedUser()?.id
           ) {
             delete newState[id]; // charsheet has been deleted
           }
@@ -564,7 +547,7 @@ export const centDeleteHandout = (roomId: string, info: HandoutInfo) => {
     return;
   }
   const msg = {
-    sender: appSettings().userIdent,
+    sender: loggedUser()?.id,
     room: roomId,
     data: info,
   } as CentMessage;
@@ -584,7 +567,7 @@ export const centUpdateHandouts = (roomId: string, info: CsInfo) => {
     return;
   }
   const msg = {
-    sender: appSettings().userIdent,
+    sender: loggedUser()?.id,
     room: roomId,
     data: info,
   } as CentMessage;

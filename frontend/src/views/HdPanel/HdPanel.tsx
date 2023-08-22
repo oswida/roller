@@ -9,15 +9,11 @@ import {
   onMount,
 } from "solid-js";
 import {
-  HandoutInfoType,
   HandoutInfoTypeList,
   TOPBAR_HEIGHT,
   appHandouts,
-  appSettings,
   currentCs,
-  emptyHandoutInfo,
   isCsOwner,
-  updateHdStorage,
 } from "~/common";
 import {
   Accordion,
@@ -46,7 +42,6 @@ import {
   FaSolidUserPen,
 } from "solid-icons/fa";
 import { BsArrowsExpand } from "solid-icons/bs";
-import { Dynamic } from "solid-js/web";
 import { HdItem } from "./HdItem";
 
 export const HdPanel: Component = () => {
@@ -91,47 +86,29 @@ export const HdPanel: Component = () => {
         })
         .map(
           (it) =>
-            ({
-              id: it.id,
-              title: it.name,
-              content: <HdItem item={it} />,
-            } as AccordionOption)
+          ({
+            id: it.id,
+            title: it.name,
+            content: <HdItem item={it} />,
+          } as AccordionOption)
         );
     },
     undefined,
     { equals: false }
   );
 
-  const expandAll = () => {
-    // if (csExpanded().length <= 0)
-    //   setCsExpanded(tpl.sections.map((it) => it.title));
-    // else setCsExpanded([]);
-  };
 
-  const exportHd = () => {
-    // const info = currentHd();
-    // if (!info) return;
-    // const filename = `${info.name}.json`;
-    // exportData(info, filename);
-  };
 
-  const importHd = () => {};
 
-  const createHandout = () => {
-    setCrDialogOpen(false);
-    const name = selHdName();
-    const ht = selHdType();
-    if (name.trim() === "" || !ht || ht.trim() === "") return;
-    const hd = emptyHandoutInfo(appSettings().userIdent, ht as HandoutInfoType);
-    hd.name = name;
-    updateHdStorage(hd);
-  };
+  const importHd = () => { };
 
-  const deleteHandout = () => {};
 
-  const shareHandout = () => {};
 
-  const renameHandout = () => {};
+  const deleteHandout = () => { };
+
+  const shareHandout = () => { };
+
+  const renameHandout = () => { };
 
   const clearFlt = () => {
     setFlt("");
@@ -197,7 +174,7 @@ export const HdPanel: Component = () => {
 
               <Flex gap="large" style={{ "margin-top": "10px" }}>
                 <Button onClick={() => setCrDialogOpen(false)}>Cancel</Button>
-                <Button onClick={createHandout}>Create</Button>
+                <Button >Create</Button>
               </Flex>
             </DialogContent>
           </Dialog>
@@ -282,10 +259,10 @@ export const HdPanel: Component = () => {
               </Dialog>
             </Show>
 
-            <Button title="Export charsheet" onClick={exportHd}>
+            <Button title="Export charsheet" >
               <FaSolidFileExport />
             </Button>
-            <Button title="Toggle expand all" onClick={expandAll}>
+            <Button title="Toggle expand all" >
               <BsArrowsExpand />
             </Button>
           </Flex>

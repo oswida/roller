@@ -2,8 +2,8 @@ import { Component, For, Show, createMemo, createSignal } from "solid-js";
 import {
   Host2NetRollInfo,
   RollInfo,
-  appSettings,
   centPublish,
+  loggedUser,
   netTopic,
   rollSuccessInfo,
   setAppRolls,
@@ -49,7 +49,7 @@ export const ChatItem: Component<Props> = (props) => {
   const myPrivate = createMemo(() => {
     return (
       props.item.private &&
-      props.item.userId == appSettings().userIdent &&
+      props.item.userId == loggedUser()?.id &&
       !props.item.revealed
     );
   });
@@ -107,7 +107,7 @@ export const ChatItem: Component<Props> = (props) => {
           <Flex gap="medium" direction="column" grow>
             <Flex justify="space" align="center" style={{ width: "100%" }}>
               <Show
-                when={appSettings().showRollTotal && props.item.result.total}
+                when={loggedUser()?.settings.showRollTotal && props.item.result.total}
               >
                 <DataBlock style={{ width: "45%" }}>
                   <DataLabel
@@ -129,7 +129,7 @@ export const ChatItem: Component<Props> = (props) => {
               <Show
                 when={
                   props.item.successRule &&
-                  appSettings().showRollSuccess &&
+                  loggedUser()?.settings.showRollSuccess &&
                   succValue() !== ""
                 }
               >

@@ -7,11 +7,12 @@ import { Component, For, Match, Show, Switch, createSignal } from "solid-js";
 import {
   RefProps,
   animating,
-  appSettings,
+
   currentRoom,
   diceBox,
   dicePool,
   enrollTask,
+  loggedUser,
   modRoll,
   privateRoll,
   rolling,
@@ -49,7 +50,7 @@ const ModifierDialog = ({ priv }: { priv: boolean }) => {
     let n = Number.parseInt(el.value);
     setMdOpen(false);
     if (Number.isNaN(n)) n = 0;
-    if (rolling() || !currentRoom() || currentRoom()?.id == "") { 
+    if (rolling() || !currentRoom() || currentRoom()?.id == "") {
       toast('You need to select a room for a roll');
       return;
     }
@@ -68,10 +69,9 @@ const ModifierDialog = ({ priv }: { priv: boolean }) => {
       return;
     }
     setRolling(true);
-    const s = appSettings();
     await db.updateConfig({
-      theme_colorset: s.diceColor,
-      theme_texture: s.diceMaterial,
+      theme_colorset: loggedUser()?.settings.diceColor,
+      theme_texture: loggedUser()?.settings.diceMaterial,
     });
     if (n !== 0) await db.roll(`${dice.join("+")}+${n}`);
     else await db.roll(`${dice.join("+")}`);
@@ -124,10 +124,9 @@ export const DiceSelector: Component<RefProps> = (props) => {
       .map(([k, v]) => `${v}d${k}`);
     if (dice.length <= 0) return;
     setRolling(true);
-    const s = appSettings();
     await db.updateConfig({
-      theme_colorset: s.diceColor,
-      theme_texture: s.diceMaterial,
+      theme_colorset: loggedUser()?.settings.diceColor,
+      theme_texture: loggedUser()?.settings.diceMaterial,
     });
     await db.roll(dice.join("+"));
   };
@@ -211,29 +210,29 @@ export const DiceSelector: Component<RefProps> = (props) => {
         </Show>
       </Flex>
 
-      <Show when={!appSettings().rightLayout}>
-        <Flex gap="medium" align="center" justify="center">
-          <Tooltip>
-            <TooltipTrigger>
-              <Button onClick={resetPool}>
-                <IoReload />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Reset dice pool</TooltipContent>
-          </Tooltip>
 
-          <DicePanel />
+      <Flex gap="medium" align="center" justify="center">
+        <Tooltip>
+          <TooltipTrigger>
+            <Button onClick={resetPool}>
+              <IoReload />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Reset dice pool</TooltipContent>
+        </Tooltip>
 
-          <Tooltip>
-            <TooltipTrigger>
-              <Button onClick={clearTable}>
-                <AiOutlineClear />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Clear table</TooltipContent>
-          </Tooltip>
-        </Flex>
-      </Show>
+        <DicePanel />
+
+        <Tooltip>
+          <TooltipTrigger>
+            <Button onClick={clearTable}>
+              <AiOutlineClear />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Clear table</TooltipContent>
+        </Tooltip>
+      </Flex>
+
     </div>
   );
 };

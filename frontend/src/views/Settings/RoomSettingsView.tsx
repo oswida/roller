@@ -10,11 +10,12 @@ import { Component, Show, createMemo, createSignal } from "solid-js";
 import toast from "solid-toast";
 import {
   appRooms,
-  appSettings,
+
   centDeleteRoom,
   centPublish,
   centUpdateRoom,
   currentRoom,
+  loggedUser,
   netTopic,
   rollerRoomsKey,
   rollerSettingsKey,
@@ -47,13 +48,13 @@ export const RoomSettingsView: Component<Props> = (props) => {
 
   const updateRoom = (field: "name" | "bkguri" | "owner", value: string) => {
     const data = { ...appRooms() };
-    if (!data[appSettings().currentRoom]) return;
-    const isOwner = currentRoom()?.owner == appSettings().userIdent;
-    data[appSettings().currentRoom][field] = value;
+    if (!data[loggedUser()?.settings.currentRoom]) return;
+    const isOwner = currentRoom()?.owner == loggedUser()?.id;
+    data[loggedUser()?.settings.currentRoom][field] = value;
     saveToStorage(rollerRoomsKey, data);
-    centUpdateRoom(data[appSettings().currentRoom]);
+    centUpdateRoom(data[loggedUser()?.settings.currentRoom]);
     if (isOwner)
-      centPublish(netTopic(topicRoomInfo), data[appSettings().currentRoom]);
+      centPublish(netTopic(topicRoomInfo), data[loggedUser()?.settings.currentRoom]);
   };
 
   const passOwnership = () => {
@@ -77,7 +78,7 @@ export const RoomSettingsView: Component<Props> = (props) => {
   const deleteRoom = () => {
     setDelConfirmOpen(false);
     const room = currentRoom();
-    if (!room || room.owner !== appSettings().userIdent) {
+    if (!room || room.owner !== loggedUser()?.id) {
       toast("Cannot delete room. Room can be deleted only by an owner.", {
         icon: <FaSolidCircleStop />,
       });
@@ -86,7 +87,7 @@ export const RoomSettingsView: Component<Props> = (props) => {
     const newState = { ...appRooms() };
     delete newState[room.id];
     saveToStorage(rollerRoomsKey, newState);
-    const ns = { ...appSettings() };
+    const ns = { ...loggedUser()?.settings };
     ns.currentRoom = "";
     if (Object.values(newState).length > 0) {
       ns.currentRoom = Object.values(newState)[0].id;
@@ -105,7 +106,7 @@ export const RoomSettingsView: Component<Props> = (props) => {
 
   return (
     <Flex direction="column" gap="large">
-      <Show when={appSettings().userIdent == currentRoom()?.owner}>
+      <Show when={loggedUser()?.id == currentRoom()?.owner}>
         <Input
           label="Room name"
           value={roomName()}
@@ -136,7 +137,7 @@ export const RoomSettingsView: Component<Props> = (props) => {
             <Text>Copy room ID </Text>
           </div>
         </CopyToClipboard>
-        <Show when={appSettings().userIdent == currentRoom()?.owner}>
+        <Show when={loggedUser()?.id == currentRoom()?.owner}>
           <Alert onOpenChange={setDelConfirmOpen} open={delConfirmOpen()}>
             <AlertTrigger>
               <Tooltip>
@@ -165,7 +166,7 @@ export const RoomSettingsView: Component<Props> = (props) => {
           </Alert>
         </Show>
       </Flex>
-      <Show when={appSettings().userIdent == currentRoom()?.owner}>
+      <Show when={loggedUser()?.id == currentRoom()?.owner}>
         <Flex align="end" justify="space" grow>
           <Input
             label="Pass ownership to user"

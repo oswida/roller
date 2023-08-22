@@ -7,7 +7,7 @@ import {
   onCleanup,
   onMount,
 } from "solid-js";
-import { TOPBAR_HEIGHT, appSettings, currentRightPanel } from "~/common";
+import { TOPBAR_HEIGHT, currentRightPanel } from "~/common";
 import { Flex } from "~/components";
 import { ChatView } from "../Chat";
 import { RollView } from "../Roll/RollView";
@@ -61,21 +61,13 @@ export const RollPanel: Component<Props> = (props) => {
   return (
     <div style={{ visibility: props.visible() ? "visible" : "hidden" }}>
       <Flex>
-        <Show when={!appSettings().rightLayout}>
-          <ChatView
-            chatRef={(e) => (chatRef = e)}
-            csRef={(e) => (csRef = e)}
-            adjustSize={adjustSize}
-          />
-        </Show>
+
+        <ChatView
+          chatRef={(e) => (chatRef = e)}
+          csRef={(e) => (csRef = e)}
+          adjustSize={adjustSize}
+        />
         <RollView ref={(e: any) => (rollRef = e)} />
-        <Show when={appSettings().rightLayout}>
-          <ChatView
-            chatRef={(e) => (chatRef = e)}
-            csRef={(e) => (csRef = e)}
-            adjustSize={adjustSize}
-          />
-        </Show>
       </Flex>
       <DiceSelector ref={(e: any) => (selRef = e)} />
     </div>

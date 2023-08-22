@@ -11,37 +11,6 @@ export type UserInfo = {
 }
 
 
-// Settings
-
-export type themeType = "blue" | "blueDark" | "teal";
-
-export type AppSettings = {
-  userIdent: string;
-  userName: string;
-  userColor: string;
-  currentRoom: string;
-  // diceColor: string;
-  // diceMaterial: string;
-  rightLayout?: boolean;
-  appTheme?: themeType;
-  appFont?: themeFontFamilyType;
-  // showRollSuccess?: boolean;
-  // showRollTotal?: boolean;
-  // smallerDice?: boolean;
-  // strongerRoll?: boolean;
-};
-
-export const emptyAppSettings = () => {
-  return {
-    userIdent: uuid(),
-    userName: "Anonymous",
-    userColor: "white",
-    currentRoom: "",
-    diceColor: "white",
-    diceMaterial: "none",
-  } as AppSettings;
-};
-
 // Publish PDUs
 
 export type RollInfo = {
@@ -307,7 +276,6 @@ export type RollResult = {
 // Storage
 
 export type StorageItem =
-  | AppSettings
   | Record<string, RoomInfo>
   | Record<string, RollDefInfo>
   | Record<string, CsInfo>
