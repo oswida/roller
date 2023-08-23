@@ -4,9 +4,6 @@ import {
   emptyRoomInfo,
   loggedUser,
   netUpdateUser,
-  rollerRoomsKey,
-
-  saveToStorage,
 } from "~/common";
 import { Button, Flex, Input } from "~/components";
 
@@ -21,7 +18,6 @@ export const RoomConnectView = ({
     if (!inputRef) return;
     const newState = { ...appRooms() };
     newState[inputRef.value] = emptyRoomInfo(inputRef.value);
-    saveToStorage(rollerRoomsKey, newState);
     const lu = loggedUser();
     if (!lu) return;
     if (!lu.settings) lu.settings = {};

@@ -1,14 +1,14 @@
 import { Centrifuge, PublicationContext, PublishResult } from "centrifuge";
 import {
+  appCs,
   appRooms,
   centClient,
   centConnectionStatus,
   connectedUsers,
   csShared,
   currentCs,
-
-  handoutShared,
   loggedUser,
+  setAppCs,
   setAppRolls,
   setAppRooms,
   setCentClient,
@@ -16,32 +16,18 @@ import {
   setConnectedUsers,
   setCsShared,
   setCurrentCs,
-  setHandoutShared,
   setLoggedUser,
   updateRolls,
 } from "./state";
-import {
-  appCs,
-
-
-  currentRoom,
-
-
-  rollerCsKey,
-
-  rollerRoomsKey,
-  saveToStorage,
-} from "./storage";
+import { currentRoom } from "./storage";
 import {
   CentMessage,
   CsInfo,
-  HandoutInfo,
   NetRollInfo,
   RollInfo,
   RoomInfo,
   UserInfo,
   topicCsInfo,
-  topicHandoutInfo,
   topicRollInfo,
   topicRollUpdate,
   topicRoomInfo,
@@ -52,6 +38,12 @@ import {
   enrollTask,
   netTopic,
 } from "./util";
+
+export const shouldIgnoreMsg = (data: CentMessage | undefined) => {
+  return (
+    !data || data.sender == loggedUser()?.id || data.room !== currentRoom()?.id
+  );
+};
 
 export const centPack = (sender: string, payload: any) => {
   const room = currentRoom();
@@ -70,23 +62,13 @@ export const centUnpack = (payload: any) => {
 
 const processRollUpdate = (ctx: PublicationContext) => {
   const data = ctx.data as CentMessage;
-  if (
-    !data ||
-    data.sender == loggedUser()?.id ||
-    data.room !== currentRoom()?.id
-  )
-    return;
+  if (shouldIgnoreMsg(data)) return;
   centLoadRolls(data.room);
 };
 
 const processRollInfo = (ctx: PublicationContext) => {
   const data = ctx.data as CentMessage;
-  if (
-    !data ||
-    data.sender == loggedUser()?.id ||
-    data.room !== currentRoom()?.id
-  )
-    return;
+  if (shouldIgnoreMsg(data)) return;
   const info = Net2HostRollInfo(data.data as NetRollInfo);
   updateRolls(info);
   animateRemoteRoll(info);
@@ -111,15 +93,13 @@ const processCsInfo = (ctx: PublicationContext) => {
     if (info.owner !== loggedUser()?.id) {
       const ns = { ...appCs() };
       delete ns[info.id];
-      saveToStorage(rollerCsKey, ns);
+      setAppCs(ns);
       if (currentCs()?.id == info.id) setCurrentCs(undefined);
     }
   } else {
     centLoadCs(room.id, [info.id]);
   }
 };
-
-
 
 export const serverAddress = () => {
   // DEV version
@@ -194,19 +174,23 @@ export const centConnect = (username: string, passwd: string) => {
   });
   centrifuge.on("connected", function (ctx) {
     if (ctx.data) {
-      centrifuge.rpc("userinfo", "").then((resp: any) => {
-        const lu = { ...resp.data };
-        if (!lu.settings) lu.settings = {
-          appTheme: 'blue',
-          appFont: 'Lato',
-        };
-        if (!lu.settings.appTheme) lu.settings.appTheme = 'blue';
-        if (!lu.settings.appFont) lu.settings.appFont = 'Lato';
-        setLoggedUser(lu as UserInfo);
-        centLoadRooms(lu.settings.rooms);
-      }).catch((err) => {
-        console.error(err);
-      })
+      centrifuge
+        .rpc("userinfo", "")
+        .then((resp: any) => {
+          const lu = { ...resp.data };
+          if (!lu.settings)
+            lu.settings = {
+              appTheme: "blue",
+              appFont: "Lato",
+            };
+          if (!lu.settings.appTheme) lu.settings.appTheme = "blue";
+          if (!lu.settings.appFont) lu.settings.appFont = "Lato";
+          setLoggedUser(lu as UserInfo);
+          centLoadRooms(lu.settings.rooms);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     }
     setCentClient(centrifuge);
     setCentConnectionStatus(true);
@@ -341,7 +325,7 @@ export const centUpdateRoom = (room: RoomInfo) => {
   } as CentMessage;
   client
     .rpc("room_update", msg)
-    .then((result) => { })
+    .then((result) => {})
     .catch((err) => {
       console.error(err);
     });
@@ -379,7 +363,6 @@ export const centLoadCs = (roomId: string, ids?: string[]) => {
             delete newState[id]; // charsheet has been deleted
           }
         });
-        saveToStorage(rollerCsKey, newState);
         const scs = { ...csShared() };
         data.forEach((v) => {
           if (v.shared) {
@@ -391,6 +374,7 @@ export const centLoadCs = (roomId: string, ids?: string[]) => {
           setCurrentCs(undefined);
           setCurrentCs(newState[ids[0]]);
         }
+        setAppCs(newState);
       }
     })
     .catch((err) => {
@@ -430,7 +414,7 @@ export const centUpdateCs = (roomId: string, info: CsInfo) => {
   } as CentMessage;
   client
     .rpc("cs_update", msg)
-    .then((result) => { })
+    .then((result) => {})
     .catch((err) => {
       console.error(err);
     });
@@ -495,13 +479,11 @@ export const centUpdateRoll = (roomId: string, info: NetRollInfo) => {
   } as CentMessage;
   client
     .rpc("roll_update", msg)
-    .then((result) => { })
+    .then((result) => {})
     .catch((err) => {
       console.error(err);
     });
 };
-
-
 
 // Init
 
@@ -509,7 +491,11 @@ export const netInit = (username: string, passwd: string) => {
   if (!centConnectionStatus()) centConnect(username, passwd);
 };
 
-export const netUpdateUser = (name: string, color: string, settings: Record<string, any>) => {
+export const netUpdateUser = (
+  name: string,
+  color: string,
+  settings: Record<string, any>
+) => {
   const client = centClient();
   if (!client) {
     return;
@@ -518,9 +504,11 @@ export const netUpdateUser = (name: string, color: string, settings: Record<stri
     .rpc("user_update", {
       name: name,
       color: color,
-      settings: settings
+      settings: settings,
     })
-    .then((result) => { console.log("user_update", result) })
+    .then((result) => {
+      console.log("user_update", result);
+    })
     .catch((err) => {
       console.error(err);
     });

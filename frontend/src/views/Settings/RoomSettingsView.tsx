@@ -10,7 +10,6 @@ import { Component, Show, createMemo, createSignal } from "solid-js";
 import toast from "solid-toast";
 import {
   appRooms,
-
   centDeleteRoom,
   centPublish,
   centUpdateRoom,
@@ -18,8 +17,6 @@ import {
   loggedUser,
   netTopic,
   netUpdateUser,
-  rollerRoomsKey,
-  saveToStorage,
   setAppRolls,
   setAppRooms,
   topicRoomInfo,
@@ -55,7 +52,10 @@ export const RoomSettingsView: Component<Props> = (props) => {
     setAppRooms(data);
     centUpdateRoom(data[loggedUser()?.settings.currentRoom]);
     if (isOwner)
-      centPublish(netTopic(topicRoomInfo), data[loggedUser()?.settings.currentRoom]);
+      centPublish(
+        netTopic(topicRoomInfo),
+        data[loggedUser()?.settings.currentRoom]
+      );
   };
 
   const passOwnership = () => {
@@ -87,7 +87,6 @@ export const RoomSettingsView: Component<Props> = (props) => {
     }
     const newState = { ...appRooms() };
     delete newState[room.id];
-    saveToStorage(rollerRoomsKey, newState);
     const lu = loggedUser();
     if (!lu) return;
     if (!lu.settings) lu.settings = {};

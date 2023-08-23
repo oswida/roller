@@ -1,18 +1,9 @@
 import { createLocalStorage } from "@solid-primitives/storage";
-import { appRooms, loggedUser, setCurrentCs, setStorageSize } from "./state";
-import {
-  CsInfo,
-  HandoutInfo,
-  RollDefInfo,
-  RoomInfo,
-  StorageItem,
-} from "./types";
+import { appRooms, loggedUser, setStorageSize } from "./state";
+import { RollDefInfo, StorageItem } from "./types";
 import { compressData, decompressData } from "./util";
-import { createMemo } from "solid-js";
 
-export const rollerRoomsKey = "rooms";
 export const rollerDefsKey = "defs";
-export const rollerCsKey = "cs";
 
 const STORE_PREFIX = "roller3";
 
@@ -26,8 +17,6 @@ export const [appStore, setAppStore, { remove, clear, toJSON }] =
       switch (key) {
         case "defs":
           return decompressData(value) as Record<string, RollDefInfo>;
-        case "cs":
-          return decompressData(value) as Record<string, CsInfo>;
         default:
           return decompressData(value) as string;
       }
@@ -41,11 +30,7 @@ export const saveToStorage = (key: string, data: any) => {
 
 export const updateStoreSize = () => {
   let size = 0;
-  const keys = [
-    rollerRoomsKey,
-    rollerCsKey,
-    rollerDefsKey,
-  ];
+  const keys = [rollerDefsKey];
   keys.forEach((k) => {
     const data = localStorage.getItem(`${STORE_PREFIX}.${k}`);
     size += data ? data.length : 0;
@@ -63,16 +48,6 @@ export const appDefs = () => {
   return defs;
 };
 
-export const appCs = () => {
-  let cs = appStore.cs as Record<string, CsInfo>;
-  if (!cs) {
-    cs = {};
-    setAppStore(rollerCsKey, cs);
-  }
-  return cs;
-};
-
-
 export const currentRoom = () => {
   const settings = loggedUser()?.settings;
   if (!settings) return undefined;
@@ -80,21 +55,4 @@ export const currentRoom = () => {
   const rooms = appRooms();
   if (!rooms[settings.currentRoom]) return undefined;
   return rooms[settings.currentRoom];
-};
-
-// --- mutations
-
-
-export const updateCsStorage = (item: CsInfo) => {
-  const newState = { ...appCs() };
-  newState[item.id] = item;
-  saveToStorage(rollerCsKey, newState);
-};
-
-
-
-export const deleteCsStorage = (id: string) => {
-  const newState = { ...appCs() };
-  delete newState[id];
-  saveToStorage(rollerCsKey, newState);
 };

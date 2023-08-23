@@ -20,7 +20,6 @@ import {
   RefProps,
   activateRoomSubscriptions,
   appRooms,
-
   centConnectionStatus,
   centDisconnect,
   centLoadCs,
@@ -33,9 +32,7 @@ import {
   generateSerialKeys,
   loggedUser,
   netUpdateUser,
-  rollerRoomsKey,
   rolling,
-  saveToStorage,
   setAppRooms,
   setCurrentRightPanel,
   setLoggedUser,
@@ -135,7 +132,7 @@ export const TopBar: Component<RefProps> = (props) => {
   const logout = () => {
     setLoggedUser(undefined);
     centDisconnect();
-  }
+  };
 
   const toggleRightPanel = (panel: string) => {
     const rp = currentRightPanel();
@@ -224,7 +221,6 @@ export const TopBar: Component<RefProps> = (props) => {
             <Show when={currentRightPanel() === "cs"}>
               <Text colorSchema="accent"> Charsheets</Text>
             </Show>
-
           </Flex>
         </Show>
       </Flex>

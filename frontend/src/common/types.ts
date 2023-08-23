@@ -8,8 +8,7 @@ export type UserInfo = {
   color: string;
   edges: any;
   settings: Record<string, any>;
-}
-
+};
 
 // Publish PDUs
 
@@ -224,13 +223,13 @@ export type CharTemplateItem = {
   color?: string; // item color
   data?: // specific item data
   | CTIAttrData
-  | CTICheckData
-  | CTIComputedData
-  | CTIContainerData
-  | CTICounterData
-  | CTIResourceData
-  | CTISelectData
-  | CTITextData;
+    | CTICheckData
+    | CTIComputedData
+    | CTIContainerData
+    | CTICounterData
+    | CTIResourceData
+    | CTISelectData
+    | CTITextData;
 };
 
 export type CharTemplateSection = {
@@ -275,9 +274,7 @@ export type RollResult = {
 
 // Storage
 
-export type StorageItem = Record<string, RollDefInfo>
-  | Record<string, CsInfo>
-  | string;
+export type StorageItem = Record<string, RollDefInfo> | string;
 
 // Misc
 export type SelectOption = {
@@ -287,45 +284,4 @@ export type SelectOption = {
 
 export type RefProps = {
   ref: any;
-};
-
-// Handouts
-
-export type HandoutInfoType =
-  | "text"
-  | "clock"
-  | "track"
-  | "image"
-  | "container";
-
-export const HandoutInfoTypeList = [
-  "text",
-  "clock",
-  "track",
-  "image",
-  "container",
-];
-
-export type HandoutInfo = {
-  id: string;
-  owner: string;
-  name: string;
-  htype: HandoutInfoType;
-  value: any;
-  description?: string;
-  hint?: string;
-  limit?: number;
-  url?: string;
-  shared?: boolean;
-};
-
-export const emptyHandoutInfo = (owner: string, htype: HandoutInfoType) => {
-  return {
-    id: uuid(),
-    owner: owner,
-    name: "handout",
-    htype: htype,
-    value: "",
-    shared: false,
-  } as HandoutInfo;
 };
