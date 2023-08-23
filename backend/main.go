@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"net/http"
 	"os"
 	"os/signal"
@@ -13,26 +12,8 @@ import (
 	"go.uber.org/zap"
 )
 
-func waitExitSignal(n *centrifuge.Node) {
-	sigCh := make(chan os.Signal, 1)
-	done := make(chan bool, 1)
-	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
-	go func() {
-		<-sigCh
-		_ = n.Shutdown(context.Background())
-		done <- true
-	}()
-	<-done
-}
-
 func auth(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// ctx := r.Context()
-		// cred := &centrifuge.Credentials{
-		// 	UserID: "",
-		// }
-		// newCtx := centrifuge.SetCredentials(ctx, cred)
-		// r = r.WithContext(newCtx)
 		h.ServeHTTP(w, r)
 	})
 }
@@ -75,6 +56,7 @@ func main() {
 		os.Exit(1)
 	}()
 
+	logger.Info("Starting roller")
 	if err := http.ListenAndServe(":5000", nil); err != nil {
 		logger.Fatal("failed starting web server", zap.Error(err))
 	}

@@ -668,6 +668,8 @@ type RollMutation struct {
 	clearedFields    map[string]struct{}
 	owner            *string
 	clearedowner     bool
+	room             *string
+	clearedroom      bool
 	done             bool
 	oldValue         func(context.Context) (*Roll, error)
 	predicates       []predicate.Roll
@@ -1196,6 +1198,45 @@ func (m *RollMutation) ResetOwner() {
 	m.clearedowner = false
 }
 
+// SetRoomID sets the "room" edge to the Room entity by id.
+func (m *RollMutation) SetRoomID(id string) {
+	m.room = &id
+}
+
+// ClearRoom clears the "room" edge to the Room entity.
+func (m *RollMutation) ClearRoom() {
+	m.clearedroom = true
+}
+
+// RoomCleared reports if the "room" edge to the Room entity was cleared.
+func (m *RollMutation) RoomCleared() bool {
+	return m.clearedroom
+}
+
+// RoomID returns the "room" edge ID in the mutation.
+func (m *RollMutation) RoomID() (id string, exists bool) {
+	if m.room != nil {
+		return *m.room, true
+	}
+	return
+}
+
+// RoomIDs returns the "room" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// RoomID instead. It exists only for internal usage by the builders.
+func (m *RollMutation) RoomIDs() (ids []string) {
+	if id := m.room; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetRoom resets all changes to the "room" edge.
+func (m *RollMutation) ResetRoom() {
+	m.room = nil
+	m.clearedroom = false
+}
+
 // Where appends a list predicates to the RollMutation builder.
 func (m *RollMutation) Where(ps ...predicate.Roll) {
 	m.predicates = append(m.predicates, ps...)
@@ -1497,9 +1538,12 @@ func (m *RollMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *RollMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.owner != nil {
 		edges = append(edges, roll.EdgeOwner)
+	}
+	if m.room != nil {
+		edges = append(edges, roll.EdgeRoom)
 	}
 	return edges
 }
@@ -1512,13 +1556,17 @@ func (m *RollMutation) AddedIDs(name string) []ent.Value {
 		if id := m.owner; id != nil {
 			return []ent.Value{*id}
 		}
+	case roll.EdgeRoom:
+		if id := m.room; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *RollMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	return edges
 }
 
@@ -1530,9 +1578,12 @@ func (m *RollMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *RollMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.clearedowner {
 		edges = append(edges, roll.EdgeOwner)
+	}
+	if m.clearedroom {
+		edges = append(edges, roll.EdgeRoom)
 	}
 	return edges
 }
@@ -1543,6 +1594,8 @@ func (m *RollMutation) EdgeCleared(name string) bool {
 	switch name {
 	case roll.EdgeOwner:
 		return m.clearedowner
+	case roll.EdgeRoom:
+		return m.clearedroom
 	}
 	return false
 }
@@ -1554,6 +1607,9 @@ func (m *RollMutation) ClearEdge(name string) error {
 	case roll.EdgeOwner:
 		m.ClearOwner()
 		return nil
+	case roll.EdgeRoom:
+		m.ClearRoom()
+		return nil
 	}
 	return fmt.Errorf("unknown Roll unique edge %s", name)
 }
@@ -1564,6 +1620,9 @@ func (m *RollMutation) ResetEdge(name string) error {
 	switch name {
 	case roll.EdgeOwner:
 		m.ResetOwner()
+		return nil
+	case roll.EdgeRoom:
+		m.ResetRoom()
 		return nil
 	}
 	return fmt.Errorf("unknown Roll edge %s", name)

@@ -31,5 +31,8 @@ func (Roll) Edges() []ent.Edge {
 		edge.From("owner", User.Type).
 			Ref("rolls").
 			Unique(),
+		edge.From("room", Room.Type).
+			Ref("rolls").
+			Unique(),
 	}
 }

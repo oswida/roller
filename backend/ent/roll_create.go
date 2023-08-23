@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"rpgroll/ent/roll"
+	"rpgroll/ent/room"
 	"rpgroll/ent/user"
 	"time"
 
@@ -104,6 +105,25 @@ func (rc *RollCreate) SetNillableOwnerID(id *string) *RollCreate {
 // SetOwner sets the "owner" edge to the User entity.
 func (rc *RollCreate) SetOwner(u *User) *RollCreate {
 	return rc.SetOwnerID(u.ID)
+}
+
+// SetRoomID sets the "room" edge to the Room entity by ID.
+func (rc *RollCreate) SetRoomID(id string) *RollCreate {
+	rc.mutation.SetRoomID(id)
+	return rc
+}
+
+// SetNillableRoomID sets the "room" edge to the Room entity by ID if the given value is not nil.
+func (rc *RollCreate) SetNillableRoomID(id *string) *RollCreate {
+	if id != nil {
+		rc = rc.SetRoomID(*id)
+	}
+	return rc
+}
+
+// SetRoom sets the "room" edge to the Room entity.
+func (rc *RollCreate) SetRoom(r *Room) *RollCreate {
+	return rc.SetRoomID(r.ID)
 }
 
 // Mutation returns the RollMutation object of the builder.
@@ -260,6 +280,23 @@ func (rc *RollCreate) createSpec() (*Roll, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.user_rolls = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := rc.mutation.RoomIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   roll.RoomTable,
+			Columns: []string{roll.RoomColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.room_rolls = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

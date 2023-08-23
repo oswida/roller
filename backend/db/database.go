@@ -4,11 +4,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"rpgroll/ent"
+	"rpgroll/ent/charsheet"
+	"rpgroll/ent/roll"
+	"rpgroll/ent/room"
 	"rpgroll/ent/user"
 
-	badger "github.com/dgraph-io/badger/v4"
 	"github.com/google/uuid"
 	_ "github.com/xiaoqidun/entps"
 	"golang.org/x/crypto/argon2"
@@ -16,7 +19,6 @@ import (
 )
 
 type DB struct {
-	Db     *badger.DB
 	Client *ent.Client
 }
 
@@ -46,160 +48,197 @@ func NewDatabase() (*DB, error) {
 	if err := createAdminUser(client); err != nil {
 		return nil, err
 	}
-	opts := badger.DefaultOptions("data")
-	db, err := badger.Open(opts)
-	if err != nil {
-		return nil, err
-	}
 	return &DB{
-		Db:     db,
 		Client: client,
 	}, nil
 }
 
 func (d *DB) Close() {
-	d.Db.Close()
 	d.Client.Close()
 }
 
-func roomKey(id string) []byte {
-	return []byte(id)
-}
+// Charsheets
 
-func contains(s []string, e string) bool {
-	for _, a := range s {
-		if a == e {
-			return true
+func (d *DB) CsUpdate(userID string, data CsInfo) ([]byte, error) {
+	cs, _ := d.Client.Charsheet.Get(context.Background(), data.Id)
+	if cs == nil {
+		err := d.Client.Charsheet.Create().
+			SetID(data.Id).
+			SetName(data.Name).
+			SetOwnerID(data.Owner).
+			SetPortrait(data.Portrait).
+			SetShared(data.Shared).
+			SetTemplate(data.Template).
+			SetValues(data.Values).Exec(context.Background())
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		err := d.Client.Charsheet.UpdateOneID(data.Id).
+			SetName(data.Name).
+			SetOwnerID(data.Owner).
+			SetPortrait(data.Portrait).
+			SetShared(data.Shared).
+			SetTemplate(data.Template).
+			SetValues(data.Values).Exec(context.Background())
+		if err != nil {
+			return nil, err
 		}
 	}
-	return false
+	return []byte{}, nil
 }
 
-func (d *DB) RoomUpdate(data RoomInfo) error {
-	return d.Db.Update(func(txn *badger.Txn) error {
-		bytes, err := json.Marshal(data)
+func (d *DB) CsDelete(csID string) ([]byte, error) {
+	err := d.Client.Charsheet.DeleteOneID(csID).Exec(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	return []byte("OK"), nil
+}
+
+func (d *DB) CsList(userID string) ([]byte, error) {
+	list, err := d.Client.Charsheet.Query().
+		Where(charsheet.Or(
+			charsheet.HasOwnerWith(user.IDEQ(userID)),
+			charsheet.SharedEQ(true))).
+		All(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(list)
+}
+
+// Users
+
+func (d *DB) UserUpdate(userID string, data UserUpdateData) ([]byte, error) {
+	err := d.Client.User.
+		UpdateOneID(userID).
+		SetName(data.Name).
+		SetColor(data.Color).
+		SetSettings(data.Settings).Exec(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	usr, err := d.Client.User.Get(context.Background(), userID)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(usr)
+}
+
+func (d *DB) UserGet(userID string, clearPasswd bool) ([]byte, error) {
+	usr, err := d.Client.User.Get(context.Background(), userID)
+	if err != nil {
+		return nil, err
+	}
+	if clearPasswd {
+		usr.Passwd = ""
+	}
+	return json.Marshal(usr)
+}
+
+// Rooms
+
+func (d *DB) RoomUpdate(userID string, roomID string, data RoomInfo) ([]byte, error) {
+	room, _ := d.Client.Room.Get(context.Background(), roomID)
+	if room == nil {
+		err := d.Client.Room.Create().
+			SetID(roomID).
+			SetName(data.Name).
+			SetBkg(data.Bkguri).
+			SetOwnerID(userID).Exec(context.Background())
 		if err != nil {
-			return err
+			return nil, err
 		}
-		return txn.Set(roomKey(data.Id), bytes)
-	})
-}
-
-func (d *DB) RoomGet(id string) (RoomInfo, error) {
-	var data RoomInfo
-	err := d.Db.View(func(txn *badger.Txn) error {
-		item, err := txn.Get(roomKey(id))
+	} else {
+		err := d.Client.Room.UpdateOneID(roomID).
+			SetName(data.Name).
+			SetBkg(data.Bkguri).
+			SetOwnerID(userID).Exec(context.Background())
 		if err != nil {
-			return err
+			return nil, err
 		}
+	}
+	room, err := d.Client.Room.Get(context.Background(), roomID)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(room)
+}
 
-		var val []byte
-		val, err = item.ValueCopy(val)
+func (d *DB) RoomDelete(roomID string) ([]byte, error) {
+	err := d.Client.Room.DeleteOneID(roomID).Exec(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	return []byte("OK"), nil
+}
+
+func (d *DB) RoomList(idents []string) ([]byte, error) {
+	rooms, err := d.Client.Room.Query().Where(room.IDIn(idents...)).All(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(rooms)
+}
+
+// Rolls
+
+func (d *DB) RollUpdate(userID string, roomID string, data RollInfo) ([]byte, error) {
+	roll, _ := d.Client.Roll.Get(context.Background(), data.Id)
+	if roll == nil {
+		err := d.Client.Roll.Create().
+			SetID(data.Id).
+			SetComment(data.Comment).
+			SetDiceColor(data.DiceColor).
+			SetDiceMaterial(data.DiceMaterial).
+			SetOwnerID(data.UserId).
+			SetPrivate(data.Private).
+			SetResult(data.Result).
+			SetRevealed(data.Revealed).
+			SetSuccessRule(data.SuccessRule).
+			SetSuccessTarget(data.SuccessTarget).
+			SetTime(time.Now()).
+			SetTstamp(data.Tstamp).
+			SetRoomID(roomID).
+			Exec(context.Background())
 		if err != nil {
-			return err
+			return nil, err
 		}
-		err = json.Unmarshal(val, &data)
+	} else {
+		err := d.Client.Roll.UpdateOneID(data.Id).
+			SetComment(data.Comment).
+			SetDiceColor(data.DiceColor).
+			SetDiceMaterial(data.DiceMaterial).
+			SetOwnerID(data.UserId).
+			SetPrivate(data.Private).
+			SetResult(data.Result).
+			SetRevealed(data.Revealed).
+			SetSuccessRule(data.SuccessRule).
+			SetSuccessTarget(data.SuccessTarget).
+			SetTime(time.Now()).
+			SetTstamp(data.Tstamp).
+			Exec(context.Background())
 		if err != nil {
-			return err
+			return nil, err
 		}
-		return nil
-	})
-	return data, err
+	}
+	roll, err := d.Client.Roll.Get(context.Background(), data.Id)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(roll)
 }
 
-func (d *DB) RoomDelete(id string) error {
-	return d.Db.Update(func(txn *badger.Txn) error {
-		return txn.Delete(roomKey(id))
-	})
+func (d *DB) RollList(roomID string) ([]byte, error) {
+	rolls, err := d.Client.Roll.Query().Where(roll.HasRoomWith(room.IDEQ(roomID))).All(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(rolls)
 }
 
-func (d *DB) RoomList(ids []string) ([]RoomInfo, error) {
-	data := []RoomInfo{}
-	err := d.Db.View(func(txn *badger.Txn) error {
-		opts := badger.DefaultIteratorOptions
-		opts.PrefetchSize = 10
-		it := txn.NewIterator(opts)
-		defer it.Close()
-		for it.Rewind(); it.Valid(); it.Next() {
-			item := it.Item()
-			err := item.Value(func(v []byte) error {
-				var room RoomInfo
-				err := json.Unmarshal(v, &room)
-				if err != nil {
-					return err
-				}
-
-				if contains(ids, room.Id) {
-					data = append(data, room)
-				}
-				return nil
-			})
-			if err != nil {
-				return err
-			}
-		}
-		return nil
-	})
-	return data, err
-}
-
-func (d *DB) ItemDelete(itemPrefix string, containerId string, item Item) error {
-	return d.Db.Update(func(txn *badger.Txn) error {
-		key := fmt.Sprintf("%s-%s-%s", itemPrefix, containerId, item.GetId())
-		return txn.Delete([]byte(key))
-	})
-}
-
-func (d *DB) ItemUpdate(itemPrefix string, containerId string, item Item) error {
-	return d.Db.Update(func(txn *badger.Txn) error {
-		bytes, err := json.Marshal(item)
-		if err != nil {
-			return err
-		}
-		key := fmt.Sprintf("%s-%s-%s", itemPrefix, containerId, item.GetId())
-		return txn.Set([]byte(key), bytes)
-	})
-}
-func (d *DB) ItemList(itemPrefix string, containerId string, ids []string, item Item) ([]Item, error) {
-	data := []Item{}
-	err := d.Db.View(func(txn *badger.Txn) error {
-		it := txn.NewIterator(badger.DefaultIteratorOptions)
-		defer it.Close()
-		prefix := []byte(fmt.Sprintf("%s-%s-", itemPrefix, containerId))
-		for it.Seek(prefix); it.ValidForPrefix(prefix); it.Next() {
-			it := it.Item()
-			err := it.Value(func(v []byte) error {
-				result, err := item.Unmarshal(v)
-				if err != nil {
-					return err
-				}
-				if len(ids) == 0 || contains(ids, result.GetId()) {
-					data = append(data, result)
-				}
-				return nil
-			})
-			if err != nil {
-				return err
-			}
-		}
-		return nil
-	})
-	return data, err
-}
-
-func (d *DB) ItemClear(itemPrefix string, containerId string) error {
-	err := d.Db.Update(func(txn *badger.Txn) error {
-		it := txn.NewIterator(badger.DefaultIteratorOptions)
-		defer it.Close()
-		prefix := []byte(fmt.Sprintf("%s-%s-", itemPrefix, containerId))
-		for it.Seek(prefix); it.ValidForPrefix(prefix); it.Next() {
-			key := it.Item().Key()
-			err := txn.Delete(key)
-			if err != nil {
-				return err
-			}
-		}
-		return nil
-	})
-	return err
+func (d *DB) RollClear(roomID string) ([]byte, error) {
+	_, err := d.Client.Roll.Delete().Where(roll.HasRoomWith(room.IDEQ(roomID))).Exec(context.Background())
+	return []byte{}, err
 }

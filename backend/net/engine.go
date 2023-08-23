@@ -100,26 +100,20 @@ func (eng *Engine) Run() error {
 
 func (eng *Engine) PublishCallback(e centrifuge.PublishEvent, client *centrifuge.Client) {
 	if strings.HasPrefix(e.Channel, "roll_info") {
-		err := eng.RollPublishCallback(e)
+		err := eng.RollPublishCallback(e, client)
 		if err != nil {
 			eng.Log.Error("roll publish callback", zap.Error(err))
 		}
 		return
 	}
 	if strings.HasPrefix(e.Channel, "cs_info") {
-		err := eng.CsInfoPublishCallback(e)
+		err := eng.CsInfoPublishCallback(e, client)
 		if err != nil {
 			eng.Log.Error("cs info publish callback", zap.Error(err))
 		}
 		return
 	}
-	if strings.HasPrefix(e.Channel, "handout_info") {
-		err := eng.HandoutInfoPublishCallback(e)
-		if err != nil {
-			eng.Log.Error("handout info publish callback", zap.Error(err))
-		}
-		return
-	}
+
 }
 
 func (eng *Engine) RPCCallback(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
@@ -131,15 +125,15 @@ func (eng *Engine) RPCCallback(e centrifuge.RPCEvent, client *centrifuge.Client)
 	case "room_list":
 		return eng.RpcRoomList(e, client)
 	case "cs_list":
-		return eng.RpcCsList(e)
+		return eng.RpcCsList(e, client)
 	case "cs_update":
-		return eng.RpcCsUpdate(e)
+		return eng.RpcCsUpdate(e, client)
 	case "cs_delete":
 		return eng.RpcCsDelete(e)
 	case "roll_list":
 		return eng.RpcRollList(e)
 	case "roll_update":
-		return eng.RpcRollUpdate(e)
+		return eng.RpcRollUpdate(e, client)
 	case "roll_clear":
 		return eng.RpcRollClear(e)
 	case "userinfo":

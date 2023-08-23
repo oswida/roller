@@ -462,6 +462,22 @@ func (c *RollClient) QueryOwner(r *Roll) *UserQuery {
 	return query
 }
 
+// QueryRoom queries the room edge of a Roll.
+func (c *RollClient) QueryRoom(r *Roll) *RoomQuery {
+	query := (&RoomClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := r.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(roll.Table, roll.FieldID, id),
+			sqlgraph.To(room.Table, room.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, roll.RoomTable, roll.RoomColumn),
+		)
+		fromV = sqlgraph.Neighbors(r.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *RollClient) Hooks() []Hook {
 	return c.hooks.Roll

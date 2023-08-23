@@ -8,6 +8,7 @@ import (
 	"math"
 	"rpgroll/ent/predicate"
 	"rpgroll/ent/roll"
+	"rpgroll/ent/room"
 	"rpgroll/ent/user"
 
 	"entgo.io/ent/dialect/sql"
@@ -23,6 +24,7 @@ type RollQuery struct {
 	inters     []Interceptor
 	predicates []predicate.Roll
 	withOwner  *UserQuery
+	withRoom   *RoomQuery
 	withFKs    bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -75,6 +77,28 @@ func (rq *RollQuery) QueryOwner() *UserQuery {
 			sqlgraph.From(roll.Table, roll.FieldID, selector),
 			sqlgraph.To(user.Table, user.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, roll.OwnerTable, roll.OwnerColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(rq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryRoom chains the current query on the "room" edge.
+func (rq *RollQuery) QueryRoom() *RoomQuery {
+	query := (&RoomClient{config: rq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := rq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := rq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(roll.Table, roll.FieldID, selector),
+			sqlgraph.To(room.Table, room.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, roll.RoomTable, roll.RoomColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(rq.driver.Dialect(), step)
 		return fromU, nil
@@ -275,6 +299,7 @@ func (rq *RollQuery) Clone() *RollQuery {
 		inters:     append([]Interceptor{}, rq.inters...),
 		predicates: append([]predicate.Roll{}, rq.predicates...),
 		withOwner:  rq.withOwner.Clone(),
+		withRoom:   rq.withRoom.Clone(),
 		// clone intermediate query.
 		sql:  rq.sql.Clone(),
 		path: rq.path,
@@ -289,6 +314,17 @@ func (rq *RollQuery) WithOwner(opts ...func(*UserQuery)) *RollQuery {
 		opt(query)
 	}
 	rq.withOwner = query
+	return rq
+}
+
+// WithRoom tells the query-builder to eager-load the nodes that are connected to
+// the "room" edge. The optional arguments are used to configure the query builder of the edge.
+func (rq *RollQuery) WithRoom(opts ...func(*RoomQuery)) *RollQuery {
+	query := (&RoomClient{config: rq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	rq.withRoom = query
 	return rq
 }
 
@@ -371,11 +407,12 @@ func (rq *RollQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Roll, e
 		nodes       = []*Roll{}
 		withFKs     = rq.withFKs
 		_spec       = rq.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
 			rq.withOwner != nil,
+			rq.withRoom != nil,
 		}
 	)
-	if rq.withOwner != nil {
+	if rq.withOwner != nil || rq.withRoom != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -402,6 +439,12 @@ func (rq *RollQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Roll, e
 	if query := rq.withOwner; query != nil {
 		if err := rq.loadOwner(ctx, query, nodes, nil,
 			func(n *Roll, e *User) { n.Edges.Owner = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := rq.withRoom; query != nil {
+		if err := rq.loadRoom(ctx, query, nodes, nil,
+			func(n *Roll, e *Room) { n.Edges.Room = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -433,6 +476,38 @@ func (rq *RollQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*R
 		nodes, ok := nodeids[n.ID]
 		if !ok {
 			return fmt.Errorf(`unexpected foreign-key "user_rolls" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
+func (rq *RollQuery) loadRoom(ctx context.Context, query *RoomQuery, nodes []*Roll, init func(*Roll), assign func(*Roll, *Room)) error {
+	ids := make([]string, 0, len(nodes))
+	nodeids := make(map[string][]*Roll)
+	for i := range nodes {
+		if nodes[i].room_rolls == nil {
+			continue
+		}
+		fk := *nodes[i].room_rolls
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(room.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "room_rolls" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)

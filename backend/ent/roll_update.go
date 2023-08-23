@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"rpgroll/ent/predicate"
 	"rpgroll/ent/roll"
+	"rpgroll/ent/room"
 	"rpgroll/ent/user"
 	"time"
 
@@ -115,6 +116,25 @@ func (ru *RollUpdate) SetOwner(u *User) *RollUpdate {
 	return ru.SetOwnerID(u.ID)
 }
 
+// SetRoomID sets the "room" edge to the Room entity by ID.
+func (ru *RollUpdate) SetRoomID(id string) *RollUpdate {
+	ru.mutation.SetRoomID(id)
+	return ru
+}
+
+// SetNillableRoomID sets the "room" edge to the Room entity by ID if the given value is not nil.
+func (ru *RollUpdate) SetNillableRoomID(id *string) *RollUpdate {
+	if id != nil {
+		ru = ru.SetRoomID(*id)
+	}
+	return ru
+}
+
+// SetRoom sets the "room" edge to the Room entity.
+func (ru *RollUpdate) SetRoom(r *Room) *RollUpdate {
+	return ru.SetRoomID(r.ID)
+}
+
 // Mutation returns the RollMutation object of the builder.
 func (ru *RollUpdate) Mutation() *RollMutation {
 	return ru.mutation
@@ -123,6 +143,12 @@ func (ru *RollUpdate) Mutation() *RollMutation {
 // ClearOwner clears the "owner" edge to the User entity.
 func (ru *RollUpdate) ClearOwner() *RollUpdate {
 	ru.mutation.ClearOwner()
+	return ru
+}
+
+// ClearRoom clears the "room" edge to the Room entity.
+func (ru *RollUpdate) ClearRoom() *RollUpdate {
+	ru.mutation.ClearRoom()
 	return ru
 }
 
@@ -217,6 +243,35 @@ func (ru *RollUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if ru.mutation.RoomCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   roll.RoomTable,
+			Columns: []string{roll.RoomColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeString),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ru.mutation.RoomIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   roll.RoomTable,
+			Columns: []string{roll.RoomColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {
@@ -330,6 +385,25 @@ func (ruo *RollUpdateOne) SetOwner(u *User) *RollUpdateOne {
 	return ruo.SetOwnerID(u.ID)
 }
 
+// SetRoomID sets the "room" edge to the Room entity by ID.
+func (ruo *RollUpdateOne) SetRoomID(id string) *RollUpdateOne {
+	ruo.mutation.SetRoomID(id)
+	return ruo
+}
+
+// SetNillableRoomID sets the "room" edge to the Room entity by ID if the given value is not nil.
+func (ruo *RollUpdateOne) SetNillableRoomID(id *string) *RollUpdateOne {
+	if id != nil {
+		ruo = ruo.SetRoomID(*id)
+	}
+	return ruo
+}
+
+// SetRoom sets the "room" edge to the Room entity.
+func (ruo *RollUpdateOne) SetRoom(r *Room) *RollUpdateOne {
+	return ruo.SetRoomID(r.ID)
+}
+
 // Mutation returns the RollMutation object of the builder.
 func (ruo *RollUpdateOne) Mutation() *RollMutation {
 	return ruo.mutation
@@ -338,6 +412,12 @@ func (ruo *RollUpdateOne) Mutation() *RollMutation {
 // ClearOwner clears the "owner" edge to the User entity.
 func (ruo *RollUpdateOne) ClearOwner() *RollUpdateOne {
 	ruo.mutation.ClearOwner()
+	return ruo
+}
+
+// ClearRoom clears the "room" edge to the Room entity.
+func (ruo *RollUpdateOne) ClearRoom() *RollUpdateOne {
+	ruo.mutation.ClearRoom()
 	return ruo
 }
 
@@ -462,6 +542,35 @@ func (ruo *RollUpdateOne) sqlSave(ctx context.Context) (_node *Roll, err error) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if ruo.mutation.RoomCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   roll.RoomTable,
+			Columns: []string{roll.RoomColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeString),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ruo.mutation.RoomIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   roll.RoomTable,
+			Columns: []string{roll.RoomColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {

@@ -61,31 +61,8 @@ func (info CsInfo) Unmarshal(data []byte) (Item, error) {
 	return r, err
 }
 
-type HandoutInfo struct {
-	Id          string `json:"id"`
-	Name        string `json:"name"`
-	Owner       string `json:"owner"`
-	Type        string `json:"htype"`
-	Value       string `json:"value"`
-	Description string `json:"description,omitempty"`
-	Hint        string `json:"hint,omitempty"`
-	Limit       int    `json:"limit,omitempty"`
-	Url         string `json:"url,omitempty"`
-	Shared      bool   `json:"shared,omitempty"`
+type UserUpdateData struct {
+	Name     string
+	Color    string
+	Settings map[string]any
 }
-
-func (info HandoutInfo) GetId() string {
-	return info.Id
-}
-
-func (info HandoutInfo) Unmarshal(data []byte) (Item, error) {
-	var r HandoutInfo
-	err := json.Unmarshal(data, &r)
-	return r, err
-}
-
-const (
-	ItemPrefixCs      = "cs"
-	ItemPrefixRoll    = "roll"
-	ItemPrefixHandout = "handout"
-)

@@ -5,6 +5,7 @@ package ent
 import (
 	"fmt"
 	"rpgroll/ent/roll"
+	"rpgroll/ent/room"
 	"rpgroll/ent/user"
 	"strings"
 	"time"
@@ -50,9 +51,11 @@ type Roll struct {
 type RollEdges struct {
 	// Owner holds the value of the owner edge.
 	Owner *User `json:"owner,omitempty"`
+	// Room holds the value of the room edge.
+	Room *Room `json:"room,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 }
 
 // OwnerOrErr returns the Owner value or an error if the edge
@@ -66,6 +69,19 @@ func (e RollEdges) OwnerOrErr() (*User, error) {
 		return e.Owner, nil
 	}
 	return nil, &NotLoadedError{edge: "owner"}
+}
+
+// RoomOrErr returns the Room value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e RollEdges) RoomOrErr() (*Room, error) {
+	if e.loadedTypes[1] {
+		if e.Room == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: room.Label}
+		}
+		return e.Room, nil
+	}
+	return nil, &NotLoadedError{edge: "room"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -196,6 +212,11 @@ func (r *Roll) Value(name string) (ent.Value, error) {
 // QueryOwner queries the "owner" edge of the Roll entity.
 func (r *Roll) QueryOwner() *UserQuery {
 	return NewRollClient(r.config).QueryOwner(r)
+}
+
+// QueryRoom queries the "room" edge of the Roll entity.
+func (r *Roll) QueryRoom() *RoomQuery {
+	return NewRollClient(r.config).QueryRoom(r)
 }
 
 // Update returns a builder for updating this Roll.

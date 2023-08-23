@@ -628,6 +628,29 @@ func HasOwnerWith(preds ...predicate.User) predicate.Roll {
 	})
 }
 
+// HasRoom applies the HasEdge predicate on the "room" edge.
+func HasRoom() predicate.Roll {
+	return predicate.Roll(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, RoomTable, RoomColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasRoomWith applies the HasEdge predicate on the "room" edge with a given conditions (other predicates).
+func HasRoomWith(preds ...predicate.Room) predicate.Roll {
+	return predicate.Roll(func(s *sql.Selector) {
+		step := newRoomStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Roll) predicate.Roll {
 	return predicate.Roll(func(s *sql.Selector) {
