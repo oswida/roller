@@ -8,7 +8,7 @@ import {
 } from "solid-js";
 import {
   CharTemplateItem,
-  centPublish,
+  netPublish,
   currentCs,
   isCsOwner,
   netTopic,
@@ -60,7 +60,7 @@ export const TplBigText: Component<Props> = (props) => {
     info.values[props.item.id] = v;
     updateCsStorage(info);
     setEditVal("");
-    centPublish(netTopic(topicCsInfo), info);
+    netPublish(netTopic(topicCsInfo), info);
   };
 
   createEffect(() => {

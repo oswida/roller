@@ -1,6 +1,6 @@
 import { Show, onCleanup, onMount } from "solid-js";
 import { Toaster } from "solid-toast";
-import { centLoadRolls, currentRightPanel, currentRoom, loggedUser } from "~/common";
+import { netLoadRolls, currentRightPanel, currentRoom, loggedUser } from "~/common";
 import { Flex } from "~/components";
 import { CsPanel, RollPanel, TopBar } from "~/views";
 import { appStyle, mainStyle } from "./styles.css";
@@ -14,7 +14,7 @@ export default function Home() {
   const visibilityHandler = () => {
     const room = currentRoom();
     if (!room) return;
-    centLoadRolls(room.id);
+    netLoadRolls(room.id);
   };
 
   ifvisible.on("wakeup", () => {

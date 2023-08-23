@@ -31,7 +31,7 @@ export default function Root() {
 
   const font = createMemo(() => {
     const lu = loggedUser();
-    if (!lu || !lu.settings.appFont) return "Lato";
+    if (!lu || !lu.settings.appFont) return "Roboto";
     return lu.settings.appFont;
   })
 

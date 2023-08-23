@@ -27,7 +27,7 @@ func main() {
 		panic(err)
 	}
 
-	dbase, err := db.NewDatabase()
+	dbase, err := db.NewDatabase(logger)
 	if err != nil {
 		panic(err)
 	}

@@ -10,7 +10,7 @@ import {
 import {
   CTITextData,
   CharTemplateItem,
-  centPublish,
+  netPublish,
   currentCs,
   isCsOwner,
   netTopic,
@@ -59,7 +59,7 @@ export const TplTextList: Component<Props> = (props) => {
     v.push({ text: "", checked: false } as TextListItem);
     updateCsStorage(cs);
     setCurrentCs(cs);
-    centPublish(netTopic(topicCsInfo), cs);
+    netPublish(netTopic(topicCsInfo), cs);
   };
 
   const delItem = (pos: number) => {
@@ -69,7 +69,7 @@ export const TplTextList: Component<Props> = (props) => {
     let v = cs.values[props.item.id] as TextListItem[];
     v.splice(pos, 1);
     updateCsStorage(cs);
-    centPublish(netTopic(topicCsInfo), cs);
+    netPublish(netTopic(topicCsInfo), cs);
   };
 
   const toggleEdit = (idx: number, value: boolean) => {
@@ -92,7 +92,7 @@ export const TplTextList: Component<Props> = (props) => {
     let v = cs.values[props.item.id] as TextListItem[];
     v[idx].checked = !v[idx].checked;
     updateCsStorage(cs);
-    centPublish(netTopic(topicCsInfo), cs);
+    netPublish(netTopic(topicCsInfo), cs);
   };
 
   const applyValue = (v: string) => {
@@ -102,7 +102,7 @@ export const TplTextList: Component<Props> = (props) => {
     const val = cs.values[props.item.id] as TextListItem[];
     val[editedItem()].text = v;
     updateCsStorage(cs);
-    centPublish(netTopic(topicCsInfo), cs);
+    netPublish(netTopic(topicCsInfo), cs);
   };
 
   createEffect(() => {

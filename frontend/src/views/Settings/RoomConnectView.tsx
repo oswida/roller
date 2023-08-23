@@ -1,9 +1,10 @@
 import {
   appRooms,
-  centLoadRooms,
+  netLoadRooms,
   emptyRoomInfo,
   loggedUser,
   netUpdateUser,
+  updateLoggedUserSetting,
 } from "~/common";
 import { Button, Flex, Input } from "~/components";
 
@@ -16,15 +17,13 @@ export const RoomConnectView = ({
 
   const connectRoom = () => {
     if (!inputRef) return;
-    const newState = { ...appRooms() };
-    newState[inputRef.value] = emptyRoomInfo(inputRef.value);
-    const lu = loggedUser();
-    if (!lu) return;
-    if (!lu.settings) lu.settings = {};
-    if (!lu.settings.rooms) lu.settings.rooms = [];
-    lu.settings.currentRoom = inputRef.value;
-    netUpdateUser(lu.name, lu.color, lu.settings);
-    centLoadRooms([inputRef.value]);
+    const rs = emptyRoomInfo(inputRef.value);
+    let rooms = loggedUser()?.settings.rooms;
+    if (!rooms) rooms = [];
+    rooms.push(rs);
+    updateLoggedUserSetting("rooms", rooms);
+    updateLoggedUserSetting("currentRoom", inputRef.value);
+    netLoadRooms([inputRef.value]);
     onOpenChange(false);
   };
 

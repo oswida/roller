@@ -7,15 +7,15 @@ import (
 	"github.com/centrifugal/centrifuge"
 )
 
-func (eng *Engine) Login(username, passwd string) (string, error) {
+func (eng *Engine) Login(username, passwd string) (string, string, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
 	u, err := eng.Db.Login(username, passwd)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
-	return u.ID, nil
+	return u.ID, u.Name, nil
 }
 
 func (eng *Engine) RpcUserinfo(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
@@ -163,4 +163,17 @@ func (eng *Engine) RpcRollDefDelete(e centrifuge.RPCEvent) ([]byte, error) {
 		return nil, err
 	}
 	return eng.Db.RollDefDelete(data.Data.ID)
+}
+
+func (eng *Engine) RpcUserCreate(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
+	eng.mux.Lock()
+	defer eng.mux.Unlock()
+
+	var data UserCreateMessage
+	err := json.Unmarshal(e.Data, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	return eng.Db.UserCreate(data.Username, data.Passwd)
 }

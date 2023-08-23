@@ -15,12 +15,14 @@ import (
 
 	"github.com/google/uuid"
 	_ "github.com/xiaoqidun/entps"
+	"go.uber.org/zap"
 	"golang.org/x/crypto/argon2"
 	// _ "modernc.org/sqlite"
 )
 
 type DB struct {
 	Client *ent.Client
+	Log    *zap.Logger
 }
 
 func createAdminUser(client *ent.Client) error {
@@ -31,6 +33,7 @@ func createAdminUser(client *ent.Client) error {
 			SetID(uuid.NewString()).
 			SetName("Admin").
 			SetLogin("admin").
+			SetIsAdmin(true).
 			SetPasswd(fmt.Sprintf("%x", hash)).
 			SetColor("#000000").
 			SetSettings(make(map[string]interface{})).Exec(context.Background())
@@ -38,7 +41,7 @@ func createAdminUser(client *ent.Client) error {
 	return nil
 }
 
-func NewDatabase() (*DB, error) {
+func NewDatabase(log *zap.Logger) (*DB, error) {
 	client, err := ent.Open("sqlite3", "file:./roller.db")
 	if err != nil {
 		return nil, err
@@ -51,6 +54,7 @@ func NewDatabase() (*DB, error) {
 	}
 	return &DB{
 		Client: client,
+		Log:    log,
 	}, nil
 }
 
@@ -138,6 +142,29 @@ func (d *DB) UserGet(userID string, clearPasswd bool) ([]byte, error) {
 	return json.Marshal(usr)
 }
 
+func (d *DB) UserCreate(name string, passwd string) ([]byte, error) {
+	hash := argon2.IDKey([]byte(passwd), []byte("anything"), 1, 64*1024, 4, 32)
+	userID := uuid.NewString()
+	err := d.Client.User.
+		Create().
+		SetID(userID).
+		SetName(name).
+		SetLogin(name).
+		SetIsAdmin(false).
+		SetPasswd(fmt.Sprintf("%x", hash)).
+		SetColor("#000000").
+		SetSettings(make(map[string]interface{})).
+		Exec(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	usr, err := d.Client.User.Get(context.Background(), userID)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(usr)
+}
+
 // Rooms
 
 func (d *DB) RoomUpdate(userID string, roomID string, data RoomInfo) ([]byte, error) {
@@ -170,13 +197,18 @@ func (d *DB) RoomUpdate(userID string, roomID string, data RoomInfo) ([]byte, er
 func (d *DB) RoomDelete(roomID string) ([]byte, error) {
 	err := d.Client.Room.DeleteOneID(roomID).Exec(context.Background())
 	if err != nil {
+		d.Log.Error("RoomDelete", zap.Error(err))
 		return nil, err
 	}
-	return []byte("OK"), nil
+
+	return []byte{}, nil
 }
 
 func (d *DB) RoomList(idents []string) ([]byte, error) {
-	rooms, err := d.Client.Room.Query().Where(room.IDIn(idents...)).All(context.Background())
+	rooms, err := d.Client.Room.Query().
+		Where(room.IDIn(idents...)).
+		WithOwner(func(uq *ent.UserQuery) { uq.FirstID(context.Background()) }).
+		All(context.Background())
 	if err != nil {
 		return nil, err
 	}
@@ -300,5 +332,5 @@ func (d *DB) RollDefDelete(defID string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return []byte("OK"), nil
+	return []byte{}, nil
 }

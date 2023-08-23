@@ -12,8 +12,8 @@ import {
   RollInfo,
   appRolls,
   appRooms,
-  centClearRolls,
-  centPublish,
+  netClearRolls,
+  netPublish,
   currentRoom,
   loggedUser,
   netTopic,
@@ -70,8 +70,8 @@ export const RollsContent: Component<Props> = (props) => {
     const room = currentRoom();
     if (!room) return;
     setAppRolls({});
-    centClearRolls(room.id);
-    centPublish(netTopic(topicRollUpdate), "");
+    netClearRolls(room.id);
+    netPublish(netTopic(topicRollUpdate), "");
     toast("Rolls cleared", { position: "bottom-right" });
   };
 
@@ -98,7 +98,7 @@ export const RollsContent: Component<Props> = (props) => {
         private: false,
         revealed: true,
       } as RollInfo;
-      centPublish(netTopic(topicRollInfo), Host2NetRollInfo(info));
+      netPublish(netTopic(topicRollInfo), Host2NetRollInfo(info));
       updateRolls(info);
       msgInput.value = "";
     }

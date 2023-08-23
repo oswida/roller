@@ -9,7 +9,7 @@ import {
 import {
   CTIAttrData,
   CharTemplateItem,
-  centPublish,
+  netPublish,
   currentCs,
   isCsOwner,
   netTopic,
@@ -77,7 +77,7 @@ export const TplAttrMax: Component<Props> = (props) => {
     updateCsStorage(info);
     setEditVal("");
     setEditValMax("");
-    centPublish(netTopic(topicCsInfo), info);
+    netPublish(netTopic(topicCsInfo), info);
   };
 
   const startEdit = () => {

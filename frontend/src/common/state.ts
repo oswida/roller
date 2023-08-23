@@ -3,6 +3,7 @@ import { Centrifuge } from "centrifuge";
 import Queue from "queue";
 import { createMemo, createSignal } from "solid-js";
 import { CsInfo, RollDefInfo, RollInfo, RoomInfo, UserInfo } from "./types";
+import { currentRoom } from "./storage";
 
 export const [storageSize, setStorageSize] = createSignal(0);
 export const [loggedUser, setLoggedUser] = createSignal<UserInfo | undefined>(
@@ -76,7 +77,7 @@ export const [connectedUsers, setConnectedUsers] = createSignal<
   Record<string, string>
 >({});
 
-// Handouts
-export const [handoutShared, setHandoutShared] = createSignal<
-  Record<string, string>
->({});
+
+export const isRoomOwner = createMemo(() => {
+  return currentRoom()?.owner == loggedUser()?.id;
+});

@@ -5,6 +5,12 @@ type LoginMessage struct {
 	Passwd   string `json:"passwd"`
 }
 
+type UserCreateMessage struct {
+	Username string `json:"name"`
+	Passwd   string `json:"pass"`
+	Passwd2  string `json:"repeatPass"`
+}
+
 // type RollMessage struct {
 // 	Sender string      `json:"sender"`
 // 	Room   string      `json:"room"`

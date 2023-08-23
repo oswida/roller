@@ -21,6 +21,8 @@ type User struct {
 	Login string `json:"login,omitempty"`
 	// Passwd holds the value of the "passwd" field.
 	Passwd string `json:"passwd,omitempty"`
+	// IsAdmin holds the value of the "is_admin" field.
+	IsAdmin bool `json:"is_admin,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// Color holds the value of the "color" field.
@@ -91,6 +93,8 @@ func (*User) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case user.FieldSettings:
 			values[i] = new([]byte)
+		case user.FieldIsAdmin:
+			values[i] = new(sql.NullBool)
 		case user.FieldID, user.FieldLogin, user.FieldPasswd, user.FieldName, user.FieldColor:
 			values[i] = new(sql.NullString)
 		default:
@@ -125,6 +129,12 @@ func (u *User) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field passwd", values[i])
 			} else if value.Valid {
 				u.Passwd = value.String
+			}
+		case user.FieldIsAdmin:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field is_admin", values[i])
+			} else if value.Valid {
+				u.IsAdmin = value.Bool
 			}
 		case user.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -207,6 +217,9 @@ func (u *User) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("passwd=")
 	builder.WriteString(u.Passwd)
+	builder.WriteString(", ")
+	builder.WriteString("is_admin=")
+	builder.WriteString(fmt.Sprintf("%v", u.IsAdmin))
 	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(u.Name)

@@ -26,6 +26,7 @@ import {
   NetRollInfo,
   RollInfo,
   RoomInfo,
+  UserCreateInfo,
   UserInfo,
   topicCsInfo,
   topicRollInfo,
@@ -63,7 +64,7 @@ export const centUnpack = (payload: any) => {
 const processRollUpdate = (ctx: PublicationContext) => {
   const data = ctx.data as CentMessage;
   if (shouldIgnoreMsg(data)) return;
-  centLoadRolls(data.room);
+  netLoadRolls(data.room);
 };
 
 const processRollInfo = (ctx: PublicationContext) => {
@@ -79,7 +80,7 @@ const processRoomInfo = (ctx: PublicationContext) => {
   if (!data || data.sender == loggedUser()?.id) return;
   const info = data.data as RoomInfo;
   if (!appRooms()[info.id]) return;
-  centLoadRooms([info.id]);
+  netLoadRooms([info.id]);
 };
 
 const processCsInfo = (ctx: PublicationContext) => {
@@ -97,7 +98,7 @@ const processCsInfo = (ctx: PublicationContext) => {
       if (currentCs()?.id == info.id) setCurrentCs(undefined);
     }
   } else {
-    centLoadCs(room.id, [info.id]);
+    netLoadCs(room.id, [info.id]);
   }
 };
 
@@ -132,19 +133,19 @@ export const activateRoomSubscriptions = () => {
   sub.on("join", (ctx: any) => {
     setConnectedUsers((prev) => ({
       ...prev,
-      [ctx.info.connInfo]: ctx.info.user,
+      [ctx.info.user]: ctx.info.connInfo,
     }));
   });
   sub.on("leave", (ctx: any) => {
     const ns = { ...connectedUsers() };
-    delete ns[ctx.info.connInfo];
+    delete ns[ctx.info.user];
     setConnectedUsers(ns);
   });
   sub.subscribe();
   sub.presence().then((data: any) => {
     const ns: Record<string, string> = {};
     Object.values(data.clients).forEach((it: any) => {
-      ns[it.connInfo] = it.user;
+      ns[it.user] = it.connInfo;
     });
     setConnectedUsers(ns);
   });
@@ -160,7 +161,7 @@ export const activateRoomSubscriptions = () => {
   sub4.subscribe();
 };
 
-export const centConnect = (username: string, passwd: string) => {
+export const netConnect = (username: string, passwd: string) => {
   const centrifuge = new Centrifuge(serverAddress(), {
     name: username,
     data: passwd,
@@ -175,15 +176,16 @@ export const centConnect = (username: string, passwd: string) => {
         .rpc("userinfo", "")
         .then((resp: any) => {
           const lu = { ...resp.data };
+          console.log("user", lu);
           if (!lu.settings)
             lu.settings = {
               appTheme: "blue",
-              appFont: "Lato",
+              appFont: "Roboto",
             };
           if (!lu.settings.appTheme) lu.settings.appTheme = "blue";
           if (!lu.settings.appFont) lu.settings.appFont = "Lato";
           setLoggedUser(lu as UserInfo);
-          centLoadRooms(lu.settings.rooms);
+          netLoadRooms(lu.settings.rooms);
         })
         .catch((err) => {
           console.error(err);
@@ -208,12 +210,11 @@ export const centConnect = (username: string, passwd: string) => {
   });
   centrifuge.on("error", (err: any) => {
     console.error("centrifuge error", err, Date.now());
-    centDisconnect(); // disconnect on any error, should reconnect.
   });
   centrifuge.connect();
 };
 
-export const centDisconnect = () => {
+export const netDisconnect = () => {
   const cl = centClient();
   if (!cl) return;
   Object.values(cl.subscriptions()).forEach((sub) => {
@@ -227,7 +228,7 @@ export const centDisconnect = () => {
   setCentClient(undefined);
 };
 
-export const centPublish = (topic: string, payload: any) => {
+export const netPublish = (topic: string, payload: any) => {
   const client = centClient();
   if (!client) {
     return;
@@ -250,7 +251,7 @@ export const centPublish = (topic: string, payload: any) => {
 
 // Rooms
 
-export const centLoadRooms = (ids?: string[]) => {
+export const netLoadRooms = (ids?: string[]) => {
   const client = centClient();
   if (!client) {
     return;
@@ -258,7 +259,7 @@ export const centLoadRooms = (ids?: string[]) => {
   const msg = {
     sender: loggedUser()?.id,
     room: "",
-    data: ids ? ids : Object.values(appRooms()).map((it) => it.id),
+    data: ids ? ids : [],
   } as CentMessage;
   client
     .rpc("room_list", msg)
@@ -268,7 +269,7 @@ export const centLoadRooms = (ids?: string[]) => {
         const newState = { ...appRooms() };
         data.forEach((r) => {
           newState[r.id] = r;
-          newState[r.id].owner = r.user_rooms; // map from entgo
+          newState[r.id].owner = r.edges.owner.id;
         });
 
         const receivedIds = data.map((r) => r.id);
@@ -280,7 +281,7 @@ export const centLoadRooms = (ids?: string[]) => {
         setAppRooms(newState);
         const room = currentRoom();
         if (room) {
-          centLoadCs(room.id);
+          netLoadCs(room.id);
         }
       }
     })
@@ -289,7 +290,7 @@ export const centLoadRooms = (ids?: string[]) => {
     });
 };
 
-export const centDeleteRoom = (room: RoomInfo) => {
+export const netDeleteRoom = (room: RoomInfo) => {
   const client = centClient();
   if (!client || room.owner !== loggedUser()?.id) {
     return;
@@ -302,14 +303,14 @@ export const centDeleteRoom = (room: RoomInfo) => {
   client
     .rpc("room_delete", msg)
     .then((result) => {
-      centLoadRooms(loggedUser()?.settings.rooms);
+      netLoadRooms(loggedUser()?.settings.rooms);
     })
     .catch((err) => {
       console.error(err);
     });
 };
 
-export const centUpdateRoom = (room: RoomInfo) => {
+export const netUpdateRoom = (room: RoomInfo) => {
   const client = centClient();
   if (!client) {
     return;
@@ -329,7 +330,7 @@ export const centUpdateRoom = (room: RoomInfo) => {
 
 // Charsheets
 
-export const centLoadCs = (roomId: string, ids?: string[]) => {
+export const netLoadCs = (roomId: string, ids?: string[]) => {
   const client = centClient();
   if (!client) {
     return;
@@ -378,7 +379,7 @@ export const centLoadCs = (roomId: string, ids?: string[]) => {
     });
 };
 
-export const centDeleteCs = (roomId: string, info: CsInfo) => {
+export const netDeleteCs = (roomId: string, info: CsInfo) => {
   const client = centClient();
   if (!client) {
     return;
@@ -391,14 +392,14 @@ export const centDeleteCs = (roomId: string, info: CsInfo) => {
   client
     .rpc("cs_delete", msg)
     .then((result) => {
-      centLoadCs(roomId);
+      netLoadCs(roomId);
     })
     .catch((err) => {
       console.error(err);
     });
 };
 
-export const centUpdateCs = (roomId: string, info: CsInfo) => {
+export const netUpdateCs = (roomId: string, info: CsInfo) => {
   const client = centClient();
   if (!client) {
     return;
@@ -418,7 +419,7 @@ export const centUpdateCs = (roomId: string, info: CsInfo) => {
 
 // Rolls
 
-export const centLoadRolls = (roomId: string) => {
+export const netLoadRolls = (roomId: string) => {
   const client = centClient();
   if (!client) {
     return;
@@ -443,7 +444,7 @@ export const centLoadRolls = (roomId: string) => {
     });
 };
 
-export const centClearRolls = (roomId: string) => {
+export const netClearRolls = (roomId: string) => {
   const client = centClient();
   if (!client) {
     return;
@@ -456,14 +457,14 @@ export const centClearRolls = (roomId: string) => {
   client
     .rpc("roll_clear", msg)
     .then((result) => {
-      centLoadRolls(roomId);
+      netLoadRolls(roomId);
     })
     .catch((err) => {
       console.error(err);
     });
 };
 
-export const centUpdateRoll = (roomId: string, info: NetRollInfo) => {
+export const netUpdateRoll = (roomId: string, info: NetRollInfo) => {
   const client = centClient();
   if (!client) {
     return;
@@ -484,7 +485,7 @@ export const centUpdateRoll = (roomId: string, info: NetRollInfo) => {
 // Init
 
 export const netInit = (username: string, passwd: string) => {
-  if (!centConnectionStatus()) centConnect(username, passwd);
+  if (!centConnectionStatus()) netConnect(username, passwd);
 };
 
 export const netUpdateUser = (
@@ -504,6 +505,20 @@ export const netUpdateUser = (
     })
     .then((result) => {
 
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
+
+
+export const netCreateUser = (info: UserCreateInfo) => {
+  const client = centClient();
+  if (!client) return;
+  client
+    .rpc("user_create", info)
+    .then((result) => {
+      console.log("User created", result);
     })
     .catch((err) => {
       console.error(err);

@@ -33,12 +33,12 @@ func NewEngine(dbase *db.DB, log *zap.Logger) (*Engine, error) {
 	}
 
 	node.OnConnecting(func(ctx context.Context, ce centrifuge.ConnectEvent) (centrifuge.ConnectReply, error) {
-		user, err := result.Login(ce.Name, strings.ReplaceAll(string(ce.Data), "\"", ""))
+		user, name, err := result.Login(ce.Name, strings.ReplaceAll(string(ce.Data), "\"", ""))
 		if err != nil {
 			user = ""
 		}
 		if user != "" {
-			cred := &centrifuge.Credentials{UserID: user}
+			cred := &centrifuge.Credentials{UserID: user, Info: []byte(fmt.Sprintf("\"%s\"", name))}
 			return centrifuge.ConnectReply{
 				Credentials: cred,
 				Data:        []byte(fmt.Sprintf("\"%s\"", user)),
@@ -78,7 +78,7 @@ func NewEngine(dbase *db.DB, log *zap.Logger) (*Engine, error) {
 		client.OnRPC(func(e centrifuge.RPCEvent, cb centrifuge.RPCCallback) {
 			r, err := result.RPCCallback(e, client)
 			if err != nil {
-				result.Log.Error("rpc error", zap.Error(err))
+				result.Log.Error("rpc error", zap.String("method", e.Method), zap.Error(err))
 			}
 			cb(centrifuge.RPCReply{Data: r}, err)
 		})
@@ -86,6 +86,7 @@ func NewEngine(dbase *db.DB, log *zap.Logger) (*Engine, error) {
 		client.OnDisconnect(func(e centrifuge.DisconnectEvent) {
 
 		})
+
 	})
 
 	return result, nil
@@ -140,6 +141,8 @@ func (eng *Engine) RPCCallback(e centrifuge.RPCEvent, client *centrifuge.Client)
 		return eng.RpcUserinfo(e, client)
 	case "user_update":
 		return eng.RpcUserUpdate(e, client)
+	case "user_create":
+		return eng.RpcUserCreate(e, client)
 	}
 	return nil, nil
 }

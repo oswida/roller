@@ -16,6 +16,8 @@ const (
 	FieldLogin = "login"
 	// FieldPasswd holds the string denoting the passwd field in the database.
 	FieldPasswd = "passwd"
+	// FieldIsAdmin holds the string denoting the is_admin field in the database.
+	FieldIsAdmin = "is_admin"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
 	// FieldColor holds the string denoting the color field in the database.
@@ -67,6 +69,7 @@ var Columns = []string{
 	FieldID,
 	FieldLogin,
 	FieldPasswd,
+	FieldIsAdmin,
 	FieldName,
 	FieldColor,
 	FieldSettings,
@@ -81,6 +84,11 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
+
+var (
+	// DefaultIsAdmin holds the default value on creation for the "is_admin" field.
+	DefaultIsAdmin bool
+)
 
 // OrderOption defines the ordering options for the User queries.
 type OrderOption func(*sql.Selector)
@@ -98,6 +106,11 @@ func ByLogin(opts ...sql.OrderTermOption) OrderOption {
 // ByPasswd orders the results by the passwd field.
 func ByPasswd(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPasswd, opts...).ToFunc()
+}
+
+// ByIsAdmin orders the results by the is_admin field.
+func ByIsAdmin(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldIsAdmin, opts...).ToFunc()
 }
 
 // ByName orders the results by the name field.

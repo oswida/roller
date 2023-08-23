@@ -24,7 +24,7 @@ import {
   TOPBAR_HEIGHT,
   appCs,
   appRooms,
-  centPublish,
+  netPublish,
   csExpanded,
   csOpenSections,
   csShared,
@@ -214,7 +214,7 @@ export const CsPanel: Component = () => {
     if (!cs) return;
     cs.name = name;
     updateCsStorage(cs);
-    centPublish(netTopic(topicCsInfo), cs);
+    netPublish(netTopic(topicCsInfo), cs);
   };
 
   const templates = createMemo(() => {

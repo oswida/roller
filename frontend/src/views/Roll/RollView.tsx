@@ -13,8 +13,8 @@ import {
   RefProps,
   animating,
 
-  centPublish,
-  centUpdateRoll,
+  netPublish,
+  netUpdateRoll,
   createRollInfo,
   currentRightPanel,
   currentRoom,
@@ -85,10 +85,13 @@ export const RollView: Component<RefProps> = (props) => {
       setDiceBox(Box);
       Box.initialize().then(() => {
         Box.loadTheme({
-          colorset: loggedUser()?.settings.diceColor,
-          texture: loggedUser()?.settings.diceMaterial,
+
+          colorset: loggedUser() ? loggedUser()?.settings.diceColor : "white",
+          texture: loggedUser() ? loggedUser()?.settings.diceMaterial : "none",
           material: "none",
         });
+      }).catch((err: any) => {
+        console.log("box initialize", err);
       });
       Box.onRollComplete = (results: any) => {
         if (animating()) {
@@ -104,11 +107,11 @@ export const RollView: Component<RefProps> = (props) => {
         updateRolls(info);
         setRolling(false);
         if (!info.private) {
-          centPublish(netTopic(topicRollInfo), Host2NetRollInfo(info));
+          netPublish(netTopic(topicRollInfo), Host2NetRollInfo(info));
         } else {
           const room = currentRoom();
           if (!room) return;
-          centUpdateRoll(room.id, Host2NetRollInfo(info));
+          netUpdateRoll(room.id, Host2NetRollInfo(info));
         }
       };
     })
@@ -125,13 +128,16 @@ export const RollView: Component<RefProps> = (props) => {
 
   const bkg = createMemo(() => {
     const room = currentRoom();
-    if (!room || !room.bkguri || room.bkguri == "") return undefined;
-    return {
-      "background-image": `url('${room.bkguri}')`,
+    console.log("bkg room", room);
+    if (!room || !room.bkg || room.bkg == "") return undefined;
+    const result = {
+      "background-image": `url('${room.bkg}')`,
       "background-repeat": "no-repeat",
       "background-position": "center",
       "background-size": "cover",
     } as JSX.CSSProperties;
+    console.log("bkg result", result);
+    return result;
   });
 
   return (

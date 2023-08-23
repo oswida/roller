@@ -2,7 +2,7 @@ import { Component, Show, createMemo } from "solid-js";
 import {
   CTICheckData,
   CharTemplateItem,
-  centPublish,
+  netPublish,
   currentCs,
   isCsOwner,
   netTopic,
@@ -38,7 +38,7 @@ export const TplCheck: Component<Props> = (props) => {
     }
     updateCsStorage(info);
     setCurrentCs(info);
-    centPublish(netTopic(topicCsInfo), info);
+    netPublish(netTopic(topicCsInfo), info);
   };
 
   const data = createMemo(() => {

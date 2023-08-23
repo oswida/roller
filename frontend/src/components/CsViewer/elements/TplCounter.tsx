@@ -4,7 +4,7 @@ import { Component, Show, createMemo } from "solid-js";
 import {
   CTICounterData,
   CharTemplateItem,
-  centPublish,
+  netPublish,
   currentCs,
   isCsOwner,
   netTopic,
@@ -74,7 +74,7 @@ export const TplCounter: Component<Props> = (props) => {
       info.values = { ...info.values, ...v };
     }
     updateCsStorage(info);
-    centPublish(netTopic(topicCsInfo), info);
+    netPublish(netTopic(topicCsInfo), info);
   };
 
   const resetValue = () => {
@@ -87,7 +87,7 @@ export const TplCounter: Component<Props> = (props) => {
       value: props.item.initialValue,
     };
     updateCsStorage(info);
-    centPublish(netTopic(topicCsInfo), info);
+    netPublish(netTopic(topicCsInfo), info);
   };
 
   const toggle = () => {
@@ -104,7 +104,7 @@ export const TplCounter: Component<Props> = (props) => {
       info.values = { ...info.values, ...v };
     }
     updateCsStorage(info);
-    centPublish(netTopic(topicCsInfo), info);
+    netPublish(netTopic(topicCsInfo), info);
   };
 
   if (!data()) return <></>;

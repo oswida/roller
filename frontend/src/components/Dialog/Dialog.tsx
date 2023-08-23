@@ -1,6 +1,6 @@
-import { Dialog as Dlg } from "@kobalte/core";
+import { As, Dialog as Dlg } from "@kobalte/core";
 import { FaSolidXmark } from "solid-icons/fa";
-import { ParentComponent, splitProps } from "solid-js";
+import { For, ParentComponent, splitProps } from "solid-js";
 import {
   dialogCloseButtonStyle,
   dialogContentStyle,
@@ -12,6 +12,8 @@ import {
   dialogTriggerStyle,
 } from "./styles.css";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../Tooltip";
+import { Flex } from "../Flex";
+import { Button } from "../Button";
 
 export const DialogTrigger: ParentComponent<Dlg.DialogTriggerProps> = (
   props
@@ -20,7 +22,7 @@ export const DialogTrigger: ParentComponent<Dlg.DialogTriggerProps> = (
   return (
     <Tooltip>
       <TooltipTrigger>
-        <Dlg.Trigger class={dialogTriggerStyle({})} {...rest}>
+        <Dlg.Trigger class={dialogTriggerStyle({})}  {...rest}>
           {local.children}
         </Dlg.Trigger>
       </TooltipTrigger>
@@ -52,5 +54,23 @@ export const DialogContent: ParentComponent<ContentProps> = (props) => {
     </Dlg.Portal>
   );
 };
+
+export const DialogClose: ParentComponent = (props) => {
+  return <Dlg.CloseButton asChild>
+    {props.children}
+  </Dlg.CloseButton>
+}
+
+export const DialogButtons: ParentComponent = (props) => {
+  return <Flex grow align="center" justify="evenly" gap="large">
+    <For each={props.children as any[]}>
+      {(it) => (
+        <DialogClose>
+          <As component={Button} onClick={it.onClick ? () => it.onClick() : undefined}>{it}</As>
+        </DialogClose>
+      )}
+    </For>
+  </Flex>
+}
 
 export const Dialog = Dlg.Root;

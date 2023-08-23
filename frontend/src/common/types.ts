@@ -8,7 +8,14 @@ export type UserInfo = {
   color: string;
   edges: any;
   settings: Record<string, any>;
+  is_admin: boolean;
 };
+
+export type UserCreateInfo = {
+  name: string;
+  pass: string;
+  repeatPass: string;
+}
 
 // Publish PDUs
 
@@ -50,7 +57,7 @@ export type RoomInfo = {
   id: string;
   name: string;
   owner: string;
-  bkguri?: string;
+  bkg?: string;
 };
 
 export const emptyRoomInfo = (rid?: string) => {
@@ -58,7 +65,7 @@ export const emptyRoomInfo = (rid?: string) => {
     id: rid ? rid : uuid(),
     name: "",
     owner: "",
-    bkguri: "",
+    bkg: "",
   } as RoomInfo;
 };
 

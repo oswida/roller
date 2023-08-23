@@ -2,7 +2,7 @@ import { Component, For, Show, createMemo, createSignal } from "solid-js";
 import {
   Host2NetRollInfo,
   RollInfo,
-  centPublish,
+  netPublish,
   loggedUser,
   netTopic,
   rollSuccessInfo,
@@ -74,7 +74,7 @@ export const ChatItem: Component<Props> = (props) => {
     setRevOpen(false);
     const newItem = { ...props.item };
     props.item.revealed = true;
-    centPublish(netTopic(topicRollInfo), Host2NetRollInfo(newItem));
+    netPublish(netTopic(topicRollInfo), Host2NetRollInfo(newItem));
     setAppRolls((prev) => ({ ...prev, [props.item.id]: newItem }));
   };
 

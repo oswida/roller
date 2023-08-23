@@ -6,9 +6,11 @@ import {
   FaSolidPlug,
   FaSolidPlus,
   FaSolidUser,
+  FaSolidUserPlus,
 } from "solid-icons/fa";
 import {
   Component,
+  For,
   Show,
   createEffect,
   createMemo,
@@ -21,25 +23,31 @@ import {
   activateRoomSubscriptions,
   appRooms,
   centConnectionStatus,
-  centDisconnect,
-  centLoadCs,
-  centLoadRolls,
-  centUpdateRoom,
+  netDisconnect,
+  netLoadCs,
+  netLoadRolls,
   connectedUsers,
   currentRightPanel,
   currentRoom,
   emptyRoomInfo,
   generateSerialKeys,
   loggedUser,
-  netUpdateUser,
   rolling,
-  setAppRooms,
   setCurrentRightPanel,
   setLoggedUser,
+  updateLoggedUserSetting,
+  updateRoomStorage,
+  UserCreateInfo,
+  netCreateUser,
 } from "~/common";
 import {
   Button,
+  Dialog,
+  DialogButtons,
+  DialogContent,
+  DialogTrigger,
   Flex,
+  Input,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -56,6 +64,7 @@ import {
   UserSettingsView,
 } from "../Settings";
 import { topbarItemStyle, topbarStyle } from "./style.css";
+import toast from "solid-toast";
 
 export const TopBar: Component<RefProps> = (props) => {
   const [roomSettingOpen, setRoomSettingsOpen] = createSignal(false);
@@ -74,20 +83,10 @@ export const TopBar: Component<RefProps> = (props) => {
     const room = emptyRoomInfo();
     room.name = `room-${generateSerialKeys(4, "-")}`;
     room.owner = ident;
-    const newState = { ...appRooms() };
-    newState[room.id] = room;
-    setAppRooms(newState);
-    const lu = loggedUser();
-    if (!lu) return;
-    if (!lu.settings) lu.settings = {};
-    if (!lu.settings.rooms) lu.settings.rooms = [];
-    if (!lu.settings.rooms.includes(room.id)) {
-      lu.settings.rooms.push(room.id);
-    }
-    lu.settings.currentRoom = room.id;
-    setLoggedUser({ ...lu });
-    netUpdateUser(lu.name, lu.color, lu.settings);
-    centUpdateRoom(room);
+
+    const rooms = updateRoomStorage(room);
+    updateLoggedUserSetting("rooms", Object.values(rooms).map(r => r.id));
+    updateLoggedUserSetting("currentRoom", room.id);
   };
 
   const selectedRoom = createMemo(() => {
@@ -111,12 +110,7 @@ export const TopBar: Component<RefProps> = (props) => {
     if (!item) return;
     const r = Object.values(appRooms()).find((it) => it.id == item.id);
     if (!r) return;
-    const lu = loggedUser();
-    if (!lu) return;
-    if (!lu.settings) lu.settings = {};
-    lu.settings.currentRoom = r.id;
-    setLoggedUser({ ...lu });
-    netUpdateUser(lu.name, lu.color, lu.settings);
+    updateLoggedUserSetting("currentRoom", r.id);
   };
 
   createEffect(
@@ -124,14 +118,14 @@ export const TopBar: Component<RefProps> = (props) => {
       const room = currentRoom();
       if (!room) return;
       activateRoomSubscriptions();
-      centLoadRolls(room.id); // load stored rolls
-      centLoadCs(room.id); // load shared charsheets
+      netLoadRolls(room.id); // load stored rolls
+      netLoadCs(room.id); // load shared charsheets
     })
   );
 
   const logout = () => {
     setLoggedUser(undefined);
-    centDisconnect();
+    netDisconnect();
   };
 
   const toggleRightPanel = (panel: string) => {
@@ -143,6 +137,26 @@ export const TopBar: Component<RefProps> = (props) => {
     setCurrentRightPanel("");
     setCurrentRightPanel(panel);
   };
+
+
+
+  const [createInfo, setCreateInfo] = createSignal<UserCreateInfo>({
+    name: "",
+    pass: "",
+    repeatPass: "",
+  });
+
+  const adduser = () => {
+    if (createInfo().name.trim() == "" || createInfo().pass.trim() == "" || createInfo().repeatPass.trim() == "") {
+      toast("User data cannot be empty");
+      return;
+    }
+    if (createInfo().pass !== createInfo().repeatPass) {
+      toast("Passwords do not match");
+      return;
+    }
+    netCreateUser(createInfo());
+  }
 
   return (
     <div class={topbarStyle} ref={props.ref}>
@@ -169,17 +183,16 @@ export const TopBar: Component<RefProps> = (props) => {
               open={roomSettingOpen()}
               onOpenChange={setRoomSettingsOpen}
             >
-              <PopoverTrigger title="Rooms">
+              <PopoverTrigger title="Room settings">
                 <FaSolidChalkboardUser
                   style={{ height: "1.5em", width: "1.5em" }}
                 />
               </PopoverTrigger>
-              <PopoverContent title="Rooms">
+              <PopoverContent title={currentRoom()?.name}>
                 <RoomSettingsView onOpenChange={setRoomSettingsOpen} />
               </PopoverContent>
             </Popover>
-            <Dynamic
-              component={Select}
+            <Select
               options={roomList}
               selected={selectedRoom}
               onChange={changeRoom}
@@ -189,6 +202,7 @@ export const TopBar: Component<RefProps> = (props) => {
             <FaSolidChalkboardUser
               title="Rooms"
               style={{ height: "1.5em", width: "1.5em" }}
+              fill="currentColor"
             />
           </Show>
           <Button variant="icon" title="Create room" onClick={createRoom}>
@@ -226,13 +240,37 @@ export const TopBar: Component<RefProps> = (props) => {
       </Flex>
 
       <Flex gap="large" align="center" justify="center">
-        <Show when={centConnectionStatus()}>
-          <Dynamic
-            component={"div"}
-            title={Object.values(connectedUsers()).join("\n")}
-          >
-            <FaSolidNetworkWired style={{ fill: "currentcolor" }} />
-          </Dynamic>
+        <Show when={loggedUser()?.is_admin}>
+          <Dialog>
+            <DialogTrigger>
+              <Button variant="icon" title="Add user" >
+                <FaSolidUserPlus />
+              </Button>
+            </DialogTrigger>
+            <DialogContent title="Create new user">
+              <Input label="User name"
+                onChange={(e: any) => setCreateInfo((prev) => ({ ...prev, name: e.target.value }))} />
+              <Input label="Password" type="password"
+                onChange={(e: any) => setCreateInfo((prev) => ({ ...prev, pass: e.target.value }))} />
+              <Input label="Repeat password" type="password"
+                onChange={(e: any) => setCreateInfo((prev) => ({ ...prev, repeatPass: e.target.value }))} />
+              <DialogButtons>
+                <Text>Cancel</Text>
+                <Text onClick={adduser}>Create</Text>
+              </DialogButtons>
+            </DialogContent>
+          </Dialog>
+        </Show>
+
+        <Show when={centConnectionStatus() && Object.values(connectedUsers()).length > 0}>
+          <Tooltip>
+            <TooltipTrigger>
+              <FaSolidNetworkWired style={{ fill: "currentcolor" }} />
+            </TooltipTrigger>
+            <TooltipContent>
+              <For each={Object.values(connectedUsers())}>{(it) => (<Text>{it}</Text>)}</For>
+            </TooltipContent>
+          </Tooltip>
         </Show>
         <Button variant="icon" title="Logout" onClick={logout}>
           <FaSolidDoorOpen />

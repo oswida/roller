@@ -74,6 +74,11 @@ func Passwd(v string) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldPasswd, v))
 }
 
+// IsAdmin applies equality check predicate on the "is_admin" field. It's identical to IsAdminEQ.
+func IsAdmin(v bool) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldIsAdmin, v))
+}
+
 // Name applies equality check predicate on the "name" field. It's identical to NameEQ.
 func Name(v string) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldName, v))
@@ -212,6 +217,16 @@ func PasswdEqualFold(v string) predicate.User {
 // PasswdContainsFold applies the ContainsFold predicate on the "passwd" field.
 func PasswdContainsFold(v string) predicate.User {
 	return predicate.User(sql.FieldContainsFold(FieldPasswd, v))
+}
+
+// IsAdminEQ applies the EQ predicate on the "is_admin" field.
+func IsAdminEQ(v bool) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldIsAdmin, v))
+}
+
+// IsAdminNEQ applies the NEQ predicate on the "is_admin" field.
+func IsAdminNEQ(v bool) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldIsAdmin, v))
 }
 
 // NameEQ applies the EQ predicate on the "name" field.

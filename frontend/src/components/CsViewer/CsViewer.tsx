@@ -10,7 +10,7 @@ import {
 } from "solid-js";
 import {
   RefProps,
-  centPublish,
+  netPublish,
   csExpanded,
   currentCs,
   importImage,
@@ -75,7 +75,7 @@ export const CsViewer: Component<RefProps> = (props) => {
         if (!cs) return;
         cs.portraitUrl = data;
         // TODO: update cs
-        centPublish(netTopic(topicCsInfo), cs);
+        netPublish(netTopic(topicCsInfo), cs);
       },
       undefined,
       PORTRAIT_HEIGHT
@@ -87,7 +87,7 @@ export const CsViewer: Component<RefProps> = (props) => {
     if (!cs) return;
     cs.portraitUrl = undefined;
     //TODO: update cs
-    centPublish(netTopic(topicCsInfo), cs);
+    netPublish(netTopic(topicCsInfo), cs);
   };
 
   const csName = createMemo(() => {

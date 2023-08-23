@@ -2,7 +2,7 @@ import { Component, createMemo } from "solid-js";
 import {
   CTISelectData,
   CharTemplateItem,
-  centPublish,
+  netPublish,
   currentCs,
   netTopic,
   setCurrentCs,
@@ -57,7 +57,7 @@ export const TplSelect: Component<Props> = (props) => {
     }
     updateCsStorage(cs);
     setCurrentCs({ ...cs });
-    centPublish(netTopic(topicCsInfo), cs);
+    netPublish(netTopic(topicCsInfo), cs);
   };
 
   if (!data() || !data().options) return <></>;

@@ -1,5 +1,5 @@
 import { CopyToClipboard } from "solid-copy-to-clipboard";
-import { FaSolidCircleInfo, FaSolidShareNodes } from "solid-icons/fa";
+import { FaSolidAsterisk, FaSolidCircleInfo, FaSolidShareNodes } from "solid-icons/fa";
 import { Component, Show, createMemo } from "solid-js";
 import toast from "solid-toast";
 import {
@@ -12,7 +12,7 @@ import {
   updateLoggedUser,
   updateLoggedUserSetting,
 } from "~/common";
-import { Flex, Input, Select, SelectItem, Switch, Text } from "~/components";
+import { Button, Dialog, DialogContent, DialogTrigger, Flex, Input, Select, SelectItem, Switch, Text } from "~/components";
 import { buttonStyle } from "~/components/Button/styles.css";
 
 type Props = {
@@ -123,13 +123,16 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
 
   return (
     <Flex direction="column" gap="medium">
-      <Flex justify="space" align="end">
+      <Flex align="center" justify="center" grow>
         <Input
           label="User name"
           title="User name"
           value={loggedUser()?.name}
+          style={{ width: "20em" }}
           onChange={(e) => updateName(e.target.value)}
         />
+      </Flex>
+      <Flex align="center" style={{ "margin-bottom": "10px" }} justify="space" grow>
         <Show when={loggedUser() !== undefined}>
           <CopyToClipboard
             text={loggedUser()!.id}
@@ -147,8 +150,21 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
             </div>
           </CopyToClipboard>
         </Show>
+        <Dialog>
+          <DialogTrigger>
+            <Button title="Change password" >
+              <FaSolidAsterisk />
+              Change password
+            </Button>
+          </DialogTrigger>
+          <DialogContent title="Change user password">
+            <Input label="Old password" type="password" />
+            <Input label="New password" type="password" />
+            <Input label="Repeat new password" type="password" />
+          </DialogContent>
+        </Dialog>
       </Flex>
-      <Flex justify="evenly" grow>
+      <Flex justify="space" grow>
         <Select
           modal={true}
           label="UI Color Theme"
@@ -167,7 +183,7 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
         />
       </Flex>
 
-      <Flex justify="evenly" grow>
+      <Flex justify="space" grow>
         <Select
           modal={true}
           label="Dice color"

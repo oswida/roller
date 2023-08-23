@@ -9,7 +9,7 @@ import {
 import {
   CTITextData,
   CharTemplateItem,
-  centPublish,
+  netPublish,
   currentCs,
   isCsOwner,
   netTopic,
@@ -76,7 +76,7 @@ export const TplTextCheck: Component<Props> = (props) => {
       } as TextCheckItem;
     else info.values[props.item.id].text = v;
     updateCsStorage(info);
-    centPublish(netTopic(topicCsInfo), info);
+    netPublish(netTopic(topicCsInfo), info);
   };
 
   createEffect(() => {
@@ -97,7 +97,7 @@ export const TplTextCheck: Component<Props> = (props) => {
     else
       info.values[props.item.id].checked = !info.values[props.item.id].checked;
     updateCsStorage(info);
-    centPublish(netTopic(topicCsInfo), info);
+    netPublish(netTopic(topicCsInfo), info);
   };
 
   const data = createMemo(() => {

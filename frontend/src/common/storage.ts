@@ -1,6 +1,6 @@
-import { centPublish, netUpdateUser } from "./net";
-import { appDefs, appRooms, loggedUser, setAppDefs, setCurrentCs, setLoggedUser } from "./state";
-import { CsInfo, RollDefInfo, UserInfo, topicCsInfo } from "./types";
+import { netDeleteRoom, netPublish, netUpdateRoom, netUpdateUser } from "./net";
+import { appDefs, appRooms, loggedUser, setAppDefs, setAppRolls, setAppRooms, setCurrentCs, setLoggedUser } from "./state";
+import { CsInfo, RollDefInfo, RoomInfo, UserInfo, topicCsInfo } from "./types";
 import { netTopic } from "./util";
 
 
@@ -28,7 +28,7 @@ export const updateLoggedUserSetting = (name: string, value: any) => {
 }
 
 export const updateCsStorage = (data: CsInfo) => {
-  centPublish(netTopic(topicCsInfo), data);
+  netPublish(netTopic(topicCsInfo), data);
 }
 
 export const removeCsFromStorage = (id: string) => {
@@ -47,4 +47,22 @@ export const removeRollDefFromStorage = (id: string) => {
   delete newState[id];
   setAppDefs(newState);
   // net
+}
+
+export const updateRoomStorage = (data: RoomInfo) => {
+  const newState = { ...appRooms() };
+  newState[data.id] = { ...data };
+  setAppRooms(newState);
+  netUpdateRoom(data);
+  return newState;
+}
+
+export const removeRoomFromStorage = (room: RoomInfo) => {
+  const newState = { ...appRooms() };
+  delete newState[room.id];
+  setAppRooms(newState);
+  updateLoggedUserSetting("rooms", Object.values(newState).map(it => it.id));
+  updateLoggedUserSetting("currentRoom", undefined);
+  netDeleteRoom(room);
+  setAppRolls({});
 }

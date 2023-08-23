@@ -15,6 +15,7 @@ func (User) Fields() []ent.Field {
 		field.String("id").Unique(),
 		field.String("login"),
 		field.String("passwd"),
+		field.Bool("is_admin").Default(false),
 		field.String("name"),
 		field.String("color"),
 		field.JSON("settings", map[string]any{}),

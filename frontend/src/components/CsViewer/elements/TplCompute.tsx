@@ -3,7 +3,7 @@ import { Component, Show, createMemo } from "solid-js";
 import {
   CTIComputedData,
   CharTemplateItem,
-  centPublish,
+  netPublish,
   currentCs,
   isCsOwner,
   netTopic,
@@ -65,7 +65,7 @@ export const TplCompute: Component<Props> = (props) => {
     const v = data().compute(props.item, info.values);
     info.values[props.item.id] = v;
     updateCsStorage(info);
-    centPublish(netTopic(topicCsInfo), info);
+    netPublish(netTopic(topicCsInfo), info);
   };
 
   if (!data() || !data().compute) return <></>;

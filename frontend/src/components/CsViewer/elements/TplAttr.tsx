@@ -9,7 +9,7 @@ import {
 import {
   CTIAttrData,
   CharTemplateItem,
-  centPublish,
+  netPublish,
   currentCs,
   isCsOwner,
   netTopic,
@@ -70,7 +70,7 @@ export const TplAttr: Component<Props> = (props) => {
     }
     updateCsStorage(info);
     setEditVal("");
-    centPublish(netTopic(topicCsInfo), info);
+    netPublish(netTopic(topicCsInfo), info);
   };
 
   const startEdit = () => {

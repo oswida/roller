@@ -9,7 +9,7 @@ import {
 import {
   CTITextData,
   CharTemplateItem,
-  centPublish,
+  netPublish,
   currentCs,
   isCsOwner,
   netTopic,
@@ -49,7 +49,7 @@ export const TplText: Component<Props> = (props) => {
     }
     info.values[props.item.id] = v;
     updateCsStorage(info);
-    centPublish(netTopic(topicCsInfo), info);
+    netPublish(netTopic(topicCsInfo), info);
   };
 
   createEffect(() => {

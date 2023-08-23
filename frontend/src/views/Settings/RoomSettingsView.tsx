@@ -5,21 +5,22 @@ import {
   FaSolidCircleStop,
   FaSolidShareNodes,
   FaSolidTrash,
+  FaSolidTrashArrowUp,
 } from "solid-icons/fa";
 import { Component, Show, createMemo, createSignal } from "solid-js";
 import toast from "solid-toast";
 import {
   appRooms,
-  centDeleteRoom,
-  centPublish,
-  centUpdateRoom,
+  netPublish,
   currentRoom,
   loggedUser,
   netTopic,
-  netUpdateUser,
-  setAppRolls,
-  setAppRooms,
   topicRoomInfo,
+  updateRoomStorage,
+  removeRoomFromStorage,
+  isRoomOwner,
+  updateLoggedUserSetting,
+  setAppRooms,
 } from "~/common";
 import { themeVars } from "~/common/theme.css";
 import {
@@ -47,15 +48,15 @@ export const RoomSettingsView: Component<Props> = (props) => {
   const updateRoom = (field: "name" | "bkguri" | "owner", value: string) => {
     const data = { ...appRooms() };
     if (!data[loggedUser()?.settings.currentRoom]) return;
-    const isOwner = currentRoom()?.owner == loggedUser()?.id;
-    data[loggedUser()?.settings.currentRoom][field] = value;
-    setAppRooms(data);
-    centUpdateRoom(data[loggedUser()?.settings.currentRoom]);
-    if (isOwner)
-      centPublish(
-        netTopic(topicRoomInfo),
-        data[loggedUser()?.settings.currentRoom]
-      );
+    const room = currentRoom();
+    if (!room) return;
+    switch (field) {
+      case "name": room.name = value; break;
+      case "bkguri": room.bkg = value; break;
+      case "owner": room.owner = value; break;
+    }
+    updateRoomStorage(room);
+    if (isRoomOwner()) netPublish(netTopic(topicRoomInfo), room);
   };
 
   const passOwnership = () => {
@@ -73,7 +74,7 @@ export const RoomSettingsView: Component<Props> = (props) => {
   const roomBkg = createMemo(() => {
     const room = currentRoom();
     if (!room) return "";
-    return room.bkguri ? room.bkguri : "";
+    return room.bkg ? room.bkg : "";
   });
 
   const deleteRoom = () => {
@@ -85,20 +86,8 @@ export const RoomSettingsView: Component<Props> = (props) => {
       });
       return;
     }
-    const newState = { ...appRooms() };
-    delete newState[room.id];
-    const lu = loggedUser();
-    if (!lu) return;
-    if (!lu.settings) lu.settings = {};
-    if (!lu.settings.rooms) lu.settings.rooms = Object.keys(newState);
-    lu.settings.currentRoom = undefined;
-    if (Object.values(newState).length > 0) {
-      lu.settings.currentRoom = Object.values(newState)[0].id;
-    }
-    netUpdateUser(lu.name, lu.color, lu.settings);
+    removeRoomFromStorage(room);
     props.onOpenChange(false);
-    centDeleteRoom(room);
-    setAppRolls({});
   };
 
   const roomId = createMemo(() => {
@@ -107,22 +96,42 @@ export const RoomSettingsView: Component<Props> = (props) => {
     return room.id;
   });
 
+  const removeRoom = () => {
+    const room = currentRoom();
+    if (!room) return;
+    let rs = loggedUser()?.settings.rooms as string[];
+    if (!rs) return;
+    rs = rs.filter(it => it !== room.id);
+    updateLoggedUserSetting("rooms", rs);
+    updateLoggedUserSetting("currentRoom", undefined);
+    const newState = { ...appRooms() };
+    delete newState[room.id];
+    setAppRooms(newState);
+    props.onOpenChange(false);
+  }
+
   return (
-    <Flex direction="column" gap="large">
-      <Show when={loggedUser()?.id == currentRoom()?.owner}>
+    <Flex direction="column" gap="large" >
+      <Show when={isRoomOwner()}>
         <Input
           label="Room name"
           value={roomName()}
           onChange={(e) => updateRoom("name", e.target.value)}
           style={{ width: "20em" }}
         />
+        <Input
+          label="Room background URI"
+          value={roomBkg()}
+          onChange={(e) => updateRoom("bkguri", e.target.value)}
+          style={{ width: "20em" }}
+        />
       </Show>
-      <Input
-        label="Room background URI"
-        value={roomBkg()}
-        onChange={(e) => updateRoom("bkguri", e.target.value)}
-        style={{ width: "20em" }}
-      />
+      <Show when={!isRoomOwner()}>
+        <Button onClick={removeRoom}>
+          <FaSolidTrashArrowUp />
+          Remove room from list
+        </Button>
+      </Show>
       <Flex justify="space" grow>
         <CopyToClipboard
           text={roomId()}
@@ -140,7 +149,7 @@ export const RoomSettingsView: Component<Props> = (props) => {
             <Text>Copy room ID </Text>
           </div>
         </CopyToClipboard>
-        <Show when={loggedUser()?.id == currentRoom()?.owner}>
+        <Show when={isRoomOwner()}>
           <Alert onOpenChange={setDelConfirmOpen} open={delConfirmOpen()}>
             <AlertTrigger>
               <Tooltip>
@@ -169,7 +178,7 @@ export const RoomSettingsView: Component<Props> = (props) => {
           </Alert>
         </Show>
       </Flex>
-      <Show when={loggedUser()?.id == currentRoom()?.owner}>
+      <Show when={isRoomOwner()}>
         <Flex align="end" justify="space" grow>
           <Input
             label="Pass ownership to user"

@@ -3,7 +3,7 @@ import { Component, For, Show, createMemo } from "solid-js";
 import {
   CTIResourceData,
   CharTemplateItem,
-  centPublish,
+  netPublish,
   currentCs,
   isCsOwner,
   netTopic,
@@ -60,7 +60,7 @@ export const TplResource: Component<Props> = (props) => {
       info.values = { ...info.values, ...v };
     }
     updateCsStorage(info);
-    centPublish(netTopic(topicCsInfo), info);
+    netPublish(netTopic(topicCsInfo), info);
   };
 
   const reset = () => {
@@ -72,7 +72,7 @@ export const TplResource: Component<Props> = (props) => {
       ? props.item.initialValue
       : 0;
     updateCsStorage(info);
-    centPublish(netTopic(topicCsInfo), info);
+    netPublish(netTopic(topicCsInfo), info);
   };
 
   const dot_label = (idx: number) => {
