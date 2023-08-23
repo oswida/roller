@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"rpgroll/ent/charsheet"
 	"rpgroll/ent/roll"
+	"rpgroll/ent/rolldef"
 	"rpgroll/ent/room"
 	"rpgroll/ent/user"
 
@@ -101,6 +102,21 @@ func (uc *UserCreate) AddCharsheets(c ...*Charsheet) *UserCreate {
 		ids[i] = c[i].ID
 	}
 	return uc.AddCharsheetIDs(ids...)
+}
+
+// AddRolldefIDs adds the "rolldefs" edge to the RollDef entity by IDs.
+func (uc *UserCreate) AddRolldefIDs(ids ...string) *UserCreate {
+	uc.mutation.AddRolldefIDs(ids...)
+	return uc
+}
+
+// AddRolldefs adds the "rolldefs" edges to the RollDef entity.
+func (uc *UserCreate) AddRolldefs(r ...*RollDef) *UserCreate {
+	ids := make([]string, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return uc.AddRolldefIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -248,6 +264,22 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(charsheet.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.RolldefsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.RolldefsTable,
+			Columns: []string{user.RolldefsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(rolldef.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {

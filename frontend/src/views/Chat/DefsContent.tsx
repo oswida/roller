@@ -16,9 +16,9 @@ import {
   exportData,
   importData,
   prettyToday,
-  rollerDefsKey,
-  saveToStorage,
+  removeRollDefFromStorage,
   setChatViewTab,
+  updateRollDefStorage,
 } from "~/common";
 import {
   Alert,
@@ -79,9 +79,7 @@ export const DefsContent: Component<Props> = (props) => {
   const createDef = () => {
     const e = editDef();
     if (!e) return;
-    const ns = { ...appDefs() };
-    ns[e.id] = e;
-    saveToStorage(rollerDefsKey, ns);
+    updateRollDefStorage(e);
     setCreateDlgOpen(false);
     toast("New definition created", { icon: <FaSolidInfo /> });
     setEditDef(emptyRollDefInfo());
@@ -91,9 +89,7 @@ export const DefsContent: Component<Props> = (props) => {
     setDelDlgOpen(false);
     const sel = selDef();
     if (!sel) return;
-    const ns = { ...appDefs() };
-    delete ns[sel.id];
-    saveToStorage(rollerDefsKey, ns);
+    removeRollDefFromStorage(sel.id);
   };
 
   const updateField = (
@@ -118,9 +114,7 @@ export const DefsContent: Component<Props> = (props) => {
   const updateDef = () => {
     const e = selDef();
     if (!e) return;
-    const ns = { ...appDefs() };
-    ns[e.id] = e;
-    saveToStorage(rollerDefsKey, ns);
+    updateRollDefStorage(e);
     setEditDlgOpen(false);
     toast("Definition updated", { icon: <FaSolidInfo /> });
   };
@@ -128,11 +122,9 @@ export const DefsContent: Component<Props> = (props) => {
   const importDefs = () => {
     importData((data: any) => {
       const e = data as Record<string, RollDefInfo>;
-      const newState = { ...appDefs() };
       Object.values(e).forEach((it) => {
-        newState[it.id] = it;
+        updateRollDefStorage(it);
       });
-      saveToStorage(rollerDefsKey, newState);
       toast("Definitions imported", { icon: <FaSolidCircleInfo /> });
     });
   };

@@ -74,7 +74,6 @@ export const topicRoomInfo = "room_info";
 export const topicRollInfo = "roll_info";
 export const topicRollUpdate = "roll_update";
 export const topicCsInfo = "cs_info";
-export const topicHandoutInfo = "handout_info";
 
 // Roll definitions
 
@@ -86,6 +85,7 @@ export type RollDefInfo = {
   successRule: string;
   successTarget: string;
   comment?: string;
+  shared?: boolean;
 };
 
 export const emptyRollDefInfo = () => {
@@ -223,13 +223,13 @@ export type CharTemplateItem = {
   color?: string; // item color
   data?: // specific item data
   | CTIAttrData
-    | CTICheckData
-    | CTIComputedData
-    | CTIContainerData
-    | CTICounterData
-    | CTIResourceData
-    | CTISelectData
-    | CTITextData;
+  | CTICheckData
+  | CTIComputedData
+  | CTIContainerData
+  | CTICounterData
+  | CTIResourceData
+  | CTISelectData
+  | CTITextData;
 };
 
 export type CharTemplateSection = {

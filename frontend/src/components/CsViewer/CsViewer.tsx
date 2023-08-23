@@ -19,7 +19,6 @@ import {
   setCsExpanded,
   topicCsInfo,
   updateCsOpenSections,
-  updateCsStorage,
 } from "~/common";
 import { charTemplates } from "~/template";
 import { Accordion, AccordionOption } from "../Accordion";
@@ -53,11 +52,11 @@ export const CsViewer: Component<RefProps> = (props) => {
     if (!t || !cs) return [];
     const items = t.sections.map(
       (it) =>
-        ({
-          id: it.title,
-          title: it.title,
-          content: <CsSection item={it} />,
-        } as AccordionOption)
+      ({
+        id: it.title,
+        title: it.title,
+        content: <CsSection item={it} />,
+      } as AccordionOption)
     );
     return items;
   });
@@ -75,7 +74,7 @@ export const CsViewer: Component<RefProps> = (props) => {
         const cs = currentCs();
         if (!cs) return;
         cs.portraitUrl = data;
-        updateCsStorage(cs);
+        // TODO: update cs
         centPublish(netTopic(topicCsInfo), cs);
       },
       undefined,
@@ -87,7 +86,7 @@ export const CsViewer: Component<RefProps> = (props) => {
     const cs = currentCs();
     if (!cs) return;
     cs.portraitUrl = undefined;
-    updateCsStorage(cs);
+    //TODO: update cs
     centPublish(netTopic(topicCsInfo), cs);
   };
 

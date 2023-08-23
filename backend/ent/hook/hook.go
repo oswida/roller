@@ -32,6 +32,18 @@ func (f RollFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error)
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.RollMutation", m)
 }
 
+// The RollDefFunc type is an adapter to allow the use of ordinary
+// function as RollDef mutator.
+type RollDefFunc func(context.Context, *ent.RollDefMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f RollDefFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.RollDefMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.RollDefMutation", m)
+}
+
 // The RoomFunc type is an adapter to allow the use of ordinary
 // function as Room mutator.
 type RoomFunc func(context.Context, *ent.RoomMutation) (ent.Value, error)

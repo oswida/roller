@@ -16,6 +16,8 @@ type Tx struct {
 	Charsheet *CharsheetClient
 	// Roll is the client for interacting with the Roll builders.
 	Roll *RollClient
+	// RollDef is the client for interacting with the RollDef builders.
+	RollDef *RollDefClient
 	// Room is the client for interacting with the Room builders.
 	Room *RoomClient
 	// User is the client for interacting with the User builders.
@@ -153,6 +155,7 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.Charsheet = NewCharsheetClient(tx.config)
 	tx.Roll = NewRollClient(tx.config)
+	tx.RollDef = NewRollDefClient(tx.config)
 	tx.Room = NewRoomClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 }

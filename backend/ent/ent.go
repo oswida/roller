@@ -9,6 +9,7 @@ import (
 	"reflect"
 	"rpgroll/ent/charsheet"
 	"rpgroll/ent/roll"
+	"rpgroll/ent/rolldef"
 	"rpgroll/ent/room"
 	"rpgroll/ent/user"
 	"sync"
@@ -78,6 +79,7 @@ func checkColumn(table, column string) error {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
 			charsheet.Table: charsheet.ValidColumn,
 			roll.Table:      roll.ValidColumn,
+			rolldef.Table:   rolldef.ValidColumn,
 			room.Table:      room.ValidColumn,
 			user.Table:      user.ValidColumn,
 		})

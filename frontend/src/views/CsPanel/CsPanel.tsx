@@ -30,12 +30,12 @@ import {
   csShared,
   currentCs,
   currentRoom,
-  deleteCsStorage,
   exportData,
   importData,
   isCsOwner,
   loggedUser,
   netTopic,
+  removeCsFromStorage,
   setCsExpanded,
   setCurrentCs,
   topicCsInfo,
@@ -162,8 +162,8 @@ export const CsPanel: Component = () => {
     setDelDialogOpen(false);
     const cs = currentCs();
     if (!cs) return;
-    deleteCsStorage(cs.id);
-    setCurrentCs(undefined);
+    removeCsFromStorage(cs.id);
+
   };
 
   const shareCharsheet = () => {
@@ -178,7 +178,6 @@ export const CsPanel: Component = () => {
       cs.shared = false;
     }
     updateCsStorage(cs);
-    centPublish(netTopic(topicCsInfo), cs);
   };
 
   const expandAll = () => {

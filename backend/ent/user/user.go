@@ -28,6 +28,8 @@ const (
 	EdgeRolls = "rolls"
 	// EdgeCharsheets holds the string denoting the charsheets edge name in mutations.
 	EdgeCharsheets = "charsheets"
+	// EdgeRolldefs holds the string denoting the rolldefs edge name in mutations.
+	EdgeRolldefs = "rolldefs"
 	// Table holds the table name of the user in the database.
 	Table = "users"
 	// RoomsTable is the table that holds the rooms relation/edge.
@@ -51,6 +53,13 @@ const (
 	CharsheetsInverseTable = "charsheets"
 	// CharsheetsColumn is the table column denoting the charsheets relation/edge.
 	CharsheetsColumn = "user_charsheets"
+	// RolldefsTable is the table that holds the rolldefs relation/edge.
+	RolldefsTable = "roll_defs"
+	// RolldefsInverseTable is the table name for the RollDef entity.
+	// It exists in this package in order to avoid circular dependency with the "rolldef" package.
+	RolldefsInverseTable = "roll_defs"
+	// RolldefsColumn is the table column denoting the rolldefs relation/edge.
+	RolldefsColumn = "user_rolldefs"
 )
 
 // Columns holds all SQL columns for user fields.
@@ -142,6 +151,20 @@ func ByCharsheets(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newCharsheetsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
+// ByRolldefsCount orders the results by rolldefs count.
+func ByRolldefsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newRolldefsStep(), opts...)
+	}
+}
+
+// ByRolldefs orders the results by rolldefs terms.
+func ByRolldefs(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newRolldefsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
 func newRoomsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -161,5 +184,12 @@ func newCharsheetsStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(CharsheetsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, CharsheetsTable, CharsheetsColumn),
+	)
+}
+func newRolldefsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(RolldefsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, RolldefsTable, RolldefsColumn),
 	)
 }

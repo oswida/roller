@@ -9,6 +9,8 @@ import {
   loggedUser,
   netUpdateUser,
   setLoggedUser,
+  updateLoggedUser,
+  updateLoggedUserSetting,
 } from "~/common";
 import { Flex, Input, Select, SelectItem, Switch, Text } from "~/components";
 import { buttonStyle } from "~/components/Button/styles.css";
@@ -23,26 +25,14 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
     const lu = loggedUser();
     if (!lu) return;
     lu.name = value;
-    setLoggedUser({ ...lu });
-    netUpdateUser(lu.name, lu.color, lu.settings);
+    updateLoggedUser(lu);
   };
 
-  const boolSetting = (name: string) => {
+  const checkSetting = (name: string) => {
     const lu = loggedUser();
-    if (!lu) return false;
-    const rl = lu.settings[name];
-    if (!rl) return false;
-    return rl as boolean;
+    if (!lu || !lu.settings || !lu.settings[name]) return false;
+    return lu.settings[name];
   }
-
-  const setSetting = (name: string, value: any) => {
-    const lu = loggedUser();
-    if (!lu) return;
-    lu.settings[name] = value;
-    setLoggedUser({ ...lu });
-    netUpdateUser(lu.name, lu.color, lu.settings);
-  };
-
 
   const colorList = createMemo(() => {
     return diceColorSet.map((it) => ({ id: it, label: it } as SelectItem));
@@ -74,16 +64,14 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
     const lu = loggedUser();
     if (!lu) return;
     lu.settings.diceColor = value.id;
-    setLoggedUser({ ...lu });
-    netUpdateUser(lu.name, lu.color, lu.settings);
+    updateLoggedUser(lu);
   };
 
   const diceMaterialChange = (value: SelectItem) => {
     const lu = loggedUser();
     if (!lu) return;
     lu.settings.diceMaterial = value.id;
-    setLoggedUser({ ...lu });
-    netUpdateUser(lu.name, lu.color, lu.settings);
+    updateLoggedUser(lu);
   };
 
 
@@ -103,11 +91,7 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
   });
 
   const themeChange = (value: SelectItem) => {
-    const lu = loggedUser();
-    if (!lu) return;
-    lu.settings.appTheme = value.id;
-    setLoggedUser({ ...lu });
-    netUpdateUser(lu.name, lu.color, lu.settings);
+    updateLoggedUserSetting("appTheme", value.id);
   };
 
   const currentTheme = createMemo(() => {
@@ -128,11 +112,7 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
   });
 
   const fontChange = (value: SelectItem) => {
-    const lu = loggedUser();
-    if (!lu) return;
-    lu.settings.appFont = value.id;
-    setLoggedUser({ ...lu });
-    netUpdateUser(lu.name, lu.color, lu.settings);
+    updateLoggedUserSetting("appFont", value.id);
   };
 
   const currentFont = createMemo(() => {
@@ -208,24 +188,24 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
       <Flex justify="space" grow>
         <Switch
           label="Stronger roll"
-          checked={() => boolSetting("strongerRoll")}
-          setChecked={(value: boolean) => setSetting("strongerRoll", value)}
+          checked={() => checkSetting("strongerRoll")}
+          setChecked={(value: boolean) => updateLoggedUserSetting("strongerRoll", value)}
         />
         <Switch
           label="Smaller dice"
-          checked={() => boolSetting("smallerDice")}
-          setChecked={(value: boolean) => setSetting("smallerDice", value)}
+          checked={() => checkSetting("smallerDice")}
+          setChecked={(value: boolean) => updateLoggedUserSetting("smallerDice", value)}
         />
       </Flex>
       <Flex justify="space">
         <Switch label="Show roll total"
-          checked={() => boolSetting("showRollTotal")}
-          setChecked={(value: boolean) => setSetting("showRollTotal", value)}
+          checked={() => checkSetting("showRollTotal")}
+          setChecked={(value: boolean) => updateLoggedUserSetting("showRollTotal", value)}
         />
         <Switch
           label="Show roll success"
-          checked={() => boolSetting("showRollSuccess")}
-          setChecked={(value: boolean) => setSetting("showRollSuccess", value)}
+          checked={() => checkSetting("showRollSuccess")}
+          setChecked={(value: boolean) => updateLoggedUserSetting("showRollSuccess", value)}
         />
       </Flex>
     </Flex>

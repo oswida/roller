@@ -1,12 +1,5 @@
 package db
 
-import "encoding/json"
-
-type Item interface {
-	GetId() string
-	Unmarshal(data []byte) (Item, error)
-}
-
 type RollInfo struct {
 	Id            string `json:"id"`
 	UserId        string `json:"userId"`
@@ -22,16 +15,6 @@ type RollInfo struct {
 	SuccessTarget int    `json:"successTarget,omitempty"`
 	Private       bool   `json:"private,omitempty"`
 	Revealed      bool   `json:"revealed,omitempty"`
-}
-
-func (info RollInfo) GetId() string {
-	return info.Id
-}
-
-func (info RollInfo) Unmarshal(data []byte) (Item, error) {
-	var r RollInfo
-	err := json.Unmarshal(data, &r)
-	return r, err
 }
 
 type RoomInfo struct {
@@ -51,18 +34,19 @@ type CsInfo struct {
 	Portrait string         `json:"portraitUrl,omitempty"`
 }
 
-func (info CsInfo) GetId() string {
-	return info.Id
-}
-
-func (info CsInfo) Unmarshal(data []byte) (Item, error) {
-	var r CsInfo
-	err := json.Unmarshal(data, &r)
-	return r, err
-}
-
 type UserUpdateData struct {
-	Name     string
-	Color    string
-	Settings map[string]any
+	Name     string         `json:"name"`
+	Color    string         `json:"color"`
+	Settings map[string]any `json:"settings"`
+}
+
+type RollDefInfo struct {
+	ID            string `json:"id"`
+	Name          string `json:"name"`
+	Dice          string `json:"dice"`
+	Modifier      int    `json:"modifier"`
+	SuccessRule   string `json:"successRule"`
+	SuccessTarget string `json:"successTarget"`
+	Comment       string `json:"comment,omitempty"`
+	Shared        bool   `json:"shared"`
 }

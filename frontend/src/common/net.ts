@@ -169,9 +169,6 @@ export const centConnect = (username: string, passwd: string) => {
     maxServerPingDelay: 10000,
   });
   if (!centrifuge) return;
-  centrifuge.on("connecting", function (ctx) {
-    console.log("connecting to server", ctx);
-  });
   centrifuge.on("connected", function (ctx) {
     if (ctx.data) {
       centrifuge
@@ -205,7 +202,6 @@ export const centConnect = (username: string, passwd: string) => {
     }
   });
   centrifuge.on("disconnected", (ctx) => {
-    console.log("disconnected", ctx);
     setCentConnectionStatus(false);
     setConnectedUsers({});
     setLoggedUser(undefined);
@@ -325,7 +321,7 @@ export const centUpdateRoom = (room: RoomInfo) => {
   } as CentMessage;
   client
     .rpc("room_update", msg)
-    .then((result) => {})
+    .then((result) => { })
     .catch((err) => {
       console.error(err);
     });
@@ -414,7 +410,7 @@ export const centUpdateCs = (roomId: string, info: CsInfo) => {
   } as CentMessage;
   client
     .rpc("cs_update", msg)
-    .then((result) => {})
+    .then((result) => { })
     .catch((err) => {
       console.error(err);
     });
@@ -479,7 +475,7 @@ export const centUpdateRoll = (roomId: string, info: NetRollInfo) => {
   } as CentMessage;
   client
     .rpc("roll_update", msg)
-    .then((result) => {})
+    .then((result) => { })
     .catch((err) => {
       console.error(err);
     });
@@ -507,7 +503,7 @@ export const netUpdateUser = (
       settings: settings,
     })
     .then((result) => {
-      console.log("user_update", result);
+
     })
     .catch((err) => {
       console.error(err);

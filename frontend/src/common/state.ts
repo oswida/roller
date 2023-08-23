@@ -2,7 +2,7 @@ import { Mutex } from "async-mutex";
 import { Centrifuge } from "centrifuge";
 import Queue from "queue";
 import { createMemo, createSignal } from "solid-js";
-import { CsInfo, RollInfo, RoomInfo, UserInfo } from "./types";
+import { CsInfo, RollDefInfo, RollInfo, RoomInfo, UserInfo } from "./types";
 
 export const [storageSize, setStorageSize] = createSignal(0);
 export const [loggedUser, setLoggedUser] = createSignal<UserInfo | undefined>(
@@ -12,6 +12,7 @@ export const [appRooms, setAppRooms] = createSignal<Record<string, RoomInfo>>(
   {}
 );
 export const [appCs, setAppCs] = createSignal<Record<string, CsInfo>>({});
+export const [appDefs, setAppDefs] = createSignal<Record<string, RollDefInfo>>({});
 
 export const [dicePool, setDicePool] = createSignal<Record<string, number>>({});
 export const [diceBox, setDiceBox] = createSignal<any>(undefined);

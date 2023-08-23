@@ -68,6 +68,32 @@ var (
 			},
 		},
 	}
+	// RollDefsColumns holds the columns for the "roll_defs" table.
+	RollDefsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, Unique: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "dice", Type: field.TypeString},
+		{Name: "modifier", Type: field.TypeInt},
+		{Name: "success_rule", Type: field.TypeString},
+		{Name: "success_target", Type: field.TypeString},
+		{Name: "comment", Type: field.TypeString},
+		{Name: "shared", Type: field.TypeBool, Default: false},
+		{Name: "user_rolldefs", Type: field.TypeString, Nullable: true},
+	}
+	// RollDefsTable holds the schema information for the "roll_defs" table.
+	RollDefsTable = &schema.Table{
+		Name:       "roll_defs",
+		Columns:    RollDefsColumns,
+		PrimaryKey: []*schema.Column{RollDefsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "roll_defs_users_rolldefs",
+				Columns:    []*schema.Column{RollDefsColumns[8]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
 	// RoomsColumns holds the columns for the "rooms" table.
 	RoomsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, Unique: true},
@@ -108,6 +134,7 @@ var (
 	Tables = []*schema.Table{
 		CharsheetsTable,
 		RollsTable,
+		RollDefsTable,
 		RoomsTable,
 		UsersTable,
 	}
@@ -117,5 +144,6 @@ func init() {
 	CharsheetsTable.ForeignKeys[0].RefTable = UsersTable
 	RollsTable.ForeignKeys[0].RefTable = RoomsTable
 	RollsTable.ForeignKeys[1].RefTable = UsersTable
+	RollDefsTable.ForeignKeys[0].RefTable = UsersTable
 	RoomsTable.ForeignKeys[0].RefTable = UsersTable
 }

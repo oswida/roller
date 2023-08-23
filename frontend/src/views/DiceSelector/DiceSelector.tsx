@@ -44,7 +44,6 @@ const ModifierDialog = ({ priv }: { priv: boolean }) => {
   const action = async () => {
     const el = document.getElementById("dice-modifier") as HTMLInputElement;
     if (!el) {
-      console.log("cannot find dice-modifier element");
       return;
     }
     let n = Number.parseInt(el.value);

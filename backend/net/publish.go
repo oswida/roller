@@ -2,6 +2,7 @@ package net
 
 import (
 	"encoding/json"
+	"rpgroll/db"
 
 	"github.com/centrifugal/centrifuge"
 )
@@ -10,7 +11,7 @@ func (eng *Engine) RollPublishCallback(e centrifuge.PublishEvent, client *centri
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
-	var data RollMessage
+	var data Message[db.RollInfo]
 	err := json.Unmarshal(e.Data, &data)
 	if err != nil {
 		return err
@@ -25,7 +26,7 @@ func (eng *Engine) CsInfoPublishCallback(e centrifuge.PublishEvent, client *cent
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
-	var data CsMessage
+	var data Message[db.CsInfo]
 	err := json.Unmarshal(e.Data, &data)
 	if err != nil {
 		return err

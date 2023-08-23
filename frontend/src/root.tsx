@@ -16,13 +16,11 @@ import {
 import {
   loggedUser,
   queueInit,
-  updateStoreSize,
 } from "./common";
 import { rootStyle } from "./root.css";
 import { Login } from "./views/Login/Login";
 
 export default function Root() {
-  updateStoreSize();
   queueInit();
 
   const theme = createMemo(() => {
@@ -37,9 +35,6 @@ export default function Root() {
     return lu.settings.appFont;
   })
 
-  createEffect(() => {
-    console.log("lu", loggedUser()?.settings)
-  });
 
   return (
     <Html

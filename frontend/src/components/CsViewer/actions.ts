@@ -62,7 +62,6 @@ export const actionCompute = (changedId: string, cs: CsInfo) => {
       const data = items[0].data as CTIComputedData;
       if (!data) return;
       const r = data.compute(items[0], cs.values);
-      console.log("actionCompute", r);
       result[items[0].id] = r;
     }
   });

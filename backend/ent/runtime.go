@@ -2,8 +2,19 @@
 
 package ent
 
+import (
+	"rpgroll/ent/rolldef"
+	"rpgroll/ent/schema"
+)
+
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	rolldefFields := schema.RollDef{}.Fields()
+	_ = rolldefFields
+	// rolldefDescShared is the schema descriptor for shared field.
+	rolldefDescShared := rolldefFields[7].Descriptor()
+	// rolldef.DefaultShared holds the default value on creation for the shared field.
+	rolldef.DefaultShared = rolldefDescShared.Default.(bool)
 }

@@ -26,5 +26,6 @@ func (User) Edges() []ent.Edge {
 		edge.To("rooms", Room.Type),
 		edge.To("rolls", Roll.Type),
 		edge.To("charsheets", Charsheet.Type),
+		edge.To("rolldefs", RollDef.Type),
 	}
 }

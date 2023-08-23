@@ -12,6 +12,7 @@ import (
 
 	"rpgroll/ent/charsheet"
 	"rpgroll/ent/roll"
+	"rpgroll/ent/rolldef"
 	"rpgroll/ent/room"
 	"rpgroll/ent/user"
 
@@ -30,6 +31,8 @@ type Client struct {
 	Charsheet *CharsheetClient
 	// Roll is the client for interacting with the Roll builders.
 	Roll *RollClient
+	// RollDef is the client for interacting with the RollDef builders.
+	RollDef *RollDefClient
 	// Room is the client for interacting with the Room builders.
 	Room *RoomClient
 	// User is the client for interacting with the User builders.
@@ -49,6 +52,7 @@ func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Charsheet = NewCharsheetClient(c.config)
 	c.Roll = NewRollClient(c.config)
+	c.RollDef = NewRollDefClient(c.config)
 	c.Room = NewRoomClient(c.config)
 	c.User = NewUserClient(c.config)
 }
@@ -135,6 +139,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		config:    cfg,
 		Charsheet: NewCharsheetClient(cfg),
 		Roll:      NewRollClient(cfg),
+		RollDef:   NewRollDefClient(cfg),
 		Room:      NewRoomClient(cfg),
 		User:      NewUserClient(cfg),
 	}, nil
@@ -158,6 +163,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		config:    cfg,
 		Charsheet: NewCharsheetClient(cfg),
 		Roll:      NewRollClient(cfg),
+		RollDef:   NewRollDefClient(cfg),
 		Room:      NewRoomClient(cfg),
 		User:      NewUserClient(cfg),
 	}, nil
@@ -190,6 +196,7 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	c.Charsheet.Use(hooks...)
 	c.Roll.Use(hooks...)
+	c.RollDef.Use(hooks...)
 	c.Room.Use(hooks...)
 	c.User.Use(hooks...)
 }
@@ -199,6 +206,7 @@ func (c *Client) Use(hooks ...Hook) {
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	c.Charsheet.Intercept(interceptors...)
 	c.Roll.Intercept(interceptors...)
+	c.RollDef.Intercept(interceptors...)
 	c.Room.Intercept(interceptors...)
 	c.User.Intercept(interceptors...)
 }
@@ -210,6 +218,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.Charsheet.mutate(ctx, m)
 	case *RollMutation:
 		return c.Roll.mutate(ctx, m)
+	case *RollDefMutation:
+		return c.RollDef.mutate(ctx, m)
 	case *RoomMutation:
 		return c.Room.mutate(ctx, m)
 	case *UserMutation:
@@ -500,6 +510,140 @@ func (c *RollClient) mutate(ctx context.Context, m *RollMutation) (Value, error)
 		return (&RollDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown Roll mutation op: %q", m.Op())
+	}
+}
+
+// RollDefClient is a client for the RollDef schema.
+type RollDefClient struct {
+	config
+}
+
+// NewRollDefClient returns a client for the RollDef from the given config.
+func NewRollDefClient(c config) *RollDefClient {
+	return &RollDefClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `rolldef.Hooks(f(g(h())))`.
+func (c *RollDefClient) Use(hooks ...Hook) {
+	c.hooks.RollDef = append(c.hooks.RollDef, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `rolldef.Intercept(f(g(h())))`.
+func (c *RollDefClient) Intercept(interceptors ...Interceptor) {
+	c.inters.RollDef = append(c.inters.RollDef, interceptors...)
+}
+
+// Create returns a builder for creating a RollDef entity.
+func (c *RollDefClient) Create() *RollDefCreate {
+	mutation := newRollDefMutation(c.config, OpCreate)
+	return &RollDefCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of RollDef entities.
+func (c *RollDefClient) CreateBulk(builders ...*RollDefCreate) *RollDefCreateBulk {
+	return &RollDefCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for RollDef.
+func (c *RollDefClient) Update() *RollDefUpdate {
+	mutation := newRollDefMutation(c.config, OpUpdate)
+	return &RollDefUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *RollDefClient) UpdateOne(rd *RollDef) *RollDefUpdateOne {
+	mutation := newRollDefMutation(c.config, OpUpdateOne, withRollDef(rd))
+	return &RollDefUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *RollDefClient) UpdateOneID(id string) *RollDefUpdateOne {
+	mutation := newRollDefMutation(c.config, OpUpdateOne, withRollDefID(id))
+	return &RollDefUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for RollDef.
+func (c *RollDefClient) Delete() *RollDefDelete {
+	mutation := newRollDefMutation(c.config, OpDelete)
+	return &RollDefDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *RollDefClient) DeleteOne(rd *RollDef) *RollDefDeleteOne {
+	return c.DeleteOneID(rd.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *RollDefClient) DeleteOneID(id string) *RollDefDeleteOne {
+	builder := c.Delete().Where(rolldef.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &RollDefDeleteOne{builder}
+}
+
+// Query returns a query builder for RollDef.
+func (c *RollDefClient) Query() *RollDefQuery {
+	return &RollDefQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeRollDef},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a RollDef entity by its id.
+func (c *RollDefClient) Get(ctx context.Context, id string) (*RollDef, error) {
+	return c.Query().Where(rolldef.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *RollDefClient) GetX(ctx context.Context, id string) *RollDef {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryOwner queries the owner edge of a RollDef.
+func (c *RollDefClient) QueryOwner(rd *RollDef) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := rd.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(rolldef.Table, rolldef.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, rolldef.OwnerTable, rolldef.OwnerColumn),
+		)
+		fromV = sqlgraph.Neighbors(rd.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *RollDefClient) Hooks() []Hook {
+	return c.hooks.RollDef
+}
+
+// Interceptors returns the client interceptors.
+func (c *RollDefClient) Interceptors() []Interceptor {
+	return c.inters.RollDef
+}
+
+func (c *RollDefClient) mutate(ctx context.Context, m *RollDefMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&RollDefCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&RollDefUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&RollDefUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&RollDefDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown RollDef mutation op: %q", m.Op())
 	}
 }
 
@@ -794,6 +938,22 @@ func (c *UserClient) QueryCharsheets(u *User) *CharsheetQuery {
 	return query
 }
 
+// QueryRolldefs queries the rolldefs edge of a User.
+func (c *UserClient) QueryRolldefs(u *User) *RollDefQuery {
+	query := (&RollDefClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(rolldef.Table, rolldef.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.RolldefsTable, user.RolldefsColumn),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *UserClient) Hooks() []Hook {
 	return c.hooks.User
@@ -822,9 +982,9 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Charsheet, Roll, Room, User []ent.Hook
+		Charsheet, Roll, RollDef, Room, User []ent.Hook
 	}
 	inters struct {
-		Charsheet, Roll, Room, User []ent.Interceptor
+		Charsheet, Roll, RollDef, Room, User []ent.Interceptor
 	}
 )

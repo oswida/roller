@@ -1,52 +1,8 @@
-import { createLocalStorage } from "@solid-primitives/storage";
-import { appRooms, loggedUser, setStorageSize } from "./state";
-import { RollDefInfo, StorageItem } from "./types";
-import { compressData, decompressData } from "./util";
+import { centPublish, netUpdateUser } from "./net";
+import { appDefs, appRooms, loggedUser, setAppDefs, setCurrentCs, setLoggedUser } from "./state";
+import { CsInfo, RollDefInfo, UserInfo, topicCsInfo } from "./types";
+import { netTopic } from "./util";
 
-export const rollerDefsKey = "defs";
-
-const STORE_PREFIX = "roller3";
-
-export const [appStore, setAppStore, { remove, clear, toJSON }] =
-  createLocalStorage({
-    prefix: STORE_PREFIX,
-    serializer: (value: StorageItem, key: string) => {
-      return compressData(value);
-    },
-    deserializer: (value: string, key: string) => {
-      switch (key) {
-        case "defs":
-          return decompressData(value) as Record<string, RollDefInfo>;
-        default:
-          return decompressData(value) as string;
-      }
-    },
-  });
-
-export const saveToStorage = (key: string, data: any) => {
-  setAppStore(key, data);
-  updateStoreSize();
-};
-
-export const updateStoreSize = () => {
-  let size = 0;
-  const keys = [rollerDefsKey];
-  keys.forEach((k) => {
-    const data = localStorage.getItem(`${STORE_PREFIX}.${k}`);
-    size += data ? data.length : 0;
-  });
-  setStorageSize(size);
-  return size;
-};
-
-export const appDefs = () => {
-  let defs = appStore.defs as Record<string, RollDefInfo>;
-  if (!defs) {
-    defs = {};
-    setAppStore(rollerDefsKey, defs);
-  }
-  return defs;
-};
 
 export const currentRoom = () => {
   const settings = loggedUser()?.settings;
@@ -56,3 +12,39 @@ export const currentRoom = () => {
   if (!rooms[settings.currentRoom]) return undefined;
   return rooms[settings.currentRoom];
 };
+
+
+export const updateLoggedUser = (lu: UserInfo) => {
+  setLoggedUser({ ...lu });
+  netUpdateUser(lu.name, lu.color, lu.settings);
+}
+
+export const updateLoggedUserSetting = (name: string, value: any) => {
+  const lu = loggedUser();
+  if (!lu) return;
+  if (!lu.settings) lu.settings = {};
+  lu.settings[name] = value;
+  updateLoggedUser(lu);
+}
+
+export const updateCsStorage = (data: CsInfo) => {
+  centPublish(netTopic(topicCsInfo), data);
+}
+
+export const removeCsFromStorage = (id: string) => {
+  setCurrentCs(undefined);
+}
+
+export const updateRollDefStorage = (data: RollDefInfo) => {
+  const newState = { ...appDefs() };
+  newState[data.id] = data;
+  setAppDefs(newState);
+  // net
+}
+
+export const removeRollDefFromStorage = (id: string) => {
+  const newState = { ...appDefs() };
+  delete newState[id];
+  setAppDefs(newState);
+  // net
+}

@@ -10,6 +10,7 @@ import (
 	"rpgroll/ent/charsheet"
 	"rpgroll/ent/predicate"
 	"rpgroll/ent/roll"
+	"rpgroll/ent/rolldef"
 	"rpgroll/ent/room"
 	"rpgroll/ent/user"
 
@@ -28,6 +29,7 @@ type UserQuery struct {
 	withRooms      *RoomQuery
 	withRolls      *RollQuery
 	withCharsheets *CharsheetQuery
+	withRolldefs   *RollDefQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -123,6 +125,28 @@ func (uq *UserQuery) QueryCharsheets() *CharsheetQuery {
 			sqlgraph.From(user.Table, user.FieldID, selector),
 			sqlgraph.To(charsheet.Table, charsheet.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, user.CharsheetsTable, user.CharsheetsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryRolldefs chains the current query on the "rolldefs" edge.
+func (uq *UserQuery) QueryRolldefs() *RollDefQuery {
+	query := (&RollDefClient{config: uq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := uq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, selector),
+			sqlgraph.To(rolldef.Table, rolldef.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.RolldefsTable, user.RolldefsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -325,6 +349,7 @@ func (uq *UserQuery) Clone() *UserQuery {
 		withRooms:      uq.withRooms.Clone(),
 		withRolls:      uq.withRolls.Clone(),
 		withCharsheets: uq.withCharsheets.Clone(),
+		withRolldefs:   uq.withRolldefs.Clone(),
 		// clone intermediate query.
 		sql:  uq.sql.Clone(),
 		path: uq.path,
@@ -361,6 +386,17 @@ func (uq *UserQuery) WithCharsheets(opts ...func(*CharsheetQuery)) *UserQuery {
 		opt(query)
 	}
 	uq.withCharsheets = query
+	return uq
+}
+
+// WithRolldefs tells the query-builder to eager-load the nodes that are connected to
+// the "rolldefs" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithRolldefs(opts ...func(*RollDefQuery)) *UserQuery {
+	query := (&RollDefClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withRolldefs = query
 	return uq
 }
 
@@ -442,10 +478,11 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 	var (
 		nodes       = []*User{}
 		_spec       = uq.querySpec()
-		loadedTypes = [3]bool{
+		loadedTypes = [4]bool{
 			uq.withRooms != nil,
 			uq.withRolls != nil,
 			uq.withCharsheets != nil,
+			uq.withRolldefs != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -484,6 +521,13 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		if err := uq.loadCharsheets(ctx, query, nodes,
 			func(n *User) { n.Edges.Charsheets = []*Charsheet{} },
 			func(n *User, e *Charsheet) { n.Edges.Charsheets = append(n.Edges.Charsheets, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := uq.withRolldefs; query != nil {
+		if err := uq.loadRolldefs(ctx, query, nodes,
+			func(n *User) { n.Edges.Rolldefs = []*RollDef{} },
+			func(n *User, e *RollDef) { n.Edges.Rolldefs = append(n.Edges.Rolldefs, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -578,6 +622,37 @@ func (uq *UserQuery) loadCharsheets(ctx context.Context, query *CharsheetQuery, 
 		node, ok := nodeids[*fk]
 		if !ok {
 			return fmt.Errorf(`unexpected referenced foreign-key "user_charsheets" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (uq *UserQuery) loadRolldefs(ctx context.Context, query *RollDefQuery, nodes []*User, init func(*User), assign func(*User, *RollDef)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[string]*User)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.RollDef(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(user.RolldefsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.user_rolldefs
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "user_rolldefs" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "user_rolldefs" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

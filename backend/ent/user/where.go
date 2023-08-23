@@ -413,6 +413,29 @@ func HasCharsheetsWith(preds ...predicate.Charsheet) predicate.User {
 	})
 }
 
+// HasRolldefs applies the HasEdge predicate on the "rolldefs" edge.
+func HasRolldefs() predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, RolldefsTable, RolldefsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasRolldefsWith applies the HasEdge predicate on the "rolldefs" edge with a given conditions (other predicates).
+func HasRolldefsWith(preds ...predicate.RollDef) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := newRolldefsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.User) predicate.User {
 	return predicate.User(func(s *sql.Selector) {

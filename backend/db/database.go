@@ -9,6 +9,7 @@ import (
 	"rpgroll/ent"
 	"rpgroll/ent/charsheet"
 	"rpgroll/ent/roll"
+	"rpgroll/ent/rolldef"
 	"rpgroll/ent/room"
 	"rpgroll/ent/user"
 
@@ -241,4 +242,63 @@ func (d *DB) RollList(roomID string) ([]byte, error) {
 func (d *DB) RollClear(roomID string) ([]byte, error) {
 	_, err := d.Client.Roll.Delete().Where(roll.HasRoomWith(room.IDEQ(roomID))).Exec(context.Background())
 	return []byte{}, err
+}
+
+// Roll definition
+
+func (d *DB) RollDefUpdate(userID string, data RollDefInfo) ([]byte, error) {
+	def, _ := d.Client.RollDef.Get(context.Background(), data.ID)
+	if def == nil {
+		err := d.Client.RollDef.Create().
+			SetID(data.ID).
+			SetName(data.Name).
+			SetComment(data.Comment).
+			SetDice(data.Dice).
+			SetModifier(data.Modifier).
+			SetOwnerID(userID).
+			SetShared(data.Shared).
+			SetSuccessRule(data.SuccessRule).
+			SetSuccessTarget(data.SuccessTarget).
+			Exec(context.Background())
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		err := d.Client.RollDef.UpdateOneID(data.ID).
+			SetName(data.Name).
+			SetComment(data.Comment).
+			SetDice(data.Dice).
+			SetModifier(data.Modifier).
+			SetOwnerID(userID).
+			SetShared(data.Shared).
+			SetSuccessRule(data.SuccessRule).
+			SetSuccessTarget(data.SuccessTarget).
+			Exec(context.Background())
+		if err != nil {
+			return nil, err
+		}
+	}
+	def, err := d.Client.RollDef.Get(context.Background(), data.ID)
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(def)
+}
+
+func (d *DB) RollDefList(userID string) ([]byte, error) {
+	defs, err := d.Client.RollDef.Query().
+		Where(rolldef.Or(rolldef.HasOwnerWith(user.IDEQ(userID)), rolldef.SharedEQ(true))).
+		All(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(defs)
+}
+
+func (d *DB) RollDefDelete(defID string) ([]byte, error) {
+	err := d.Client.RollDef.DeleteOneID(defID).Exec(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	return []byte("OK"), nil
 }

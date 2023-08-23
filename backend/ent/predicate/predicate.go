@@ -12,6 +12,9 @@ type Charsheet func(*sql.Selector)
 // Roll is the predicate function for roll builders.
 type Roll func(*sql.Selector)
 
+// RollDef is the predicate function for rolldef builders.
+type RollDef func(*sql.Selector)
+
 // Room is the predicate function for room builders.
 type Room func(*sql.Selector)
 

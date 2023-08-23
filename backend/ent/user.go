@@ -41,9 +41,11 @@ type UserEdges struct {
 	Rolls []*Roll `json:"rolls,omitempty"`
 	// Charsheets holds the value of the charsheets edge.
 	Charsheets []*Charsheet `json:"charsheets,omitempty"`
+	// Rolldefs holds the value of the rolldefs edge.
+	Rolldefs []*RollDef `json:"rolldefs,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
+	loadedTypes [4]bool
 }
 
 // RoomsOrErr returns the Rooms value or an error if the edge
@@ -71,6 +73,15 @@ func (e UserEdges) CharsheetsOrErr() ([]*Charsheet, error) {
 		return e.Charsheets, nil
 	}
 	return nil, &NotLoadedError{edge: "charsheets"}
+}
+
+// RolldefsOrErr returns the Rolldefs value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) RolldefsOrErr() ([]*RollDef, error) {
+	if e.loadedTypes[3] {
+		return e.Rolldefs, nil
+	}
+	return nil, &NotLoadedError{edge: "rolldefs"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -161,6 +172,11 @@ func (u *User) QueryRolls() *RollQuery {
 // QueryCharsheets queries the "charsheets" edge of the User entity.
 func (u *User) QueryCharsheets() *CharsheetQuery {
 	return NewUserClient(u.config).QueryCharsheets(u)
+}
+
+// QueryRolldefs queries the "rolldefs" edge of the User entity.
+func (u *User) QueryRolldefs() *RollDefQuery {
+	return NewUserClient(u.config).QueryRolldefs(u)
 }
 
 // Update returns a builder for updating this User.

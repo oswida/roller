@@ -9,6 +9,7 @@ import (
 	"rpgroll/ent/charsheet"
 	"rpgroll/ent/predicate"
 	"rpgroll/ent/roll"
+	"rpgroll/ent/rolldef"
 	"rpgroll/ent/room"
 	"rpgroll/ent/user"
 
@@ -105,6 +106,21 @@ func (uu *UserUpdate) AddCharsheets(c ...*Charsheet) *UserUpdate {
 	return uu.AddCharsheetIDs(ids...)
 }
 
+// AddRolldefIDs adds the "rolldefs" edge to the RollDef entity by IDs.
+func (uu *UserUpdate) AddRolldefIDs(ids ...string) *UserUpdate {
+	uu.mutation.AddRolldefIDs(ids...)
+	return uu
+}
+
+// AddRolldefs adds the "rolldefs" edges to the RollDef entity.
+func (uu *UserUpdate) AddRolldefs(r ...*RollDef) *UserUpdate {
+	ids := make([]string, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return uu.AddRolldefIDs(ids...)
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (uu *UserUpdate) Mutation() *UserMutation {
 	return uu.mutation
@@ -171,6 +187,27 @@ func (uu *UserUpdate) RemoveCharsheets(c ...*Charsheet) *UserUpdate {
 		ids[i] = c[i].ID
 	}
 	return uu.RemoveCharsheetIDs(ids...)
+}
+
+// ClearRolldefs clears all "rolldefs" edges to the RollDef entity.
+func (uu *UserUpdate) ClearRolldefs() *UserUpdate {
+	uu.mutation.ClearRolldefs()
+	return uu
+}
+
+// RemoveRolldefIDs removes the "rolldefs" edge to RollDef entities by IDs.
+func (uu *UserUpdate) RemoveRolldefIDs(ids ...string) *UserUpdate {
+	uu.mutation.RemoveRolldefIDs(ids...)
+	return uu
+}
+
+// RemoveRolldefs removes "rolldefs" edges to RollDef entities.
+func (uu *UserUpdate) RemoveRolldefs(r ...*RollDef) *UserUpdate {
+	ids := make([]string, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return uu.RemoveRolldefIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -359,6 +396,51 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if uu.mutation.RolldefsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.RolldefsTable,
+			Columns: []string{user.RolldefsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(rolldef.FieldID, field.TypeString),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.RemovedRolldefsIDs(); len(nodes) > 0 && !uu.mutation.RolldefsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.RolldefsTable,
+			Columns: []string{user.RolldefsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(rolldef.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.RolldefsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.RolldefsTable,
+			Columns: []string{user.RolldefsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(rolldef.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, uu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{user.Label}
@@ -454,6 +536,21 @@ func (uuo *UserUpdateOne) AddCharsheets(c ...*Charsheet) *UserUpdateOne {
 	return uuo.AddCharsheetIDs(ids...)
 }
 
+// AddRolldefIDs adds the "rolldefs" edge to the RollDef entity by IDs.
+func (uuo *UserUpdateOne) AddRolldefIDs(ids ...string) *UserUpdateOne {
+	uuo.mutation.AddRolldefIDs(ids...)
+	return uuo
+}
+
+// AddRolldefs adds the "rolldefs" edges to the RollDef entity.
+func (uuo *UserUpdateOne) AddRolldefs(r ...*RollDef) *UserUpdateOne {
+	ids := make([]string, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return uuo.AddRolldefIDs(ids...)
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (uuo *UserUpdateOne) Mutation() *UserMutation {
 	return uuo.mutation
@@ -520,6 +617,27 @@ func (uuo *UserUpdateOne) RemoveCharsheets(c ...*Charsheet) *UserUpdateOne {
 		ids[i] = c[i].ID
 	}
 	return uuo.RemoveCharsheetIDs(ids...)
+}
+
+// ClearRolldefs clears all "rolldefs" edges to the RollDef entity.
+func (uuo *UserUpdateOne) ClearRolldefs() *UserUpdateOne {
+	uuo.mutation.ClearRolldefs()
+	return uuo
+}
+
+// RemoveRolldefIDs removes the "rolldefs" edge to RollDef entities by IDs.
+func (uuo *UserUpdateOne) RemoveRolldefIDs(ids ...string) *UserUpdateOne {
+	uuo.mutation.RemoveRolldefIDs(ids...)
+	return uuo
+}
+
+// RemoveRolldefs removes "rolldefs" edges to RollDef entities.
+func (uuo *UserUpdateOne) RemoveRolldefs(r ...*RollDef) *UserUpdateOne {
+	ids := make([]string, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return uuo.RemoveRolldefIDs(ids...)
 }
 
 // Where appends a list predicates to the UserUpdate builder.
@@ -731,6 +849,51 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(charsheet.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uuo.mutation.RolldefsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.RolldefsTable,
+			Columns: []string{user.RolldefsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(rolldef.FieldID, field.TypeString),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.RemovedRolldefsIDs(); len(nodes) > 0 && !uuo.mutation.RolldefsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.RolldefsTable,
+			Columns: []string{user.RolldefsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(rolldef.FieldID, field.TypeString),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.RolldefsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.RolldefsTable,
+			Columns: []string{user.RolldefsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(rolldef.FieldID, field.TypeString),
 			},
 		}
 		for _, k := range nodes {

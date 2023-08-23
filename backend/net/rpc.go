@@ -35,7 +35,7 @@ func (eng *Engine) RpcRoomUpdate(e centrifuge.RPCEvent, client *centrifuge.Clien
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
-	var data RoomMessage
+	var data Message[db.RoomInfo]
 	err := json.Unmarshal(e.Data, &data)
 	if err != nil {
 		return nil, err
@@ -47,7 +47,7 @@ func (eng *Engine) RpcRoomDelete(e centrifuge.RPCEvent) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
-	var data RoomMessage
+	var data Message[db.RoomInfo]
 	err := json.Unmarshal(e.Data, &data)
 	if err != nil {
 		return nil, err
@@ -59,7 +59,7 @@ func (eng *Engine) RpcRoomList(e centrifuge.RPCEvent, client *centrifuge.Client)
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
-	var data ListMessage
+	var data Message[[]string]
 	err := json.Unmarshal(e.Data, &data)
 	if err != nil {
 		return nil, err
@@ -72,7 +72,7 @@ func (eng *Engine) RpcCsUpdate(e centrifuge.RPCEvent, client *centrifuge.Client)
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
-	var data CsMessage
+	var data Message[db.CsInfo]
 	err := json.Unmarshal(e.Data, &data)
 	if err != nil {
 		return nil, err
@@ -84,7 +84,7 @@ func (eng *Engine) RpcCsDelete(e centrifuge.RPCEvent) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
-	var data CsMessage
+	var data Message[db.CsInfo]
 	err := json.Unmarshal(e.Data, &data)
 	if err != nil {
 		return nil, err
@@ -95,7 +95,6 @@ func (eng *Engine) RpcCsDelete(e centrifuge.RPCEvent) ([]byte, error) {
 func (eng *Engine) RpcCsList(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
-
 	return eng.Db.CsList(client.UserID())
 }
 
@@ -103,7 +102,7 @@ func (eng *Engine) RpcRollUpdate(e centrifuge.RPCEvent, client *centrifuge.Clien
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
-	var data RollMessage
+	var data Message[db.RollInfo]
 	err := json.Unmarshal(e.Data, &data)
 	if err != nil {
 		return nil, err
@@ -115,7 +114,7 @@ func (eng *Engine) RpcRollList(e centrifuge.RPCEvent) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
-	var data ListMessage
+	var data Message[[]string]
 	err := json.Unmarshal(e.Data, &data)
 	if err != nil {
 		return nil, err
@@ -128,10 +127,40 @@ func (eng *Engine) RpcRollClear(e centrifuge.RPCEvent) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
-	var data ListMessage
+	var data Message[[]string]
 	err := json.Unmarshal(e.Data, &data)
 	if err != nil {
 		return nil, err
 	}
 	return eng.Db.RollClear(data.Room)
+}
+
+func (eng *Engine) RpcRollDefList(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
+	eng.mux.Lock()
+	defer eng.mux.Unlock()
+	return eng.Db.RollDefList(client.UserID())
+}
+
+func (eng *Engine) RpcRollDefUpdate(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
+	eng.mux.Lock()
+	defer eng.mux.Unlock()
+
+	var data Message[db.RollDefInfo]
+	err := json.Unmarshal(e.Data, &data)
+	if err != nil {
+		return nil, err
+	}
+	return eng.Db.RollDefUpdate(client.UserID(), data.Data)
+}
+
+func (eng *Engine) RpcRollDefDelete(e centrifuge.RPCEvent) ([]byte, error) {
+	eng.mux.Lock()
+	defer eng.mux.Unlock()
+
+	var data Message[db.RollDefInfo]
+	err := json.Unmarshal(e.Data, &data)
+	if err != nil {
+		return nil, err
+	}
+	return eng.Db.RollDefDelete(data.Data.ID)
 }

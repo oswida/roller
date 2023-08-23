@@ -9,6 +9,7 @@ import (
 	"rpgroll/ent/charsheet"
 	"rpgroll/ent/predicate"
 	"rpgroll/ent/roll"
+	"rpgroll/ent/rolldef"
 	"rpgroll/ent/room"
 	"rpgroll/ent/user"
 	"sync"
@@ -29,6 +30,7 @@ const (
 	// Node types.
 	TypeCharsheet = "Charsheet"
 	TypeRoll      = "Roll"
+	TypeRollDef   = "RollDef"
 	TypeRoom      = "Room"
 	TypeUser      = "User"
 )
@@ -1628,6 +1630,765 @@ func (m *RollMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown Roll edge %s", name)
 }
 
+// RollDefMutation represents an operation that mutates the RollDef nodes in the graph.
+type RollDefMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *string
+	name          *string
+	dice          *string
+	modifier      *int
+	addmodifier   *int
+	successRule   *string
+	successTarget *string
+	comment       *string
+	shared        *bool
+	clearedFields map[string]struct{}
+	owner         *string
+	clearedowner  bool
+	done          bool
+	oldValue      func(context.Context) (*RollDef, error)
+	predicates    []predicate.RollDef
+}
+
+var _ ent.Mutation = (*RollDefMutation)(nil)
+
+// rolldefOption allows management of the mutation configuration using functional options.
+type rolldefOption func(*RollDefMutation)
+
+// newRollDefMutation creates new mutation for the RollDef entity.
+func newRollDefMutation(c config, op Op, opts ...rolldefOption) *RollDefMutation {
+	m := &RollDefMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeRollDef,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withRollDefID sets the ID field of the mutation.
+func withRollDefID(id string) rolldefOption {
+	return func(m *RollDefMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *RollDef
+		)
+		m.oldValue = func(ctx context.Context) (*RollDef, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().RollDef.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withRollDef sets the old RollDef of the mutation.
+func withRollDef(node *RollDef) rolldefOption {
+	return func(m *RollDefMutation) {
+		m.oldValue = func(context.Context) (*RollDef, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m RollDefMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m RollDefMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of RollDef entities.
+func (m *RollDefMutation) SetID(id string) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *RollDefMutation) ID() (id string, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *RollDefMutation) IDs(ctx context.Context) ([]string, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []string{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().RollDef.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetName sets the "name" field.
+func (m *RollDefMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *RollDefMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the RollDef entity.
+// If the RollDef object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RollDefMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *RollDefMutation) ResetName() {
+	m.name = nil
+}
+
+// SetDice sets the "dice" field.
+func (m *RollDefMutation) SetDice(s string) {
+	m.dice = &s
+}
+
+// Dice returns the value of the "dice" field in the mutation.
+func (m *RollDefMutation) Dice() (r string, exists bool) {
+	v := m.dice
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDice returns the old "dice" field's value of the RollDef entity.
+// If the RollDef object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RollDefMutation) OldDice(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDice is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDice requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDice: %w", err)
+	}
+	return oldValue.Dice, nil
+}
+
+// ResetDice resets all changes to the "dice" field.
+func (m *RollDefMutation) ResetDice() {
+	m.dice = nil
+}
+
+// SetModifier sets the "modifier" field.
+func (m *RollDefMutation) SetModifier(i int) {
+	m.modifier = &i
+	m.addmodifier = nil
+}
+
+// Modifier returns the value of the "modifier" field in the mutation.
+func (m *RollDefMutation) Modifier() (r int, exists bool) {
+	v := m.modifier
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldModifier returns the old "modifier" field's value of the RollDef entity.
+// If the RollDef object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RollDefMutation) OldModifier(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldModifier is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldModifier requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldModifier: %w", err)
+	}
+	return oldValue.Modifier, nil
+}
+
+// AddModifier adds i to the "modifier" field.
+func (m *RollDefMutation) AddModifier(i int) {
+	if m.addmodifier != nil {
+		*m.addmodifier += i
+	} else {
+		m.addmodifier = &i
+	}
+}
+
+// AddedModifier returns the value that was added to the "modifier" field in this mutation.
+func (m *RollDefMutation) AddedModifier() (r int, exists bool) {
+	v := m.addmodifier
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetModifier resets all changes to the "modifier" field.
+func (m *RollDefMutation) ResetModifier() {
+	m.modifier = nil
+	m.addmodifier = nil
+}
+
+// SetSuccessRule sets the "successRule" field.
+func (m *RollDefMutation) SetSuccessRule(s string) {
+	m.successRule = &s
+}
+
+// SuccessRule returns the value of the "successRule" field in the mutation.
+func (m *RollDefMutation) SuccessRule() (r string, exists bool) {
+	v := m.successRule
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSuccessRule returns the old "successRule" field's value of the RollDef entity.
+// If the RollDef object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RollDefMutation) OldSuccessRule(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSuccessRule is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSuccessRule requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSuccessRule: %w", err)
+	}
+	return oldValue.SuccessRule, nil
+}
+
+// ResetSuccessRule resets all changes to the "successRule" field.
+func (m *RollDefMutation) ResetSuccessRule() {
+	m.successRule = nil
+}
+
+// SetSuccessTarget sets the "successTarget" field.
+func (m *RollDefMutation) SetSuccessTarget(s string) {
+	m.successTarget = &s
+}
+
+// SuccessTarget returns the value of the "successTarget" field in the mutation.
+func (m *RollDefMutation) SuccessTarget() (r string, exists bool) {
+	v := m.successTarget
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSuccessTarget returns the old "successTarget" field's value of the RollDef entity.
+// If the RollDef object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RollDefMutation) OldSuccessTarget(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSuccessTarget is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSuccessTarget requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSuccessTarget: %w", err)
+	}
+	return oldValue.SuccessTarget, nil
+}
+
+// ResetSuccessTarget resets all changes to the "successTarget" field.
+func (m *RollDefMutation) ResetSuccessTarget() {
+	m.successTarget = nil
+}
+
+// SetComment sets the "comment" field.
+func (m *RollDefMutation) SetComment(s string) {
+	m.comment = &s
+}
+
+// Comment returns the value of the "comment" field in the mutation.
+func (m *RollDefMutation) Comment() (r string, exists bool) {
+	v := m.comment
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldComment returns the old "comment" field's value of the RollDef entity.
+// If the RollDef object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RollDefMutation) OldComment(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldComment is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldComment requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldComment: %w", err)
+	}
+	return oldValue.Comment, nil
+}
+
+// ResetComment resets all changes to the "comment" field.
+func (m *RollDefMutation) ResetComment() {
+	m.comment = nil
+}
+
+// SetShared sets the "shared" field.
+func (m *RollDefMutation) SetShared(b bool) {
+	m.shared = &b
+}
+
+// Shared returns the value of the "shared" field in the mutation.
+func (m *RollDefMutation) Shared() (r bool, exists bool) {
+	v := m.shared
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldShared returns the old "shared" field's value of the RollDef entity.
+// If the RollDef object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RollDefMutation) OldShared(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldShared is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldShared requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldShared: %w", err)
+	}
+	return oldValue.Shared, nil
+}
+
+// ResetShared resets all changes to the "shared" field.
+func (m *RollDefMutation) ResetShared() {
+	m.shared = nil
+}
+
+// SetOwnerID sets the "owner" edge to the User entity by id.
+func (m *RollDefMutation) SetOwnerID(id string) {
+	m.owner = &id
+}
+
+// ClearOwner clears the "owner" edge to the User entity.
+func (m *RollDefMutation) ClearOwner() {
+	m.clearedowner = true
+}
+
+// OwnerCleared reports if the "owner" edge to the User entity was cleared.
+func (m *RollDefMutation) OwnerCleared() bool {
+	return m.clearedowner
+}
+
+// OwnerID returns the "owner" edge ID in the mutation.
+func (m *RollDefMutation) OwnerID() (id string, exists bool) {
+	if m.owner != nil {
+		return *m.owner, true
+	}
+	return
+}
+
+// OwnerIDs returns the "owner" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// OwnerID instead. It exists only for internal usage by the builders.
+func (m *RollDefMutation) OwnerIDs() (ids []string) {
+	if id := m.owner; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetOwner resets all changes to the "owner" edge.
+func (m *RollDefMutation) ResetOwner() {
+	m.owner = nil
+	m.clearedowner = false
+}
+
+// Where appends a list predicates to the RollDefMutation builder.
+func (m *RollDefMutation) Where(ps ...predicate.RollDef) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the RollDefMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *RollDefMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.RollDef, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *RollDefMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *RollDefMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (RollDef).
+func (m *RollDefMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *RollDefMutation) Fields() []string {
+	fields := make([]string, 0, 7)
+	if m.name != nil {
+		fields = append(fields, rolldef.FieldName)
+	}
+	if m.dice != nil {
+		fields = append(fields, rolldef.FieldDice)
+	}
+	if m.modifier != nil {
+		fields = append(fields, rolldef.FieldModifier)
+	}
+	if m.successRule != nil {
+		fields = append(fields, rolldef.FieldSuccessRule)
+	}
+	if m.successTarget != nil {
+		fields = append(fields, rolldef.FieldSuccessTarget)
+	}
+	if m.comment != nil {
+		fields = append(fields, rolldef.FieldComment)
+	}
+	if m.shared != nil {
+		fields = append(fields, rolldef.FieldShared)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *RollDefMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case rolldef.FieldName:
+		return m.Name()
+	case rolldef.FieldDice:
+		return m.Dice()
+	case rolldef.FieldModifier:
+		return m.Modifier()
+	case rolldef.FieldSuccessRule:
+		return m.SuccessRule()
+	case rolldef.FieldSuccessTarget:
+		return m.SuccessTarget()
+	case rolldef.FieldComment:
+		return m.Comment()
+	case rolldef.FieldShared:
+		return m.Shared()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *RollDefMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case rolldef.FieldName:
+		return m.OldName(ctx)
+	case rolldef.FieldDice:
+		return m.OldDice(ctx)
+	case rolldef.FieldModifier:
+		return m.OldModifier(ctx)
+	case rolldef.FieldSuccessRule:
+		return m.OldSuccessRule(ctx)
+	case rolldef.FieldSuccessTarget:
+		return m.OldSuccessTarget(ctx)
+	case rolldef.FieldComment:
+		return m.OldComment(ctx)
+	case rolldef.FieldShared:
+		return m.OldShared(ctx)
+	}
+	return nil, fmt.Errorf("unknown RollDef field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *RollDefMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case rolldef.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case rolldef.FieldDice:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDice(v)
+		return nil
+	case rolldef.FieldModifier:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetModifier(v)
+		return nil
+	case rolldef.FieldSuccessRule:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSuccessRule(v)
+		return nil
+	case rolldef.FieldSuccessTarget:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSuccessTarget(v)
+		return nil
+	case rolldef.FieldComment:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetComment(v)
+		return nil
+	case rolldef.FieldShared:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetShared(v)
+		return nil
+	}
+	return fmt.Errorf("unknown RollDef field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *RollDefMutation) AddedFields() []string {
+	var fields []string
+	if m.addmodifier != nil {
+		fields = append(fields, rolldef.FieldModifier)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *RollDefMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case rolldef.FieldModifier:
+		return m.AddedModifier()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *RollDefMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case rolldef.FieldModifier:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddModifier(v)
+		return nil
+	}
+	return fmt.Errorf("unknown RollDef numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *RollDefMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *RollDefMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *RollDefMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown RollDef nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *RollDefMutation) ResetField(name string) error {
+	switch name {
+	case rolldef.FieldName:
+		m.ResetName()
+		return nil
+	case rolldef.FieldDice:
+		m.ResetDice()
+		return nil
+	case rolldef.FieldModifier:
+		m.ResetModifier()
+		return nil
+	case rolldef.FieldSuccessRule:
+		m.ResetSuccessRule()
+		return nil
+	case rolldef.FieldSuccessTarget:
+		m.ResetSuccessTarget()
+		return nil
+	case rolldef.FieldComment:
+		m.ResetComment()
+		return nil
+	case rolldef.FieldShared:
+		m.ResetShared()
+		return nil
+	}
+	return fmt.Errorf("unknown RollDef field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *RollDefMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.owner != nil {
+		edges = append(edges, rolldef.EdgeOwner)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *RollDefMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case rolldef.EdgeOwner:
+		if id := m.owner; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *RollDefMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *RollDefMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *RollDefMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedowner {
+		edges = append(edges, rolldef.EdgeOwner)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *RollDefMutation) EdgeCleared(name string) bool {
+	switch name {
+	case rolldef.EdgeOwner:
+		return m.clearedowner
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *RollDefMutation) ClearEdge(name string) error {
+	switch name {
+	case rolldef.EdgeOwner:
+		m.ClearOwner()
+		return nil
+	}
+	return fmt.Errorf("unknown RollDef unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *RollDefMutation) ResetEdge(name string) error {
+	switch name {
+	case rolldef.EdgeOwner:
+		m.ResetOwner()
+		return nil
+	}
+	return fmt.Errorf("unknown RollDef edge %s", name)
+}
+
 // RoomMutation represents an operation that mutates the Room nodes in the graph.
 type RoomMutation struct {
 	config
@@ -2187,6 +2948,9 @@ type UserMutation struct {
 	charsheets        map[string]struct{}
 	removedcharsheets map[string]struct{}
 	clearedcharsheets bool
+	rolldefs          map[string]struct{}
+	removedrolldefs   map[string]struct{}
+	clearedrolldefs   bool
 	done              bool
 	oldValue          func(context.Context) (*User, error)
 	predicates        []predicate.User
@@ -2638,6 +3402,60 @@ func (m *UserMutation) ResetCharsheets() {
 	m.removedcharsheets = nil
 }
 
+// AddRolldefIDs adds the "rolldefs" edge to the RollDef entity by ids.
+func (m *UserMutation) AddRolldefIDs(ids ...string) {
+	if m.rolldefs == nil {
+		m.rolldefs = make(map[string]struct{})
+	}
+	for i := range ids {
+		m.rolldefs[ids[i]] = struct{}{}
+	}
+}
+
+// ClearRolldefs clears the "rolldefs" edge to the RollDef entity.
+func (m *UserMutation) ClearRolldefs() {
+	m.clearedrolldefs = true
+}
+
+// RolldefsCleared reports if the "rolldefs" edge to the RollDef entity was cleared.
+func (m *UserMutation) RolldefsCleared() bool {
+	return m.clearedrolldefs
+}
+
+// RemoveRolldefIDs removes the "rolldefs" edge to the RollDef entity by IDs.
+func (m *UserMutation) RemoveRolldefIDs(ids ...string) {
+	if m.removedrolldefs == nil {
+		m.removedrolldefs = make(map[string]struct{})
+	}
+	for i := range ids {
+		delete(m.rolldefs, ids[i])
+		m.removedrolldefs[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedRolldefs returns the removed IDs of the "rolldefs" edge to the RollDef entity.
+func (m *UserMutation) RemovedRolldefsIDs() (ids []string) {
+	for id := range m.removedrolldefs {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// RolldefsIDs returns the "rolldefs" edge IDs in the mutation.
+func (m *UserMutation) RolldefsIDs() (ids []string) {
+	for id := range m.rolldefs {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetRolldefs resets all changes to the "rolldefs" edge.
+func (m *UserMutation) ResetRolldefs() {
+	m.rolldefs = nil
+	m.clearedrolldefs = false
+	m.removedrolldefs = nil
+}
+
 // Where appends a list predicates to the UserMutation builder.
 func (m *UserMutation) Where(ps ...predicate.User) {
 	m.predicates = append(m.predicates, ps...)
@@ -2839,7 +3657,7 @@ func (m *UserMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *UserMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.rooms != nil {
 		edges = append(edges, user.EdgeRooms)
 	}
@@ -2848,6 +3666,9 @@ func (m *UserMutation) AddedEdges() []string {
 	}
 	if m.charsheets != nil {
 		edges = append(edges, user.EdgeCharsheets)
+	}
+	if m.rolldefs != nil {
+		edges = append(edges, user.EdgeRolldefs)
 	}
 	return edges
 }
@@ -2874,13 +3695,19 @@ func (m *UserMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case user.EdgeRolldefs:
+		ids := make([]ent.Value, 0, len(m.rolldefs))
+		for id := range m.rolldefs {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *UserMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.removedrooms != nil {
 		edges = append(edges, user.EdgeRooms)
 	}
@@ -2889,6 +3716,9 @@ func (m *UserMutation) RemovedEdges() []string {
 	}
 	if m.removedcharsheets != nil {
 		edges = append(edges, user.EdgeCharsheets)
+	}
+	if m.removedrolldefs != nil {
+		edges = append(edges, user.EdgeRolldefs)
 	}
 	return edges
 }
@@ -2915,13 +3745,19 @@ func (m *UserMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case user.EdgeRolldefs:
+		ids := make([]ent.Value, 0, len(m.removedrolldefs))
+		for id := range m.removedrolldefs {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *UserMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.clearedrooms {
 		edges = append(edges, user.EdgeRooms)
 	}
@@ -2930,6 +3766,9 @@ func (m *UserMutation) ClearedEdges() []string {
 	}
 	if m.clearedcharsheets {
 		edges = append(edges, user.EdgeCharsheets)
+	}
+	if m.clearedrolldefs {
+		edges = append(edges, user.EdgeRolldefs)
 	}
 	return edges
 }
@@ -2944,6 +3783,8 @@ func (m *UserMutation) EdgeCleared(name string) bool {
 		return m.clearedrolls
 	case user.EdgeCharsheets:
 		return m.clearedcharsheets
+	case user.EdgeRolldefs:
+		return m.clearedrolldefs
 	}
 	return false
 }
@@ -2968,6 +3809,9 @@ func (m *UserMutation) ResetEdge(name string) error {
 		return nil
 	case user.EdgeCharsheets:
 		m.ResetCharsheets()
+		return nil
+	case user.EdgeRolldefs:
+		m.ResetRolldefs()
 		return nil
 	}
 	return fmt.Errorf("unknown User edge %s", name)
