@@ -33,7 +33,7 @@ type RoomEdges struct {
 	// Rolls holds the value of the rolls edge.
 	Rolls []*Roll `json:"rolls,omitempty"`
 	// Owner holds the value of the owner edge.
-	Owner *User `json:"owner,omitempty"`
+	Owner *User `json:"owner,omitempty" owner`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [2]bool

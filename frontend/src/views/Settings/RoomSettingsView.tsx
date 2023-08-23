@@ -21,6 +21,7 @@ import {
   rollerRoomsKey,
   saveToStorage,
   setAppRolls,
+  setAppRooms,
   topicRoomInfo,
 } from "~/common";
 import { themeVars } from "~/common/theme.css";
@@ -51,7 +52,7 @@ export const RoomSettingsView: Component<Props> = (props) => {
     if (!data[loggedUser()?.settings.currentRoom]) return;
     const isOwner = currentRoom()?.owner == loggedUser()?.id;
     data[loggedUser()?.settings.currentRoom][field] = value;
-    saveToStorage(rollerRoomsKey, data);
+    setAppRooms(data);
     centUpdateRoom(data[loggedUser()?.settings.currentRoom]);
     if (isOwner)
       centPublish(netTopic(topicRoomInfo), data[loggedUser()?.settings.currentRoom]);

@@ -283,10 +283,13 @@ export const centLoadRooms = (ids?: string[]) => {
   client
     .rpc("room_list", msg)
     .then((result) => {
-      const data = result.data as RoomInfo[];
+      const data = result.data as any[];
       if (data) {
         const newState = { ...appRooms() };
-        data.forEach((r) => (newState[r.id] = r));
+        data.forEach((r) => {
+          newState[r.id] = r;
+          newState[r.id].owner = r.user_rooms; // map from entgo
+        });
 
         const receivedIds = data.map((r) => r.id);
         const toCheck = ids ? ids : Object.values(appRooms()).map((r) => r.id);
