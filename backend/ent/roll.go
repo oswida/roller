@@ -12,6 +12,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 )
 
 // Roll is the model entity for the Roll schema.
@@ -43,7 +44,7 @@ type Roll struct {
 	// The values are being populated by the RollQuery when eager-loading is set.
 	Edges        RollEdges `json:"edges"`
 	room_rolls   *string
-	user_rolls   *string
+	user_rolls   *uuid.UUID
 	selectValues sql.SelectValues
 }
 
@@ -100,7 +101,7 @@ func (*Roll) scanValues(columns []string) ([]any, error) {
 		case roll.ForeignKeys[0]: // room_rolls
 			values[i] = new(sql.NullString)
 		case roll.ForeignKeys[1]: // user_rolls
-			values[i] = new(sql.NullString)
+			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -190,11 +191,11 @@ func (r *Roll) assignValues(columns []string, values []any) error {
 				*r.room_rolls = value.String
 			}
 		case roll.ForeignKeys[1]:
-			if value, ok := values[i].(*sql.NullString); !ok {
+			if value, ok := values[i].(*sql.NullScanner); !ok {
 				return fmt.Errorf("unexpected type %T for field user_rolls", values[i])
 			} else if value.Valid {
-				r.user_rolls = new(string)
-				*r.user_rolls = value.String
+				r.user_rolls = new(uuid.UUID)
+				*r.user_rolls = *value.S.(*uuid.UUID)
 			}
 		default:
 			r.selectValues.Set(columns[i], values[i])

@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 )
 
 // CharsheetQuery is the builder for querying Charsheet entities.
@@ -409,8 +410,8 @@ func (cq *CharsheetQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Ch
 }
 
 func (cq *CharsheetQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*Charsheet, init func(*Charsheet), assign func(*Charsheet, *User)) error {
-	ids := make([]string, 0, len(nodes))
-	nodeids := make(map[string][]*Charsheet)
+	ids := make([]uuid.UUID, 0, len(nodes))
+	nodeids := make(map[uuid.UUID][]*Charsheet)
 	for i := range nodes {
 		if nodes[i].user_charsheets == nil {
 			continue

@@ -11,6 +11,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 )
 
 // RollDefCreate is the builder for creating a RollDef entity.
@@ -77,13 +78,13 @@ func (rdc *RollDefCreate) SetID(s string) *RollDefCreate {
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (rdc *RollDefCreate) SetOwnerID(id string) *RollDefCreate {
+func (rdc *RollDefCreate) SetOwnerID(id uuid.UUID) *RollDefCreate {
 	rdc.mutation.SetOwnerID(id)
 	return rdc
 }
 
 // SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
-func (rdc *RollDefCreate) SetNillableOwnerID(id *string) *RollDefCreate {
+func (rdc *RollDefCreate) SetNillableOwnerID(id *uuid.UUID) *RollDefCreate {
 	if id != nil {
 		rdc = rdc.SetOwnerID(*id)
 	}
@@ -230,7 +231,7 @@ func (rdc *RollDefCreate) createSpec() (*RollDef, *sqlgraph.CreateSpec) {
 			Columns: []string{rolldef.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

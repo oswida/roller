@@ -17,6 +17,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 )
 
 const (
@@ -47,7 +48,7 @@ type CharsheetMutation struct {
 	shared        *bool
 	portrait      *string
 	clearedFields map[string]struct{}
-	owner         *string
+	owner         *uuid.UUID
 	clearedowner  bool
 	done          bool
 	oldValue      func(context.Context) (*Charsheet, error)
@@ -339,7 +340,7 @@ func (m *CharsheetMutation) ResetPortrait() {
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by id.
-func (m *CharsheetMutation) SetOwnerID(id string) {
+func (m *CharsheetMutation) SetOwnerID(id uuid.UUID) {
 	m.owner = &id
 }
 
@@ -354,7 +355,7 @@ func (m *CharsheetMutation) OwnerCleared() bool {
 }
 
 // OwnerID returns the "owner" edge ID in the mutation.
-func (m *CharsheetMutation) OwnerID() (id string, exists bool) {
+func (m *CharsheetMutation) OwnerID() (id uuid.UUID, exists bool) {
 	if m.owner != nil {
 		return *m.owner, true
 	}
@@ -364,7 +365,7 @@ func (m *CharsheetMutation) OwnerID() (id string, exists bool) {
 // OwnerIDs returns the "owner" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // OwnerID instead. It exists only for internal usage by the builders.
-func (m *CharsheetMutation) OwnerIDs() (ids []string) {
+func (m *CharsheetMutation) OwnerIDs() (ids []uuid.UUID) {
 	if id := m.owner; id != nil {
 		ids = append(ids, *id)
 	}
@@ -668,7 +669,7 @@ type RollMutation struct {
 	private          *bool
 	revealed         *bool
 	clearedFields    map[string]struct{}
-	owner            *string
+	owner            *uuid.UUID
 	clearedowner     bool
 	room             *string
 	clearedroom      bool
@@ -1162,7 +1163,7 @@ func (m *RollMutation) ResetRevealed() {
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by id.
-func (m *RollMutation) SetOwnerID(id string) {
+func (m *RollMutation) SetOwnerID(id uuid.UUID) {
 	m.owner = &id
 }
 
@@ -1177,7 +1178,7 @@ func (m *RollMutation) OwnerCleared() bool {
 }
 
 // OwnerID returns the "owner" edge ID in the mutation.
-func (m *RollMutation) OwnerID() (id string, exists bool) {
+func (m *RollMutation) OwnerID() (id uuid.UUID, exists bool) {
 	if m.owner != nil {
 		return *m.owner, true
 	}
@@ -1187,7 +1188,7 @@ func (m *RollMutation) OwnerID() (id string, exists bool) {
 // OwnerIDs returns the "owner" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // OwnerID instead. It exists only for internal usage by the builders.
-func (m *RollMutation) OwnerIDs() (ids []string) {
+func (m *RollMutation) OwnerIDs() (ids []uuid.UUID) {
 	if id := m.owner; id != nil {
 		ids = append(ids, *id)
 	}
@@ -1645,7 +1646,7 @@ type RollDefMutation struct {
 	comment       *string
 	shared        *bool
 	clearedFields map[string]struct{}
-	owner         *string
+	owner         *uuid.UUID
 	clearedowner  bool
 	done          bool
 	oldValue      func(context.Context) (*RollDef, error)
@@ -2029,7 +2030,7 @@ func (m *RollDefMutation) ResetShared() {
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by id.
-func (m *RollDefMutation) SetOwnerID(id string) {
+func (m *RollDefMutation) SetOwnerID(id uuid.UUID) {
 	m.owner = &id
 }
 
@@ -2044,7 +2045,7 @@ func (m *RollDefMutation) OwnerCleared() bool {
 }
 
 // OwnerID returns the "owner" edge ID in the mutation.
-func (m *RollDefMutation) OwnerID() (id string, exists bool) {
+func (m *RollDefMutation) OwnerID() (id uuid.UUID, exists bool) {
 	if m.owner != nil {
 		return *m.owner, true
 	}
@@ -2054,7 +2055,7 @@ func (m *RollDefMutation) OwnerID() (id string, exists bool) {
 // OwnerIDs returns the "owner" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // OwnerID instead. It exists only for internal usage by the builders.
-func (m *RollDefMutation) OwnerIDs() (ids []string) {
+func (m *RollDefMutation) OwnerIDs() (ids []uuid.UUID) {
 	if id := m.owner; id != nil {
 		ids = append(ids, *id)
 	}
@@ -2401,7 +2402,7 @@ type RoomMutation struct {
 	rolls         map[string]struct{}
 	removedrolls  map[string]struct{}
 	clearedrolls  bool
-	owner         *string
+	owner         *uuid.UUID
 	clearedowner  bool
 	done          bool
 	oldValue      func(context.Context) (*Room, error)
@@ -2639,7 +2640,7 @@ func (m *RoomMutation) ResetRolls() {
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by id.
-func (m *RoomMutation) SetOwnerID(id string) {
+func (m *RoomMutation) SetOwnerID(id uuid.UUID) {
 	m.owner = &id
 }
 
@@ -2654,7 +2655,7 @@ func (m *RoomMutation) OwnerCleared() bool {
 }
 
 // OwnerID returns the "owner" edge ID in the mutation.
-func (m *RoomMutation) OwnerID() (id string, exists bool) {
+func (m *RoomMutation) OwnerID() (id uuid.UUID, exists bool) {
 	if m.owner != nil {
 		return *m.owner, true
 	}
@@ -2664,7 +2665,7 @@ func (m *RoomMutation) OwnerID() (id string, exists bool) {
 // OwnerIDs returns the "owner" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // OwnerID instead. It exists only for internal usage by the builders.
-func (m *RoomMutation) OwnerIDs() (ids []string) {
+func (m *RoomMutation) OwnerIDs() (ids []uuid.UUID) {
 	if id := m.owner; id != nil {
 		ids = append(ids, *id)
 	}
@@ -2932,7 +2933,7 @@ type UserMutation struct {
 	config
 	op                Op
 	typ               string
-	id                *string
+	id                *uuid.UUID
 	login             *string
 	passwd            *string
 	is_admin          *bool
@@ -2977,7 +2978,7 @@ func newUserMutation(c config, op Op, opts ...userOption) *UserMutation {
 }
 
 // withUserID sets the ID field of the mutation.
-func withUserID(id string) userOption {
+func withUserID(id uuid.UUID) userOption {
 	return func(m *UserMutation) {
 		var (
 			err   error
@@ -3029,13 +3030,13 @@ func (m UserMutation) Tx() (*Tx, error) {
 
 // SetID sets the value of the id field. Note that this
 // operation is only accepted on creation of User entities.
-func (m *UserMutation) SetID(id string) {
+func (m *UserMutation) SetID(id uuid.UUID) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *UserMutation) ID() (id string, exists bool) {
+func (m *UserMutation) ID() (id uuid.UUID, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -3046,12 +3047,12 @@ func (m *UserMutation) ID() (id string, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *UserMutation) IDs(ctx context.Context) ([]string, error) {
+func (m *UserMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []string{id}, nil
+			return []uuid.UUID{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):

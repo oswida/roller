@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 )
 
 // RollDefUpdate is the builder for updating RollDef entities.
@@ -86,13 +87,13 @@ func (rdu *RollDefUpdate) SetNillableShared(b *bool) *RollDefUpdate {
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (rdu *RollDefUpdate) SetOwnerID(id string) *RollDefUpdate {
+func (rdu *RollDefUpdate) SetOwnerID(id uuid.UUID) *RollDefUpdate {
 	rdu.mutation.SetOwnerID(id)
 	return rdu
 }
 
 // SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
-func (rdu *RollDefUpdate) SetNillableOwnerID(id *string) *RollDefUpdate {
+func (rdu *RollDefUpdate) SetNillableOwnerID(id *uuid.UUID) *RollDefUpdate {
 	if id != nil {
 		rdu = rdu.SetOwnerID(*id)
 	}
@@ -183,7 +184,7 @@ func (rdu *RollDefUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{rolldef.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -196,7 +197,7 @@ func (rdu *RollDefUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{rolldef.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {
@@ -282,13 +283,13 @@ func (rduo *RollDefUpdateOne) SetNillableShared(b *bool) *RollDefUpdateOne {
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (rduo *RollDefUpdateOne) SetOwnerID(id string) *RollDefUpdateOne {
+func (rduo *RollDefUpdateOne) SetOwnerID(id uuid.UUID) *RollDefUpdateOne {
 	rduo.mutation.SetOwnerID(id)
 	return rduo
 }
 
 // SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
-func (rduo *RollDefUpdateOne) SetNillableOwnerID(id *string) *RollDefUpdateOne {
+func (rduo *RollDefUpdateOne) SetNillableOwnerID(id *uuid.UUID) *RollDefUpdateOne {
 	if id != nil {
 		rduo = rduo.SetOwnerID(*id)
 	}
@@ -409,7 +410,7 @@ func (rduo *RollDefUpdateOne) sqlSave(ctx context.Context) (_node *RollDef, err 
 			Columns: []string{rolldef.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -422,7 +423,7 @@ func (rduo *RollDefUpdateOne) sqlSave(ctx context.Context) (_node *RollDef, err 
 			Columns: []string{rolldef.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

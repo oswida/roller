@@ -2,49 +2,54 @@ package net
 
 import (
 	"context"
-	"errors"
+	"embed"
 	"fmt"
+	"io/fs"
+	"net/http"
 
 	"rpgroll/db"
 	"strings"
 	"sync"
 
 	"github.com/centrifugal/centrifuge"
+	"github.com/knadh/koanf/v2"
 	"go.uber.org/zap"
 )
 
-type Engine struct {
-	Db   *db.DB
+type Server struct {
+	Db   *db.Database
 	Node *centrifuge.Node
-	Log  *zap.Logger
 
-	mux sync.Mutex
+	mux    sync.Mutex
+	config *koanf.Koanf
+	log    *zap.Logger
+	efs    embed.FS
 }
 
-func NewEngine(dbase *db.DB, log *zap.Logger) (*Engine, error) {
+func NewServer(dbase *db.Database, log *zap.Logger, cfg *koanf.Koanf, efs embed.FS) (*Server, error) {
 	node, err := centrifuge.New(centrifuge.Config{})
 	if err != nil {
 		return nil, err
 	}
-	result := &Engine{
-		Db:   dbase,
-		Node: node,
-		Log:  log,
+	result := &Server{
+		Db:     dbase,
+		Node:   node,
+		log:    log,
+		config: cfg,
+		efs:    efs,
 	}
 
 	node.OnConnecting(func(ctx context.Context, ce centrifuge.ConnectEvent) (centrifuge.ConnectReply, error) {
-		user, name, err := result.Login(ce.Name, strings.ReplaceAll(string(ce.Data), "\"", ""))
+		token, err := ParseJwt([]byte(cfg.String("web.jwt_secret")), ce.Token)
 		if err != nil {
-			user = ""
+			result.log.Error("error parsing jwt token", zap.Error(err))
+			return centrifuge.ConnectReply{}, err
 		}
-		if user != "" {
-			cred := &centrifuge.Credentials{UserID: user, Info: []byte(fmt.Sprintf("\"%s\"", name))}
-			return centrifuge.ConnectReply{
-				Credentials: cred,
-				Data:        []byte(fmt.Sprintf("\"%s\"", user)),
-			}, nil
-		}
-		return centrifuge.ConnectReply{}, errors.New("Rejected")
+		return centrifuge.ConnectReply{
+			Credentials: &centrifuge.Credentials{
+				UserID:   token.ID,
+				ExpireAt: token.ExpiresAt.Unix(),
+				Info:     []byte(token.Name)}}, nil
 	})
 
 	node.OnConnect(func(client *centrifuge.Client) {
@@ -70,7 +75,7 @@ func NewEngine(dbase *db.DB, log *zap.Logger) (*Engine, error) {
 			result.PublishCallback(e, client)
 			r, err := node.Publish(e.Channel, e.Data)
 			if err != nil {
-				result.Log.Error("publish error", zap.Error(err))
+				result.log.Error("publish error", zap.Error(err))
 			}
 			cb(centrifuge.PublishReply{Result: &r}, err)
 		})
@@ -78,7 +83,7 @@ func NewEngine(dbase *db.DB, log *zap.Logger) (*Engine, error) {
 		client.OnRPC(func(e centrifuge.RPCEvent, cb centrifuge.RPCCallback) {
 			r, err := result.RPCCallback(e, client)
 			if err != nil {
-				result.Log.Error("rpc error", zap.String("method", e.Method), zap.Error(err))
+				result.log.Error("rpc error", zap.String("method", e.Method), zap.Error(err))
 			}
 			cb(centrifuge.RPCReply{Data: r}, err)
 		})
@@ -92,32 +97,59 @@ func NewEngine(dbase *db.DB, log *zap.Logger) (*Engine, error) {
 	return result, nil
 }
 
-func (eng *Engine) Run() error {
-	if eng.Node == nil {
-		return errors.New("centrifuge node not initialized")
+func (eng *Server) Run() error {
+
+	if err := eng.Node.Run(); err != nil {
+		eng.log.Error("starting centrifuge engine failed", zap.Error(err))
+		return err
 	}
-	return eng.Node.Run()
+
+	wsHandler := centrifuge.NewWebsocketHandler(eng.Node, centrifuge.WebsocketConfig{
+		CheckOrigin: func(r *http.Request) bool { return true },
+	})
+
+	http.Handle("/connection/websocket", wsHandler)
+	subfs, err := fs.Sub(eng.efs, "resources/web")
+	if err != nil {
+		eng.log.Error("cannot create embedded subsystem for web server", zap.Error(err))
+		return err
+	}
+	http.Handle("/login", LoginHandler(eng.Db, eng.config, eng.log))
+	http.Handle("/", http.FileServer(http.FS(subfs)))
+
+	eng.log.Info("Starting roller")
+	if err := http.ListenAndServe(fmt.Sprintf(":%d", eng.config.Int("server.port")), nil); err != nil {
+		eng.log.Fatal("failed starting web server", zap.Error(err))
+		return err
+	}
+
+	return nil
 }
 
-func (eng *Engine) PublishCallback(e centrifuge.PublishEvent, client *centrifuge.Client) {
+func (s *Server) Stop() {
+	s.log.Info("shutting down server")
+	s.Node.Shutdown(context.Background())
+}
+
+func (eng *Server) PublishCallback(e centrifuge.PublishEvent, client *centrifuge.Client) {
 	if strings.HasPrefix(e.Channel, "roll_info") {
 		err := eng.RollPublishCallback(e, client)
 		if err != nil {
-			eng.Log.Error("roll publish callback", zap.Error(err))
+			eng.log.Error("roll publish callback", zap.Error(err))
 		}
 		return
 	}
 	if strings.HasPrefix(e.Channel, "cs_info") {
 		err := eng.CsInfoPublishCallback(e, client)
 		if err != nil {
-			eng.Log.Error("cs info publish callback", zap.Error(err))
+			eng.log.Error("cs info publish callback", zap.Error(err))
 		}
 		return
 	}
 
 }
 
-func (eng *Engine) RPCCallback(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
+func (eng *Server) RPCCallback(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
 	switch e.Method {
 	case "room_update":
 		return eng.RpcRoomUpdate(e, client)

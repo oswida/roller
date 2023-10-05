@@ -11,6 +11,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 )
 
 // CharsheetCreate is the builder for creating a Charsheet entity.
@@ -57,13 +58,13 @@ func (cc *CharsheetCreate) SetID(s string) *CharsheetCreate {
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (cc *CharsheetCreate) SetOwnerID(id string) *CharsheetCreate {
+func (cc *CharsheetCreate) SetOwnerID(id uuid.UUID) *CharsheetCreate {
 	cc.mutation.SetOwnerID(id)
 	return cc
 }
 
 // SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
-func (cc *CharsheetCreate) SetNillableOwnerID(id *string) *CharsheetCreate {
+func (cc *CharsheetCreate) SetNillableOwnerID(id *uuid.UUID) *CharsheetCreate {
 	if id != nil {
 		cc = cc.SetOwnerID(*id)
 	}
@@ -187,7 +188,7 @@ func (cc *CharsheetCreate) createSpec() (*Charsheet, *sqlgraph.CreateSpec) {
 			Columns: []string{charsheet.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

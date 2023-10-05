@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 )
 
 // CharsheetUpdate is the builder for updating Charsheet entities.
@@ -59,13 +60,13 @@ func (cu *CharsheetUpdate) SetPortrait(s string) *CharsheetUpdate {
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (cu *CharsheetUpdate) SetOwnerID(id string) *CharsheetUpdate {
+func (cu *CharsheetUpdate) SetOwnerID(id uuid.UUID) *CharsheetUpdate {
 	cu.mutation.SetOwnerID(id)
 	return cu
 }
 
 // SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
-func (cu *CharsheetUpdate) SetNillableOwnerID(id *string) *CharsheetUpdate {
+func (cu *CharsheetUpdate) SetNillableOwnerID(id *uuid.UUID) *CharsheetUpdate {
 	if id != nil {
 		cu = cu.SetOwnerID(*id)
 	}
@@ -147,7 +148,7 @@ func (cu *CharsheetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{charsheet.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -160,7 +161,7 @@ func (cu *CharsheetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{charsheet.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {
@@ -219,13 +220,13 @@ func (cuo *CharsheetUpdateOne) SetPortrait(s string) *CharsheetUpdateOne {
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (cuo *CharsheetUpdateOne) SetOwnerID(id string) *CharsheetUpdateOne {
+func (cuo *CharsheetUpdateOne) SetOwnerID(id uuid.UUID) *CharsheetUpdateOne {
 	cuo.mutation.SetOwnerID(id)
 	return cuo
 }
 
 // SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
-func (cuo *CharsheetUpdateOne) SetNillableOwnerID(id *string) *CharsheetUpdateOne {
+func (cuo *CharsheetUpdateOne) SetNillableOwnerID(id *uuid.UUID) *CharsheetUpdateOne {
 	if id != nil {
 		cuo = cuo.SetOwnerID(*id)
 	}
@@ -337,7 +338,7 @@ func (cuo *CharsheetUpdateOne) sqlSave(ctx context.Context) (_node *Charsheet, e
 			Columns: []string{charsheet.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -350,7 +351,7 @@ func (cuo *CharsheetUpdateOne) sqlSave(ctx context.Context) (_node *Charsheet, e
 			Columns: []string{charsheet.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

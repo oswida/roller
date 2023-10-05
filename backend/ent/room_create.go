@@ -12,6 +12,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 )
 
 // RoomCreate is the builder for creating a Room entity.
@@ -55,13 +56,13 @@ func (rc *RoomCreate) AddRolls(r ...*Roll) *RoomCreate {
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (rc *RoomCreate) SetOwnerID(id string) *RoomCreate {
+func (rc *RoomCreate) SetOwnerID(id uuid.UUID) *RoomCreate {
 	rc.mutation.SetOwnerID(id)
 	return rc
 }
 
 // SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
-func (rc *RoomCreate) SetNillableOwnerID(id *string) *RoomCreate {
+func (rc *RoomCreate) SetNillableOwnerID(id *uuid.UUID) *RoomCreate {
 	if id != nil {
 		rc = rc.SetOwnerID(*id)
 	}
@@ -180,7 +181,7 @@ func (rc *RoomCreate) createSpec() (*Room, *sqlgraph.CreateSpec) {
 			Columns: []string{room.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

@@ -11,6 +11,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 )
 
 // Charsheet is the model entity for the Charsheet schema.
@@ -31,7 +32,7 @@ type Charsheet struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the CharsheetQuery when eager-loading is set.
 	Edges           CharsheetEdges `json:"edges"`
-	user_charsheets *string
+	user_charsheets *uuid.UUID
 	selectValues    sql.SelectValues
 }
 
@@ -69,7 +70,7 @@ func (*Charsheet) scanValues(columns []string) ([]any, error) {
 		case charsheet.FieldID, charsheet.FieldName, charsheet.FieldTemplate, charsheet.FieldPortrait:
 			values[i] = new(sql.NullString)
 		case charsheet.ForeignKeys[0]: // user_charsheets
-			values[i] = new(sql.NullString)
+			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -124,11 +125,11 @@ func (c *Charsheet) assignValues(columns []string, values []any) error {
 				c.Portrait = value.String
 			}
 		case charsheet.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullString); !ok {
+			if value, ok := values[i].(*sql.NullScanner); !ok {
 				return fmt.Errorf("unexpected type %T for field user_charsheets", values[i])
 			} else if value.Valid {
-				c.user_charsheets = new(string)
-				*c.user_charsheets = value.String
+				c.user_charsheets = new(uuid.UUID)
+				*c.user_charsheets = *value.S.(*uuid.UUID)
 			}
 		default:
 			c.selectValues.Set(columns[i], values[i])

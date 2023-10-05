@@ -1,0 +1,5 @@
+[web]
+jwt_secret = "zxzxzxx"
+
+[server]
+port = 5000

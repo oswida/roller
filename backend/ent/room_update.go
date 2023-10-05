@@ -14,6 +14,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 )
 
 // RoomUpdate is the builder for updating Room entities.
@@ -57,13 +58,13 @@ func (ru *RoomUpdate) AddRolls(r ...*Roll) *RoomUpdate {
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (ru *RoomUpdate) SetOwnerID(id string) *RoomUpdate {
+func (ru *RoomUpdate) SetOwnerID(id uuid.UUID) *RoomUpdate {
 	ru.mutation.SetOwnerID(id)
 	return ru
 }
 
 // SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
-func (ru *RoomUpdate) SetNillableOwnerID(id *string) *RoomUpdate {
+func (ru *RoomUpdate) SetNillableOwnerID(id *uuid.UUID) *RoomUpdate {
 	if id != nil {
 		ru = ru.SetOwnerID(*id)
 	}
@@ -202,7 +203,7 @@ func (ru *RoomUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{room.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -215,7 +216,7 @@ func (ru *RoomUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{room.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {
@@ -271,13 +272,13 @@ func (ruo *RoomUpdateOne) AddRolls(r ...*Roll) *RoomUpdateOne {
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (ruo *RoomUpdateOne) SetOwnerID(id string) *RoomUpdateOne {
+func (ruo *RoomUpdateOne) SetOwnerID(id uuid.UUID) *RoomUpdateOne {
 	ruo.mutation.SetOwnerID(id)
 	return ruo
 }
 
 // SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
-func (ruo *RoomUpdateOne) SetNillableOwnerID(id *string) *RoomUpdateOne {
+func (ruo *RoomUpdateOne) SetNillableOwnerID(id *uuid.UUID) *RoomUpdateOne {
 	if id != nil {
 		ruo = ruo.SetOwnerID(*id)
 	}
@@ -446,7 +447,7 @@ func (ruo *RoomUpdateOne) sqlSave(ctx context.Context) (_node *Room, err error) 
 			Columns: []string{room.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -459,7 +460,7 @@ func (ruo *RoomUpdateOne) sqlSave(ctx context.Context) (_node *Room, err error) 
 			Columns: []string{room.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

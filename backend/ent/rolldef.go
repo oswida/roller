@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 )
 
 // RollDef is the model entity for the RollDef schema.
@@ -34,7 +35,7 @@ type RollDef struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the RollDefQuery when eager-loading is set.
 	Edges         RollDefEdges `json:"edges"`
-	user_rolldefs *string
+	user_rolldefs *uuid.UUID
 	selectValues  sql.SelectValues
 }
 
@@ -72,7 +73,7 @@ func (*RollDef) scanValues(columns []string) ([]any, error) {
 		case rolldef.FieldID, rolldef.FieldName, rolldef.FieldDice, rolldef.FieldSuccessRule, rolldef.FieldSuccessTarget, rolldef.FieldComment:
 			values[i] = new(sql.NullString)
 		case rolldef.ForeignKeys[0]: // user_rolldefs
-			values[i] = new(sql.NullString)
+			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -137,11 +138,11 @@ func (rd *RollDef) assignValues(columns []string, values []any) error {
 				rd.Shared = value.Bool
 			}
 		case rolldef.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullString); !ok {
+			if value, ok := values[i].(*sql.NullScanner); !ok {
 				return fmt.Errorf("unexpected type %T for field user_rolldefs", values[i])
 			} else if value.Valid {
-				rd.user_rolldefs = new(string)
-				*rd.user_rolldefs = value.String
+				rd.user_rolldefs = new(uuid.UUID)
+				*rd.user_rolldefs = *value.S.(*uuid.UUID)
 			}
 		default:
 			rd.selectValues.Set(columns[i], values[i])

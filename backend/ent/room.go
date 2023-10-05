@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 )
 
 // Room is the model entity for the Room schema.
@@ -24,7 +25,7 @@ type Room struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the RoomQuery when eager-loading is set.
 	Edges        RoomEdges `json:"edges"`
-	user_rooms   *string
+	user_rooms   *uuid.UUID
 	selectValues sql.SelectValues
 }
 
@@ -69,7 +70,7 @@ func (*Room) scanValues(columns []string) ([]any, error) {
 		case room.FieldID, room.FieldName, room.FieldBkg:
 			values[i] = new(sql.NullString)
 		case room.ForeignKeys[0]: // user_rooms
-			values[i] = new(sql.NullString)
+			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -104,11 +105,11 @@ func (r *Room) assignValues(columns []string, values []any) error {
 				r.Bkg = value.String
 			}
 		case room.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullString); !ok {
+			if value, ok := values[i].(*sql.NullScanner); !ok {
 				return fmt.Errorf("unexpected type %T for field user_rooms", values[i])
 			} else if value.Valid {
-				r.user_rooms = new(string)
-				*r.user_rooms = value.String
+				r.user_rooms = new(uuid.UUID)
+				*r.user_rooms = *value.S.(*uuid.UUID)
 			}
 		default:
 			r.selectValues.Set(columns[i], values[i])

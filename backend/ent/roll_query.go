@@ -14,6 +14,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 )
 
 // RollQuery is the builder for querying Roll entities.
@@ -452,8 +453,8 @@ func (rq *RollQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Roll, e
 }
 
 func (rq *RollQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*Roll, init func(*Roll), assign func(*Roll, *User)) error {
-	ids := make([]string, 0, len(nodes))
-	nodeids := make(map[string][]*Roll)
+	ids := make([]uuid.UUID, 0, len(nodes))
+	nodeids := make(map[uuid.UUID][]*Roll)
 	for i := range nodes {
 		if nodes[i].user_rolls == nil {
 			continue

@@ -5,33 +5,23 @@ import (
 	"rpgroll/db"
 
 	"github.com/centrifugal/centrifuge"
+	"github.com/google/uuid"
 )
 
-func (eng *Engine) Login(username, passwd string) (string, string, error) {
-	eng.mux.Lock()
-	defer eng.mux.Unlock()
-
-	u, err := eng.Db.Login(username, passwd)
-	if err != nil {
-		return "", "", err
-	}
-	return u.ID, u.Name, nil
+func (eng *Server) RpcUserinfo(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
+	return eng.Db.UserGet(uuid.MustParse(client.UserID()), true)
 }
 
-func (eng *Engine) RpcUserinfo(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
-	return eng.Db.UserGet(client.UserID(), true)
-}
-
-func (eng *Engine) RpcUserUpdate(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
+func (eng *Server) RpcUserUpdate(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
 	var data db.UserUpdateData
 	err := json.Unmarshal(e.Data, &data)
 	if err != nil {
 		return nil, err
 	}
-	return eng.Db.UserUpdate(client.UserID(), data)
+	return eng.Db.UserUpdate(uuid.MustParse(client.UserID()), data)
 }
 
-func (eng *Engine) RpcRoomUpdate(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
+func (eng *Server) RpcRoomUpdate(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
@@ -40,10 +30,10 @@ func (eng *Engine) RpcRoomUpdate(e centrifuge.RPCEvent, client *centrifuge.Clien
 	if err != nil {
 		return nil, err
 	}
-	return eng.Db.RoomUpdate(client.UserID(), data.Room, data.Data)
+	return eng.Db.RoomUpdate(uuid.MustParse(client.UserID()), data.Room, data.Data)
 }
 
-func (eng *Engine) RpcRoomDelete(e centrifuge.RPCEvent) ([]byte, error) {
+func (eng *Server) RpcRoomDelete(e centrifuge.RPCEvent) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
@@ -55,7 +45,7 @@ func (eng *Engine) RpcRoomDelete(e centrifuge.RPCEvent) ([]byte, error) {
 	return eng.Db.RoomDelete(data.Room)
 }
 
-func (eng *Engine) RpcRoomList(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
+func (eng *Server) RpcRoomList(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
@@ -68,7 +58,7 @@ func (eng *Engine) RpcRoomList(e centrifuge.RPCEvent, client *centrifuge.Client)
 	return eng.Db.RoomList(data.Data)
 }
 
-func (eng *Engine) RpcCsUpdate(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
+func (eng *Server) RpcCsUpdate(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
@@ -80,7 +70,7 @@ func (eng *Engine) RpcCsUpdate(e centrifuge.RPCEvent, client *centrifuge.Client)
 	return eng.Db.CsUpdate(client.UserID(), data.Data)
 }
 
-func (eng *Engine) RpcCsDelete(e centrifuge.RPCEvent) ([]byte, error) {
+func (eng *Server) RpcCsDelete(e centrifuge.RPCEvent) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
@@ -92,13 +82,13 @@ func (eng *Engine) RpcCsDelete(e centrifuge.RPCEvent) ([]byte, error) {
 	return eng.Db.CsDelete(data.Data.Id)
 }
 
-func (eng *Engine) RpcCsList(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
+func (eng *Server) RpcCsList(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
-	return eng.Db.CsList(client.UserID())
+	return eng.Db.CsList(uuid.MustParse(client.UserID()))
 }
 
-func (eng *Engine) RpcRollUpdate(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
+func (eng *Server) RpcRollUpdate(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
@@ -107,10 +97,10 @@ func (eng *Engine) RpcRollUpdate(e centrifuge.RPCEvent, client *centrifuge.Clien
 	if err != nil {
 		return nil, err
 	}
-	return eng.Db.RollUpdate(client.UserID(), data.Room, data.Data)
+	return eng.Db.RollUpdate(uuid.MustParse(client.UserID()), data.Room, data.Data)
 }
 
-func (eng *Engine) RpcRollList(e centrifuge.RPCEvent) ([]byte, error) {
+func (eng *Server) RpcRollList(e centrifuge.RPCEvent) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
@@ -123,7 +113,7 @@ func (eng *Engine) RpcRollList(e centrifuge.RPCEvent) ([]byte, error) {
 	return eng.Db.RollList(data.Room)
 }
 
-func (eng *Engine) RpcRollClear(e centrifuge.RPCEvent) ([]byte, error) {
+func (eng *Server) RpcRollClear(e centrifuge.RPCEvent) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
@@ -135,13 +125,13 @@ func (eng *Engine) RpcRollClear(e centrifuge.RPCEvent) ([]byte, error) {
 	return eng.Db.RollClear(data.Room)
 }
 
-func (eng *Engine) RpcRollDefList(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
+func (eng *Server) RpcRollDefList(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
-	return eng.Db.RollDefList(client.UserID())
+	return eng.Db.RollDefList(uuid.MustParse(client.UserID()))
 }
 
-func (eng *Engine) RpcRollDefUpdate(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
+func (eng *Server) RpcRollDefUpdate(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
@@ -150,10 +140,10 @@ func (eng *Engine) RpcRollDefUpdate(e centrifuge.RPCEvent, client *centrifuge.Cl
 	if err != nil {
 		return nil, err
 	}
-	return eng.Db.RollDefUpdate(client.UserID(), data.Data)
+	return eng.Db.RollDefUpdate(uuid.MustParse(client.UserID()), data.Data)
 }
 
-func (eng *Engine) RpcRollDefDelete(e centrifuge.RPCEvent) ([]byte, error) {
+func (eng *Server) RpcRollDefDelete(e centrifuge.RPCEvent) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
@@ -165,7 +155,7 @@ func (eng *Engine) RpcRollDefDelete(e centrifuge.RPCEvent) ([]byte, error) {
 	return eng.Db.RollDefDelete(data.Data.ID)
 }
 
-func (eng *Engine) RpcUserCreate(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
+func (eng *Server) RpcUserCreate(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 

@@ -5,9 +5,10 @@ import (
 	"rpgroll/db"
 
 	"github.com/centrifugal/centrifuge"
+	"github.com/google/uuid"
 )
 
-func (eng *Engine) RollPublishCallback(e centrifuge.PublishEvent, client *centrifuge.Client) error {
+func (eng *Server) RollPublishCallback(e centrifuge.PublishEvent, client *centrifuge.Client) error {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
@@ -17,12 +18,12 @@ func (eng *Engine) RollPublishCallback(e centrifuge.PublishEvent, client *centri
 		return err
 	}
 
-	_, err = eng.Db.RollUpdate(client.UserID(), data.Room, data.Data)
+	_, err = eng.Db.RollUpdate(uuid.MustParse(client.UserID()), data.Room, data.Data)
 
 	return err
 }
 
-func (eng *Engine) CsInfoPublishCallback(e centrifuge.PublishEvent, client *centrifuge.Client) error {
+func (eng *Server) CsInfoPublishCallback(e centrifuge.PublishEvent, client *centrifuge.Client) error {
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 

@@ -5,9 +5,10 @@ package main
 
 import (
 	"fmt"
-	cp "github.com/otiai10/copy"
 	"os"
 	"os/exec"
+
+	cp "github.com/otiai10/copy"
 )
 
 // A build step that requires additional params, or platform specific steps for example
@@ -24,7 +25,7 @@ func Build() error {
 	}
 	back()
 
-	if err := cp.Copy("frontend/dist/public", "backend/fnd"); err != nil {
+	if err := cp.Copy("frontend/dist/public", "backend/resources/web"); err != nil {
 		return err
 	}
 
@@ -46,6 +47,6 @@ func Build() error {
 func Clean() {
 	fmt.Println("Cleaning...")
 	os.RemoveAll("backend/rpgroll")
-	os.RemoveAll("backend/fnd/*")
+	os.RemoveAll("backend/resources/web/*")
 	os.RemoveAll("frontend/dist/*")
 }

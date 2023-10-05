@@ -14,7 +14,7 @@ func hashPasswd(passwd string) string {
 	return fmt.Sprintf("%x", hash)
 }
 
-func (d *DB) Login(login string, passwd string) (*ent.User, error) {
+func (d *Database) Login(login string, passwd string) (*ent.User, error) {
 	h := hashPasswd(passwd)
 	return d.Client.User.Query().
 		Where(user.And(user.LoginEQ(login), user.PasswdEQ(h))).

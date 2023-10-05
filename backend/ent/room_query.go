@@ -15,6 +15,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 )
 
 // RoomQuery is the builder for querying Room entities.
@@ -485,8 +486,8 @@ func (rq *RoomQuery) loadRolls(ctx context.Context, query *RollQuery, nodes []*R
 	return nil
 }
 func (rq *RoomQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*Room, init func(*Room), assign func(*Room, *User)) error {
-	ids := make([]string, 0, len(nodes))
-	nodeids := make(map[string][]*Room)
+	ids := make([]uuid.UUID, 0, len(nodes))
+	nodeids := make(map[uuid.UUID][]*Room)
 	for i := range nodes {
 		if nodes[i].user_rooms == nil {
 			continue

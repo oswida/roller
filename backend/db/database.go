@@ -14,23 +14,25 @@ import (
 	"rpgroll/ent/user"
 
 	"github.com/google/uuid"
+	"github.com/knadh/koanf/v2"
 	_ "github.com/xiaoqidun/entps"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/argon2"
-	// _ "modernc.org/sqlite"
 )
 
-type DB struct {
+type Database struct {
 	Client *ent.Client
 	Log    *zap.Logger
+
+	config *koanf.Koanf
 }
 
-func createAdminUser(client *ent.Client) error {
+func createAdminUser(client *ent.Client, cfg *koanf.Koanf) error {
 	_, err := client.User.Query().Where(user.LoginEQ("admin")).First(context.Background())
 	if err != nil {
-		hash := argon2.IDKey([]byte("admin"), []byte("anything"), 1, 64*1024, 4, 32)
+		hash := argon2.IDKey([]byte("admin"), []byte(cfg.String("web.jwt_secret")), 1, 64*1024, 4, 32)
 		return client.User.Create().
-			SetID(uuid.NewString()).
+			SetID(uuid.New()).
 			SetName("Admin").
 			SetLogin("admin").
 			SetIsAdmin(true).
@@ -41,7 +43,7 @@ func createAdminUser(client *ent.Client) error {
 	return nil
 }
 
-func NewDatabase(log *zap.Logger) (*DB, error) {
+func NewDatabase(log *zap.Logger, cfg *koanf.Koanf) (*Database, error) {
 	client, err := ent.Open("sqlite3", "file:./roller.db")
 	if err != nil {
 		return nil, err
@@ -49,22 +51,23 @@ func NewDatabase(log *zap.Logger) (*DB, error) {
 	if err := client.Schema.Create(context.Background()); err != nil {
 		return nil, err
 	}
-	if err := createAdminUser(client); err != nil {
+	if err := createAdminUser(client, cfg); err != nil {
 		return nil, err
 	}
-	return &DB{
+	return &Database{
 		Client: client,
 		Log:    log,
+		config: cfg,
 	}, nil
 }
 
-func (d *DB) Close() {
+func (d *Database) Close() {
 	d.Client.Close()
 }
 
 // Charsheets
 
-func (d *DB) CsUpdate(userID string, data CsInfo) ([]byte, error) {
+func (d *Database) CsUpdate(userID string, data CsInfo) ([]byte, error) {
 	cs, _ := d.Client.Charsheet.Get(context.Background(), data.Id)
 	if cs == nil {
 		err := d.Client.Charsheet.Create().
@@ -93,7 +96,7 @@ func (d *DB) CsUpdate(userID string, data CsInfo) ([]byte, error) {
 	return []byte{}, nil
 }
 
-func (d *DB) CsDelete(csID string) ([]byte, error) {
+func (d *Database) CsDelete(csID string) ([]byte, error) {
 	err := d.Client.Charsheet.DeleteOneID(csID).Exec(context.Background())
 	if err != nil {
 		return nil, err
@@ -101,7 +104,7 @@ func (d *DB) CsDelete(csID string) ([]byte, error) {
 	return []byte("OK"), nil
 }
 
-func (d *DB) CsList(userID string) ([]byte, error) {
+func (d *Database) CsList(userID uuid.UUID) ([]byte, error) {
 	list, err := d.Client.Charsheet.Query().
 		Where(charsheet.Or(
 			charsheet.HasOwnerWith(user.IDEQ(userID)),
@@ -115,7 +118,7 @@ func (d *DB) CsList(userID string) ([]byte, error) {
 
 // Users
 
-func (d *DB) UserUpdate(userID string, data UserUpdateData) ([]byte, error) {
+func (d *Database) UserUpdate(userID uuid.UUID, data UserUpdateData) ([]byte, error) {
 	err := d.Client.User.
 		UpdateOneID(userID).
 		SetName(data.Name).
@@ -131,7 +134,7 @@ func (d *DB) UserUpdate(userID string, data UserUpdateData) ([]byte, error) {
 	return json.Marshal(usr)
 }
 
-func (d *DB) UserGet(userID string, clearPasswd bool) ([]byte, error) {
+func (d *Database) UserGet(userID uuid.UUID, clearPasswd bool) ([]byte, error) {
 	usr, err := d.Client.User.Get(context.Background(), userID)
 	if err != nil {
 		return nil, err
@@ -142,9 +145,9 @@ func (d *DB) UserGet(userID string, clearPasswd bool) ([]byte, error) {
 	return json.Marshal(usr)
 }
 
-func (d *DB) UserCreate(name string, passwd string) ([]byte, error) {
+func (d *Database) UserCreate(name string, passwd string) ([]byte, error) {
 	hash := argon2.IDKey([]byte(passwd), []byte("anything"), 1, 64*1024, 4, 32)
-	userID := uuid.NewString()
+	userID := uuid.New()
 	err := d.Client.User.
 		Create().
 		SetID(userID).
@@ -167,7 +170,7 @@ func (d *DB) UserCreate(name string, passwd string) ([]byte, error) {
 
 // Rooms
 
-func (d *DB) RoomUpdate(userID string, roomID string, data RoomInfo) ([]byte, error) {
+func (d *Database) RoomUpdate(userID uuid.UUID, roomID string, data RoomInfo) ([]byte, error) {
 	room, _ := d.Client.Room.Get(context.Background(), roomID)
 	if room == nil {
 		err := d.Client.Room.Create().
@@ -194,7 +197,7 @@ func (d *DB) RoomUpdate(userID string, roomID string, data RoomInfo) ([]byte, er
 	return json.Marshal(room)
 }
 
-func (d *DB) RoomDelete(roomID string) ([]byte, error) {
+func (d *Database) RoomDelete(roomID string) ([]byte, error) {
 	err := d.Client.Room.DeleteOneID(roomID).Exec(context.Background())
 	if err != nil {
 		d.Log.Error("RoomDelete", zap.Error(err))
@@ -204,7 +207,7 @@ func (d *DB) RoomDelete(roomID string) ([]byte, error) {
 	return []byte{}, nil
 }
 
-func (d *DB) RoomList(idents []string) ([]byte, error) {
+func (d *Database) RoomList(idents []string) ([]byte, error) {
 	rooms, err := d.Client.Room.Query().
 		Where(room.IDIn(idents...)).
 		WithOwner(func(uq *ent.UserQuery) { uq.FirstID(context.Background()) }).
@@ -217,7 +220,7 @@ func (d *DB) RoomList(idents []string) ([]byte, error) {
 
 // Rolls
 
-func (d *DB) RollUpdate(userID string, roomID string, data RollInfo) ([]byte, error) {
+func (d *Database) RollUpdate(userID uuid.UUID, roomID string, data RollInfo) ([]byte, error) {
 	roll, _ := d.Client.Roll.Get(context.Background(), data.Id)
 	if roll == nil {
 		err := d.Client.Roll.Create().
@@ -263,7 +266,7 @@ func (d *DB) RollUpdate(userID string, roomID string, data RollInfo) ([]byte, er
 	return json.Marshal(roll)
 }
 
-func (d *DB) RollList(roomID string) ([]byte, error) {
+func (d *Database) RollList(roomID string) ([]byte, error) {
 	rolls, err := d.Client.Roll.Query().Where(roll.HasRoomWith(room.IDEQ(roomID))).All(context.Background())
 	if err != nil {
 		return nil, err
@@ -271,14 +274,14 @@ func (d *DB) RollList(roomID string) ([]byte, error) {
 	return json.Marshal(rolls)
 }
 
-func (d *DB) RollClear(roomID string) ([]byte, error) {
+func (d *Database) RollClear(roomID string) ([]byte, error) {
 	_, err := d.Client.Roll.Delete().Where(roll.HasRoomWith(room.IDEQ(roomID))).Exec(context.Background())
 	return []byte{}, err
 }
 
 // Roll definition
 
-func (d *DB) RollDefUpdate(userID string, data RollDefInfo) ([]byte, error) {
+func (d *Database) RollDefUpdate(userID uuid.UUID, data RollDefInfo) ([]byte, error) {
 	def, _ := d.Client.RollDef.Get(context.Background(), data.ID)
 	if def == nil {
 		err := d.Client.RollDef.Create().
@@ -317,7 +320,7 @@ func (d *DB) RollDefUpdate(userID string, data RollDefInfo) ([]byte, error) {
 	return json.Marshal(def)
 }
 
-func (d *DB) RollDefList(userID string) ([]byte, error) {
+func (d *Database) RollDefList(userID uuid.UUID) ([]byte, error) {
 	defs, err := d.Client.RollDef.Query().
 		Where(rolldef.Or(rolldef.HasOwnerWith(user.IDEQ(userID)), rolldef.SharedEQ(true))).
 		All(context.Background())
@@ -327,7 +330,7 @@ func (d *DB) RollDefList(userID string) ([]byte, error) {
 	return json.Marshal(defs)
 }
 
-func (d *DB) RollDefDelete(defID string) ([]byte, error) {
+func (d *Database) RollDefDelete(defID string) ([]byte, error) {
 	err := d.Client.RollDef.DeleteOneID(defID).Exec(context.Background())
 	if err != nil {
 		return nil, err

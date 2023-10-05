@@ -16,7 +16,7 @@ var (
 		{Name: "values", Type: field.TypeJSON},
 		{Name: "shared", Type: field.TypeBool},
 		{Name: "portrait", Type: field.TypeString},
-		{Name: "user_charsheets", Type: field.TypeString, Nullable: true},
+		{Name: "user_charsheets", Type: field.TypeUUID, Nullable: true},
 	}
 	// CharsheetsTable holds the schema information for the "charsheets" table.
 	CharsheetsTable = &schema.Table{
@@ -46,7 +46,7 @@ var (
 		{Name: "private", Type: field.TypeBool},
 		{Name: "revealed", Type: field.TypeBool},
 		{Name: "room_rolls", Type: field.TypeString, Nullable: true},
-		{Name: "user_rolls", Type: field.TypeString, Nullable: true},
+		{Name: "user_rolls", Type: field.TypeUUID, Nullable: true},
 	}
 	// RollsTable holds the schema information for the "rolls" table.
 	RollsTable = &schema.Table{
@@ -78,7 +78,7 @@ var (
 		{Name: "success_target", Type: field.TypeString},
 		{Name: "comment", Type: field.TypeString},
 		{Name: "shared", Type: field.TypeBool, Default: false},
-		{Name: "user_rolldefs", Type: field.TypeString, Nullable: true},
+		{Name: "user_rolldefs", Type: field.TypeUUID, Nullable: true},
 	}
 	// RollDefsTable holds the schema information for the "roll_defs" table.
 	RollDefsTable = &schema.Table{
@@ -99,7 +99,7 @@ var (
 		{Name: "id", Type: field.TypeString, Unique: true},
 		{Name: "name", Type: field.TypeString},
 		{Name: "bkg", Type: field.TypeString},
-		{Name: "user_rooms", Type: field.TypeString, Nullable: true},
+		{Name: "user_rooms", Type: field.TypeUUID, Nullable: true},
 	}
 	// RoomsTable holds the schema information for the "rooms" table.
 	RoomsTable = &schema.Table{
@@ -117,7 +117,7 @@ var (
 	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeString, Unique: true},
+		{Name: "id", Type: field.TypeUUID},
 		{Name: "login", Type: field.TypeString},
 		{Name: "passwd", Type: field.TypeString},
 		{Name: "is_admin", Type: field.TypeBool, Default: false},

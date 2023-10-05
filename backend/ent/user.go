@@ -10,13 +10,14 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 )
 
 // User is the model entity for the User schema.
 type User struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID string `json:"id,omitempty"`
+	ID uuid.UUID `json:"id,omitempty"`
 	// Login holds the value of the "login" field.
 	Login string `json:"login,omitempty"`
 	// Passwd holds the value of the "passwd" field.
@@ -95,8 +96,10 @@ func (*User) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case user.FieldIsAdmin:
 			values[i] = new(sql.NullBool)
-		case user.FieldID, user.FieldLogin, user.FieldPasswd, user.FieldName, user.FieldColor:
+		case user.FieldLogin, user.FieldPasswd, user.FieldName, user.FieldColor:
 			values[i] = new(sql.NullString)
+		case user.FieldID:
+			values[i] = new(uuid.UUID)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -113,10 +116,10 @@ func (u *User) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case user.FieldID:
-			if value, ok := values[i].(*sql.NullString); !ok {
+			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
-			} else if value.Valid {
-				u.ID = value.String
+			} else if value != nil {
+				u.ID = *value
 			}
 		case user.FieldLogin:
 			if value, ok := values[i].(*sql.NullString); !ok {
