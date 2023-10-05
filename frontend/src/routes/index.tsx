@@ -1,25 +1,32 @@
-import { Show, onCleanup, onMount } from "solid-js";
-import { Toaster } from "solid-toast";
-import { netLoadRolls, currentRightPanel, currentRoom, loggedUser } from "~/common";
-import { Flex } from "~/components";
-import { CsPanel, RollPanel, TopBar } from "~/views";
-import { appStyle, mainStyle } from "./styles.css";
-import { ifvisible } from "@rosskevin/ifvisible";
-import { useNavigate } from "solid-start";
+import { createEffect } from "solid-js";
+import { appStyle } from "./styles.css";
+import { fabric } from "fabric";
+import { canvasRef, setCanvasRef } from "~/common";
+import { TopBar } from "~/views/TopBar";
 
 export default function Home() {
-  let mainRef: HTMLDivElement;
-  let barRef: HTMLDivElement;
 
-  const visibilityHandler = () => {
-    const room = currentRoom();
-    if (!room) return;
-    netLoadRolls(room.id);
-  };
-
-  ifvisible.on("wakeup", () => {
-    visibilityHandler();
+  createEffect(() => {
+    if (canvasRef() !== undefined) return;
+    const canvas = new fabric.Canvas("main-canvas", { width: 2000, height: 2000 });
+    setCanvasRef(canvas);
+    const rec = new fabric.Rect({ width: 200, height: 200, left: 100, top: 100, fill: "red" });
+    canvas.add(rec);
+    canvas.requestRenderAll();
   });
+
+  // let mainRef: HTMLDivElement;
+  // let barRef: HTMLDivElement;
+
+  // const visibilityHandler = () => {
+  //   const room = currentRoom();
+  //   if (!room) return;
+  //   netLoadRolls(room.id);
+  // };
+
+  // ifvisible.on("wakeup", () => {
+  //   visibilityHandler();
+  // });
 
   // onMount(() => {
   //   document.addEventListener("visibilitychange", visibilityHandler, false);
@@ -31,7 +38,9 @@ export default function Home() {
 
   return (
     <main class={appStyle}>
-      <div id="app" class={mainStyle} ref={(e) => (mainRef = e)}>
+      <canvas id="main-canvas"></canvas>
+      <TopBar />
+      {/* <div id="app" class={mainStyle} ref={(e) => (mainRef = e)}>
         <TopBar ref={(e: any) => (barRef = e)} />
         <Flex style={{ width: "100vw" }}>
           <RollPanel visible={() => true} />
@@ -41,7 +50,7 @@ export default function Home() {
 
         </Flex>
         <Toaster />
-      </div>
+      </div> */}
     </main>
   );
 }

@@ -26,8 +26,6 @@ type User struct {
 	IsAdmin bool `json:"is_admin,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
-	// Color holds the value of the "color" field.
-	Color string `json:"color,omitempty"`
 	// Settings holds the value of the "settings" field.
 	Settings map[string]interface{} `json:"settings,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -96,7 +94,7 @@ func (*User) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case user.FieldIsAdmin:
 			values[i] = new(sql.NullBool)
-		case user.FieldLogin, user.FieldPasswd, user.FieldName, user.FieldColor:
+		case user.FieldLogin, user.FieldPasswd, user.FieldName:
 			values[i] = new(sql.NullString)
 		case user.FieldID:
 			values[i] = new(uuid.UUID)
@@ -144,12 +142,6 @@ func (u *User) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
 				u.Name = value.String
-			}
-		case user.FieldColor:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field color", values[i])
-			} else if value.Valid {
-				u.Color = value.String
 			}
 		case user.FieldSettings:
 			if value, ok := values[i].(*[]byte); !ok {
@@ -226,9 +218,6 @@ func (u *User) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(u.Name)
-	builder.WriteString(", ")
-	builder.WriteString("color=")
-	builder.WriteString(u.Color)
 	builder.WriteString(", ")
 	builder.WriteString("settings=")
 	builder.WriteString(fmt.Sprintf("%v", u.Settings))

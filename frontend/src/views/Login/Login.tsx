@@ -1,19 +1,39 @@
-import { Component } from "solid-js";
+import { Component, createSignal } from "solid-js";
 import { Form } from "solid-start/data/Form";
-import { netInit } from "~/common";
+import { setStateJwtToken } from "~/common";
 import { Button, Flex, Input, Text } from "~/components";
 import { loginRootStyle } from "./styles.css";
 import { FaSolidDiceD20 } from "solid-icons/fa";
 import { themeVars } from "~/common/theme.css";
 
 export const Login: Component = () => {
-    let username: HTMLInputElement;
-    let passwd: HTMLInputElement;
+    const [username, setUsername] = createSignal("");
+    const [passwd, setPasswd] = createSignal("");
 
 
     const login = () => {
-        if (!username || !passwd) return;
-        netInit(username.value, passwd.value);
+        if (username().trim() === "" || passwd().trim() === "") return;
+        const uri = import.meta.env.DEV ? "/api/login" : "login";
+        fetch(uri, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                username: username(),
+                password: passwd(),
+            })
+        }).then((resp) => {
+            if (resp.status == 200) {
+                resp.text().then((t) => {
+                    setStateJwtToken(t);
+                })
+            } else {
+                console.error(resp);
+            }
+        }).catch((err) => {
+            console.error("login err", err);
+        })
     }
 
     return <div class={loginRootStyle}>
@@ -23,9 +43,9 @@ export const Login: Component = () => {
         </Flex>
         <Form onSubmit={login} >
             <Flex direction="column" align="center" gap="large">
-                <Input ref={(e) => username = e} label="Username" />
-                <Input ref={(e) => passwd = e} type="password" label="Password" />
-                <Button type="submit">Login</Button>
+                <Input onInput={(e) => setUsername(e.target.value)} label="Username" />
+                <Input onInput={(e) => setPasswd(e.target.value)} type="password" label="Password" />
+                <Button type="submit" onClick={login}>Login</Button>
             </Flex>
         </Form>
     </div>

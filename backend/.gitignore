@@ -4,4 +4,4 @@ rpgroll
 data/
 *.zip
 *.db
-web/
+resources/web/

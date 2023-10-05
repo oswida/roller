@@ -1,5 +1,5 @@
 import { style } from "@vanilla-extract/css";
-import { sprinkles } from "~/common/theme.css";
+import { sprinkles, themeZindex } from "~/common/theme.css";
 
 export const tooltipRootStyle = style([
   sprinkles({
@@ -15,6 +15,7 @@ export const tooltipRootStyle = style([
   }),
   {
     maxWidth: "40em",
+    zIndex: themeZindex.tooltip
     // boxShadow: "5px 5px 5px #00000055",
   },
 ]);

@@ -11,6 +11,12 @@ export const themeSpace: Record<string, string> = {
   circle: "50%",
 };
 
+export const themeZindex: Record<string, number> = {
+  "tooltip": 500,
+  "popover": 200,
+  "panel": 100,
+}
+
 export const themeTokens = {
   none: "none",
   white: "white",
@@ -712,3 +718,6 @@ export const colorThemeRedDark = {
   [themeVars.danger200]: "#5B0735",
   [themeVars.danger100]: "#4B0432",
 };
+
+export type colorThemeType = "blue" | "blueDark" | "red" |
+  "redDark" | "brown" | "brownDark" | "green" | "greenDark" | "teal" | "tealDark";

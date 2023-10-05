@@ -2938,7 +2938,6 @@ type UserMutation struct {
 	passwd            *string
 	is_admin          *bool
 	name              *string
-	color             *string
 	settings          *map[string]interface{}
 	clearedFields     map[string]struct{}
 	rooms             map[string]struct{}
@@ -3204,42 +3203,6 @@ func (m *UserMutation) OldName(ctx context.Context) (v string, err error) {
 // ResetName resets all changes to the "name" field.
 func (m *UserMutation) ResetName() {
 	m.name = nil
-}
-
-// SetColor sets the "color" field.
-func (m *UserMutation) SetColor(s string) {
-	m.color = &s
-}
-
-// Color returns the value of the "color" field in the mutation.
-func (m *UserMutation) Color() (r string, exists bool) {
-	v := m.color
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldColor returns the old "color" field's value of the User entity.
-// If the User object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserMutation) OldColor(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldColor is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldColor requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldColor: %w", err)
-	}
-	return oldValue.Color, nil
-}
-
-// ResetColor resets all changes to the "color" field.
-func (m *UserMutation) ResetColor() {
-	m.color = nil
 }
 
 // SetSettings sets the "settings" field.
@@ -3528,7 +3491,7 @@ func (m *UserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 6)
+	fields := make([]string, 0, 5)
 	if m.login != nil {
 		fields = append(fields, user.FieldLogin)
 	}
@@ -3540,9 +3503,6 @@ func (m *UserMutation) Fields() []string {
 	}
 	if m.name != nil {
 		fields = append(fields, user.FieldName)
-	}
-	if m.color != nil {
-		fields = append(fields, user.FieldColor)
 	}
 	if m.settings != nil {
 		fields = append(fields, user.FieldSettings)
@@ -3563,8 +3523,6 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 		return m.IsAdmin()
 	case user.FieldName:
 		return m.Name()
-	case user.FieldColor:
-		return m.Color()
 	case user.FieldSettings:
 		return m.Settings()
 	}
@@ -3584,8 +3542,6 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldIsAdmin(ctx)
 	case user.FieldName:
 		return m.OldName(ctx)
-	case user.FieldColor:
-		return m.OldColor(ctx)
 	case user.FieldSettings:
 		return m.OldSettings(ctx)
 	}
@@ -3624,13 +3580,6 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetName(v)
-		return nil
-	case user.FieldColor:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetColor(v)
 		return nil
 	case user.FieldSettings:
 		v, ok := value.(map[string]interface{})
@@ -3699,9 +3648,6 @@ func (m *UserMutation) ResetField(name string) error {
 		return nil
 	case user.FieldName:
 		m.ResetName()
-		return nil
-	case user.FieldColor:
-		m.ResetColor()
 		return nil
 	case user.FieldSettings:
 		m.ResetSettings()

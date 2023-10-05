@@ -14,34 +14,48 @@ import {
   Title,
 } from "solid-start";
 import {
-  loggedUser,
-  queueInit,
+  netConnect,
+  // queueInit,
+  stateJwtToken,
 } from "./common";
 import { rootStyle } from "./root.css";
 import { Login } from "./views/Login/Login";
+import { colorThemeType, themeFontFamilyType } from "./common/theme.css";
 
 export default function Root() {
-  queueInit();
+  // queueInit();
 
   const theme = createMemo(() => {
-    const lu = loggedUser();
-    if (!lu || !lu.settings.appTheme) return "blue";
-    return lu.settings.appTheme;
+    return "blue";
+    // const lu = loggedUser();
+    // if (!lu || !lu.settings.appTheme) return "blue";
+    // return lu.settings.appTheme;
   });
 
   const font = createMemo(() => {
-    const lu = loggedUser();
-    if (!lu || !lu.settings.appFont) return "Roboto";
-    return lu.settings.appFont;
+    return "Roboto";
+    // const lu = loggedUser();
+    // if (!lu || !lu.settings.appFont) return "Roboto";
+    // return lu.settings.appFont;
   })
+
+  const validToken = createMemo(() => {
+    if (stateJwtToken().trim() === "") return false;
+    return true;
+  });
+
+  createEffect(() => {
+    if (stateJwtToken().trim() === "") return;
+    netConnect();
+  });
 
 
   return (
     <Html
       lang="en"
       class={rootStyle({
-        theme: theme(),
-        font: font(),
+        theme: theme() as colorThemeType,
+        font: font() as themeFontFamilyType,
       })}
     >
       <Head>
@@ -87,12 +101,12 @@ export default function Root() {
       <Body>
         <Suspense>
           <ErrorBoundary>
-            <Show when={loggedUser() !== undefined}>
+            <Show when={validToken()}>
               <Routes>
                 <FileRoutes />
               </Routes>
             </Show>
-            <Show when={loggedUser() === undefined}>
+            <Show when={!validToken()}>
               <Login />
             </Show>
           </ErrorBoundary>

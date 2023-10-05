@@ -63,12 +63,6 @@ func (uu *UserUpdate) SetName(s string) *UserUpdate {
 	return uu
 }
 
-// SetColor sets the "color" field.
-func (uu *UserUpdate) SetColor(s string) *UserUpdate {
-	uu.mutation.SetColor(s)
-	return uu
-}
-
 // SetSettings sets the "settings" field.
 func (uu *UserUpdate) SetSettings(m map[string]interface{}) *UserUpdate {
 	uu.mutation.SetSettings(m)
@@ -271,9 +265,6 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := uu.mutation.Name(); ok {
 		_spec.SetField(user.FieldName, field.TypeString, value)
-	}
-	if value, ok := uu.mutation.Color(); ok {
-		_spec.SetField(user.FieldColor, field.TypeString, value)
 	}
 	if value, ok := uu.mutation.Settings(); ok {
 		_spec.SetField(user.FieldSettings, field.TypeJSON, value)
@@ -510,12 +501,6 @@ func (uuo *UserUpdateOne) SetName(s string) *UserUpdateOne {
 	return uuo
 }
 
-// SetColor sets the "color" field.
-func (uuo *UserUpdateOne) SetColor(s string) *UserUpdateOne {
-	uuo.mutation.SetColor(s)
-	return uuo
-}
-
 // SetSettings sets the "settings" field.
 func (uuo *UserUpdateOne) SetSettings(m map[string]interface{}) *UserUpdateOne {
 	uuo.mutation.SetSettings(m)
@@ -748,9 +733,6 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	}
 	if value, ok := uuo.mutation.Name(); ok {
 		_spec.SetField(user.FieldName, field.TypeString, value)
-	}
-	if value, ok := uuo.mutation.Color(); ok {
-		_spec.SetField(user.FieldColor, field.TypeString, value)
 	}
 	if value, ok := uuo.mutation.Settings(); ok {
 		_spec.SetField(user.FieldSettings, field.TypeJSON, value)

@@ -56,12 +56,6 @@ func (uc *UserCreate) SetName(s string) *UserCreate {
 	return uc
 }
 
-// SetColor sets the "color" field.
-func (uc *UserCreate) SetColor(s string) *UserCreate {
-	uc.mutation.SetColor(s)
-	return uc
-}
-
 // SetSettings sets the "settings" field.
 func (uc *UserCreate) SetSettings(m map[string]interface{}) *UserCreate {
 	uc.mutation.SetSettings(m)
@@ -189,9 +183,6 @@ func (uc *UserCreate) check() error {
 	if _, ok := uc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "User.name"`)}
 	}
-	if _, ok := uc.mutation.Color(); !ok {
-		return &ValidationError{Name: "color", err: errors.New(`ent: missing required field "User.color"`)}
-	}
 	if _, ok := uc.mutation.Settings(); !ok {
 		return &ValidationError{Name: "settings", err: errors.New(`ent: missing required field "User.settings"`)}
 	}
@@ -245,10 +236,6 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if value, ok := uc.mutation.Name(); ok {
 		_spec.SetField(user.FieldName, field.TypeString, value)
 		_node.Name = value
-	}
-	if value, ok := uc.mutation.Color(); ok {
-		_spec.SetField(user.FieldColor, field.TypeString, value)
-		_node.Color = value
 	}
 	if value, ok := uc.mutation.Settings(); ok {
 		_spec.SetField(user.FieldSettings, field.TypeJSON, value)

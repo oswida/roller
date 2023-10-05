@@ -6,7 +6,7 @@ export const topbarStyle = style([
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    padding: "small",
+    padding: "none",
     alignItems: "center",
     gap: "medium",
   }),

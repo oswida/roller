@@ -20,8 +20,6 @@ const (
 	FieldIsAdmin = "is_admin"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
-	// FieldColor holds the string denoting the color field in the database.
-	FieldColor = "color"
 	// FieldSettings holds the string denoting the settings field in the database.
 	FieldSettings = "settings"
 	// EdgeRooms holds the string denoting the rooms edge name in mutations.
@@ -71,7 +69,6 @@ var Columns = []string{
 	FieldPasswd,
 	FieldIsAdmin,
 	FieldName,
-	FieldColor,
 	FieldSettings,
 }
 
@@ -116,11 +113,6 @@ func ByIsAdmin(opts ...sql.OrderTermOption) OrderOption {
 // ByName orders the results by the name field.
 func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
-}
-
-// ByColor orders the results by the color field.
-func ByColor(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldColor, opts...).ToFunc()
 }
 
 // ByRoomsCount orders the results by rooms count.

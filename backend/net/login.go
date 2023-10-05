@@ -32,7 +32,7 @@ func LoginHandler(dbase *db.Database, cfg *koanf.Koanf, logger *zap.Logger) http
 		token, err := GenerateJwt([]byte(cfg.String("web.jwt_secret")), JwtClaims{
 			ID:      usr.ID.String(),
 			Name:    usr.Name,
-			IsAdmin: usr.Settings["is_admin"].(bool),
+			IsAdmin: usr.IsAdmin,
 		})
 		if err != nil {
 			logger.Error("error creating jwt token", zap.Error(err))

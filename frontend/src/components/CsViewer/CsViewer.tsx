@@ -8,18 +8,18 @@ import {
   createMemo,
   createSignal,
 } from "solid-js";
-import {
-  RefProps,
-  netPublish,
-  csExpanded,
-  currentCs,
-  importImage,
-  isCsOwner,
-  netTopic,
-  setCsExpanded,
-  topicCsInfo,
-  updateCsOpenSections,
-} from "~/common";
+// import {
+//   RefProps,
+//   netPublish,
+//   csExpanded,
+//   currentCs,
+//   importImage,
+//   isCsOwner,
+//   netTopic,
+//   setCsExpanded,
+//   topicCsInfo,
+//   updateCsOpenSections,
+// } from "~/common";
 import { charTemplates } from "~/template";
 import { Accordion, AccordionOption } from "../Accordion";
 import { Flex } from "../Flex";
@@ -31,74 +31,77 @@ import { Dynamic } from "solid-js/web";
 
 const PORTRAIT_HEIGHT = 72;
 
-export const CsViewer: Component<RefProps> = (props) => {
-  const [charPortrait, setCharPortrait] = createSignal("");
+export const CsViewer: Component = (props) => {
+  // const [charPortrait, setCharPortrait] = createSignal("");
 
-  createEffect(() => {
-    const cs = currentCs();
-    if (!cs) return;
-    if (cs.portraitUrl) setCharPortrait(cs.portraitUrl);
-  });
+  // createEffect(() => {
+  //   const cs = currentCs();
+  //   if (!cs) return;
+  //   if (cs.portraitUrl) setCharPortrait(cs.portraitUrl);
+  // });
 
-  const tpl = createMemo(() => {
-    const cs = currentCs();
-    if (!cs) return undefined;
-    return charTemplates[cs.template];
-  });
+  // const tpl = createMemo(() => {
+  //   const cs = currentCs();
+  //   if (!cs) return undefined;
+  //   return charTemplates[cs.template];
+  // });
 
-  const items = createMemo(() => {
-    const t = tpl();
-    const cs = currentCs();
-    if (!t || !cs) return [];
-    const items = t.sections.map(
-      (it) =>
-      ({
-        id: it.title,
-        title: it.title,
-        content: <CsSection item={it} />,
-      } as AccordionOption)
-    );
-    return items;
-  });
+  // const items = createMemo(() => {
+  //   const t = tpl();
+  //   const cs = currentCs();
+  //   if (!t || !cs) return [];
+  //   const items = t.sections.map(
+  //     (it) =>
+  //     ({
+  //       id: it.title,
+  //       title: it.title,
+  //       content: <CsSection item={it} />,
+  //     } as AccordionOption)
+  //   );
+  //   return items;
+  // });
 
-  const sectionChange = (value: string[]) => {
-    setCsExpanded(value);
-    const info = currentCs();
-    if (!info) return;
-    updateCsOpenSections(info, value);
-  };
+  // const sectionChange = (value: string[]) => {
+  //   setCsExpanded(value);
+  //   const info = currentCs();
+  //   if (!info) return;
+  //   updateCsOpenSections(info, value);
+  // };
 
-  const changePortrait = () => {
-    importImage(
-      (data: any) => {
-        const cs = currentCs();
-        if (!cs) return;
-        cs.portraitUrl = data;
-        // TODO: update cs
-        netPublish(netTopic(topicCsInfo), cs);
-      },
-      undefined,
-      PORTRAIT_HEIGHT
-    );
-  };
+  // const changePortrait = () => {
+  //   importImage(
+  //     (data: any) => {
+  //       const cs = currentCs();
+  //       if (!cs) return;
+  //       cs.portraitUrl = data;
+  //       // TODO: update cs
+  //       netPublish(netTopic(topicCsInfo), cs);
+  //     },
+  //     undefined,
+  //     PORTRAIT_HEIGHT
+  //   );
+  // };
 
-  const deletePortrait = () => {
-    const cs = currentCs();
-    if (!cs) return;
-    cs.portraitUrl = undefined;
-    //TODO: update cs
-    netPublish(netTopic(topicCsInfo), cs);
-  };
+  // const deletePortrait = () => {
+  //   const cs = currentCs();
+  //   if (!cs) return;
+  //   cs.portraitUrl = undefined;
+  //   //TODO: update cs
+  //   netPublish(netTopic(topicCsInfo), cs);
+  // };
 
-  const csName = createMemo(() => {
-    const cs = currentCs();
-    if (!cs) return "";
-    return cs.name;
-  });
+  // const csName = createMemo(() => {
+  //   const cs = currentCs();
+  //   if (!cs) return "";
+  //   return cs.name;
+  // });
+
+  //ref={(e) => props.ref(e)}
 
   return (
-    <div class={csViewerRootStyle} ref={(e) => props.ref(e)}>
-      <Show when={currentCs() && tpl()}>
+
+    <div class={csViewerRootStyle} >
+      {/* <Show when={currentCs() && tpl()}>
         <Flex
           gap="large"
           align="center"
@@ -163,7 +166,7 @@ export const CsViewer: Component<RefProps> = (props) => {
         >
           {items()}
         </Accordion>
-      </Show>
+      </Show> */}
     </div>
   );
 };

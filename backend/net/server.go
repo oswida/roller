@@ -12,6 +12,7 @@ import (
 	"sync"
 
 	"github.com/centrifugal/centrifuge"
+	"github.com/google/uuid"
 	"github.com/knadh/koanf/v2"
 	"go.uber.org/zap"
 )
@@ -45,11 +46,18 @@ func NewServer(dbase *db.Database, log *zap.Logger, cfg *koanf.Koanf, efs embed.
 			result.log.Error("error parsing jwt token", zap.Error(err))
 			return centrifuge.ConnectReply{}, err
 		}
+		bytes, err := result.Db.UserGet(uuid.MustParse(token.ID), true)
+		if err != nil {
+			result.log.Error("error getting user", zap.Error(err))
+			return centrifuge.ConnectReply{}, err
+		}
 		return centrifuge.ConnectReply{
 			Credentials: &centrifuge.Credentials{
 				UserID:   token.ID,
 				ExpireAt: token.ExpiresAt.Unix(),
-				Info:     []byte(token.Name)}}, nil
+			},
+			Data: bytes,
+		}, nil
 	})
 
 	node.OnConnect(func(client *centrifuge.Client) {
@@ -108,7 +116,7 @@ func (eng *Server) Run() error {
 		CheckOrigin: func(r *http.Request) bool { return true },
 	})
 
-	http.Handle("/connection/websocket", wsHandler)
+	http.Handle("/centrifuge", wsHandler)
 	subfs, err := fs.Sub(eng.efs, "resources/web")
 	if err != nil {
 		eng.log.Error("cannot create embedded subsystem for web server", zap.Error(err))

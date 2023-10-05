@@ -31,14 +31,15 @@ func createAdminUser(client *ent.Client, cfg *koanf.Koanf) error {
 	_, err := client.User.Query().Where(user.LoginEQ("admin")).First(context.Background())
 	if err != nil {
 		hash := argon2.IDKey([]byte("admin"), []byte(cfg.String("web.jwt_secret")), 1, 64*1024, 4, 32)
+		settings := make(map[string]interface{})
+		settings["color"] = "#000000"
 		return client.User.Create().
 			SetID(uuid.New()).
 			SetName("Admin").
 			SetLogin("admin").
 			SetIsAdmin(true).
 			SetPasswd(fmt.Sprintf("%x", hash)).
-			SetColor("#000000").
-			SetSettings(make(map[string]interface{})).Exec(context.Background())
+			SetSettings(settings).Exec(context.Background())
 	}
 	return nil
 }
@@ -122,7 +123,6 @@ func (d *Database) UserUpdate(userID uuid.UUID, data UserUpdateData) ([]byte, er
 	err := d.Client.User.
 		UpdateOneID(userID).
 		SetName(data.Name).
-		SetColor(data.Color).
 		SetSettings(data.Settings).Exec(context.Background())
 	if err != nil {
 		return nil, err
@@ -146,8 +146,11 @@ func (d *Database) UserGet(userID uuid.UUID, clearPasswd bool) ([]byte, error) {
 }
 
 func (d *Database) UserCreate(name string, passwd string) ([]byte, error) {
-	hash := argon2.IDKey([]byte(passwd), []byte("anything"), 1, 64*1024, 4, 32)
+	hash := argon2.IDKey([]byte(passwd), []byte(d.config.String("web.jwt_secret")), 1, 64*1024, 4, 32)
 	userID := uuid.New()
+	settings := map[string]interface{}{
+		"color": "#000000",
+	}
 	err := d.Client.User.
 		Create().
 		SetID(userID).
@@ -155,8 +158,7 @@ func (d *Database) UserCreate(name string, passwd string) ([]byte, error) {
 		SetLogin(name).
 		SetIsAdmin(false).
 		SetPasswd(fmt.Sprintf("%x", hash)).
-		SetColor("#000000").
-		SetSettings(make(map[string]interface{})).
+		SetSettings(settings).
 		Exec(context.Background())
 	if err != nil {
 		return nil, err

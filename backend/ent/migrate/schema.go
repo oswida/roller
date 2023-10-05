@@ -122,7 +122,6 @@ var (
 		{Name: "passwd", Type: field.TypeString},
 		{Name: "is_admin", Type: field.TypeBool, Default: false},
 		{Name: "name", Type: field.TypeString},
-		{Name: "color", Type: field.TypeString},
 		{Name: "settings", Type: field.TypeJSON},
 	}
 	// UsersTable holds the schema information for the "users" table.

@@ -1,5 +1,5 @@
 import { style } from "@vanilla-extract/css";
-import { sprinkles } from "~/common/theme.css";
+import { sprinkles, themeZindex } from "~/common/theme.css";
 
 export const popoverTriggerStyle = style([
   sprinkles({
@@ -57,6 +57,7 @@ export const popoverContentStyle = style([
     borderStyle: "solid",
     borderWidth: 1,
     minWidth: "250px",
+    zIndex: themeZindex.popover,
   },
 ]);
 

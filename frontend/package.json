@@ -15,6 +15,7 @@
   "devDependencies": {
     "@types/debug": "^4.1.8",
     "@types/dompurify": "^3.0.2",
+    "@types/fabric": "^5.3.4",
     "@types/marked": "^5.0.0",
     "@types/node": "^20.4.2",
     "@types/uuid": "^9.0.2",
@@ -42,7 +43,9 @@
     "centrifuge": "^3.1.2",
     "debug": "^4.3.4",
     "dompurify": "^3.0.3",
+    "fabric": "^5.3.0",
     "image-resize-compress": "^1.1.0",
+    "jwt-decode": "^3.1.2",
     "marked": "^5.1.0",
     "marked-gfm-heading-id": "^3.0.4",
     "marked-mangle": "^1.0.1",
