@@ -1,18 +1,9 @@
 import { CopyToClipboard } from "solid-copy-to-clipboard";
 import { FaSolidAsterisk, FaSolidCircleInfo, FaSolidShareNodes } from "solid-icons/fa";
 import { Component, Show, createMemo } from "solid-js";
-import toast from "solid-toast";
-import {
-
-  diceColorSet,
-  diceMaterialSet,
-  loggedUser,
-  netUpdateUser,
-  setLoggedUser,
-  updateLoggedUser,
-  updateLoggedUserSetting,
-} from "~/common";
-import { Button, Dialog, DialogContent, DialogTrigger, Flex, Input, Select, SelectItem, Switch, Text } from "~/components";
+import { diceColorSet, diceMaterialSet, setStateCurrentUser, stateCurrentUser } from "~/common";
+import { updateCurrentUser } from "~/common/user";
+import { Button, Dialog, DialogContent, DialogTrigger, Flex, Input, Select, SelectItem, Switch, Text, showToast } from "~/components";
 import { buttonStyle } from "~/components/Button/styles.css";
 
 type Props = {
@@ -22,16 +13,17 @@ type Props = {
 export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
 
   const updateName = (value: string) => {
-    const lu = loggedUser();
+    const lu = stateCurrentUser();
     if (!lu) return;
     lu.name = value;
-    updateLoggedUser(lu);
+    updateCurrentUser({ ...lu });
   };
 
-  const checkSetting = (name: string) => {
-    const lu = loggedUser();
-    if (!lu || !lu.settings || !lu.settings[name]) return false;
-    return lu.settings[name];
+  const updateUserSetting = (name: string, value: unknown) => {
+    const lu = stateCurrentUser();
+    if (!lu || !lu.settings) return;
+    lu.settings[name] = value;
+    updateCurrentUser({ ...lu });
   }
 
   const colorList = createMemo(() => {
@@ -43,7 +35,7 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
   });
 
   const currentDiceColor = createMemo(() => {
-    const lu = loggedUser();
+    const lu = stateCurrentUser();
     if (!lu) return undefined;
     const r = colorList().filter((it) => it.id == lu.settings.diceColor);
     if (r.length > 0) return r[0];
@@ -51,7 +43,7 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
   });
 
   const currentDiceMaterial = createMemo(() => {
-    const lu = loggedUser();
+    const lu = stateCurrentUser();
     if (!lu) return undefined;
     const r = materialList().filter(
       (it) => it.id == lu.settings.diceMaterial
@@ -61,17 +53,17 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
   });
 
   const diceColorChange = (value: SelectItem) => {
-    const lu = loggedUser();
+    const lu = stateCurrentUser();
     if (!lu) return;
     lu.settings.diceColor = value.id;
-    updateLoggedUser(lu);
+    updateCurrentUser({ ...lu });
   };
 
   const diceMaterialChange = (value: SelectItem) => {
-    const lu = loggedUser();
+    const lu = stateCurrentUser();
     if (!lu) return;
     lu.settings.diceMaterial = value.id;
-    updateLoggedUser(lu);
+    updateCurrentUser({ ...lu });
   };
 
 
@@ -91,11 +83,11 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
   });
 
   const themeChange = (value: SelectItem) => {
-    updateLoggedUserSetting("appTheme", value.id);
+    updateUserSetting("appTheme", value.id);
   };
 
   const currentTheme = createMemo(() => {
-    const r = themes().filter((it) => it.id == loggedUser()?.settings.appTheme);
+    const r = themes().filter((it) => it.id == stateCurrentUser()?.settings.appTheme);
     if (r.length > 0) return r[0];
     return undefined;
   });
@@ -112,11 +104,11 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
   });
 
   const fontChange = (value: SelectItem) => {
-    updateLoggedUserSetting("appFont", value.id);
+    updateUserSetting("appFont", value.id);
   };
 
   const currentFont = createMemo(() => {
-    const r = fonts().filter((it) => it.id == loggedUser()?.settings.appFont);
+    const r = fonts().filter((it) => it.id == stateCurrentUser()?.settings.appFont);
     if (r.length > 0) return r[0];
     return undefined;
   });
@@ -127,26 +119,27 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
         <Input
           label="User name"
           title="User name"
-          value={loggedUser()?.name}
-          style={{ width: "20em" }}
+          value={stateCurrentUser()?.name}
+          style={{ width: "15em" }}
           onChange={(e) => updateName(e.target.value)}
         />
       </Flex>
       <Flex align="center" style={{ "margin-bottom": "10px" }} justify="space" grow>
-        <Show when={loggedUser() !== undefined}>
+        <Show when={stateCurrentUser() !== undefined}>
           <CopyToClipboard
-            text={loggedUser()!.id}
+            text={stateCurrentUser()!.id}
             onCopy={() => {
-              toast("User ID copied to clipboard", {
-                icon: <FaSolidCircleInfo />,
-              });
+              showToast({ message: "User ID copied to clipboard" });
+              // toast("User ID copied to clipboard", {
+              //   icon: <FaSolidCircleInfo />,
+              // });
               onOpenChange(false);
             }}
             eventTrigger="onClick"
           >
             <div class={buttonStyle({})} title="Copy user id">
               <FaSolidShareNodes style={{ fill: "currentcolor" }} />
-              <Text>Copy user ID </Text>
+              <Text>User ID </Text>
             </div>
           </CopyToClipboard>
         </Show>
@@ -154,7 +147,7 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
           <DialogTrigger>
             <Button title="Change password" >
               <FaSolidAsterisk />
-              Change password
+              Password
             </Button>
           </DialogTrigger>
           <DialogContent title="Change user password">
@@ -168,7 +161,6 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
         <Select
           modal={true}
           label="UI Color Theme"
-          labelLeft
           options={themes}
           selected={currentTheme}
           onChange={themeChange}
@@ -176,7 +168,6 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
         <Select
           modal={true}
           label="UI Font"
-          labelLeft
           options={fonts}
           selected={currentFont}
           onChange={fontChange}
@@ -187,41 +178,39 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
         <Select
           modal={true}
           label="Dice color"
-          labelLeft
           options={colorList}
           selected={currentDiceColor}
           onChange={diceColorChange}
         />
         <Select
           label="Dice material"
-          labelLeft
           options={materialList}
           selected={currentDiceMaterial}
           onChange={diceMaterialChange}
         />
       </Flex>
 
-      <Flex justify="space" grow>
+      <Flex justify="space" grow direction="column" align="end">
         <Switch
           label="Stronger roll"
-          checked={() => checkSetting("strongerRoll")}
-          setChecked={(value: boolean) => updateLoggedUserSetting("strongerRoll", value)}
+          checked={stateCurrentUser()?.settings["strongerRoll"]}
+          setChecked={(value: boolean) => updateUserSetting("strongerRoll", value)}
         />
         <Switch
           label="Smaller dice"
-          checked={() => checkSetting("smallerDice")}
-          setChecked={(value: boolean) => updateLoggedUserSetting("smallerDice", value)}
+          checked={stateCurrentUser()?.settings["smallerDice"]}
+          setChecked={(value: boolean) => updateUserSetting("smallerDice", value)}
         />
-      </Flex>
-      <Flex justify="space">
+        {/* </Flex>
+      <Flex justify="space"> */}
         <Switch label="Show roll total"
-          checked={() => checkSetting("showRollTotal")}
-          setChecked={(value: boolean) => updateLoggedUserSetting("showRollTotal", value)}
+          checked={stateCurrentUser()?.settings["showRollTotal"]}
+          setChecked={(value: boolean) => updateUserSetting("showRollTotal", value)}
         />
         <Switch
           label="Show roll success"
-          checked={() => checkSetting("showRollSuccess")}
-          setChecked={(value: boolean) => updateLoggedUserSetting("showRollSuccess", value)}
+          checked={stateCurrentUser()?.settings["showRollSuccess"]}
+          setChecked={(value: boolean) => updateUserSetting("showRollSuccess", value)}
         />
       </Flex>
     </Flex>

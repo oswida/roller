@@ -31,7 +31,8 @@ import { Button } from "~/components/Button";
 import { FaSolidDoorOpen, FaSolidUser } from "solid-icons/fa";
 import { logout, stateCurrentUser } from "~/common";
 import { Popover, PopoverContent, PopoverTrigger, Tooltip, TooltipContent, TooltipTrigger, Text } from "~/components";
-import { UserSettingsView } from "../Settings";
+import { UserSettingsView } from "../Settings/UserSettingsView";
+
 
 export const TopBar: Component = (props) => {
   // const [roomSettingOpen, setRoomSettingsOpen] = createSignal(false);
@@ -143,7 +144,7 @@ export const TopBar: Component = (props) => {
                     <FaSolidUser style={{ height: "1.5em", width: "1.5em" }} />
                   </PopoverTrigger>
                   <PopoverContent title="User settings">
-                    {/* <UserSettingsView onOpenChange={setUserSettingsOpen} /> */}
+                    <UserSettingsView onOpenChange={setUserSettingsOpen} />
                   </PopoverContent>
                 </Popover>
                 <Text>{stateCurrentUser()?.name}</Text>

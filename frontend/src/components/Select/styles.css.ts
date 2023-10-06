@@ -1,5 +1,5 @@
 import { style } from "@vanilla-extract/css";
-import { sprinkles } from "~/common/theme.css";
+import { sprinkles, themeZindex } from "~/common/theme.css";
 
 export const selectTriggerStyle = style([
   sprinkles({
@@ -22,6 +22,7 @@ export const selectTriggerStyle = style([
     outline: "none",
     transition: "border-color 250ms, color 250ms",
     cursor: "pointer",
+    fontFamily: "inherit"
   },
 ]);
 
@@ -39,7 +40,7 @@ export const selectListStyle = style([
   {
     boxShadow:
       "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
-    zIndex: 50,
+    zIndex: themeZindex.dialog,
   },
 ]);
 

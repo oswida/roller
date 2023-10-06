@@ -3,7 +3,7 @@ import { Button as Btn } from "@kobalte/core";
 import { buttonStyle } from "./styles.css";
 
 type Props = {
-  variant?: "full" | "icon";
+  variant?: "full" | "icon" | "ghosticon";
   toggled?: boolean;
 };
 

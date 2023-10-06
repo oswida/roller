@@ -12,3 +12,4 @@ export * from "./Select";
 export * from "./Switch";
 export * from "./Text";
 export * from "./Tooltip";
+export * from "./Toast";

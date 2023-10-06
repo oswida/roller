@@ -1,8 +1,9 @@
 import { createEffect } from "solid-js";
-import { appStyle } from "./styles.css";
+import { appStyle, toastListStyle } from "./styles.css";
 import { fabric } from "fabric";
 import { canvasRef, setCanvasRef } from "~/common";
 import { TopBar } from "~/views/TopBar";
+import { Toast } from "@kobalte/core";
 
 export default function Home() {
 
@@ -40,6 +41,9 @@ export default function Home() {
     <main class={appStyle}>
       <canvas id="main-canvas"></canvas>
       <TopBar />
+      <Toast.Region>
+        <Toast.List class={toastListStyle} />
+      </Toast.Region>
       {/* <div id="app" class={mainStyle} ref={(e) => (mainRef = e)}>
         <TopBar ref={(e: any) => (barRef = e)} />
         <Flex style={{ width: "100vw" }}>

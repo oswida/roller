@@ -13,6 +13,7 @@ export const themeSpace: Record<string, string> = {
 
 export const themeZindex: Record<string, number> = {
   "tooltip": 500,
+  "dialog": 400,
   "popover": 200,
   "panel": 100,
 }

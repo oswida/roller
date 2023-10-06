@@ -23,6 +23,7 @@ export const popoverTriggerStyle = style([
     outline: "none",
     transition: "border-color 250ms, color 250ms",
     cursor: "pointer",
+    fontFamily: "inherit"
   },
 ]);
 
@@ -40,6 +41,7 @@ export const popoverHeaderStyle = style([
     flex: 1,
     borderBottomWidth: 1,
     borderBottomStyle: "solid",
+    fontFamily: "inherit"
   },
 ]);
 

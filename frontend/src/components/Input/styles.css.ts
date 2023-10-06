@@ -26,5 +26,6 @@ export const inputFieldStyle = style([
     flex: 1,
     outline: "none",
     whiteSpace: "pre-wrap",
+    fontFamily: "inherit"
   },
 ]);

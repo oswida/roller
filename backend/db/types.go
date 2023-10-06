@@ -37,8 +37,9 @@ type CsInfo struct {
 }
 
 type UserUpdateData struct {
+	ID       uuid.UUID      `json:"id"`
+	IsAdmin  bool           `json:"is_admin"`
 	Name     string         `json:"name"`
-	Color    string         `json:"color"`
 	Settings map[string]any `json:"settings"`
 }
 

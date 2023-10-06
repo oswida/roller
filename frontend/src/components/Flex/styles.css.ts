@@ -6,7 +6,9 @@ export const flexStyle = recipe({
   base: [
     sprinkles({
       display: "flex",
-    }),
+    }), {
+      fontFamily: "inherit"
+    }
   ],
   variants: {
     gap: createSpaceVariants("gap"),

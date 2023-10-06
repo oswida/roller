@@ -17,6 +17,7 @@ export const buttonStyle = recipe({
       userSelect: "none",
       outline: "none",
       lineHeight: 0,
+      fontFamily: "inherit",
     },
   ],
   variants: {
@@ -46,6 +47,20 @@ export const buttonStyle = recipe({
           height: "35px",
         },
       ],
+      ghosticon:
+        [
+          sprinkles({
+            paddingX: "none",
+            paddingY: "none",
+            borderStyle: "none",
+            backgroundColor: "none",
+          }),
+          {
+            width: "35px",
+            height: "35px",
+
+          },
+        ],
     },
     toggled: {
       true: sprinkles({

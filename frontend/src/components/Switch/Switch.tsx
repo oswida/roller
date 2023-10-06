@@ -9,7 +9,7 @@ import {
 
 type Props = {
   label: string;
-  checked: Accessor<boolean>;
+  checked: boolean;
   setChecked: (value: boolean) => void;
 };
 
@@ -17,7 +17,7 @@ export const Switch: Component<Props> = (props) => {
   return (
     <Sw.Root
       class={switchRootStyle}
-      checked={props.checked()}
+      checked={props.checked}
       onChange={props.setChecked}
     >
       <Sw.Label>
@@ -26,8 +26,8 @@ export const Switch: Component<Props> = (props) => {
         </Text>
       </Sw.Label>
       <Sw.Input />
-      <Sw.Control class={switchControlStyle({ checked: props.checked() })}>
-        <Sw.Thumb class={switchThumbStyle({ checked: props.checked() })} />
+      <Sw.Control class={switchControlStyle({ checked: props.checked })}>
+        <Sw.Thumb class={switchThumbStyle({ checked: props.checked })} />
       </Sw.Control>
     </Sw.Root>
   );

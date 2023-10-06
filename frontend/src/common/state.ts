@@ -9,3 +9,6 @@ export const [stateNetClient, setStateNetClient] = createSignal<Centrifuge | und
 
 export const [canvasRef, setCanvasRef] = createSignal<fabric.Canvas | undefined>(undefined);
 export const [stateCurrentUser, setStateCurrentUser] = createSignal<UserData | undefined>(undefined);
+
+
+export const [stateNotify, setStateNotify] = createSignal("");

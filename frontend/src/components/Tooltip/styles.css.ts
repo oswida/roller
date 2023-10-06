@@ -34,5 +34,6 @@ export const tooltipTriggerStyle = style([
     cursor: "pointer",
     userSelect: "none",
     padding: "0px",
+    fontFamily: "inherit"
   },
 ]);

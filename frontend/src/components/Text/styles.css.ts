@@ -7,7 +7,9 @@ export const textStyle = recipe({
       display: "flex",
       alignItems: "center",
       backgroundColor: "none",
-    }),
+    }), {
+      fontFamily: "inherit"
+    }
   ],
   variants: {
     colorSchema: {

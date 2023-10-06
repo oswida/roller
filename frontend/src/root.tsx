@@ -15,6 +15,8 @@ import {
 } from "solid-start";
 import {
   netConnect,
+  setStateCurrentUser,
+  stateCurrentUser,
   // queueInit,
   stateJwtToken,
 } from "./common";
@@ -26,17 +28,15 @@ export default function Root() {
   // queueInit();
 
   const theme = createMemo(() => {
-    return "blue";
-    // const lu = loggedUser();
-    // if (!lu || !lu.settings.appTheme) return "blue";
-    // return lu.settings.appTheme;
+    const lu = stateCurrentUser();
+    if (!lu || !lu.settings.appTheme) return "blue";
+    return lu.settings.appTheme;
   });
 
   const font = createMemo(() => {
-    return "Roboto";
-    // const lu = loggedUser();
-    // if (!lu || !lu.settings.appFont) return "Roboto";
-    // return lu.settings.appFont;
+    const lu = stateCurrentUser();
+    if (!lu || !lu.settings.appFont) return "Roboto";
+    return lu.settings.appFont;
   })
 
   const validToken = createMemo(() => {

@@ -1,6 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
-import { sprinkles } from "~/common/theme.css";
+import { sprinkles, themeZindex } from "~/common/theme.css";
 
 export const dialogRootStyle = style([
   sprinkles({
@@ -14,6 +14,7 @@ export const dialogRootStyle = style([
   {
     minWidth: "300px",
     width: "fit-content",
+    fontFamily: "inherit"
   },
 ]);
 
@@ -32,20 +33,21 @@ export const dialogHeaderStyle = style([
   {
     flex: 1,
     height: "42px",
+    fontFamily: "inherit"
   },
 ]);
 
 export const dialogOverlayStyle = style({
   position: "fixed",
   inset: 0,
-  zIndex: 50,
+  zIndex: themeZindex.dialog,
   backgroundColor: "rgb(0 0 0 / 0.4)",
 });
 
 export const dialogPositionerStyle = style({
   position: "fixed",
   inset: 0,
-  zIndex: 50,
+  zIndex: themeZindex.dialog,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -64,6 +66,7 @@ export const dialogContentStyle = style([
   {
     marginTop: "0px",
     marginBottom: "0px",
+    fontFamily: "inherit"
   },
 ]);
 
@@ -93,6 +96,7 @@ export const dialogTriggerStyle = recipe({
       border: "none",
       padding: "0px",
       margin: "0px",
+      fontFamily: "inherit"
     },
   ],
 });
@@ -111,6 +115,7 @@ export const emptyTriggerStyle = style([
   }),
   {
     outline: "none",
+    fontFamily: "inherit"
   },
 ]);
 

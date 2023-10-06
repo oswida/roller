@@ -21,7 +21,6 @@ export const netConnect = () => {
     });
     if (!centrifuge) return;
     centrifuge.on("connected", function (ctx) {
-        console.log("Connected to server", ctx);
         setStateNetClient(centrifuge);
         setStateCurrentUser(ctx.data);
     });
