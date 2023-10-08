@@ -8,6 +8,7 @@ export const floatingPanelRoot = style([sprinkles({
     borderStyle: 'solid',
     borderWidth: "thin",
     borderColor: "primary300",
+    backgroundColor: "primary100"
 }), {
     boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
     position: "fixed",

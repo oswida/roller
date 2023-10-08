@@ -2,7 +2,7 @@ import { createSignal } from "solid-js";
 import { makePersisted } from "@solid-primitives/storage";
 import { Centrifuge } from "centrifuge";
 import { fabric } from "fabric";
-import { UserData } from "./types";
+import { RoomData, UserData } from "./types";
 
 export const [stateJwtToken, setStateJwtToken] = makePersisted(createSignal(""), { name: "roller_token" });
 export const [stateNetClient, setStateNetClient] = createSignal<Centrifuge | undefined>(undefined);
@@ -12,3 +12,6 @@ export const [stateCurrentUser, setStateCurrentUser] = createSignal<UserData | u
 
 
 export const [stateNotify, setStateNotify] = createSignal("");
+
+export const [stateRooms, setStateRooms] = createSignal<Record<string, RoomData>>({});
+export const [stateCurrentRoom, setStateCurrentRoom] = createSignal<RoomData | undefined>(undefined);

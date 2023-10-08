@@ -485,8 +485,8 @@ func (rq *RollQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*R
 	return nil
 }
 func (rq *RollQuery) loadRoom(ctx context.Context, query *RoomQuery, nodes []*Roll, init func(*Roll), assign func(*Roll, *Room)) error {
-	ids := make([]string, 0, len(nodes))
-	nodeids := make(map[string][]*Roll)
+	ids := make([]uuid.UUID, 0, len(nodes))
+	nodeids := make(map[uuid.UUID][]*Roll)
 	for i := range nodes {
 		if nodes[i].room_rolls == nil {
 			continue

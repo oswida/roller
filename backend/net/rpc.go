@@ -49,13 +49,13 @@ func (eng *Server) RpcRoomList(e centrifuge.RPCEvent, client *centrifuge.Client)
 	eng.mux.Lock()
 	defer eng.mux.Unlock()
 
-	var data Message[[]string]
+	var data Message[[]uuid.UUID]
 	err := json.Unmarshal(e.Data, &data)
 	if err != nil {
 		return nil, err
 	}
 
-	return eng.Db.RoomList(data.Data)
+	return eng.Db.RoomList(data.Sender)
 }
 
 func (eng *Server) RpcCsUpdate(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {

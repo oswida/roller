@@ -23,7 +23,7 @@ type RoomInfo struct {
 	Id     string `json:"id"`
 	Name   string `json:"name"`
 	Owner  string `json:"owner"`
-	Bkguri string `json:"bkguri,omitempty"`
+	Bkguri string `json:"background,omitempty"`
 }
 
 type CsInfo struct {

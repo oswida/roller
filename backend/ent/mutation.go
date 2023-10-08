@@ -671,7 +671,7 @@ type RollMutation struct {
 	clearedFields    map[string]struct{}
 	owner            *uuid.UUID
 	clearedowner     bool
-	room             *string
+	room             *uuid.UUID
 	clearedroom      bool
 	done             bool
 	oldValue         func(context.Context) (*Roll, error)
@@ -1202,7 +1202,7 @@ func (m *RollMutation) ResetOwner() {
 }
 
 // SetRoomID sets the "room" edge to the Room entity by id.
-func (m *RollMutation) SetRoomID(id string) {
+func (m *RollMutation) SetRoomID(id uuid.UUID) {
 	m.room = &id
 }
 
@@ -1217,7 +1217,7 @@ func (m *RollMutation) RoomCleared() bool {
 }
 
 // RoomID returns the "room" edge ID in the mutation.
-func (m *RollMutation) RoomID() (id string, exists bool) {
+func (m *RollMutation) RoomID() (id uuid.UUID, exists bool) {
 	if m.room != nil {
 		return *m.room, true
 	}
@@ -1227,7 +1227,7 @@ func (m *RollMutation) RoomID() (id string, exists bool) {
 // RoomIDs returns the "room" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // RoomID instead. It exists only for internal usage by the builders.
-func (m *RollMutation) RoomIDs() (ids []string) {
+func (m *RollMutation) RoomIDs() (ids []uuid.UUID) {
 	if id := m.room; id != nil {
 		ids = append(ids, *id)
 	}
@@ -2395,7 +2395,7 @@ type RoomMutation struct {
 	config
 	op            Op
 	typ           string
-	id            *string
+	id            *uuid.UUID
 	name          *string
 	bkg           *string
 	clearedFields map[string]struct{}
@@ -2429,7 +2429,7 @@ func newRoomMutation(c config, op Op, opts ...roomOption) *RoomMutation {
 }
 
 // withRoomID sets the ID field of the mutation.
-func withRoomID(id string) roomOption {
+func withRoomID(id uuid.UUID) roomOption {
 	return func(m *RoomMutation) {
 		var (
 			err   error
@@ -2481,13 +2481,13 @@ func (m RoomMutation) Tx() (*Tx, error) {
 
 // SetID sets the value of the id field. Note that this
 // operation is only accepted on creation of Room entities.
-func (m *RoomMutation) SetID(id string) {
+func (m *RoomMutation) SetID(id uuid.UUID) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *RoomMutation) ID() (id string, exists bool) {
+func (m *RoomMutation) ID() (id uuid.UUID, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -2498,12 +2498,12 @@ func (m *RoomMutation) ID() (id string, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *RoomMutation) IDs(ctx context.Context) ([]string, error) {
+func (m *RoomMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []string{id}, nil
+			return []uuid.UUID{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -2940,8 +2940,8 @@ type UserMutation struct {
 	name              *string
 	settings          *map[string]interface{}
 	clearedFields     map[string]struct{}
-	rooms             map[string]struct{}
-	removedrooms      map[string]struct{}
+	rooms             map[uuid.UUID]struct{}
+	removedrooms      map[uuid.UUID]struct{}
 	clearedrooms      bool
 	rolls             map[string]struct{}
 	removedrolls      map[string]struct{}
@@ -3242,9 +3242,9 @@ func (m *UserMutation) ResetSettings() {
 }
 
 // AddRoomIDs adds the "rooms" edge to the Room entity by ids.
-func (m *UserMutation) AddRoomIDs(ids ...string) {
+func (m *UserMutation) AddRoomIDs(ids ...uuid.UUID) {
 	if m.rooms == nil {
-		m.rooms = make(map[string]struct{})
+		m.rooms = make(map[uuid.UUID]struct{})
 	}
 	for i := range ids {
 		m.rooms[ids[i]] = struct{}{}
@@ -3262,9 +3262,9 @@ func (m *UserMutation) RoomsCleared() bool {
 }
 
 // RemoveRoomIDs removes the "rooms" edge to the Room entity by IDs.
-func (m *UserMutation) RemoveRoomIDs(ids ...string) {
+func (m *UserMutation) RemoveRoomIDs(ids ...uuid.UUID) {
 	if m.removedrooms == nil {
-		m.removedrooms = make(map[string]struct{})
+		m.removedrooms = make(map[uuid.UUID]struct{})
 	}
 	for i := range ids {
 		delete(m.rooms, ids[i])
@@ -3273,7 +3273,7 @@ func (m *UserMutation) RemoveRoomIDs(ids ...string) {
 }
 
 // RemovedRooms returns the removed IDs of the "rooms" edge to the Room entity.
-func (m *UserMutation) RemovedRoomsIDs() (ids []string) {
+func (m *UserMutation) RemovedRoomsIDs() (ids []uuid.UUID) {
 	for id := range m.removedrooms {
 		ids = append(ids, id)
 	}
@@ -3281,7 +3281,7 @@ func (m *UserMutation) RemovedRoomsIDs() (ids []string) {
 }
 
 // RoomsIDs returns the "rooms" edge IDs in the mutation.
-func (m *UserMutation) RoomsIDs() (ids []string) {
+func (m *UserMutation) RoomsIDs() (ids []uuid.UUID) {
 	for id := range m.rooms {
 		ids = append(ids, id)
 	}

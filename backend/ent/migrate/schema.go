@@ -45,7 +45,7 @@ var (
 		{Name: "success_target", Type: field.TypeInt},
 		{Name: "private", Type: field.TypeBool},
 		{Name: "revealed", Type: field.TypeBool},
-		{Name: "room_rolls", Type: field.TypeString, Nullable: true},
+		{Name: "room_rolls", Type: field.TypeUUID, Nullable: true},
 		{Name: "user_rolls", Type: field.TypeUUID, Nullable: true},
 	}
 	// RollsTable holds the schema information for the "rolls" table.
@@ -96,7 +96,7 @@ var (
 	}
 	// RoomsColumns holds the columns for the "rooms" table.
 	RoomsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeString, Unique: true},
+		{Name: "id", Type: field.TypeUUID},
 		{Name: "name", Type: field.TypeString},
 		{Name: "bkg", Type: field.TypeString},
 		{Name: "user_rooms", Type: field.TypeUUID, Nullable: true},

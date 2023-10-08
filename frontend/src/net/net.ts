@@ -1,7 +1,9 @@
 
 import { Centrifuge, PublicationContext, PublishResult } from "centrifuge";
-import { extractJwtToken } from "./util";
-import { setStateCurrentUser, setStateJwtToken, setStateNetClient, stateJwtToken, stateNetClient } from "./state";
+import { extractJwtToken } from "../common/util";
+import { setStateCurrentUser, setStateJwtToken, setStateNetClient, stateCurrentUser, stateJwtToken, stateNetClient } from "../common/state";
+import { loadUserRooms } from "./room";
+import { NetMesssage, RoomData } from "~/common";
 
 export const serverAddress = () => {
     const schema = import.meta.env.DEV ? "ws" : "wss";
@@ -36,4 +38,14 @@ export const logout = () => {
     cl.disconnect();
     setStateJwtToken("");
     setStateCurrentUser(undefined);
+}
+
+export const newNetMessage = (roomId: string, data: any) => {
+    const cu = stateCurrentUser();
+    if (!cu) return undefined;
+    return {
+        sender: cu.id,
+        room: roomId,
+        data: data,
+    } as NetMesssage;
 }

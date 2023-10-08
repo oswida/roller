@@ -1,5 +1,5 @@
 import {
-  Component, createSignal,
+  Component, Show, createMemo, createSignal,
 } from "solid-js";
 
 // import {
@@ -28,58 +28,60 @@ import { topbarItemStyle, topbarStyle } from "./style.css";
 import { FloatingPanel } from "~/components/FloatingPanel";
 import { Flex } from "~/components/Flex";
 import { Button } from "~/components/Button";
-import { FaSolidDoorOpen, FaSolidUser } from "solid-icons/fa";
-import { logout, stateCurrentUser } from "~/common";
-import { Popover, PopoverContent, PopoverTrigger, Tooltip, TooltipContent, TooltipTrigger, Text } from "~/components";
+import { FaSolidChalkboardUser, FaSolidDoorOpen, FaSolidPlug, FaSolidPlus, FaSolidUser } from "solid-icons/fa";
+import { RoomData, generateSerialKeys, setStateCurrentRoom, setStateRooms, stateCurrentRoom, stateCurrentUser, stateRooms } from "~/common";
+import {
+  Popover, PopoverContent, PopoverTrigger, Tooltip,
+  TooltipContent, TooltipTrigger, Text, Select, SelectItem
+} from "~/components";
 import { UserSettingsView } from "../Settings/UserSettingsView";
+import { logout, updateCurrentUser } from "~/net";
+import { newRoom, updateRoom } from "~/net/room";
+import { RoomSettingsView } from "../Settings/RoomSettingsView";
 
 
 export const TopBar: Component = (props) => {
-  // const [roomSettingOpen, setRoomSettingsOpen] = createSignal(false);
+  const [roomSettingOpen, setRoomSettingsOpen] = createSignal(false);
   // const [roomConnectOpen, setRoomConnectOpen] = createSignal(false);
   const [userSettingOpen, setUserSettingsOpen] = createSignal(false);
 
-  // const username = createMemo(() => {
-  //   const lu = loggedUser();
-  //   if (!lu) return "";
-  //   return lu.name;
-  // });
+  const createRoom = () => {
+    const cu = stateCurrentUser();
+    if (!cu) return;
+    const room = newRoom(cu.id);
+    if (!room) return;
+    if (!cu.settings["rooms"]) cu.settings["rooms"] = [];
+    cu.settings["rooms"].push(room.id);
+    updateCurrentUser({ ...cu });
+    setStateRooms((prev) => ({ ...prev, [room.id]: room }));
+    updateRoom(room.id, room);
+    setStateCurrentRoom(room);
+  };
 
-  // const createRoom = () => {
-  //   const ident = loggedUser()?.id;
-  //   if (!ident) return;
-  //   const room = emptyRoomInfo();
-  //   room.name = `room-${generateSerialKeys(4, "-")}`;
-  //   room.owner = ident;
+  const selectedRoom = createMemo(() => {
+    const room = stateCurrentRoom();
+    if (!room) return undefined;
+    const list = Object.values(stateRooms()).map(
+      (v) => ({ id: v.id, label: v.name } as SelectItem)
+    );
+    const rs = list.find((r) => r.id == room.id);
+    if (rs) return rs;
+    return undefined;
+  });
 
-  //   const rooms = updateRoomStorage(room);
-  //   updateLoggedUserSetting("rooms", Object.values(rooms).map(r => r.id));
-  //   updateLoggedUserSetting("currentRoom", room.id);
-  // };
+  const roomList = createMemo(() => {
+    console.log("preparing room list");
+    return Object.values(stateRooms()).map(
+      (v) => ({ id: v.id, label: v.name } as SelectItem)
+    );
+  });
 
-  // const selectedRoom = createMemo(() => {
-  //   const room = currentRoom();
-  //   if (!room) return undefined;
-  //   const list = Object.values(appRooms()).map(
-  //     (v) => ({ id: v.id, label: v.name } as SelectItem)
-  //   );
-  //   const rs = list.find((r) => r.id == room.id);
-  //   if (rs) return rs;
-  //   return undefined;
-  // });
-
-  // const roomList = createMemo(() => {
-  //   return Object.values(appRooms()).map(
-  //     (v) => ({ id: v.id, label: v.name } as SelectItem)
-  //   );
-  // });
-
-  // const changeRoom = (item: SelectItem) => {
-  //   if (!item) return;
-  //   const r = Object.values(appRooms()).find((it) => it.id == item.id);
-  //   if (!r) return;
-  //   updateLoggedUserSetting("currentRoom", r.id);
-  // };
+  const changeRoom = (item: SelectItem) => {
+    if (!item) return;
+    const r = Object.values(stateRooms()).find((it) => it.id == item.id);
+    if (!r) return;
+    setStateCurrentRoom({ ...r });
+  };
 
   // createEffect(
   //   on(currentRoom, () => {
@@ -127,11 +129,9 @@ export const TopBar: Component = (props) => {
   // }
 
   return (
-    <FloatingPanel left={10} top={10}>
+    <FloatingPanel left={5} top={5}>
       <div class={topbarStyle}>
         <Flex gap="large" align="center">
-
-
           <Tooltip>
             <TooltipTrigger>
               <Flex class={topbarItemStyle}>
@@ -152,6 +152,59 @@ export const TopBar: Component = (props) => {
             </TooltipTrigger>
             <TooltipContent>User settings</TooltipContent>
           </Tooltip>
+
+
+          <Flex class={topbarItemStyle}>
+            <Show when={Object.keys(stateRooms()).length > 0}>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Flex >
+                    <Popover
+                      open={roomSettingOpen()}
+                      onOpenChange={setRoomSettingsOpen}
+                    >
+                      <PopoverTrigger title="Room settings">
+                        <FaSolidChalkboardUser
+                          style={{ height: "1.5em", width: "1.5em" }}
+                        />
+                      </PopoverTrigger>
+                      <PopoverContent title={stateCurrentRoom()?.name}>
+                        <RoomSettingsView onOpenChange={setRoomSettingsOpen} />
+                      </PopoverContent>
+                    </Popover>
+
+                  </Flex>
+                </TooltipTrigger>
+                <TooltipContent>Room settings</TooltipContent>
+              </Tooltip>
+              <Select
+                options={roomList()}
+                selected={selectedRoom()}
+                onChange={changeRoom}
+              />
+            </Show>
+            <Show when={Object.keys(stateRooms()).length <= 0}>
+              <FaSolidChalkboardUser
+                title="Rooms"
+                style={{ height: "1.5em", width: "1.5em" }}
+                fill="currentColor"
+              />
+            </Show>
+            <Button variant="icon" title="Create room" onClick={createRoom}>
+              <FaSolidPlus />
+            </Button>
+          </Flex>
+
+          {/* <Popover open={roomConnectOpen()} onOpenChange={setRoomConnectOpen}>
+                  <PopoverTrigger title="Connect to room">
+                    <FaSolidPlug style={{ height: "1.5em", width: "1.5em" }} />
+                  </PopoverTrigger>
+                  <PopoverContent title="Connect to room">
+                    <RoomConnectView onOpenChange={setRoomConnectOpen} />
+                  </PopoverContent>
+                </Popover> */}
+
+
 
           <Tooltip>
             <TooltipTrigger>

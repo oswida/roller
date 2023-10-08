@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 )
 
 type Room struct {
@@ -12,7 +13,7 @@ type Room struct {
 
 func (Room) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("id").Unique(),
+		field.UUID("id", uuid.New()),
 		field.String("name"),
 		field.String("bkg"),
 	}

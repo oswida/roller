@@ -1,27 +1,11 @@
 import { CopyToClipboard } from "solid-copy-to-clipboard";
 import {
   FaSolidArrowRight,
-  FaSolidCircleInfo,
-  FaSolidCircleStop,
   FaSolidShareNodes,
   FaSolidTrash,
-  FaSolidTrashArrowUp,
 } from "solid-icons/fa";
 import { Component, Show, createMemo, createSignal } from "solid-js";
-import toast from "solid-toast";
-import {
-  appRooms,
-  netPublish,
-  currentRoom,
-  loggedUser,
-  netTopic,
-  topicRoomInfo,
-  updateRoomStorage,
-  removeRoomFromStorage,
-  isRoomOwner,
-  updateLoggedUserSetting,
-  setAppRooms,
-} from "~/common";
+import { RoomData, setStateCurrentRoom, setStateNotify, setStateRooms, stateCurrentRoom, stateCurrentUser, stateRooms } from "~/common";
 import { themeVars } from "~/common/theme.css";
 import {
   Alert,
@@ -34,113 +18,97 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
+  showToast,
 } from "~/components";
 import { buttonStyle } from "~/components/Button/styles.css";
+import { removeRoom, updateRoom } from "~/net";
 
 type Props = {
   onOpenChange: (value: boolean) => void;
 };
 
 export const RoomSettingsView: Component<Props> = (props) => {
-  let passRef: HTMLInputElement;
   const [delConfirmOpen, setDelConfirmOpen] = createSignal(false);
+  const [passOwnerId, setPassOwnerId] = createSignal("");
 
-  const updateRoom = (field: "name" | "bkguri" | "owner", value: string) => {
-    const data = { ...appRooms() };
-    if (!data[loggedUser()?.settings.currentRoom]) return;
-    const room = currentRoom();
+  const updateList = (room: RoomData) => {
+    const list = { ...stateRooms() };
+    const item = Object.values(list).find((it) => it.id === room.id);
+    if (item) {
+      list[item.id] = { ...room };
+      setStateRooms(list);
+    }
+  }
+
+  const update = (field: "name" | "bkguri" | "owner", value: string) => {
+    const data = { ...stateRooms() };
+    const room = stateCurrentRoom();
     if (!room) return;
     switch (field) {
       case "name": room.name = value; break;
-      case "bkguri": room.bkg = value; break;
+      case "bkguri": room.background = value; break;
       case "owner": room.owner = value; break;
     }
-    updateRoomStorage(room);
-    if (isRoomOwner()) netPublish(netTopic(topicRoomInfo), room);
+    updateRoom(room.id, room);
+    setStateCurrentRoom({ ...room });
+    updateList(room);
+    // TODO: if (isOwner()) netPublish(netTopic(topicRoomInfo), room);
   };
+
+  const isOwner = createMemo(() => {
+    const cu = stateCurrentUser();
+    if (!cu) return false;
+    const cr = stateCurrentRoom();
+    if (!cr) return false;
+    return cu.id === cr.owner;
+  });
 
   const passOwnership = () => {
-    if (!passRef || !passRef.value || passRef.value.trim() == "") return;
-    updateRoom("owner", passRef.value);
-    props.onOpenChange(false);
+    if (passOwnerId().trim() == "") return;
+    const cr = stateCurrentRoom();
+    if (!cr) return;
+    cr.owner = passOwnerId();
+    updateRoom(cr.id, { ...cr });
+    setStateCurrentRoom({ ...cr });
   };
 
-  const roomName = createMemo(() => {
-    const room = currentRoom();
-    if (!room) return "";
-    return room.name;
-  });
-
-  const roomBkg = createMemo(() => {
-    const room = currentRoom();
-    if (!room) return "";
-    return room.bkg ? room.bkg : "";
-  });
-
-  const deleteRoom = () => {
+  const remove = () => {
     setDelConfirmOpen(false);
-    const room = currentRoom();
-    if (!room || room.owner !== loggedUser()?.id) {
-      toast("Cannot delete room. Room can be deleted only by an owner.", {
-        icon: <FaSolidCircleStop />,
-      });
+    const room = stateCurrentRoom();
+    if (!room || room.owner !== stateCurrentUser()?.id) {
+      showToast({ message: "Cannot delete room. Room can be deleted only by an owner.", id: 1 });
       return;
     }
-    removeRoomFromStorage(room);
     props.onOpenChange(false);
+    removeRoom(room.id);
+    updateList(room);
+    // TODO : publish remove
   };
 
-  const roomId = createMemo(() => {
-    const room = currentRoom();
-    if (!room) return "";
-    return room.id;
-  });
-
-  const removeRoom = () => {
-    const room = currentRoom();
-    if (!room) return;
-    let rs = loggedUser()?.settings.rooms as string[];
-    if (!rs) return;
-    rs = rs.filter(it => it !== room.id);
-    updateLoggedUserSetting("rooms", rs);
-    updateLoggedUserSetting("currentRoom", undefined);
-    const newState = { ...appRooms() };
-    delete newState[room.id];
-    setAppRooms(newState);
-    props.onOpenChange(false);
-  }
 
   return (
     <Flex direction="column" gap="large" >
-      <Show when={isRoomOwner()}>
+      <Show when={isOwner()}>
         <Input
           label="Room name"
-          value={roomName()}
-          onChange={(e) => updateRoom("name", e.target.value)}
+          value={stateCurrentRoom()?.name}
+          onChange={(e) => update("name", e.target.value)}
           style={{ width: "20em" }}
         />
         <Input
           label="Room background URI"
-          value={roomBkg()}
-          onChange={(e) => updateRoom("bkguri", e.target.value)}
+          value={stateCurrentRoom()?.background}
+          onChange={(e) => update("bkguri", e.target.value)}
           style={{ width: "20em" }}
         />
       </Show>
-      <Show when={!isRoomOwner()}>
-        <Button onClick={removeRoom}>
-          <FaSolidTrashArrowUp />
-          Remove room from list
-        </Button>
-      </Show>
       <Flex justify="space" grow>
         <CopyToClipboard
-          text={roomId()}
+          text={stateCurrentRoom() ? stateCurrentRoom()!.id : ""}
           options={{ debug: true }}
           onCopy={() => {
-            toast("Room ID copied to clipboard", {
-              icon: <FaSolidCircleInfo />,
-            });
             props.onOpenChange(false);
+            showToast({ message: "Room ID copied to clipboard", id: 1 });
           }}
           eventTrigger="onClick"
         >
@@ -149,7 +117,7 @@ export const RoomSettingsView: Component<Props> = (props) => {
             <Text>Copy room ID </Text>
           </div>
         </CopyToClipboard>
-        <Show when={isRoomOwner()}>
+        <Show when={isOwner()}>
           <Alert onOpenChange={setDelConfirmOpen} open={delConfirmOpen()}>
             <AlertTrigger>
               <Tooltip>
@@ -164,7 +132,7 @@ export const RoomSettingsView: Component<Props> = (props) => {
             </AlertTrigger>
             <AlertContent title="Delete room">
               <Text>Are you sure? </Text>
-              <Text>Delete room {currentRoom()?.name}?</Text>
+              <Text>Delete room {stateCurrentRoom()?.name}?</Text>
               <Flex
                 align="center"
                 justify="center"
@@ -172,18 +140,18 @@ export const RoomSettingsView: Component<Props> = (props) => {
                 style={{ "margin-top": "10px" }}
               >
                 <Button onClick={() => setDelConfirmOpen(false)}>Cancel</Button>
-                <Button onClick={deleteRoom}>Delete</Button>
+                <Button onClick={remove}>Delete</Button>
               </Flex>
             </AlertContent>
           </Alert>
         </Show>
       </Flex>
-      <Show when={isRoomOwner()}>
+      <Show when={isOwner()}>
         <Flex align="end" justify="space" grow>
           <Input
             label="Pass ownership to user"
             style={{ flex: 1, width: "16em" }}
-            ref={(e) => (passRef = e)}
+            onInput={(e: any) => { setPassOwnerId(e.target.value) }}
           />
           <Button onClick={passOwnership}>
             <FaSolidArrowRight />

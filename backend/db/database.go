@@ -117,112 +117,9 @@ func (d *Database) CsList(userID uuid.UUID) ([]byte, error) {
 	return json.Marshal(list)
 }
 
-// Users
-
-func (d *Database) UserUpdate(userID uuid.UUID, data UserUpdateData) ([]byte, error) {
-	err := d.Client.User.
-		UpdateOneID(userID).
-		SetName(data.Name).
-		SetSettings(data.Settings).Exec(context.Background())
-	if err != nil {
-		return nil, err
-	}
-	usr, err := d.Client.User.Get(context.Background(), userID)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(usr)
-}
-
-func (d *Database) UserGet(userID uuid.UUID, clearPasswd bool) ([]byte, error) {
-	usr, err := d.Client.User.Get(context.Background(), userID)
-	if err != nil {
-		return nil, err
-	}
-	if clearPasswd {
-		usr.Passwd = ""
-	}
-	return json.Marshal(usr)
-}
-
-func (d *Database) UserCreate(name string, passwd string) ([]byte, error) {
-	hash := argon2.IDKey([]byte(passwd), []byte(d.config.String("web.jwt_secret")), 1, 64*1024, 4, 32)
-	userID := uuid.New()
-	settings := map[string]interface{}{
-		"color": "#000000",
-	}
-	err := d.Client.User.
-		Create().
-		SetID(userID).
-		SetName(name).
-		SetLogin(name).
-		SetIsAdmin(false).
-		SetPasswd(fmt.Sprintf("%x", hash)).
-		SetSettings(settings).
-		Exec(context.Background())
-	if err != nil {
-		return nil, err
-	}
-	usr, err := d.Client.User.Get(context.Background(), userID)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(usr)
-}
-
-// Rooms
-
-func (d *Database) RoomUpdate(userID uuid.UUID, roomID string, data RoomInfo) ([]byte, error) {
-	room, _ := d.Client.Room.Get(context.Background(), roomID)
-	if room == nil {
-		err := d.Client.Room.Create().
-			SetID(roomID).
-			SetName(data.Name).
-			SetBkg(data.Bkguri).
-			SetOwnerID(userID).Exec(context.Background())
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		err := d.Client.Room.UpdateOneID(roomID).
-			SetName(data.Name).
-			SetBkg(data.Bkguri).
-			SetOwnerID(userID).Exec(context.Background())
-		if err != nil {
-			return nil, err
-		}
-	}
-	room, err := d.Client.Room.Get(context.Background(), roomID)
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(room)
-}
-
-func (d *Database) RoomDelete(roomID string) ([]byte, error) {
-	err := d.Client.Room.DeleteOneID(roomID).Exec(context.Background())
-	if err != nil {
-		d.Log.Error("RoomDelete", zap.Error(err))
-		return nil, err
-	}
-
-	return []byte{}, nil
-}
-
-func (d *Database) RoomList(idents []string) ([]byte, error) {
-	rooms, err := d.Client.Room.Query().
-		Where(room.IDIn(idents...)).
-		WithOwner(func(uq *ent.UserQuery) { uq.FirstID(context.Background()) }).
-		All(context.Background())
-	if err != nil {
-		return nil, err
-	}
-	return json.Marshal(rooms)
-}
-
 // Rolls
 
-func (d *Database) RollUpdate(userID uuid.UUID, roomID string, data RollInfo) ([]byte, error) {
+func (d *Database) RollUpdate(userID uuid.UUID, roomID uuid.UUID, data RollInfo) ([]byte, error) {
 	roll, _ := d.Client.Roll.Get(context.Background(), data.Id)
 	if roll == nil {
 		err := d.Client.Roll.Create().
@@ -268,7 +165,7 @@ func (d *Database) RollUpdate(userID uuid.UUID, roomID string, data RollInfo) ([
 	return json.Marshal(roll)
 }
 
-func (d *Database) RollList(roomID string) ([]byte, error) {
+func (d *Database) RollList(roomID uuid.UUID) ([]byte, error) {
 	rolls, err := d.Client.Roll.Query().Where(roll.HasRoomWith(room.IDEQ(roomID))).All(context.Background())
 	if err != nil {
 		return nil, err
@@ -276,7 +173,7 @@ func (d *Database) RollList(roomID string) ([]byte, error) {
 	return json.Marshal(rolls)
 }
 
-func (d *Database) RollClear(roomID string) ([]byte, error) {
+func (d *Database) RollClear(roomID uuid.UUID) ([]byte, error) {
 	_, err := d.Client.Roll.Delete().Where(roll.HasRoomWith(room.IDEQ(roomID))).Exec(context.Background())
 	return []byte{}, err
 }

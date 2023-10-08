@@ -1,5 +1,5 @@
-import { setStateCurrentUser, setStateNotify, stateNetClient } from "./state";
-import { UserData } from "./types";
+import { setStateCurrentUser, setStateNotify, stateNetClient } from "../common/state";
+import { UserData } from "../common/types";
 
 export const updateCurrentUser = (data: UserData) => {
     setStateCurrentUser(data);
@@ -18,3 +18,4 @@ export const updateCurrentUser = (data: UserData) => {
             console.error(err);
         });
 }
+

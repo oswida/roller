@@ -35,8 +35,8 @@ func (rc *RoomCreate) SetBkg(s string) *RoomCreate {
 }
 
 // SetID sets the "id" field.
-func (rc *RoomCreate) SetID(s string) *RoomCreate {
-	rc.mutation.SetID(s)
+func (rc *RoomCreate) SetID(u uuid.UUID) *RoomCreate {
+	rc.mutation.SetID(u)
 	return rc
 }
 
@@ -129,10 +129,10 @@ func (rc *RoomCreate) sqlSave(ctx context.Context) (*Room, error) {
 		return nil, err
 	}
 	if _spec.ID.Value != nil {
-		if id, ok := _spec.ID.Value.(string); ok {
-			_node.ID = id
-		} else {
-			return nil, fmt.Errorf("unexpected Room.ID type: %T", _spec.ID.Value)
+		if id, ok := _spec.ID.Value.(*uuid.UUID); ok {
+			_node.ID = *id
+		} else if err := _node.ID.Scan(_spec.ID.Value); err != nil {
+			return nil, err
 		}
 	}
 	rc.mutation.id = &_node.ID
@@ -143,11 +143,11 @@ func (rc *RoomCreate) sqlSave(ctx context.Context) (*Room, error) {
 func (rc *RoomCreate) createSpec() (*Room, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Room{config: rc.config}
-		_spec = sqlgraph.NewCreateSpec(room.Table, sqlgraph.NewFieldSpec(room.FieldID, field.TypeString))
+		_spec = sqlgraph.NewCreateSpec(room.Table, sqlgraph.NewFieldSpec(room.FieldID, field.TypeUUID))
 	)
 	if id, ok := rc.mutation.ID(); ok {
 		_node.ID = id
-		_spec.ID.Value = id
+		_spec.ID.Value = &id
 	}
 	if value, ok := rc.mutation.Name(); ok {
 		_spec.SetField(room.FieldName, field.TypeString, value)

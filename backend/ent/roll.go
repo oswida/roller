@@ -43,7 +43,7 @@ type Roll struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the RollQuery when eager-loading is set.
 	Edges        RollEdges `json:"edges"`
-	room_rolls   *string
+	room_rolls   *uuid.UUID
 	user_rolls   *uuid.UUID
 	selectValues sql.SelectValues
 }
@@ -99,7 +99,7 @@ func (*Roll) scanValues(columns []string) ([]any, error) {
 		case roll.FieldTime:
 			values[i] = new(sql.NullTime)
 		case roll.ForeignKeys[0]: // room_rolls
-			values[i] = new(sql.NullString)
+			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
 		case roll.ForeignKeys[1]: // user_rolls
 			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
 		default:
@@ -184,11 +184,11 @@ func (r *Roll) assignValues(columns []string, values []any) error {
 				r.Revealed = value.Bool
 			}
 		case roll.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullString); !ok {
+			if value, ok := values[i].(*sql.NullScanner); !ok {
 				return fmt.Errorf("unexpected type %T for field room_rolls", values[i])
 			} else if value.Valid {
-				r.room_rolls = new(string)
-				*r.room_rolls = value.String
+				r.room_rolls = new(uuid.UUID)
+				*r.room_rolls = *value.S.(*uuid.UUID)
 			}
 		case roll.ForeignKeys[1]:
 			if value, ok := values[i].(*sql.NullScanner); !ok {

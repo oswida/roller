@@ -1,10 +1,10 @@
 import { CopyToClipboard } from "solid-copy-to-clipboard";
-import { FaSolidAsterisk, FaSolidCircleInfo, FaSolidShareNodes } from "solid-icons/fa";
-import { Component, Show, createMemo } from "solid-js";
-import { diceColorSet, diceMaterialSet, setStateCurrentUser, stateCurrentUser } from "~/common";
-import { updateCurrentUser } from "~/common/user";
+import { FaSolidAsterisk, FaSolidShareNodes } from "solid-icons/fa";
+import { Component, Show, createEffect, createMemo } from "solid-js";
+import { diceColorSet, diceMaterialSet, setStateNotify, stateCurrentUser, stateNotify } from "~/common";
 import { Button, Dialog, DialogContent, DialogTrigger, Flex, Input, Select, SelectItem, Switch, Text, showToast } from "~/components";
 import { buttonStyle } from "~/components/Button/styles.css";
+import { updateCurrentUser } from "~/net";
 
 type Props = {
   onOpenChange: (value: boolean) => void;
@@ -113,6 +113,12 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
     return undefined;
   });
 
+  createEffect(() => {
+    if (stateNotify() === "") return;
+    showToast({ message: stateNotify(), id: 1 });
+    setStateNotify("");
+  });
+
   return (
     <Flex direction="column" gap="medium">
       <Flex align="center" justify="center" grow>
@@ -130,9 +136,6 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
             text={stateCurrentUser()!.id}
             onCopy={() => {
               showToast({ message: "User ID copied to clipboard" });
-              // toast("User ID copied to clipboard", {
-              //   icon: <FaSolidCircleInfo />,
-              // });
               onOpenChange(false);
             }}
             eventTrigger="onClick"

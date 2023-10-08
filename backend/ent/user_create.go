@@ -69,14 +69,14 @@ func (uc *UserCreate) SetID(u uuid.UUID) *UserCreate {
 }
 
 // AddRoomIDs adds the "rooms" edge to the Room entity by IDs.
-func (uc *UserCreate) AddRoomIDs(ids ...string) *UserCreate {
+func (uc *UserCreate) AddRoomIDs(ids ...uuid.UUID) *UserCreate {
 	uc.mutation.AddRoomIDs(ids...)
 	return uc
 }
 
 // AddRooms adds the "rooms" edges to the Room entity.
 func (uc *UserCreate) AddRooms(r ...*Room) *UserCreate {
-	ids := make([]string, len(r))
+	ids := make([]uuid.UUID, len(r))
 	for i := range r {
 		ids[i] = r[i].ID
 	}
@@ -249,7 +249,7 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Columns: []string{user.RoomsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

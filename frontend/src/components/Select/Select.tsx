@@ -16,8 +16,8 @@ export type SelectItem = {
 };
 
 type Props = {
-  options: () => SelectItem[];
-  selected?: () => SelectItem | undefined;
+  options: SelectItem[];
+  selected?: SelectItem | undefined;
   onChange: (value: SelectItem) => void;
   label?: string;
   labelLeft?: boolean;
@@ -32,8 +32,8 @@ export const Select: Component<Props> = (props) => {
       onChange={props.onChange}
       optionValue="id"
       optionTextValue="label"
-      value={props.selected ? props.selected() : undefined}
-      options={props.options()}
+      value={props.selected ? props.selected : undefined}
+      options={props.options}
       itemComponent={(props) => (
         <Sel.Item item={props.item} class={selectItemStyle}>
           <Sel.ItemLabel>{props.item.rawValue.label}</Sel.ItemLabel>

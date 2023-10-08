@@ -16,6 +16,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 )
 
 // UserUpdate is the builder for updating User entities.
@@ -70,14 +71,14 @@ func (uu *UserUpdate) SetSettings(m map[string]interface{}) *UserUpdate {
 }
 
 // AddRoomIDs adds the "rooms" edge to the Room entity by IDs.
-func (uu *UserUpdate) AddRoomIDs(ids ...string) *UserUpdate {
+func (uu *UserUpdate) AddRoomIDs(ids ...uuid.UUID) *UserUpdate {
 	uu.mutation.AddRoomIDs(ids...)
 	return uu
 }
 
 // AddRooms adds the "rooms" edges to the Room entity.
 func (uu *UserUpdate) AddRooms(r ...*Room) *UserUpdate {
-	ids := make([]string, len(r))
+	ids := make([]uuid.UUID, len(r))
 	for i := range r {
 		ids[i] = r[i].ID
 	}
@@ -141,14 +142,14 @@ func (uu *UserUpdate) ClearRooms() *UserUpdate {
 }
 
 // RemoveRoomIDs removes the "rooms" edge to Room entities by IDs.
-func (uu *UserUpdate) RemoveRoomIDs(ids ...string) *UserUpdate {
+func (uu *UserUpdate) RemoveRoomIDs(ids ...uuid.UUID) *UserUpdate {
 	uu.mutation.RemoveRoomIDs(ids...)
 	return uu
 }
 
 // RemoveRooms removes "rooms" edges to Room entities.
 func (uu *UserUpdate) RemoveRooms(r ...*Room) *UserUpdate {
-	ids := make([]string, len(r))
+	ids := make([]uuid.UUID, len(r))
 	for i := range r {
 		ids[i] = r[i].ID
 	}
@@ -277,7 +278,7 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{user.RoomsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeUUID),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -290,7 +291,7 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{user.RoomsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {
@@ -306,7 +307,7 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{user.RoomsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {
@@ -508,14 +509,14 @@ func (uuo *UserUpdateOne) SetSettings(m map[string]interface{}) *UserUpdateOne {
 }
 
 // AddRoomIDs adds the "rooms" edge to the Room entity by IDs.
-func (uuo *UserUpdateOne) AddRoomIDs(ids ...string) *UserUpdateOne {
+func (uuo *UserUpdateOne) AddRoomIDs(ids ...uuid.UUID) *UserUpdateOne {
 	uuo.mutation.AddRoomIDs(ids...)
 	return uuo
 }
 
 // AddRooms adds the "rooms" edges to the Room entity.
 func (uuo *UserUpdateOne) AddRooms(r ...*Room) *UserUpdateOne {
-	ids := make([]string, len(r))
+	ids := make([]uuid.UUID, len(r))
 	for i := range r {
 		ids[i] = r[i].ID
 	}
@@ -579,14 +580,14 @@ func (uuo *UserUpdateOne) ClearRooms() *UserUpdateOne {
 }
 
 // RemoveRoomIDs removes the "rooms" edge to Room entities by IDs.
-func (uuo *UserUpdateOne) RemoveRoomIDs(ids ...string) *UserUpdateOne {
+func (uuo *UserUpdateOne) RemoveRoomIDs(ids ...uuid.UUID) *UserUpdateOne {
 	uuo.mutation.RemoveRoomIDs(ids...)
 	return uuo
 }
 
 // RemoveRooms removes "rooms" edges to Room entities.
 func (uuo *UserUpdateOne) RemoveRooms(r ...*Room) *UserUpdateOne {
-	ids := make([]string, len(r))
+	ids := make([]uuid.UUID, len(r))
 	for i := range r {
 		ids[i] = r[i].ID
 	}
@@ -745,7 +746,7 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Columns: []string{user.RoomsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeUUID),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -758,7 +759,7 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Columns: []string{user.RoomsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {
@@ -774,7 +775,7 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Columns: []string{user.RoomsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

@@ -109,13 +109,13 @@ func (rc *RollCreate) SetOwner(u *User) *RollCreate {
 }
 
 // SetRoomID sets the "room" edge to the Room entity by ID.
-func (rc *RollCreate) SetRoomID(id string) *RollCreate {
+func (rc *RollCreate) SetRoomID(id uuid.UUID) *RollCreate {
 	rc.mutation.SetRoomID(id)
 	return rc
 }
 
 // SetNillableRoomID sets the "room" edge to the Room entity by ID if the given value is not nil.
-func (rc *RollCreate) SetNillableRoomID(id *string) *RollCreate {
+func (rc *RollCreate) SetNillableRoomID(id *uuid.UUID) *RollCreate {
 	if id != nil {
 		rc = rc.SetRoomID(*id)
 	}
@@ -291,7 +291,7 @@ func (rc *RollCreate) createSpec() (*Roll, *sqlgraph.CreateSpec) {
 			Columns: []string{roll.RoomColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

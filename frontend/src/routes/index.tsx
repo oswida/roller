@@ -1,5 +1,5 @@
 import { createEffect } from "solid-js";
-import { appStyle, toastListStyle } from "./styles.css";
+import { appStyle, canvasStyle, toastListStyle } from "./styles.css";
 import { fabric } from "fabric";
 import { canvasRef, setCanvasRef } from "~/common";
 import { TopBar } from "~/views/TopBar";
@@ -39,7 +39,7 @@ export default function Home() {
 
   return (
     <main class={appStyle}>
-      <canvas id="main-canvas"></canvas>
+      <canvas id="main-canvas" class={canvasStyle}></canvas>
       <TopBar />
       <Toast.Region>
         <Toast.List class={toastListStyle} />

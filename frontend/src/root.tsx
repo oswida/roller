@@ -14,8 +14,6 @@ import {
   Title,
 } from "solid-start";
 import {
-  netConnect,
-  setStateCurrentUser,
   stateCurrentUser,
   // queueInit,
   stateJwtToken,
@@ -23,6 +21,8 @@ import {
 import { rootStyle } from "./root.css";
 import { Login } from "./views/Login/Login";
 import { colorThemeType, themeFontFamilyType } from "./common/theme.css";
+import { netConnect } from "./net";
+import { loadUserRooms } from "./net/room";
 
 export default function Root() {
   // queueInit();
@@ -45,8 +45,16 @@ export default function Root() {
   });
 
   createEffect(() => {
+    // if logged in, connect to centrifuge
     if (stateJwtToken().trim() === "") return;
     netConnect();
+  });
+
+  createEffect(() => {
+    // if connected to centrifuge, load user rooms
+    const cu = stateCurrentUser();
+    if (!cu) return;
+    loadUserRooms();
   });
 
 

@@ -11,6 +11,15 @@ export const appStyle = style([
   },
 ]);
 
+export const canvasStyle = style([
+  sprinkles({ backgroundColor: "primary200", color: "primary900" }),
+  {
+    width: "100vw",
+    height: "100vh",
+
+  },
+]);
+
 export const mainStyle = style([
   sprinkles({
     display: "flex",

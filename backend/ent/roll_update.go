@@ -118,13 +118,13 @@ func (ru *RollUpdate) SetOwner(u *User) *RollUpdate {
 }
 
 // SetRoomID sets the "room" edge to the Room entity by ID.
-func (ru *RollUpdate) SetRoomID(id string) *RollUpdate {
+func (ru *RollUpdate) SetRoomID(id uuid.UUID) *RollUpdate {
 	ru.mutation.SetRoomID(id)
 	return ru
 }
 
 // SetNillableRoomID sets the "room" edge to the Room entity by ID if the given value is not nil.
-func (ru *RollUpdate) SetNillableRoomID(id *string) *RollUpdate {
+func (ru *RollUpdate) SetNillableRoomID(id *uuid.UUID) *RollUpdate {
 	if id != nil {
 		ru = ru.SetRoomID(*id)
 	}
@@ -259,7 +259,7 @@ func (ru *RollUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{roll.RoomColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeUUID),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -272,7 +272,7 @@ func (ru *RollUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{roll.RoomColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {
@@ -387,13 +387,13 @@ func (ruo *RollUpdateOne) SetOwner(u *User) *RollUpdateOne {
 }
 
 // SetRoomID sets the "room" edge to the Room entity by ID.
-func (ruo *RollUpdateOne) SetRoomID(id string) *RollUpdateOne {
+func (ruo *RollUpdateOne) SetRoomID(id uuid.UUID) *RollUpdateOne {
 	ruo.mutation.SetRoomID(id)
 	return ruo
 }
 
 // SetNillableRoomID sets the "room" edge to the Room entity by ID if the given value is not nil.
-func (ruo *RollUpdateOne) SetNillableRoomID(id *string) *RollUpdateOne {
+func (ruo *RollUpdateOne) SetNillableRoomID(id *uuid.UUID) *RollUpdateOne {
 	if id != nil {
 		ruo = ruo.SetRoomID(*id)
 	}
@@ -558,7 +558,7 @@ func (ruo *RollUpdateOne) sqlSave(ctx context.Context) (_node *Roll, err error) 
 			Columns: []string{roll.RoomColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeUUID),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -571,7 +571,7 @@ func (ruo *RollUpdateOne) sqlSave(ctx context.Context) (_node *Roll, err error) 
 			Columns: []string{roll.RoomColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeString),
+				IDSpec: sqlgraph.NewFieldSpec(room.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

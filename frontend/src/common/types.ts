@@ -5,6 +5,12 @@ export type JwtTokenType = {
     is_admin: boolean;
 }
 
+export type NetMesssage = {
+    sender: string;
+    room: string;
+    data: any;
+}
+
 export type UserData = {
     id: string;
     login: string;
@@ -59,3 +65,10 @@ export const diceMaterialSet = [
     "water",
     "wood",
 ];
+
+export type RoomData = {
+    id: string;
+    name: string;
+    owner: string;
+    background?: string;
+}
