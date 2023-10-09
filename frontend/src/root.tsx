@@ -14,9 +14,12 @@ import {
   Title,
 } from "solid-start";
 import {
+  stateConnectedUsers,
+  stateCurrentRoom,
   stateCurrentUser,
   // queueInit,
   stateJwtToken,
+  stateNetClient,
 } from "./common";
 import { rootStyle } from "./root.css";
 import { Login } from "./views/Login/Login";
@@ -49,14 +52,6 @@ export default function Root() {
     if (stateJwtToken().trim() === "") return;
     netConnect();
   });
-
-  createEffect(() => {
-    // if connected to centrifuge, load user rooms
-    const cu = stateCurrentUser();
-    if (!cu) return;
-    loadUserRooms();
-  });
-
 
   return (
     <Html

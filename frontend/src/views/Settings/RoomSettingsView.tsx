@@ -81,7 +81,9 @@ export const RoomSettingsView: Component<Props> = (props) => {
     }
     props.onOpenChange(false);
     removeRoom(room.id);
-    updateList(room);
+    const newState = { ...stateRooms() };
+    delete newState[room.id];
+    setStateRooms(newState);
     // TODO : publish remove
   };
 

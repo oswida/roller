@@ -10,15 +10,13 @@ export const newRoom = (owner: string) => {
     } as RoomData;
 }
 
-export const loadUserRooms = () => {
-    const cu = stateCurrentUser();
-    if (!cu) return;
+export const loadUserRooms = (userID: string) => {
     const nc = stateNetClient();
     if (!nc) {
         console.error("centrifuge client not found");
         return;
     }
-    nc.rpc("room_list", { sender: cu.id } as NetMesssage)
+    nc.rpc("room_list", { sender: userID } as NetMesssage)
         .then((result) => {
             const rooms: Record<string, RoomData> = {};
             result.data.forEach((it: any) => {

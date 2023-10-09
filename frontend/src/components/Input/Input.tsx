@@ -1,6 +1,6 @@
 import { TextField } from "@kobalte/core";
 import { Component, ComponentProps, Show, splitProps } from "solid-js";
-import { inputFieldStyle, inputRootStyle } from "./styles.css";
+import { inputFieldStyle, inputLabelStyle, inputRootStyle } from "./styles.css";
 import { Flex } from "../Flex";
 import { Text } from "../Text";
 
@@ -21,9 +21,9 @@ export const Input: Component<Props & ComponentProps<"input">> = (props) => {
       <Flex direction="column" gap="small">
         <Show when={local.label}>
           <TextField.Label>
-            <Text fontSize="smaller" colorSchema="secondary">
+            <div class={inputLabelStyle}>
               <Show when={local.label}>{local.label}</Show>
-            </Text>
+            </div>
           </TextField.Label>
         </Show>
         <TextField.Input

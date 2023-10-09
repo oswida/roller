@@ -1,4 +1,4 @@
-import { setStateJwtToken, stateJwtToken } from "./state";
+import { setStateConnectedUsers, setStateJwtToken, stateConnectedUsers, stateJwtToken } from "./state";
 import jwt_decode from "jwt-decode";
 import { JwtTokenType } from "./types";
 import { sprinkles, themeSpace, themeTokenType, themeTokens } from "./theme.css";
@@ -61,3 +61,9 @@ export const generateSerialKeys = (length: number, separator: string) => {
         .replace(/(\w{4})/g, "$1" + separator)
         .substring(0, length + Math.round(length / 4) - 1);
 };
+
+export const connectUser = (id: string, name: string) => {
+    const ns = { ...stateConnectedUsers() };
+    ns[id] = name;
+    setStateConnectedUsers(ns);
+}

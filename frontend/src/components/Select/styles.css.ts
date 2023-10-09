@@ -77,7 +77,7 @@ export const selectItemStyle = style([
 
 export const selectLabelStyle = style([
   sprinkles({
-    color: "primary800",
+    color: "warning800",
     fontSize: "smaller",
   }),
 ]);

@@ -29,3 +29,12 @@ export const inputFieldStyle = style([
     fontFamily: "inherit"
   },
 ]);
+
+
+export const inputLabelStyle = style([
+  sprinkles({
+    color: "warning800",
+    fontSize: "smaller",
+  }),
+]);
+

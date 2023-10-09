@@ -15,3 +15,4 @@ export const [stateNotify, setStateNotify] = createSignal("");
 
 export const [stateRooms, setStateRooms] = createSignal<Record<string, RoomData>>({});
 export const [stateCurrentRoom, setStateCurrentRoom] = createSignal<RoomData | undefined>(undefined);
+export const [stateConnectedUsers, setStateConnectedUsers] = createSignal<Record<string, string>>({});

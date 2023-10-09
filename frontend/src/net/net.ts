@@ -1,9 +1,9 @@
 
-import { Centrifuge, PublicationContext, PublishResult } from "centrifuge";
-import { extractJwtToken } from "../common/util";
-import { setStateCurrentUser, setStateJwtToken, setStateNetClient, stateCurrentUser, stateJwtToken, stateNetClient } from "../common/state";
+import { Centrifuge } from "centrifuge";
+import { connectUser, extractJwtToken } from "../common/util";
+import { setStateConnectedUsers, setStateCurrentUser, setStateJwtToken, setStateNetClient, stateCurrentUser, stateJwtToken, stateNetClient } from "../common/state";
+import { NetMesssage } from "~/common";
 import { loadUserRooms } from "./room";
-import { NetMesssage, RoomData } from "~/common";
 
 export const serverAddress = () => {
     const schema = import.meta.env.DEV ? "ws" : "wss";
@@ -25,12 +25,28 @@ export const netConnect = () => {
     centrifuge.on("connected", function (ctx) {
         setStateNetClient(centrifuge);
         setStateCurrentUser(ctx.data);
+        loadUserRooms(ctx.data.id);
+        connectUser(ctx.data.id, ctx.data.name);
+        // TODO: publish room connection
     });
     centrifuge.on("error", (err: any) => {
         console.error("Centrifuge error", err);
     });
     centrifuge.connect();
 }
+
+export const netDisconnect = () => {
+    const cl = stateNetClient();
+    if (!cl) return;
+    Object.values(cl.subscriptions()).forEach((sub) => {
+        sub.unsubscribe();
+        sub.removeAllListeners();
+        cl.removeSubscription(sub);
+    });
+    cl.disconnect();
+    setStateConnectedUsers({});
+    setStateNetClient(undefined);
+};
 
 export const logout = () => {
     const cl = stateNetClient();

@@ -1,5 +1,5 @@
 import { Select as Sel } from "@kobalte/core";
-import { Component, Show } from "solid-js";
+import { Component, Show, createEffect } from "solid-js";
 import { FaSolidCircleCheck } from "solid-icons/fa";
 import {
   selectItemStyle,
@@ -16,12 +16,14 @@ export type SelectItem = {
 };
 
 type Props = {
-  options: SelectItem[];
-  selected?: SelectItem | undefined;
-  onChange: (value: SelectItem) => void;
+  options: any[];
+  selected?: any | undefined;
+  onChange: (value: any) => void;
   label?: string;
   labelLeft?: boolean;
   modal?: boolean;
+  optionValue: string;
+  optionTextValue: string;
 };
 
 export const Select: Component<Props> = (props) => {
@@ -30,18 +32,19 @@ export const Select: Component<Props> = (props) => {
       modal={props.modal}
       placeholder="--- select ---"
       onChange={props.onChange}
-      optionValue="id"
-      optionTextValue="label"
+      optionValue={props.optionValue}
+      optionTextValue={props.optionTextValue}
       value={props.selected ? props.selected : undefined}
       options={props.options}
-      itemComponent={(props) => (
+      itemComponent={props => (
         <Sel.Item item={props.item} class={selectItemStyle}>
-          <Sel.ItemLabel>{props.item.rawValue.label}</Sel.ItemLabel>
+          <Sel.ItemLabel>{props.item.textValue}</Sel.ItemLabel>
           <Sel.ItemIndicator>
             <FaSolidCircleCheck style={{ fill: "currentcolor" }} />
           </Sel.ItemIndicator>
         </Sel.Item>
-      )}
+      )
+      }
     >
       <Flex
         direction={props.labelLeft ? "row" : "column"}
@@ -54,10 +57,10 @@ export const Select: Component<Props> = (props) => {
           <Sel.Label class={selectLabelStyle}>{props.label}</Sel.Label>
         </Show>
         <Sel.Trigger class={selectTriggerStyle}>
-          <Sel.Value<SelectItem>>
-            {(state) =>
+          <Sel.Value<any>>
+            {state =>
               state.selectedOption()
-                ? state.selectedOption().label
+                ? state.selectedOption()[props.optionTextValue]
                 : "--- select ---"
             }
           </Sel.Value>

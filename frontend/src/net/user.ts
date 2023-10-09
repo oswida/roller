@@ -19,3 +19,24 @@ export const updateCurrentUser = (data: UserData) => {
         });
 }
 
+export const createUser = (username: string, pass: string, pass2: string) => {
+    const nc = stateNetClient();
+    if (!nc) {
+        console.error("centrifuge client not found");
+        return;
+    }
+    nc.rpc("user_create", {
+        name: username,
+        pass: pass,
+        repeatPass: pass2
+    })
+        .then((result) => {
+            setStateNotify("User created");
+            console.log(result);
+        })
+        .catch((err) => {
+            setStateNotify(`Cannot create user: ${err}`);
+            console.error(err);
+        });
+}
+
