@@ -183,6 +183,8 @@ func (eng *Server) RPCCallback(e centrifuge.RPCEvent, client *centrifuge.Client)
 		return eng.RpcUserUpdate(e, client)
 	case "user_create":
 		return eng.RpcUserCreate(e, client)
+	case "user_passwd":
+		return eng.RpcUserChangePasswd(e, client)
 	}
 	return nil, nil
 }

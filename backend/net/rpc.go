@@ -165,5 +165,18 @@ func (eng *Server) RpcUserCreate(e centrifuge.RPCEvent, client *centrifuge.Clien
 		return nil, err
 	}
 
-	return eng.Db.UserCreate(data.Username, data.Passwd)
+	return eng.Db.UserCreate(data.Username, data.Passwd, data.IsAdmin)
+}
+
+func (eng *Server) RpcUserChangePasswd(e centrifuge.RPCEvent, client *centrifuge.Client) ([]byte, error) {
+	eng.mux.Lock()
+	defer eng.mux.Unlock()
+
+	var data UserCreateMessage
+	err := json.Unmarshal(e.Data, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	return []byte{}, eng.Db.UserChangePassword(uuid.MustParse(client.UserID()), data.Passwd, data.Passwd2)
 }

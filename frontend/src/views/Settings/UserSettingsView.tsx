@@ -5,7 +5,7 @@ import { diceColorSet, diceMaterialSet, setStateNotify, stateCurrentUser, stateN
 import { themeVars } from "~/common/theme.css";
 import { Button, Dialog, DialogButtons, DialogContent, DialogTrigger, Flex, Input, Select, SelectItem, Switch, Text, showToast } from "~/components";
 import { buttonStyle } from "~/components/Button/styles.css";
-import { createUser, updateCurrentUser } from "~/net";
+import { changeUserPasswd, createUser, updateCurrentUser } from "~/net";
 import { dangerLineStyle } from "./style.css";
 
 type Props = {
@@ -135,7 +135,20 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
       showToast({ message: "Login and password should not be empty. Passwords should match.", id: 1 });
       return;
     }
-    createUser(login, pass, pass2);
+    createUser(login, pass, pass2, admin);
+    setCuPass("");
+    setCuPass2("");
+  }
+
+  const [oldPass, setOldPass] = createSignal("");
+
+  const passwdChange = () => {
+    if (oldPass().trim() === "" || cuPass().trim() === "" || cuPass2() === "") return;
+    if (cuPass().trim() !== cuPass2().trim()) {
+      showToast({ message: "New passwords do not match", id: 1 });
+      return;
+    }
+    changeUserPasswd(oldPass(), cuPass());
   }
 
   return (
@@ -211,9 +224,13 @@ export const UserSettingsView: Component<Props> = ({ onOpenChange }) => {
             </Button>
           </DialogTrigger>
           <DialogContent title="Change user password">
-            <Input label="Old password" type="password" />
-            <Input label="New password" type="password" />
-            <Input label="Repeat new password" type="password" />
+            <Input label="Old password" type="password" onInput={(e: any) => setOldPass(e.target.value)} />
+            <Input label="New password" type="password" onInput={(e: any) => setCuPass(e.target.value)} />
+            <Input label="Repeat new password" type="password" onInput={(e: any) => setCuPass2(e.target.value)} />
+            <DialogButtons>
+              <div>Cancel</div>
+              <div onClick={passwdChange}>Change</div>
+            </DialogButtons>
           </DialogContent>
         </Dialog>
       </Flex>

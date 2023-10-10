@@ -11,6 +11,7 @@ type UserCreateMessage struct {
 	Username string `json:"name"`
 	Passwd   string `json:"pass"`
 	Passwd2  string `json:"repeatPass"`
+	IsAdmin  bool   `json:"is_admin"`
 }
 
 type MessageInterface interface{}
